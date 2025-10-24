@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E294E0F1-FBE2-4D7E-AB96-25E479CBF746}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SGTO.Negocio</RootNamespace>
+    <AssemblyName>SGTO.Negocio</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="DTOs\CoberturaDto.cs" />
+    <Compile Include="DTOs\MedicoDto.cs" />
+    <Compile Include="DTOs\PacienteDto.cs" />
+    <Compile Include="DTOs\ParametroDto.cs" />
+    <Compile Include="DTOs\PlanDto.cs" />
+    <Compile Include="DTOs\ReporteTurnosDto.cs" />
+    <Compile Include="DTOs\RolDto.cs" />
+    <Compile Include="DTOs\TratamientoDto.cs" />
+    <Compile Include="DTOs\TurnoDto.cs" />
+    <Compile Include="DTOs\UsuarioDto.cs" />
+    <Compile Include="Excepciones\ExcepcionEntidadNoEncontrada.cs" />
+    <Compile Include="Excepciones\ExcepcionOeracionInvalida.cs" />
+    <Compile Include="Excepciones\ExcepcionReglaNegocio.cs" />
+    <Compile Include="Excepciones\ExcepcionUsuarioNoAutorizado.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Seguridad\PasswordHasher.cs" />
+    <Compile Include="Seguridad\ServicioAutenticacion.cs" />
+    <Compile Include="Seguridad\ServicioAutorizacion.cs" />
+    <Compile Include="Servicios\CoberturaService.cs" />
+    <Compile Include="Servicios\EspecialidadService.cs" />
+    <Compile Include="Servicios\MedicoService.cs" />
+    <Compile Include="Servicios\PacienteService.cs" />
+    <Compile Include="Servicios\ParametroService.cs" />
+    <Compile Include="Servicios\PlanService.cs" />
+    <Compile Include="Servicios\RolService.cs" />
+    <Compile Include="Servicios\TratamientoService.cs" />
+    <Compile Include="Servicios\TurnoService.cs" />
+    <Compile Include="Servicios\UsuarioService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mappers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SGTO.Comun\SGTO.Comun.csproj">
+      <Project>{720a0e34-483d-4eac-bac2-84b618f4cee8}</Project>
+      <Name>SGTO.Comun</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SGTO.Datos\SGTO.Datos.csproj">
+      <Project>{b021ef2b-2ae6-48d5-86d4-5f54a8718fe6}</Project>
+      <Name>SGTO.Datos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SGTO.Dominio\SGTO.Dominio.csproj">
+      <Project>{52d99d18-b01d-47c1-b0c2-3f79fe99bf66}</Project>
+      <Name>SGTO.Dominio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
