@@ -52,3 +52,29 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+
+# Visual Studio (IDE settings, caches, temp files)
+.vs/
+*.user
+*.suo
+*.cache
+*.dbmdl
+*.opendb
+*.VC.db
+
+# WebForms specific folders
+App_Data/
+PublishProfiles/
+*.Publish.xml
+*.pubxml
+*.pubxml.user
+
+# IIS Express
+.vscode/
+iisexpress/
+
+# Others (optional, pero recomendados)
+*.log
+*.bak
+*.tmp
