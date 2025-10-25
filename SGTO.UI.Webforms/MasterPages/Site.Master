@@ -2,21 +2,33 @@
 
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="es">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <title><%: Page.Title %> - Gestión de Turnos </title>
+
+    <%--fuentes de Google--%>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
     </asp:PlaceHolder>
 
-    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <webopt:BundleReference runat="server" Path="~/Content/css" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
+    <%--Paleta de colores del sistema y estilos propios--%>
+    <link href="~/Content/TemaApp.css" rel="stylesheet" />
+    <link href="~/Content/Pages/Dashboard.css" rel="stylesheet" />
+
+    <%--iconos de bootstrap--%>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="app-theme">
     <form runat="server">
         <asp:ScriptManager runat="server">
             <Scripts>
@@ -37,31 +49,90 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
-            <div class="container">
-                <a class="navbar-brand" runat="server" href="~/">Application name</a>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/About">About</a></li>
-                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contact</a></li>
-                    </ul>
+        <%--contenedor principal de la app--%>
+        <div id="app-shell">
+
+            <%-- menu izquierda --%>
+            <aside class="sidebar">
+
+                <%--logo--%>
+                <div class="sidebar-header d-flex align-items-center gap-3 p-4 border-bottom">
+                    <div class="logo-icon text-theme-primary d-flex align-items-center justify-content-center">
+                        <svg fill="none" class="logo-svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+                        </svg>
+                    </div>
+                    <h2 class="sidebar-title fw-bold">SGTO</h2>
                 </div>
-            </div>
-        </nav>
-        <div class="container body-content">
-            <asp:ContentPlaceHolder ID="MainContent" runat="server">
-            </asp:ContentPlaceHolder>
-            <hr />
-            <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - My ASP.NET Application</p>
-            </footer>
+
+                <%--opciones de menu--%>
+                <nav class="sidebar-menu d-flex flex-column flex-fill p-4 gap-2">
+                    <a id="MenuDashboard" runat="server" href="~/Pages/Home/Dashboard.aspx" class="menu-item">
+                        <i class="bi bi-house-door-fill fs-5"></i><span>Inicio</span>
+                    </a>
+                    <a id="MenuTurnos" runat="server" href="~/Pages/Turnos/Turnos.aspx" class="menu-item">
+                        <i class="bi bi-calendar-check fs-5"></i><span>Turnos</span>
+                    </a>
+                    <a id="MenuPacientes" runat="server" href="~/Pages/Pacientes/Pacientes.aspx" class="menu-item">
+                        <i class="bi bi-person-vcard fs-5"></i><span>Pacientes</span>
+                    </a>
+                    <a id="MenuMedicos" runat="server" href="~/Pages/Medicos/Medicos.aspx" class="menu-item">
+                        <i class="bi bi-person-badge fs-5"></i><span>Médicos</span>
+                    </a>
+                    <a id="MenuCoberturas" runat="server" href="~/Pages/CoberturasPlanes/CoberturasPlanes.aspx" class="menu-item">
+                        <i class="bi bi-shield-check fs-5"></i><span>Coberturas</span>
+                    </a>
+                    <a id="MenuEspecialidades" runat="server" href="~/Pages/Especialidades/Especialidades.aspx" class="menu-item">
+                        <i class="bi bi-layers fs-5"></i><span>Especialidades</span>
+                    </a>
+                    <a id="MenuTratamientos" runat="server" href="~/Pages/Tratamientos/Tratamientos.aspx" class="menu-item">
+                        <i class="bi bi-heart-pulse fs-5"></i><span>Tratamientos</span>
+                    </a>
+                    <a id="MenuReportes" runat="server" href="~/Pages/Reportes/Reportes.aspx" class="menu-item">
+                        <i class="bi bi-bar-chart-line fs-5"></i><span>Reportes</span>
+                    </a>
+                    <a id="MenuConfiguracion" runat="server" href="~/Pages/Configuracion/Configuracion.aspx" class="menu-item">
+                        <i class="bi bi-gear fs-5"></i><span>Configuración</span>
+                    </a>
+                </nav>
+
+                <%--cerrar sesion--%>
+                <div class="p-4 mt-auto">
+                    <button type="button" class="btn-logout w-100">
+                        <i class="bi bi-box-arrow-right fs-5"></i>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </div>
+
+            </aside>
+
+
+            <%--contenido principal--%>
+            <section class="layout-main">
+
+                <header class="layout-header d-flex align-items-center justify-content-between">
+                    <h1 id="SectionTitle" runat="server" class="fs-4 fw-bold">Dashboard</h1>
+                    <div class="text-end">
+                        <p id="UserName" runat="server" class="fw-semibold mb-0">Juan Pérez</p>
+                        <p id="UserRole" runat="server" class="text-muted small mb-0">Administrador</p>
+                    </div>
+                </header>
+
+                <%--paginas--%>
+                <div class="layout-content">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+                </div>
+
+                <%--footer--%>
+                <footer class="layout-footer text-muted small">
+                    <p class="mb-0">&copy; <%: DateTime.Now.Year %> - SGTO</p>
+                </footer>
+            </section>
+
         </div>
+
     </form>
+
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/Scripts/bootstrap.js") %>
     </asp:PlaceHolder>

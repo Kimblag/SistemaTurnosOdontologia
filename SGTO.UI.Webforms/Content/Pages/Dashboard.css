@@ -1,0 +1,135 @@
+﻿/* ======================================================
+   grid de la fila principal ID #row-1
+   ====================================================== */
+#row-1 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+    /* Cada celda es una card KPI */
+    #row-1 > .highcharts-dashboards-cell {
+        box-sizing: border-box;
+        flex: 1 1 280px;
+        min-width: 260px;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+    }
+
+/* ======================================================
+  cards de kpis
+   ====================================================== */
+#kpi-turnos-dia,
+#kpi-pacientes,
+#kpi-reprogramados,
+#kpi-cancelados {
+    background-color: var(--color-background-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+    #kpi-turnos-dia:hover,
+    #kpi-pacientes:hover,
+    #kpi-reprogramados:hover,
+    #kpi-cancelados:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    }
+
+    /* Contenido interno dentro de la card */
+    #kpi-turnos-dia .text-dia,
+    #kpi-pacientes .text-pacientes,
+    #kpi-reprogramados .text-reprogramados,
+    #kpi-cancelados .text-cancelados {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .4rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Título */
+    #kpi-turnos-dia h2,
+    #kpi-pacientes h2,
+    #kpi-reprogramados h2,
+    #kpi-cancelados h2 {
+        font-size: .95rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        margin: 0;
+        line-height: 1.25;
+    }
+
+    /* Valor principal */
+    #kpi-turnos-dia .text-dia-value,
+    #kpi-pacientes .text-pacientes-value,
+    #kpi-reprogramados .text-reprogramados-value,
+    #kpi-cancelados .text-cancelados-value {
+        display: block;
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-text);
+        line-height: 1.2;
+    }
+
+    /* Subtítulo debajo del valor */
+    #kpi-turnos-dia .highcharts-dashboards-component-subtitle,
+    #kpi-pacientes .highcharts-dashboards-component-subtitle,
+    #kpi-reprogramados .highcharts-dashboards-component-subtitle,
+    #kpi-cancelados .highcharts-dashboards-component-subtitle {
+        display: block;
+        font-size: .9rem;
+        font-weight: 500;
+        margin: 0;
+        text-align: center;
+        color: var(--color-text-muted);
+    }
+
+    /* Colores individuales (solo para el porcentaje) */
+    #kpi-turnos-dia .highcharts-dashboards-component-subtitle {
+        color: var(--color-success);
+    }
+
+    #kpi-pacientes .highcharts-dashboards-component-subtitle {
+        color: var(--color-danger);
+    }
+
+    #kpi-reprogramados .highcharts-dashboards-component-subtitle {
+        color: var(--color-success);
+    }
+
+    #kpi-cancelados .highcharts-dashboards-component-subtitle {
+        color: var(--color-danger);
+    }
+
+
+@media (max-width: 1200px) {
+    #row-1 {
+        gap: 0.75rem;
+    }
+
+        #row-1 > .highcharts-dashboards-cell {
+            flex: 1 1 320px;
+        }
+}
+
+@media (max-width: 992px) {
+    #row-1 > .highcharts-dashboards-cell {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+}
