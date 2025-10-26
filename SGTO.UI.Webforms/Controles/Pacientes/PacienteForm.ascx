@@ -84,7 +84,7 @@
             <%--Cobertura--%>
             <div class="col-12 col-md-6">
 
-                <label for="ddlCobertura" class="form-label">Estado</label>
+                <label for="ddlCobertura" class="form-label">Cobertura</label>
                 <asp:DropDownList CssClass="form-select" ID="ddlCobertura" runat="server">
                     <asp:ListItem Selected="True">Particular</asp:ListItem>
                     <asp:ListItem>OSDE</asp:ListItem>
@@ -97,7 +97,7 @@
             <%--plan--%>
             <div class="col-12 col-md-6">
 
-                <label for="ddlPlan" class="form-label">Estado</label>
+                <label for="ddlPlan" class="form-label">Plan</label>
                 <asp:DropDownList CssClass="form-select" ID="ddlPlan" runat="server">
                     <asp:ListItem>310</asp:ListItem>
                     <asp:ListItem>200</asp:ListItem>

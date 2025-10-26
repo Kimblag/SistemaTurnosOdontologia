@@ -2,7 +2,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div class="container">
+    <div class="container-fluid">
         <div class="card shadow-sm p-5 w-100">
 
             <%--datos personales--%>
