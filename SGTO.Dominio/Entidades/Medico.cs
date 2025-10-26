@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SGTO.Dominio
+namespace SGTO.Dominio.Entidades
 {
-    public class Class1
+    public class Medico
     {
     }
 }

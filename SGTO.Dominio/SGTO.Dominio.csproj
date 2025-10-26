@@ -41,16 +41,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Entidades\Base\Persona.cs" />
     <Compile Include="Entidades\Cobertura.cs" />
     <Compile Include="Entidades\Especialidad.cs" />
     <Compile Include="Entidades\HistoriaClinicaRegistro.cs" />
+    <Compile Include="Entidades\Medico.cs" />
+    <Compile Include="Entidades\Paciente.cs" />
+    <Compile Include="Entidades\ParametroSistema.cs" />
+    <Compile Include="Entidades\Permiso.cs" />
+    <Compile Include="Entidades\Plan.cs" />
+    <Compile Include="Entidades\Rol.cs" />
+    <Compile Include="Entidades\Tratamiento.cs" />
+    <Compile Include="Entidades\Turno.cs" />
+    <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Enums\EstadoEntidad.cs" />
+    <Compile Include="Enums\EstadoTurno.cs" />
+    <Compile Include="Enums\Genero.cs" />
+    <Compile Include="ObjetosValor\DocumentoIdentidad.cs" />
+    <Compile Include="ObjetosValor\Email.cs" />
+    <Compile Include="ObjetosValor\HorarioTurno.cs" />
+    <Compile Include="ObjetosValor\Telefono.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="ObjetosValor\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

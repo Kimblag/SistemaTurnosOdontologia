@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
-    public class HistoriaClinicaRegistro
+    public class Rol
     {
     }
 }

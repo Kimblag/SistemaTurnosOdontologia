@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
-    internal class Especialidad
+    public class Especialidad
     {
     }
 }
