@@ -27,15 +27,16 @@ namespace SGTO.Dominio.Entidades
         }
 
         public Paciente(int idPaciente, string nombre, string apellido, DocumentoIdentidad dni,
-            DateTime fechaNacimiento, Genero genero, Telefono telefono, Email email,
-            Cobertura cobertura, Plan plan)
+            DateTime fechaNacimiento, Genero genero, Telefono telefono,
+            Email email, Cobertura cobertura, Plan plan,
+            List<Turno> turnos, List<HistoriaClinicaRegistro> historiaClinica)
             : base(nombre, apellido, dni, fechaNacimiento, genero, telefono, email)
         {
             IdPaciente = idPaciente;
             Cobertura = cobertura;
             Plan = plan;
-            Turnos = new List<Turno>();
-            HistoriaClinica = new List<HistoriaClinicaRegistro>();
+            Turnos = turnos;
+            HistoriaClinica = historiaClinica;
         }
 
         public void AgregarTurno(Turno turno)
