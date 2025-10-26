@@ -118,6 +118,7 @@
     <Content Include="Content\Pages\Dashboard.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
+    <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -129,6 +130,9 @@
     <Content Include="Pages\Home\Dashboard.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
+    <Content Include="Pages\Pacientes\Detalle.aspx" />
+    <Content Include="Pages\Pacientes\Editar.aspx" />
+    <Content Include="Pages\Pacientes\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Pacientes.aspx" />
     <Content Include="Pages\Reportes\Reportes.aspx" />
     <Content Include="Pages\Tratamientos\Tratamientos.aspx" />
@@ -198,6 +202,13 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controles\Pacientes\PacienteForm.ascx.cs">
+      <DependentUpon>PacienteForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Pacientes\PacienteForm.ascx.designer.cs">
+      <DependentUpon>PacienteForm.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -264,6 +275,27 @@
     <Compile Include="Pages\Medicos\Medicos.aspx.designer.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Pacientes\Detalle.aspx.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Pacientes\Detalle.aspx.designer.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Pacientes\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Pacientes\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Pacientes\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Pacientes\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Pacientes\Pacientes.aspx.cs">
       <DependentUpon>Pacientes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -324,7 +356,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Controles\" />
     <Folder Include="Imagenes\" />
   </ItemGroup>
   <ItemGroup>
