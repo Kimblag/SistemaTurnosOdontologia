@@ -42,6 +42,7 @@ namespace SGTO.Dominio.Entidades
             Usuario = usuario;
         }
 
+
         public void AgregarEspecialidad(Especialidad especialidad) { }
         public List<Turno> ObtenerTurnosPorFechas(DateTime fecha)
         {

@@ -118,6 +118,7 @@
     <Content Include="Content\Pages\Dashboard.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
+    <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
@@ -129,6 +130,7 @@
     <Content Include="Pages\Especialidades\Especialidades.aspx" />
     <Content Include="Pages\Home\Dashboard.aspx" />
     <Content Include="Pages\Login\Login.aspx" />
+    <Content Include="Pages\Medicos\Editar.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
     <Content Include="Pages\Pacientes\Detalle.aspx" />
     <Content Include="Pages\Pacientes\Editar.aspx" />
@@ -202,6 +204,13 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controles\Medicos\MedicoForm.ascx.cs">
+      <DependentUpon>MedicoForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Medicos\MedicoForm.ascx.designer.cs">
+      <DependentUpon>MedicoForm.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -267,6 +276,13 @@
     </Compile>
     <Compile Include="Pages\Login\Login.aspx.designer.cs">
       <DependentUpon>Login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Medicos\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Medicos\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Medicos\Medicos.aspx.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>

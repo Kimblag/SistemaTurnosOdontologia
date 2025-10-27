@@ -7,7 +7,7 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Pages.Pacientes
+namespace SGTO.UI.Webforms.Pages.Medicos
 {
 
 
@@ -15,12 +15,12 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
     {
 
         /// <summary>
-        /// Control PacienteFormControl.
+        /// Control MedicoFormControl.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Pacientes.PacienteForm PacienteFormControl;
+        protected global::SGTO.UI.Webforms.Controles.Medicos.MedicoForm MedicoFormControl;
     }
 }

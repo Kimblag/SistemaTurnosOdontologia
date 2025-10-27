@@ -1,9 +1,16 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using Microsoft.SqlServer.Server;
+using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
+using SGTO.Dominio.ObjetosValor;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+
 
 namespace SGTO.UI.Webforms.Pages.Medicos
 {
@@ -11,7 +18,122 @@ namespace SGTO.UI.Webforms.Pages.Medicos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack) CargarMedicos();
+        }
+
+        private void CargarMedicos()
+        {
+            //Metodo Test Medicos
+
+            List<Medico> lista = new List<Medico>
+            {
+                new Medico(
+                    1,
+                    "Julián",
+                    "Mondillo",
+                    new DocumentoIdentidad("43669779"),
+                    new DateTime(2001, 9, 24),
+                    Genero.Masculino,
+                    new Telefono("11-2892-5122"),
+                    new Email("juli.mondi@example.com"),
+                    "MP-22222",
+                    new List<Especialidad> { new Especialidad("Ortodoncia", "Descripción de ortodoncia") },
+                    new List<Turno>(),
+                    null
+                ), // <- Agregué una coma aquí
+
+                new Medico(
+                    2, // Siguiente ID
+                    "Ana",
+                    "García",
+                    new DocumentoIdentidad("35123456"),
+                    new DateTime(1985, 5, 15),
+                    Genero.Femenino,
+                    new Telefono("11-5555-1234"),
+                    new Email("ana.garcia@example.com"),
+                    "MN-54321", // Matrícula Nacional
+                    // Especialidad: Odontopediatría
+                    new List<Especialidad> { new Especialidad("Odontopediatría", "Atención dental para niños") },
+                    new List<Turno>(),
+                    null // Usuario (null por ahora)
+                ),
+
+                new Medico(
+                    3,
+                    "Carlos",
+                    "Rodríguez",
+                    new DocumentoIdentidad("38765432"),
+                    new DateTime(1990, 11, 30),
+                    Genero.Masculino,
+                    new Telefono("11-6666-5678"),
+                    new Email("carlos.rodriguez@example.com"),
+                    "MP-98765", // Matrícula Provincial
+                    // Especialidad: Endodoncia
+                    new List<Especialidad> { new Especialidad("Endodoncia", "Tratamientos de conducto") },
+                    new List<Turno>(),
+                    null
+                ) // <- No lleva coma si es el último
+            };
+
+            gvMedicos.DataSource = lista;
+            gvMedicos.DataBind();
+        }
+
+        protected void gvMedicos_PageIndexChanging(object sender, GridViewPageEventArgs e) { }
+
+        protected void gvMedicos_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Editar")
+            {
+                int idMedico = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"~/Pages/Medicos/Editar?id-medico={idMedico}", false);
+            }
+            else if (e.CommandName == "Ver")
+            {
+                int idMedico = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"~/Pages/Medicos/Detalle?id-medico={idMedico}", false);
+            }
 
         }
+
+
+        protected void gvMedicos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+
+                var medico = (Medico)e.Row.DataItem;
+                var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+
+                if (lblEstado != null && medico != null)
+                {
+                    string cssClass = "badge "; // clase base
+
+
+                    switch (medico.Estado)
+                    {
+                        case EstadoEntidad.Activo:
+                            cssClass += "badge-primary";
+                            break;
+                        case EstadoEntidad.Inactivo:
+                            cssClass += "badge-secondary";
+                            break;
+                        default:
+                            cssClass += "badge-secondary";
+                            break;
+                    }
+                    lblEstado.Attributes["class"] = cssClass;
+                    lblEstado.InnerText = medico.Estado.ToString(); // Mostrar el texto del estado
+                }
+            }
+        }
+
+
+
+
+
     }
+
+
 }
