@@ -70,28 +70,28 @@
                     <a id="MenuDashboard" runat="server" href="~/Pages/Home/Dashboard.aspx" class="menu-item">
                         <i class="bi bi-house-door-fill fs-5"></i><span>Inicio</span>
                     </a>
-                    <a id="MenuTurnos" runat="server" href="~/Pages/Turnos/Turnos.aspx" class="menu-item">
+                    <a id="MenuTurnos" runat="server" href="~/Pages/Turnos/Index.aspx" class="menu-item">
                         <i class="bi bi-calendar-check fs-5"></i><span>Turnos</span>
                     </a>
-                    <a id="MenuPacientes" runat="server" href="~/Pages/Pacientes/Pacientes.aspx" class="menu-item">
+                    <a id="MenuPacientes" runat="server" href="~/Pages/Pacientes/Index.aspx" class="menu-item">
                         <i class="bi bi-person-vcard fs-5"></i><span>Pacientes</span>
                     </a>
-                    <a id="MenuMedicos" runat="server" href="~/Pages/Medicos/Medicos.aspx" class="menu-item">
+                    <a id="MenuMedicos" runat="server" href="~/Pages/Medicos/Index.aspx" class="menu-item">
                         <i class="bi bi-person-badge fs-5"></i><span>Médicos</span>
                     </a>
-                    <a id="MenuCoberturas" runat="server" href="~/Pages/CoberturasPlanes/CoberturasPlanes.aspx" class="menu-item">
+                    <a id="MenuCoberturas" runat="server" href="~/Pages/CoberturasPlanes/Index.aspx" class="menu-item">
                         <i class="bi bi-shield-check fs-5"></i><span>Coberturas</span>
                     </a>
-                    <a id="MenuEspecialidades" runat="server" href="~/Pages/Especialidades/Especialidades.aspx" class="menu-item">
+                    <a id="MenuEspecialidades" runat="server" href="~/Pages/Especialidades/Index.aspx" class="menu-item">
                         <i class="bi bi-layers fs-5"></i><span>Especialidades</span>
                     </a>
-                    <a id="MenuTratamientos" runat="server" href="~/Pages/Tratamientos/Tratamientos.aspx" class="menu-item">
+                    <a id="MenuTratamientos" runat="server" href="~/Pages/Tratamientos/Index.aspx" class="menu-item">
                         <i class="bi bi-heart-pulse fs-5"></i><span>Tratamientos</span>
                     </a>
-                    <a id="MenuReportes" runat="server" href="~/Pages/Reportes/Reportes.aspx" class="menu-item">
+                    <a id="MenuReportes" runat="server" href="~/Pages/Reportes/Index.aspx" class="menu-item">
                         <i class="bi bi-bar-chart-line fs-5"></i><span>Reportes</span>
                     </a>
-                    <a id="MenuConfiguracion" runat="server" href="~/Pages/Configuracion/Configuracion.aspx" class="menu-item">
+                    <a id="MenuConfiguracion" runat="server" href="~/Pages/Configuracion/Index.aspx" class="menu-item">
                         <i class="bi bi-gear fs-5"></i><span>Configuración</span>
                     </a>
                 </nav>

@@ -355,35 +355,6 @@ p, span, button, input, select, label, td, th {
         background-color: var(--color-active-menu);
     }
 
-/* ------------------------------------------------------------
-   layout páginas de tabs de navegación
------------------------------------------------------------- */
-.page-turnos {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 8rem);
-    min-height: 600px;
-}
-
-    .page-turnos .nav-tabs {
-        flex-shrink: 0;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .page-turnos .tab-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .page-turnos .tab-pane {
-        flex: 1;
-        overflow-y: auto;
-        background-color: var(--color-background);
-        border-radius: var(--radius);
-        padding: 1rem;
-    }
 
 /* ------------------------------------------------------------
    layout páginas generales sin tabs
@@ -397,6 +368,32 @@ p, span, button, input, select, label, td, th {
     padding: 1rem;
     box-sizing: border-box;
 }
+
+    /* --- Tabs--- */
+    .page-generic .nav-tabs {
+        flex-shrink: 0;
+        /*border-bottom: 1px solid var(--border-color);
+        background-color: var(--color-background-alt);*/
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .page-generic .tab-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        /*background-color: var(--color-background);*/
+       /* border: 1px solid var(--border-color);*/
+     /*   border-top: none;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: var(--shadow-card);*/
+    }
+
+    .page-generic .tab-pane {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+    }
 
     /* Contenedor principal del contenido o tabla */
     .page-generic .content-wrapper {
@@ -468,4 +465,34 @@ p, span, button, input, select, label, td, th {
 
 .text-muted {
     color: var(--color-text-muted) !important;
+}
+
+
+
+.layout-content > .card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    min-height: calc(100% - 3rem); /* ocupa visualmente todo el espacio útil */
+    box-sizing: border-box;
+}
+
+    .layout-content > .card > * {
+        flex-shrink: 0; /* evita que inputs o grids se compriman */
+    }
+
+    .layout-content > .card .content-wrapper {
+        flex: 1;
+        min-height: 0; /* permite que el gridview scrollee dentro si hace falta */
+        overflow-y: auto; /* el scroll interno, no de toda la página */
+    }
+
+/* =========================================================
+   Para textareas
+   ========================================================= */
+.cobertura-form .descripcion-cobertura {
+    resize: none; /* evita redimensionar manualmente */
+    height: 6rem; /* altura fija solo para este campo */
+    line-height: 1.4;
 }

@@ -157,14 +157,13 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
         protected void gvPacientes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            int idPaciente = Convert.ToInt32(e.CommandArgument);
             if (e.CommandName == "Editar")
             {
-                int idPaciente = Convert.ToInt32(e.CommandArgument);
                 Response.Redirect($"~/Pages/Pacientes/Editar?id-paciente={idPaciente}", false);
             }
             else if (e.CommandName == "Ver")
             {
-                int idPaciente = Convert.ToInt32(e.CommandArgument);
                 Response.Redirect($"~/Pages/Pacientes/Detalle?id-paciente={idPaciente}", false);
             }
         }

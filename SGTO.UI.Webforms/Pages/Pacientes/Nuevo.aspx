@@ -5,8 +5,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div class="h-100 w-100 d-flex">
-        <uc1:PacienteForm ID="PacienteFormControl" runat="server" />
-    </div>
+    <uc1:PacienteForm ID="PacienteFormControl" runat="server" />
 
 </asp:Content>

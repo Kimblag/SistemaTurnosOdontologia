@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PacienteForm.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Pacientes.PacienteForm" %>
 
-<div class="card shadow-sm p-5 w-100 gap-2">
+<div class="card shadow-sm p-5 gap-2 justify-content-between">
 
     <%--campos--%>
     <div>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Pacientes.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Pacientes.Pacientes" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Pacientes.Pacientes" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -124,11 +124,11 @@
                                 CommandArgument='<%# Eval("IdPaciente") %>'>
                         <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-                            <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdPaciente") %>'>
-                        <i class="bi bi-x"></i>
-                            </asp:LinkButton>
                             <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdPaciente") %>'>
                         <i class="bi bi-eye"></i>
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdPaciente") %>'>
+                        <i class="bi bi-x"></i>
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
