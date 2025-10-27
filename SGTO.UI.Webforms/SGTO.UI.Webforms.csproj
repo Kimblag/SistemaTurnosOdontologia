@@ -119,27 +119,35 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
     <Content Include="Controles\Medicos\MedicoForm.ascx" />
+    <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
+    <Content Include="Controles\Coberturas\CoberturasListado.ascx" />
+    <Content Include="Controles\Coberturas\PlanesForm.ascx" />
+    <Content Include="Controles\Coberturas\PlanesListado.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Pages\CoberturasPlanes\CoberturasPlanes.aspx" />
-    <Content Include="Pages\Configuracion\Configuracion.aspx" />
+    <Content Include="Pages\CoberturasPlanes\EditarCobertura.aspx" />
+    <Content Include="Pages\CoberturasPlanes\EditarPlan.aspx" />
+    <Content Include="Pages\CoberturasPlanes\Index.aspx" />
+    <Content Include="Pages\CoberturasPlanes\NuevaCobertura.aspx" />
+    <Content Include="Pages\CoberturasPlanes\NuevoPlan.aspx" />
+    <Content Include="Pages\Configuracion\Index.aspx" />
     <Content Include="Pages\Error\Error.aspx" />
     <Content Include="Pages\Error\NotFound.aspx" />
-    <Content Include="Pages\Especialidades\Especialidades.aspx" />
+    <Content Include="Pages\Especialidades\Index.aspx" />
     <Content Include="Pages\Home\Dashboard.aspx" />
-    <Content Include="Pages\Login\Login.aspx" />
     <Content Include="Pages\Medicos\Editar.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
+    <Content Include="Pages\Login\Index.aspx" />
     <Content Include="Pages\Pacientes\Detalle.aspx" />
     <Content Include="Pages\Pacientes\Editar.aspx" />
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
-    <Content Include="Pages\Pacientes\Pacientes.aspx" />
-    <Content Include="Pages\Reportes\Reportes.aspx" />
-    <Content Include="Pages\Tratamientos\Tratamientos.aspx" />
+    <Content Include="Pages\Pacientes\Index.aspx" />
+    <Content Include="Pages\Reportes\Index.aspx" />
+    <Content Include="Pages\Tratamientos\Index.aspx" />
     <Content Include="Pages\Turnos\NuevoTurno.aspx" />
-    <Content Include="Pages\Turnos\Turnos.aspx" />
+    <Content Include="Pages\Turnos\Index.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -210,6 +218,33 @@
     </Compile>
     <Compile Include="Controles\Medicos\MedicoForm.ascx.designer.cs">
       <DependentUpon>MedicoForm.ascx</DependentUpon>
+    <Compile Include="Controles\Coberturas\CoberturasForm.ascx.cs">
+      <DependentUpon>CoberturasForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Coberturas\CoberturasForm.ascx.designer.cs">
+      <DependentUpon>CoberturasForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Coberturas\CoberturasListado.ascx.cs">
+      <DependentUpon>CoberturasListado.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Coberturas\CoberturasListado.ascx.designer.cs">
+      <DependentUpon>CoberturasListado.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Coberturas\PlanesForm.ascx.cs">
+      <DependentUpon>PlanesForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Coberturas\PlanesForm.ascx.designer.cs">
+      <DependentUpon>PlanesForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Coberturas\PlanesListado.ascx.cs">
+      <DependentUpon>PlanesListado.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Coberturas\PlanesListado.ascx.designer.cs">
+      <DependentUpon>PlanesListado.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
@@ -228,19 +263,47 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Pages\CoberturasPlanes\CoberturasPlanes.aspx.cs">
-      <DependentUpon>CoberturasPlanes.aspx</DependentUpon>
+    <Compile Include="Pages\CoberturasPlanes\EditarCobertura.aspx.cs">
+      <DependentUpon>EditarCobertura.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\CoberturasPlanes\CoberturasPlanes.aspx.designer.cs">
-      <DependentUpon>CoberturasPlanes.aspx</DependentUpon>
+    <Compile Include="Pages\CoberturasPlanes\EditarCobertura.aspx.designer.cs">
+      <DependentUpon>EditarCobertura.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Configuracion\Configuracion.aspx.cs">
-      <DependentUpon>Configuracion.aspx</DependentUpon>
+    <Compile Include="Pages\CoberturasPlanes\EditarPlan.aspx.cs">
+      <DependentUpon>EditarPlan.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Configuracion\Configuracion.aspx.designer.cs">
-      <DependentUpon>Configuracion.aspx</DependentUpon>
+    <Compile Include="Pages\CoberturasPlanes\EditarPlan.aspx.designer.cs">
+      <DependentUpon>EditarPlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\NuevaCobertura.aspx.cs">
+      <DependentUpon>NuevaCobertura.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\NuevaCobertura.aspx.designer.cs">
+      <DependentUpon>NuevaCobertura.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\NuevoPlan.aspx.cs">
+      <DependentUpon>NuevoPlan.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\NuevoPlan.aspx.designer.cs">
+      <DependentUpon>NuevoPlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Error\Error.aspx.cs">
       <DependentUpon>Error.aspx</DependentUpon>
@@ -256,12 +319,12 @@
     <Compile Include="Pages\Error\NotFound.aspx.designer.cs">
       <DependentUpon>NotFound.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Especialidades\Especialidades.aspx.cs">
-      <DependentUpon>Especialidades.aspx</DependentUpon>
+    <Compile Include="Pages\Especialidades\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Especialidades\Especialidades.aspx.designer.cs">
-      <DependentUpon>Especialidades.aspx</DependentUpon>
+    <Compile Include="Pages\Especialidades\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Home\Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
@@ -270,12 +333,12 @@
     <Compile Include="Pages\Home\Dashboard.aspx.designer.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Login\Login.aspx.cs">
-      <DependentUpon>Login.aspx</DependentUpon>
+    <Compile Include="Pages\Login\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Login\Login.aspx.designer.cs">
-      <DependentUpon>Login.aspx</DependentUpon>
+    <Compile Include="Pages\Login\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Medicos\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>
@@ -287,9 +350,6 @@
     <Compile Include="Pages\Medicos\Medicos.aspx.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Medicos\Medicos.aspx.designer.cs">
-      <DependentUpon>Medicos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Pacientes\Detalle.aspx.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>
@@ -312,26 +372,26 @@
     <Compile Include="Pages\Pacientes\Nuevo.aspx.designer.cs">
       <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Pacientes\Pacientes.aspx.cs">
-      <DependentUpon>Pacientes.aspx</DependentUpon>
+    <Compile Include="Pages\Pacientes\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Pacientes\Pacientes.aspx.designer.cs">
-      <DependentUpon>Pacientes.aspx</DependentUpon>
+    <Compile Include="Pages\Pacientes\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Reportes\Reportes.aspx.cs">
-      <DependentUpon>Reportes.aspx</DependentUpon>
+    <Compile Include="Pages\Reportes\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Reportes\Reportes.aspx.designer.cs">
-      <DependentUpon>Reportes.aspx</DependentUpon>
+    <Compile Include="Pages\Reportes\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Tratamientos\Tratamientos.aspx.cs">
-      <DependentUpon>Tratamientos.aspx</DependentUpon>
+    <Compile Include="Pages\Tratamientos\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Tratamientos\Tratamientos.aspx.designer.cs">
-      <DependentUpon>Tratamientos.aspx</DependentUpon>
+    <Compile Include="Pages\Tratamientos\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Turnos\NuevoTurno.aspx.cs">
       <DependentUpon>NuevoTurno.aspx</DependentUpon>
@@ -340,12 +400,12 @@
     <Compile Include="Pages\Turnos\NuevoTurno.aspx.designer.cs">
       <DependentUpon>NuevoTurno.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Turnos\Turnos.aspx.cs">
-      <DependentUpon>Turnos.aspx</DependentUpon>
+    <Compile Include="Pages\Turnos\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Turnos\Turnos.aspx.designer.cs">
-      <DependentUpon>Turnos.aspx</DependentUpon>
+    <Compile Include="Pages\Turnos\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MasterPages\Site.Master.cs">
