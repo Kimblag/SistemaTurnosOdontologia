@@ -218,6 +218,7 @@
     </Compile>
     <Compile Include="Controles\Medicos\MedicoForm.ascx.designer.cs">
       <DependentUpon>MedicoForm.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controles\Coberturas\CoberturasForm.ascx.cs">
       <DependentUpon>CoberturasForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -350,6 +351,9 @@
     <Compile Include="Pages\Medicos\Medicos.aspx.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Medicos\Medicos.aspx.designer.cs">
+      <DependentUpon>Medicos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Pacientes\Detalle.aspx.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>

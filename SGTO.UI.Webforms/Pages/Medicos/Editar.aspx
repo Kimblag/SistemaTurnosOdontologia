@@ -7,12 +7,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%-- Título de la página --%>
-    <h4 class="mb-4">Editar Médico</h4>
-
-    <div class="h-100 w-100 d-flex justify-content-center"> 
-        <%-- Usar el control de Médico --%>
         <uc1:MedicoForm ID="MedicoFormControl" runat="server" /> 
-    </div> 
+
 
 </asp:Content>

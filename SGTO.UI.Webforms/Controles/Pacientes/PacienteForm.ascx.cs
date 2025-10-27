@@ -16,7 +16,7 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Pacientes/Pacientes", false);
+            Response.Redirect("~/Pages/Pacientes/Index", false);
         }
     }
 }

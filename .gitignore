@@ -78,3 +78,4 @@ iisexpress/
 *.log
 *.bak
 *.tmp
+UpgradeLog*.htm
