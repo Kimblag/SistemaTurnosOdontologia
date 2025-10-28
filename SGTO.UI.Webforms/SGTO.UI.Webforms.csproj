@@ -118,12 +118,19 @@
     <Content Include="Content\Pages\Dashboard.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
+    <Content Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx" />
+    <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
+    <Content Include="Controles\Configuracion\Roles\RolesListado.ascx" />
+    <Content Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx" />
+    <Content Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx" />
     <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasListado.ascx" />
     <Content Include="Controles\Coberturas\PlanesForm.ascx" />
     <Content Include="Controles\Coberturas\PlanesListado.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
+    <Content Include="Controles\Reportes\Pacientes\ReportePacientes.ascx" />
+    <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -133,6 +140,10 @@
     <Content Include="Pages\CoberturasPlanes\NuevaCobertura.aspx" />
     <Content Include="Pages\CoberturasPlanes\NuevoPlan.aspx" />
     <Content Include="Pages\Configuracion\Index.aspx" />
+    <Content Include="Pages\Configuracion\Roles\Editar.aspx" />
+    <Content Include="Pages\Configuracion\Roles\Nuevo.aspx" />
+    <Content Include="Pages\Configuracion\Usuarios\Editar.aspx" />
+    <Content Include="Pages\Configuracion\Usuarios\Nuevo.aspx" />
     <Content Include="Pages\Error\Error.aspx" />
     <Content Include="Pages\Error\NotFound.aspx" />
     <Content Include="Pages\Especialidades\Index.aspx" />
@@ -212,6 +223,41 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx.cs">
+      <DependentUpon>ParametrosForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx.designer.cs">
+      <DependentUpon>ParametrosForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Roles\RolesForm.ascx.cs">
+      <DependentUpon>RolesForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Roles\RolesForm.ascx.designer.cs">
+      <DependentUpon>RolesForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Roles\RolesListado.ascx.cs">
+      <DependentUpon>RolesListado.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Roles\RolesListado.ascx.designer.cs">
+      <DependentUpon>RolesListado.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.cs">
+      <DependentUpon>UsuariosForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.designer.cs">
+      <DependentUpon>UsuariosForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx.cs">
+      <DependentUpon>UsuariosListado.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx.designer.cs">
+      <DependentUpon>UsuariosListado.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controles\Medicos\MedicoForm.ascx.cs">
       <DependentUpon>MedicoForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -253,6 +299,20 @@
     </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.designer.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Reportes\Pacientes\ReportePacientes.ascx.cs">
+      <DependentUpon>ReportePacientes.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Reportes\Pacientes\ReportePacientes.ascx.designer.cs">
+      <DependentUpon>ReportePacientes.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.cs">
+      <DependentUpon>ReporteTurnos.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.designer.cs">
+      <DependentUpon>ReporteTurnos.ascx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -305,6 +365,34 @@
     </Compile>
     <Compile Include="Pages\Configuracion\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Error\Error.aspx.cs">
       <DependentUpon>Error.aspx</DependentUpon>

@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dtos\ReportePacienteDto.cs" />
+    <Compile Include="Dtos\ReporteTurnoDto.cs" />
     <Compile Include="Entidades\Base\Persona.cs" />
     <Compile Include="Entidades\Cobertura.cs" />
     <Compile Include="Entidades\Especialidad.cs" />
@@ -57,6 +59,8 @@
     <Compile Include="Enums\EstadoEntidad.cs" />
     <Compile Include="Enums\EstadoTurno.cs" />
     <Compile Include="Enums\Genero.cs" />
+    <Compile Include="Enums\Modulo.cs" />
+    <Compile Include="Enums\TipoAccion.cs" />
     <Compile Include="ObjetosValor\DocumentoIdentidad.cs" />
     <Compile Include="ObjetosValor\Email.cs" />
     <Compile Include="ObjetosValor\HorarioTurno.cs" />

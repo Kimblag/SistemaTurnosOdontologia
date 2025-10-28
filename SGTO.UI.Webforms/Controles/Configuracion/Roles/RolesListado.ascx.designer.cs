@@ -7,38 +7,38 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Pages.Configuracion
+namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
 {
 
 
-    public partial class Configuracion
+    public partial class RolesListado
     {
 
         /// <summary>
-        /// usuariosListadoControl control.
+        /// txtBuscarRol control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.Usuarios.UsuariosListado usuariosListadoControl;
+        protected global::System.Web.UI.WebControls.TextBox txtBuscarRol;
 
         /// <summary>
-        /// rolesListadoControl control.
+        /// btnNuevoRol control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.Roles.RolesListado rolesListadoControl;
+        protected global::System.Web.UI.WebControls.Button btnNuevoRol;
 
         /// <summary>
-        /// ParametrosSistemaForm control.
+        /// gvRoles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.ParametrosSistema.ParametrosSistema ParametrosSistemaForm;
+        protected global::System.Web.UI.WebControls.GridView gvRoles;
     }
 }

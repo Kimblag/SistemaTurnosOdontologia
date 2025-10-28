@@ -382,9 +382,10 @@ p, span, button, input, select, label, td, th {
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        min-height: 0;
         /*background-color: var(--color-background);*/
-       /* border: 1px solid var(--border-color);*/
-     /*   border-top: none;
+        /* border: 1px solid var(--border-color);*/
+        /*   border-top: none;
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
         box-shadow: var(--shadow-card);*/
     }
@@ -491,7 +492,7 @@ p, span, button, input, select, label, td, th {
 /* =========================================================
    Para textareas
    ========================================================= */
-.cobertura-form .descripcion-cobertura {
+.descripcion-cobertura {
     resize: none; /* evita redimensionar manualmente */
     height: 6rem; /* altura fija solo para este campo */
     line-height: 1.4;

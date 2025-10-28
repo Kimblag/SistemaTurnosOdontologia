@@ -39,7 +39,7 @@ namespace SGTO.Dominio.Entidades
             string passwordHash, Rol rol, EstadoEntidad estado,
             DateTime fechaAlta, DateTime fechaModificacion)
         {
-            IdUsuario = IdUsuario;
+            IdUsuario = idUsuario;
             Nombre = nombre;
             Apellido = apellido;
             Email = email;
