@@ -497,3 +497,21 @@ p, span, button, input, select, label, td, th {
     height: 6rem; /* altura fija solo para este campo */
     line-height: 1.4;
 }
+
+
+/* =========================================================
+   card kpis reportes
+   ========================================================= */
+.app-theme .kpi-card {
+    background-color: var(--color-background-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    transition: all 0.2s ease-in-out;
+    min-width: 160px;
+}
+
+    .app-theme .kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
