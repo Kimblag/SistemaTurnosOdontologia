@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.UI.Webforms.MasterPages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,13 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            // se pregunta si se carga la página desde un site master (la pagina actual es hija de site master)
+            // y se activa la opcion
+            if(Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Coberturas");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
         }
     }
 }

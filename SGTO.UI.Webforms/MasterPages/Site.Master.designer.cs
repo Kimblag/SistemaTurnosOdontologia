@@ -15,6 +15,15 @@ namespace SGTO.UI.Webforms.MasterPages
     {
 
         /// <summary>
+        /// NombreClinica control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl NombreClinica;
+
+        /// <summary>
         /// MenuDashboard control.
         /// </summary>
         /// <remarks>
@@ -96,31 +105,31 @@ namespace SGTO.UI.Webforms.MasterPages
         protected global::System.Web.UI.HtmlControls.HtmlAnchor MenuConfiguracion;
 
         /// <summary>
-        /// SectionTitle control.
+        /// TituloSeccion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl SectionTitle;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl TituloSeccion;
 
         /// <summary>
-        /// UserName control.
+        /// NombreUsuario control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl UserName;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl NombreUsuario;
 
         /// <summary>
-        /// UserRole control.
+        /// RolUsuario control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl UserRole;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl RolUsuario;
 
         /// <summary>
         /// MainContent control.

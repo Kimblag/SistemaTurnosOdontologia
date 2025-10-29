@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Roles.Nuevo" %>
+﻿<%@ Page Title="Nuevo Rol" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Roles.Nuevo" %>
 
 <%--registrar el user control--%>
 <%@ Register Src="~/Controles/Configuracion/Roles/RolesForm.ascx" TagPrefix="uc1" TagName="RolesForm" %>

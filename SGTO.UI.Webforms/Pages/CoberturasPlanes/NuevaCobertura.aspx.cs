@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.UI.Webforms.MasterPages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,6 +12,11 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Coberturas");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
             CoberturasFormControl.ModoEdicion = false;
         }
     }

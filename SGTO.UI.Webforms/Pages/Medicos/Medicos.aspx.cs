@@ -3,6 +3,7 @@ using Microsoft.SqlServer.Server;
 using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
+using SGTO.UI.Webforms.MasterPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace SGTO.UI.Webforms.Pages.Medicos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Medicos");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
             if (!IsPostBack) CargarMedicos();
         }
 

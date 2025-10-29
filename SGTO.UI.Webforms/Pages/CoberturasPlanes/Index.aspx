@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.CoberturasPlanes" %>
+﻿<%@ Page Title="Coberturas y Planes" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.CoberturasPlanes" %>
 
 <%--registro de controles--%>
 <%@ Register Src="~/Controles/Coberturas/CoberturasListado.ascx" TagPrefix="uc1" TagName="CoberturasListado" %>

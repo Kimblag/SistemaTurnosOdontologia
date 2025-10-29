@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.UI.Webforms.MasterPages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,13 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            // condición para permitir establecer la opción del menú activa
+            // y setear el título en el header
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Especialidades");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
         }
     }
 }

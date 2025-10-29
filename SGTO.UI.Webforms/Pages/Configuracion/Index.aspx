@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Configuracion" %>
+﻿<%@ Page Title="Configuración" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Configuracion" %>
 
 <%--registro de controles--%>
 <%@ Register Src="~/Controles/Configuracion/Usuarios/UsuariosListado.ascx" TagPrefix="uc1" TagName="UsuariosListado" %>

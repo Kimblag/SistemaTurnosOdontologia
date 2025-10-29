@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.UI.Webforms.MasterPages;
+using System;
 using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -10,6 +11,11 @@ namespace SGTO.UI.Webforms.Pages.Turnos
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("turnos");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
             if (!IsPostBack)
             {
                 CargarTurnos();

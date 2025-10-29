@@ -1,6 +1,7 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
+using SGTO.UI.Webforms.MasterPages;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +16,11 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Pacientes");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
             if (!IsPostBack)
                 CargarDetallePaciente();
         }

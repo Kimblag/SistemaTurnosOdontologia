@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="EditarPlan.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.EditarPlan" %>
+﻿<%@ Page Title="Editar Plan" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="EditarPlan.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.EditarPlan" %>
 
 <%--registrar el user control--%>
 <%@ Register Src="~/Controles/Coberturas/PlanesForm.ascx" TagPrefix="uc1" TagName="PlanesForm" %>

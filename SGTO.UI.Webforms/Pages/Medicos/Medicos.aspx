@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
+﻿<%@ Page Title="Médicos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
     CodeBehind="Medicos.aspx.cs" 
     Inherits="SGTO.UI.Webforms.Pages.Medicos.Medicos" %>
 

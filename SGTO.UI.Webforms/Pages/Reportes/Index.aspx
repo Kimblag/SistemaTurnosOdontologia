@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Reportes.Reportes" %>
+﻿<%@ Page Title="Reportes" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Reportes.Reportes" %>
 
 <%--registro de controles--%>
 <%@ Register Src="~/Controles/Reportes/Turnos/ReporteTurnos.ascx" TagPrefix="uc1" TagName="ReporteTurnos" %>
