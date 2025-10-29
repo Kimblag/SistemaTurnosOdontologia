@@ -41,8 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dtos\ReportePacienteDto.cs" />
-    <Compile Include="Dtos\ReporteTurnoDto.cs" />
     <Compile Include="Entidades\Base\Persona.cs" />
     <Compile Include="Entidades\Cobertura.cs" />
     <Compile Include="Entidades\Especialidad.cs" />

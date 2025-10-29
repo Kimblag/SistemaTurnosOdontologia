@@ -1,12 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Negocio.DTOs
 {
-    internal class ReporteTurnosDto
+    public class ReporteTurnosDto
     {
+
+        public DateTime Fecha { get; set; }
+        public string Paciente { get; set; }
+        public string Medico { get; set; }
+        public string Especialidad { get; set; }
+        public string Cobertura { get; set; }
+        public string Plan { get; set; }
+        public string Estado { get; set; }
     }
 }

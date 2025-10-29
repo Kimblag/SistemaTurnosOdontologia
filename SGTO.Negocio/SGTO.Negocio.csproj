@@ -41,12 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="DTOs\CoberturaDto.cs" />
     <Compile Include="DTOs\MedicoDto.cs" />
     <Compile Include="DTOs\PacienteDto.cs" />
     <Compile Include="DTOs\ParametroDto.cs" />
     <Compile Include="DTOs\PlanDto.cs" />
+    <Compile Include="DTOs\ReportePacienteDto.cs" />
     <Compile Include="DTOs\ReporteTurnosDto.cs" />
     <Compile Include="DTOs\RolDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />

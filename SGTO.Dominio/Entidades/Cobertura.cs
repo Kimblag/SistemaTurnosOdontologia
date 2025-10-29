@@ -19,8 +19,25 @@ namespace SGTO.Dominio.Entidades
         public Cobertura(string nombre, string descripcion)
         {
             Nombre = nombre;
-            Descripcion = descripcion;
+            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty; ;
             Estado = EstadoEntidad.Activo;
+        }
+
+        public Cobertura(int idCobertura, string nombre, string descripcion, EstadoEntidad estado)
+        {
+            IdCobertura = idCobertura;
+            Nombre = nombre;
+            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
+            Estado = estado;
+        }
+
+        public Cobertura(int idCobertura, string nombre, string descripcion, List<Plan> planes, EstadoEntidad estado)
+        {
+            IdCobertura = idCobertura;
+            Nombre = nombre;
+            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
+            Planes = planes;
+            Estado = estado;
         }
     }
 }
