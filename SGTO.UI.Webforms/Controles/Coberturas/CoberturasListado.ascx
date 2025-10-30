@@ -34,11 +34,8 @@
             <Columns>
                 <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
                 <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
-                <asp:TemplateField HeaderText="Cantidad de Planes">
-                    <ItemTemplate>
-                        <%# Eval("Planes.Count") %>
-                    </ItemTemplate>
-                </asp:TemplateField>
+                <asp:BoundField DataField="CantidadPlanes" HeaderText="Cantidad de Planes" />
+
 
                 <%--columna estado--%>
                 <asp:TemplateField HeaderText="Estado">

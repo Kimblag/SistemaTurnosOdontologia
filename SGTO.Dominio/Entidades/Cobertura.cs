@@ -19,7 +19,8 @@ namespace SGTO.Dominio.Entidades
         public Cobertura(string nombre, string descripcion)
         {
             Nombre = nombre;
-            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty; ;
+            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
+            Planes = new List<Plan>();
             Estado = EstadoEntidad.Activo;
         }
 
@@ -28,6 +29,7 @@ namespace SGTO.Dominio.Entidades
             IdCobertura = idCobertura;
             Nombre = nombre;
             Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
+            Planes = new List<Plan>();
             Estado = estado;
         }
 

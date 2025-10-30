@@ -41,12 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Excepciones\ExcepcionErrorConexion.cs" />
     <Compile Include="Excepciones\ExcepcionErrorConsulta.cs" />
     <Compile Include="Excepciones\ExcepcionErrorTransaccion.cs" />
     <Compile Include="Infraestructura\ConexionDBFactory.cs" />
-    <Compile Include="Infraestructura\UnidadDeTrabajo.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\ConfiguracionMapper.cs" />
     <Compile Include="Mappers\MedicoMapper.cs" />
@@ -68,6 +66,16 @@
     <Compile Include="Repositorios\TratamientoRepositorio.cs" />
     <Compile Include="Repositorios\TurnoRepositorio.cs" />
     <Compile Include="Repositorios\UsuarioRepositorio.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SGTO.Comun\SGTO.Comun.csproj">
+      <Project>{720a0e34-483d-4eac-bac2-84b618f4cee8}</Project>
+      <Name>SGTO.Comun</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SGTO.Dominio\SGTO.Dominio.csproj">
+      <Project>{52d99d18-b01d-47c1-b0c2-3f79fe99bf66}</Project>
+      <Name>SGTO.Dominio</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

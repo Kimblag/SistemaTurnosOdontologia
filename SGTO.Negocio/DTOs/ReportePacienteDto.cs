@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SGTO.Negocio.Dtos
+namespace SGTO.Negocio.DTOs
 {
     public class ReportePacienteDto
     {

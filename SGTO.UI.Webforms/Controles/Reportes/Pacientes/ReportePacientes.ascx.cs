@@ -1,4 +1,4 @@
-﻿using SGTO.Dominio.Dtos;
+﻿using SGTO.Negocio.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

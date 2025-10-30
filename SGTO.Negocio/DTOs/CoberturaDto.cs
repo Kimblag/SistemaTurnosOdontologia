@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace SGTO.Negocio.DTOs
 {
-    internal class CoberturaDto
+    public class CoberturaDto
     {
+        public int IdCobertura { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
+        public int CantidadPlanes { get; set; }
+        public string Estado { get; set; }
     }
 }

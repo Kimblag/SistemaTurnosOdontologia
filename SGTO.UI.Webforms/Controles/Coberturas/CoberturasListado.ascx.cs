@@ -6,19 +6,29 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using SGTO.Negocio.Servicios;
+using SGTO.Negocio.DTOs;
 
 namespace SGTO.UI.Webforms.Controles.Coberturas
 {
     public partial class CoberturasListado : System.Web.UI.UserControl
     {
+
+        private readonly CoberturaService _servicioCobertura = new CoberturaService();
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            CargarCoberturas();
+            if (!IsPostBack)
+                CargarCoberturas();
         }
 
         public void gvCoberturas_RowDataBound(object sender, GridViewRowEventArgs e) { }
 
-        public void gvCoberturas_PageIndexChanging(object sender, GridViewPageEventArgs e) { }
+        public void gvCoberturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvCoberturas.PageIndex = e.NewPageIndex;
+            CargarCoberturas();
+        }
 
         public void gvCoberturas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -40,21 +50,18 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         private void CargarCoberturas()
         {
             // datos de prieba
-            var lista = new List<Cobertura>
+            try
             {
-                new Cobertura("OSDE", "Cobertura médica general") { IdCobertura = 1, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("OSECAC", "Obra social de empleados de comercio") { IdCobertura = 2, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("Swiss Medical", "Cobertura premium") { IdCobertura = 3, Planes = new List<Plan>(), Estado = EstadoEntidad.Inactivo },
-                new Cobertura("Galeno", "Planes con reintegros") { IdCobertura = 4, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("Medicus", "Cobertura odontológica") { IdCobertura = 5, Planes = new List<Plan>(), Estado = EstadoEntidad.Inactivo },
-                new Cobertura("OSDEPYM", "Cobertura para pymes") { IdCobertura = 6, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("OSPIM", "Mutual de industrias metalúrgicas") { IdCobertura = 7, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("Sancor Salud", "Cobertura familiar") { IdCobertura = 8, Planes = new List<Plan>(), Estado = EstadoEntidad.Activo },
-                new Cobertura("Prevención Salud", "Cobertura joven") { IdCobertura = 9, Planes = new List<Plan>(), Estado = EstadoEntidad.Inactivo },
-            };
+                List<CoberturaDto> lista = _servicioCobertura.Listar();
 
-            gvCoberturas.DataSource = lista;
-            gvCoberturas.DataBind();
+                gvCoberturas.DataSource = lista;
+                gvCoberturas.DataBind();
+            }
+            catch (Exception)
+            {
+                // mostrar error en la UI.
+                throw;
+            }
         }
 
         protected void btnNuevaCobertura_Click(object sender, EventArgs e)
