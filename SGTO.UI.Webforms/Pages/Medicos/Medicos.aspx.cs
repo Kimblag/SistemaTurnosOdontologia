@@ -136,6 +136,20 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             new List<Especialidad> { new Especialidad("Cirugía Oral", "Extracciones y cirugías complejas de boca") },
             new List<Turno>(),
             null
+        ),
+        new Medico(
+            8,
+            "Martin",
+            "Guzman",
+            new DocumentoIdentidad("39844217"),
+            new DateTime(1994, 3, 12),
+            Genero.Masculino,
+            new Telefono("11-5028-3354"),
+            new Email("martin.guzman@example.com"),
+            "MN-12555",
+            new List<Especialidad> { new Especialidad("Periodoncia", "Tratamientos de encías y tejidos dentales") },
+            new List<Turno>(),
+            null
         )
     };
 

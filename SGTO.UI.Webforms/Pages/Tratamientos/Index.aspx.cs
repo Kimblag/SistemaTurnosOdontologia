@@ -58,7 +58,23 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
                 {
                     IdTratamiento = 5,
                     Estado = EstadoEntidad.Activo
+                },
+                new Tratamiento("Extracción Simple", "Extracción de pieza dental no compleja.", 3000, espGeneral)
+                {
+                    IdTratamiento = 6,
+                    Estado = EstadoEntidad.Activo
+                },
+                new Tratamiento("Consulta Ortodoncia", "Evaluación y seguimiento de ortodoncia.", 2500, espOrtodoncia)
+                {
+                    IdTratamiento = 7,
+                    Estado = EstadoEntidad.Activo
+                },
+                new Tratamiento("Carillas de Resina", "Láminas finas de resina para cubrir el diente.", 8000, espEstetica)
+                {
+                    IdTratamiento = 8,
+                    Estado = EstadoEntidad.Activo
                 }
+
             };
 
             gvTratamientos.DataSource = listaTratamientos;

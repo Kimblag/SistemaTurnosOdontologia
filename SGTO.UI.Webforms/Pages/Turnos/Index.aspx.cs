@@ -77,7 +77,15 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     Paciente = new { Nombre = "Pedro", Apellido = "Alvarez" },
                     Medico = new { Nombre = "Carlos", Apellido = "Sanchez" },
                     Estado = EstadoTurno.NoAsistio
+                },
+                new {
+                    IdTurno = 8,
+                    FechaHora = new DateTime(2025, 11, 1, 17, 45, 0),
+                    Paciente = new { Nombre = "Mariano", Apellido = "Cremone" },
+                    Medico = new { Nombre = "Carles", Apellido = "Pericles" },
+                    Estado = EstadoTurno.NoAsistio
                 }
+
             };
 
 
@@ -100,31 +108,40 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
                 if (lblEstado != null)
                 {
+                    string textoEstado = "";
                     string cssClass = "badge ";
 
                     switch (estado)
                     {
                         case EstadoTurno.Nuevo:
+                            textoEstado = "Nuevo";
                             cssClass += "badge-primary";
                             break;
                         case EstadoTurno.Cancelado:
+                            textoEstado = "Cancelado";
                             cssClass += "badge-danger";
                             break;
                         case EstadoTurno.Reprogramado:
+                            textoEstado = "Reprogramado";
                             cssClass += "badge-warning";
                             break;
                         case EstadoTurno.Cerrado:
+                            textoEstado = "Cerrado";
                             cssClass += "badge-success";
                             break;
                         case EstadoTurno.NoAsistio:
+                            textoEstado = "No asistió";
                             cssClass += "badge-dark";
                             break;
                         default:
+                            textoEstado = "Indefinido";
                             cssClass += "badge-secondary";
                             break;
                     }
-                    lblEstado.Attributes["class"] = cssClass;
 
+
+                    lblEstado.Attributes["class"] = cssClass;
+                    lblEstado.InnerText = textoEstado;
                 }
             }
         }

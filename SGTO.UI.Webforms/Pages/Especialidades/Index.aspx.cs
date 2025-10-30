@@ -34,7 +34,9 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
                 new Especialidad("Periodoncia", "Tratamiento de las encías y tejidos que rodean los dientes.") { Estado = EstadoEntidad.Activo },
                 new Especialidad("Odontopediatría", "Atención dental especializada en niños.") { Estado = EstadoEntidad.Activo },
                 new Especialidad("Cirugía Bucal", "Extracción de piezas dentarias y cirugía de tejidos orales.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Estética Dental", "Blanqueamientos, carillas y tratamientos estéticos del diente.") { Estado = EstadoEntidad.Inactivo }
+                new Especialidad("Estética Dental", "Blanqueamientos, carillas y tratamientos estéticos del diente.") { Estado = EstadoEntidad.Inactivo },
+                new Especialidad("Odontología General", "Consultas, limpiezas y tratamientos preventivos.") { Estado = EstadoEntidad.Activo }
+
             };
 
 
