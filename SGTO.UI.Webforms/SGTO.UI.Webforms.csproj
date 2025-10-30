@@ -131,6 +131,7 @@
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Controles\Reportes\Pacientes\ReportePacientes.ascx" />
     <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
+    <Content Include="Controles\Turnos\TurnoForm.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -151,14 +152,16 @@
     <Content Include="Pages\Medicos\Editar.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
     <Content Include="Pages\Login\Index.aspx" />
+    <Content Include="Pages\Medicos\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Detalle.aspx" />
     <Content Include="Pages\Pacientes\Editar.aspx" />
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Index.aspx" />
     <Content Include="Pages\Reportes\Index.aspx" />
     <Content Include="Pages\Tratamientos\Index.aspx" />
-    <Content Include="Pages\Turnos\NuevoTurno.aspx" />
+    <Content Include="Pages\Turnos\Editar.aspx" />
     <Content Include="Pages\Turnos\Index.aspx" />
+    <Content Include="Pages\Turnos\Nuevo.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -314,6 +317,13 @@
     <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.designer.cs">
       <DependentUpon>ReporteTurnos.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Controles\Turnos\TurnoForm.ascx.cs">
+      <DependentUpon>TurnoForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Turnos\TurnoForm.ascx.designer.cs">
+      <DependentUpon>TurnoForm.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -443,6 +453,13 @@
     <Compile Include="Pages\Medicos\Medicos.aspx.designer.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Medicos\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Medicos\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Pacientes\Detalle.aspx.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -485,19 +502,26 @@
     <Compile Include="Pages\Tratamientos\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Turnos\Index.aspx.designer.cs">
-      <DependentUpon>Index.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Turnos\NuevoTurno.aspx.cs">
-      <DependentUpon>NuevoTurno.aspx</DependentUpon>
+    <Compile Include="Pages\Turnos\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Turnos\NuevoTurno.aspx.designer.cs">
-      <DependentUpon>NuevoTurno.aspx</DependentUpon>
+    <Compile Include="Pages\Turnos\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Turnos\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Turnos\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Turnos\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Turnos\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MasterPages\Site.Master.cs">

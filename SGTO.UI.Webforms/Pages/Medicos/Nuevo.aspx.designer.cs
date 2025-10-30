@@ -11,7 +11,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 {
 
 
-    public partial class Editar
+    public partial class Nuevo
     {
 
         /// <summary>

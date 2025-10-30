@@ -32,54 +32,112 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             //Metodo Test Medicos
 
             List<Medico> lista = new List<Medico>
-            {
-                new Medico(
-                    1,
-                    "Julián",
-                    "Mondillo",
-                    new DocumentoIdentidad("43669779"),
-                    new DateTime(2001, 9, 24),
-                    Genero.Masculino,
-                    new Telefono("11-2892-5122"),
-                    new Email("juli.mondi@example.com"),
-                    "MP-22222",
-                    new List<Especialidad> { new Especialidad("Ortodoncia", "Descripción de ortodoncia") },
-                    new List<Turno>(),
-                    null
-                ), // <- Agregué una coma aquí
+    {
+        new Medico(
+            1,
+            "Julián",
+            "Mondillo",
+            new DocumentoIdentidad("43669779"),
+            new DateTime(2001, 9, 24),
+            Genero.Masculino,
+            new Telefono("11-2892-5122"),
+            new Email("juli.mondi@example.com"),
+            "MP-22222",
+            new List<Especialidad> { new Especialidad("Ortodoncia", "Descripción de ortodoncia") },
+            new List<Turno>(),
+            null
+        ),
 
-                new Medico(
-                    2, // Siguiente ID
-                    "Ana",
-                    "García",
-                    new DocumentoIdentidad("35123456"),
-                    new DateTime(1985, 5, 15),
-                    Genero.Femenino,
-                    new Telefono("11-5555-1234"),
-                    new Email("ana.garcia@example.com"),
-                    "MN-54321", // Matrícula Nacional
-                    // Especialidad: Odontopediatría
-                    new List<Especialidad> { new Especialidad("Odontopediatría", "Atención dental para niños") },
-                    new List<Turno>(),
-                    null // Usuario (null por ahora)
-                ),
+        new Medico(
+            2,
+            "Ana",
+            "García",
+            new DocumentoIdentidad("35123456"),
+            new DateTime(1985, 5, 15),
+            Genero.Femenino,
+            new Telefono("11-5555-1234"),
+            new Email("ana.garcia@example.com"),
+            "MN-54321",
+            new List<Especialidad> { new Especialidad("Odontopediatría", "Atención dental para niños") },
+            new List<Turno>(),
+            null
+        ),
 
-                new Medico(
-                    3,
-                    "Carlos",
-                    "Rodríguez",
-                    new DocumentoIdentidad("38765432"),
-                    new DateTime(1990, 11, 30),
-                    Genero.Masculino,
-                    new Telefono("11-6666-5678"),
-                    new Email("carlos.rodriguez@example.com"),
-                    "MP-98765", // Matrícula Provincial
-                    // Especialidad: Endodoncia
-                    new List<Especialidad> { new Especialidad("Endodoncia", "Tratamientos de conducto") },
-                    new List<Turno>(),
-                    null
-                ) // <- No lleva coma si es el último
-            };
+        new Medico(
+            3,
+            "Carlos",
+            "Rodríguez",
+            new DocumentoIdentidad("38765432"),
+            new DateTime(1990, 11, 30),
+            Genero.Masculino,
+            new Telefono("11-6666-5678"),
+            new Email("carlos.rodriguez@example.com"),
+            "MP-98765",
+            new List<Especialidad> { new Especialidad("Endodoncia", "Tratamientos de conducto") },
+            new List<Turno>(),
+            null
+        ),
+
+        new Medico(
+            4,
+            "Lucía",
+            "Pérez",
+            new DocumentoIdentidad("39845217"),
+            new DateTime(1992, 3, 12),
+            Genero.Femenino,
+            new Telefono("11-4728-3344"),
+            new Email("lucia.perez@example.com"),
+            "MN-12045",
+            new List<Especialidad> { new Especialidad("Periodoncia", "Tratamientos de encías y tejidos dentales") },
+            new List<Turno>(),
+            null
+        ),
+
+        new Medico(
+            5,
+            "Fernando",
+            "Sosa",
+            new DocumentoIdentidad("37221456"),
+            new DateTime(1987, 8, 5),
+            Genero.Masculino,
+            new Telefono("11-4789-1122"),
+            new Email("fernando.sosa@example.com"),
+            "MP-33456",
+            new List<Especialidad> { new Especialidad("Implantología", "Implantes dentales y rehabilitación oral") },
+            new List<Turno>(),
+            null
+        ),
+
+        new Medico(
+            6,
+            "Mariana",
+            "López",
+            new DocumentoIdentidad("40654321"),
+            new DateTime(1995, 2, 22),
+            Genero.Femenino,
+            new Telefono("11-4901-7788"),
+            new Email("mariana.lopez@example.com"),
+            "MN-88221",
+            new List<Especialidad> { new Especialidad("Estética Dental", "Blanqueamientos y restauraciones estéticas") },
+            new List<Turno>(),
+            null
+        ),
+
+        new Medico(
+            7,
+            "Santiago",
+            "Fernández",
+            new DocumentoIdentidad("36412890"),
+            new DateTime(1989, 6, 18),
+            Genero.Masculino,
+            new Telefono("11-5123-9944"),
+            new Email("santiago.fernandez@example.com"),
+            "MP-77002",
+            new List<Especialidad> { new Especialidad("Cirugía Oral", "Extracciones y cirugías complejas de boca") },
+            new List<Turno>(),
+            null
+        )
+    };
 
             gvMedicos.DataSource = lista;
             gvMedicos.DataBind();
@@ -135,7 +193,10 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             }
         }
 
-
+        protected void btnNuevoMedico_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Medicos/Nuevo", false);
+        }
 
 
 

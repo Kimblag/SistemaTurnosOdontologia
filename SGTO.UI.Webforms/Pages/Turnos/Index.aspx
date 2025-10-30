@@ -3,9 +3,10 @@
     Inherits="SGTO.UI.Webforms.Pages.Turnos.Index" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
+
     <div class="page-generic">
 
-        <%--filtros (Solo visuales, sin función)--%>
+        <%--filtros --%>
         <div class="container-fluid px-0 mb-3">
             <div class="row g-2 align-items-center">
 
@@ -39,7 +40,7 @@
                         </asp:DropDownList>
                     </div>
 
-                    <%-- Selector del criterio (dependiente del campo) --%>
+                    <%-- Selector del criterio  --%>
                     <div class="col-auto">
                         <asp:DropDownList
                             ID="ddlCriterio"
@@ -59,6 +60,7 @@
                         ID="btnNuevoTurno"
                         runat="server"
                         Text="+ Nuevo Turno"
+                        OnClick="btnNuevoTurno_Click" 
                         CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
                 </div>
             </div>
@@ -68,12 +70,14 @@
         <%-- Tabla de Turnos --%>
         <div class="content-wrapper">
 
-     
             <asp:GridView ID="gvTurnos" runat="server"
                 AutoGenerateColumns="false"
-                DataKeyNames="IdTurno" 
+                OnRowDataBound="gvTurnos_RowDataBound"
+                OnPageIndexChanging="gvTurnos_PageIndexChanging"
+                OnRowCommand="gvTurnos_RowCommand"
+                DataKeyNames="IdTurno"
                 CssClass="table gridview mb-0"
-                AllowPaging="True" PageSize="10"> 
+                AllowPaging="True" PageSize="7">
                 <Columns>
 
                     <asp:TemplateField HeaderText="Paciente">
@@ -94,8 +98,8 @@
                     <%--columna estado--%>
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            <%-- Muestra el texto del estado con el estilo de badge --%>
-                            <span class="badge bg-secondary"><%# Eval("Estado") %></span>
+                            
+                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -105,22 +109,15 @@
                             <asp:LinkButton ID="btnEditar"
                                 runat="server"
                                 CssClass="btn btn-outline-secondary btn-sm me-1"
-                                ToolTip="Editar Turno">
-                                <i class="bi bi-pencil"></i>
+                                CommandName="Editar"
+                                CommandArgument='<%# Eval("IdTurno") %>'>
+                        <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-
-                            <asp:LinkButton ID="btnDetalle"
-                                runat="server"
-                                CssClass="btn btn-outline-primary btn-sm me-1"
-                                ToolTip="Ver Detalle">
-                                <i class="bi bi-eye"></i>
+                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdTurno") %>'>
+                        <i class="bi bi-eye"></i>
                             </asp:LinkButton>
-
-                            <asp:LinkButton ID="btnEliminar" 
-                                runat="server" 
-                                CssClass="btn btn-outline-danger btn-sm" 
-                                ToolTip="Cancelar Turno">
-                                <i class="bi bi-x-circle"></i>
+                            <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdTurno") %>'>
+                        <i class="bi bi-x"></i>
                             </asp:LinkButton>
                         </ItemTemplate>
                     </asp:TemplateField>
@@ -134,7 +131,8 @@
                 </EmptyDataTemplate>
             </asp:GridView>
 
-        </div>
-    </div>
+        </div> 
+
+    </div> 
 
 </asp:Content>

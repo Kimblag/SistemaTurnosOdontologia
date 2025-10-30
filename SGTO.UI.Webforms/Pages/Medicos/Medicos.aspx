@@ -26,7 +26,7 @@
                                 placeholder="Buscar por nombre, DNI o matrícula..." />
                         </div>
                     </div>
-
+                    <%--  --%>
                     <%-- Selector del campo a filtrar --%>
                     <div class="col-auto">
                         <asp:DropDownList
@@ -57,14 +57,14 @@
 
                 <%-- Columna derecha: botón nuevo médico  --%>
                 <div class="col-12 col-lg-3 text-lg-end">
-                    <%-- 
+                    
                     <asp:Button
                         ID="btnNuevoMedico" 
                         runat="server"
                         Text="+ Nuevo Médico" 
                         OnClick="btnNuevoMedico_Click" 
                         CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
-                     --%>
+                     
                 </div>
             </div>
         </div>
@@ -121,11 +121,14 @@
                                 CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-                            <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdMedico") %>'> 
-                                <i class="bi bi-x"></i>
-                            </asp:LinkButton>
-                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
+                          <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-eye"></i>
+                            </asp:LinkButton>
+
+  <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdMedico") %>'> 
+                                <i class="bi bi-x"></i>
+
+                            
                             </asp:LinkButton>
                              
                         </ItemTemplate>

@@ -7,20 +7,20 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Pages.Medicos
+namespace SGTO.UI.Webforms.Pages.Turnos
 {
 
 
-    public partial class Editar
+    public partial class Nuevo
     {
 
         /// <summary>
-        /// Control MedicoFormControl.
+        /// Control TurnoFormControl.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Medicos.MedicoForm MedicoFormControl;
+        protected global::System.Web.UI.UserControl TurnoFormControl;
     }
 }

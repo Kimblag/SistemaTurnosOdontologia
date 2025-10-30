@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 namespace SGTO.UI.Webforms.Pages.Turnos
 {
-    public partial class NuevoTurno : System.Web.UI.Page
+    public partial class Nuevo : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
