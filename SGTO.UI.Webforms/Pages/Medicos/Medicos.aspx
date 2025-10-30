@@ -26,7 +26,7 @@
                                 placeholder="Buscar por nombre, DNI o matrícula..." />
                         </div>
                     </div>
-                    <%--  --%>
+                    
                     <%-- Selector del campo a filtrar --%>
                     <div class="col-auto">
                         <asp:DropDownList

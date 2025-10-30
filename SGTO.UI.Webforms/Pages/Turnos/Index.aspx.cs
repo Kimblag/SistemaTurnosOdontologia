@@ -129,10 +129,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             }
         }
 
-        protected void gvTurnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            CargarTurnos();
-        }
+        protected void gvTurnos_PageIndexChanging(object sender, GridViewPageEventArgs e) { }
 
         protected void gvTurnos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -145,7 +142,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 }
                 else if (e.CommandName == "Ver")
                 {
-                    Response.Redirect($"~/Pages/Turnos/Detalle?id-turno={idTurno}", false);
+                    //Response.Redirect($"~/Pages/Turnos/Detalle?id-turno={idTurno}", false);
                 }
             }
         }

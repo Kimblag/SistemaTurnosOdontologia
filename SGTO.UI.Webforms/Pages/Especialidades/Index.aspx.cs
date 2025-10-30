@@ -47,11 +47,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             Response.Redirect("~/Pages/Especialidades/Nuevo.aspx", false);
         }
 
-        protected void gvEspecialidades_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvEspecialidades.PageIndex = e.NewPageIndex;
-            CargarEspecialidades();
-        }
+        protected void gvEspecialidades_PageIndexChanging(object sender, GridViewPageEventArgs e){}
 
         protected void gvEspecialidades_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -63,7 +59,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             else if (e.CommandName == "Ver")
             {
                 int idEspecialidad = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/Pages/Especialidades/Detalle?id-especialidad={idEspecialidad}", false);
+                //Response.Redirect($"~/Pages/Especialidades/Detalle?id-especialidad={idEspecialidad}", false);
             }
 
         }

@@ -7,21 +7,48 @@
 // </generado automáticamente>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Pages.Tratamientos
+namespace SGTO.UI.Webforms.Controles.Tratamientos
 {
 
 
-    public partial class Tratamientos
+    public partial class TratamientoForm
     {
 
         /// <summary>
-        /// Control txtBuscar.
+        /// Control litIdTratamiento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtBuscar;
+        protected global::System.Web.UI.WebControls.Literal litIdTratamiento;
+
+        /// <summary>
+        /// Control txtNombre.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNombre;
+
+        /// <summary>
+        /// Control txtCostoBase.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCostoBase;
+
+        /// <summary>
+        /// Control txtDescripcion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
         /// Control ddlEspecialidad.
@@ -42,21 +69,21 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
         /// <summary>
-        /// Control btnNuevoTratamiento.
+        /// Control btnCancelar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNuevoTratamiento;
+        protected global::System.Web.UI.WebControls.Button btnCancelar;
 
         /// <summary>
-        /// Control gvTratamientos.
+        /// Control btnGuardar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTratamientos;
+        protected global::System.Web.UI.WebControls.Button btnGuardar;
     }
 }

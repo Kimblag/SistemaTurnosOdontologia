@@ -132,6 +132,7 @@
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Controles\Reportes\Pacientes\ReportePacientes.ascx" />
     <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
+    <Content Include="Controles\Tratamientos\TratamientoForm.ascx" />
     <Content Include="Controles\Turnos\TurnoForm.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
@@ -161,7 +162,9 @@
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Index.aspx" />
     <Content Include="Pages\Reportes\Index.aspx" />
+    <Content Include="Pages\Tratamientos\Editar.aspx" />
     <Content Include="Pages\Tratamientos\Index.aspx" />
+    <Content Include="Pages\Tratamientos\Nuevo.aspx" />
     <Content Include="Pages\Turnos\Editar.aspx" />
     <Content Include="Pages\Turnos\Index.aspx" />
     <Content Include="Pages\Turnos\Nuevo.aspx" />
@@ -326,6 +329,13 @@
     </Compile>
     <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.designer.cs">
       <DependentUpon>ReporteTurnos.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Tratamientos\TratamientoForm.ascx.cs">
+      <DependentUpon>TratamientoForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Tratamientos\TratamientoForm.ascx.designer.cs">
+      <DependentUpon>TratamientoForm.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Turnos\TurnoForm.ascx.cs">
       <DependentUpon>TurnoForm.ascx</DependentUpon>
@@ -519,12 +529,26 @@
     <Compile Include="Pages\Reportes\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Tratamientos\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Tratamientos\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Tratamientos\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Tratamientos\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Tratamientos\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Tratamientos\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Turnos\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>

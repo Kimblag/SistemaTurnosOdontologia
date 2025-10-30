@@ -155,7 +155,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             else if (e.CommandName == "Ver")
             {
                 int idMedico = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/Pages/Medicos/Detalle?id-medico={idMedico}", false);
+                //Response.Redirect($"~/Pages/Medicos/Detalle?id-medico={idMedico}", false);
             }
 
         }
