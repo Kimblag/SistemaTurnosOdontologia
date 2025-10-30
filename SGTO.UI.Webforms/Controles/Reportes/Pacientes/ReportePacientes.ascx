@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ReportePacientes.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Reportes.Pacientes.ReportePacientes" %>
 
-<div class="card shadow-sm p-4 d-flex flex-column gap-3">
+<div class="d-flex flex-column gap-3 pt-2">
 
     <%-- Filtros superiores --%>
     <div class="filters w-100 flex-column">

@@ -23,9 +23,18 @@ namespace SGTO.Dominio.Entidades
             Estado = EstadoEntidad.Activo;
         }
 
+        public Especialidad(string nombre, string descripcion, List<Tratamiento> tratamientos)
+        {
+            Nombre = nombre;
+            Descripcion = descripcion;
+            TratamientosAsociados = tratamientos;
+            Estado = EstadoEntidad.Activo;
+        }
+
         public Especialidad(int idEspecialidad, string nombre, string descripcion,
             List<Tratamiento> tratamientosAsociados, EstadoEntidad estado)
         {
+            IdEspecialidad = idEspecialidad;
             Nombre = nombre;
             Descripcion = descripcion;
             TratamientosAsociados = tratamientosAsociados;

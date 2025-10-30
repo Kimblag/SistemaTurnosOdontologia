@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ParametrosForm.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Configuracion.ParametrosSistema.ParametrosSistema" %>
 
 
-<div class="card shadow-sm p-5 gap-2 justify-content-between">
+<div class="card shadow-sm px-3 py-5 gap-2 justify-content-between">
 
     <div class="col justify-content-between">
 
@@ -72,7 +72,7 @@
     </div>
 
     <%--botones--%>
-    <div class="h-100 w-100 align-content-end">
+    <div class="col align-content-end">
         <div class="row justify-content-end gx-2 gy-2">
             <%-- boton cancelar --%>
             <div class="col-6 col-sm-4 col-md-2 d-grid">

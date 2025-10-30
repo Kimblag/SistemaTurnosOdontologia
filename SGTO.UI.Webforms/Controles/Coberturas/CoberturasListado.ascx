@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CoberturasListado.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Coberturas.CoberturasListado" %>
 
 
-<div>
+<div class="d-flex flex-column gap-3 pt-2">
 
     <%--Filtros--%>
     <div class="d-flex gap-2 align-items-center my-3 mb-3 justify-content-between">
