@@ -123,6 +123,7 @@
     <Content Include="Controles\Configuracion\Roles\RolesListado.ascx" />
     <Content Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx" />
     <Content Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx" />
+    <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
     <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasListado.ascx" />
@@ -147,7 +148,9 @@
     <Content Include="Pages\Configuracion\Usuarios\Nuevo.aspx" />
     <Content Include="Pages\Error\Error.aspx" />
     <Content Include="Pages\Error\NotFound.aspx" />
+    <Content Include="Pages\Especialidades\Editar.aspx" />
     <Content Include="Pages\Especialidades\Index.aspx" />
+    <Content Include="Pages\Especialidades\Nuevo.aspx" />
     <Content Include="Pages\Home\Dashboard.aspx" />
     <Content Include="Pages\Medicos\Editar.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
@@ -260,6 +263,13 @@
     </Compile>
     <Compile Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx.designer.cs">
       <DependentUpon>UsuariosListado.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Controles\Especialidades\EspecialidadForm.ascx.cs">
+      <DependentUpon>EspecialidadForm.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controles\Especialidades\EspecialidadForm.ascx.designer.cs">
+      <DependentUpon>EspecialidadForm.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Medicos\MedicoForm.ascx.cs">
       <DependentUpon>MedicoForm.ascx</DependentUpon>
@@ -418,12 +428,26 @@
     <Compile Include="Pages\Error\NotFound.aspx.designer.cs">
       <DependentUpon>NotFound.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Especialidades\Editar.aspx.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Especialidades\Editar.aspx.designer.cs">
+      <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Especialidades\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Especialidades\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Especialidades\Nuevo.aspx.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Especialidades\Nuevo.aspx.designer.cs">
+      <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Home\Dashboard.aspx.cs">
       <DependentUpon>Dashboard.aspx</DependentUpon>
