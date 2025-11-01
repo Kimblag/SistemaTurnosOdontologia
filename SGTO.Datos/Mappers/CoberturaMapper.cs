@@ -20,8 +20,7 @@ namespace SGTO.Datos.Mappers
             string descripcion = lector.IsDBNull(lector.GetOrdinal("Descripcion"))
                 ? string.Empty
                 : lector.GetString(lector.GetOrdinal("Descripcion"));
-            bool estadoBool = lector.GetBoolean(lector.GetOrdinal("Estado"));
-            EstadoEntidad estado = estadoBool ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
+            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "Estado");
 
             Cobertura cobertura = new Cobertura(
                 idCobertura,

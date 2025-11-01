@@ -2,7 +2,7 @@
 {
     public enum EstadoEntidad
     {
-        Inactivo = 0,
-        Activo = 1
+        Inactivo = 'I',
+        Activo = 'A'
     }
 }

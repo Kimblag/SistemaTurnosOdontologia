@@ -45,6 +45,7 @@
     <Compile Include="Entidades\Cobertura.cs" />
     <Compile Include="Entidades\Especialidad.cs" />
     <Compile Include="Entidades\HistoriaClinicaRegistro.cs" />
+    <Compile Include="Entidades\HorarioAtencion.cs" />
     <Compile Include="Entidades\Medico.cs" />
     <Compile Include="Entidades\Paciente.cs" />
     <Compile Include="Entidades\ParametroSistema.cs" />

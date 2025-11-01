@@ -2,9 +2,9 @@
 {
     public enum Genero
     {
-        Masculino = 1,
-        Femenino = 2,
-        Otro = 3,
-        PrefiereNoDecir = 4
+        Masculino = 'M',
+        Femenino = 'F',
+        Otro = 'O',
+        PrefiereNoDecir = 'N'
     }
 }

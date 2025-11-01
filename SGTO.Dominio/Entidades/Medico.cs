@@ -16,6 +16,7 @@ namespace SGTO.Dominio.Entidades
         public string Matricula { get; set; }
         public List<Especialidad> Especialidades { get; set; }
         public List<Turno> TurnosAsignados { get; set; }
+        public List<HorarioAtencion> HorariosAtencion { get; set; }
         public Usuario Usuario { get; set; } // el usuario de la app
 
         public Medico(string nombre, string apellido, DocumentoIdentidad dni,
