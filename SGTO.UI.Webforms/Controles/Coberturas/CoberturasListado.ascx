@@ -9,11 +9,25 @@
         <div class="d-flex gap-2 align-items-center w-50">
             <asp:TextBox ID="txtBuscarCobertura" runat="server" CssClass="form-control" placeholder="Buscar cobertura..."></asp:TextBox>
 
-            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                <asp:ListItem Text="Todos" />
-                <asp:ListItem Text="Activo" />
-                <asp:ListItem Text="Inactivo" />
+            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" AutoPostBack="True" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+                <asp:ListItem Selected="True" Text="Todos" Value="todos" />
+                <asp:ListItem Text="Activo" Value="activo" />
+                <asp:ListItem Text="Inactivo" Value="inactivo" />
             </asp:DropDownList>
+
+            <asp:Button
+                ID="btnBuscar"
+                runat="server"
+                Text="Buscar"
+                CssClass="btn btn-outline-primary"
+                OnClick="btnBuscar_Click" />
+
+            <asp:Button
+                ID="btnLimpiar"
+                runat="server"
+                Text="Limpiar"
+                CssClass="btn btn-outline-secondary"
+                OnClick="btnLimpiar_Click" />
         </div>
 
         <asp:Button ID="btnNuevaCobertura" runat="server" Text="+ Nueva Cobertura"
@@ -40,7 +54,7 @@
                 <%--columna estado--%>
                 <asp:TemplateField HeaderText="Estado">
                     <ItemTemplate>
-                        <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                        <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -48,6 +62,20 @@
                 <%--columna acciones--%>
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
+
+                        <%-- se cargan la lista de nombres en el atrbuto data para poder acceder a los planes actuales
+                        sin necesidad de recargar porque la fila seleccionada ya tiene los datos en el DTO
+                        --%>
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary btn-sm me-1"
+                            data-nombre='<%# Eval("Nombre") %>'
+                            data-descripcion='<%# Eval("Descripcion") %>'
+                            data-planes='<%# string.Join("||", ((SGTO.Negocio.DTOs.CoberturaDto)Container.DataItem).NombrePlanes ?? new List<string>()) %>'
+                            onclick="abrirModal(this)">
+                            <i class="bi bi-link me-1"></i>Ver Planes
+                        </button>
+
                         <asp:LinkButton ID="btnEditar"
                             runat="server"
                             ToolTip="Editar"
@@ -55,13 +83,6 @@
                             CommandName="Editar"
                             CommandArgument='<%# Eval("IdCobertura") %>'>
                              <i class="bi bi-pencil"></i>
-                        </asp:LinkButton>
-
-                        <asp:LinkButton ID="btnVerPlanes" runat="server"
-                            ToolTip="Ver Planes"
-                            CommandName="VerPlanes"
-                            CommandArgument='<%# Eval("IdCobertura") %>'>
-                         <i class="bi bi-link me-1"></i>Ver Planes
                         </asp:LinkButton>
 
                         <asp:LinkButton ID="btnEliminar" runat="server" ToolTip="Eliminar"
@@ -84,5 +105,67 @@
         </asp:GridView>
     </div>
 
+    <%--Modal planes--%>
+    <div class="modal" tabindex="-1" id="modalPlanes" aria-labelledby="modalPlanesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex flex-column">
+                        <p id="modalTitulo" class="modal-title mb-1 fs-5 fw-bold">Planes</p>
+                        <p id="modalDesc" class="text-muted small mb-0"></p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <%--lista para planes--%>
+                    <ul id="listadoPlanes" class="list-group">
+                    </ul>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<script>
+    function abrirModal(btn) {
+        try {
+            const nombre = btn.getAttribute('data-nombre');
+            const desc = btn.getAttribute('data-descripcion');
+            const planesRaw = btn.getAttribute('data-planes') || '';
+            const planes = planesRaw ? planesRaw.split('||') : [];
+
+            document.getElementById('modalTitulo').textContent = nombre || 'Planes';
+            document.getElementById('modalDesc').textContent = desc || '';
+
+            const ul = document.getElementById('listadoPlanes');
+            while (ul.firstChild) ul.removeChild(ul.firstChild);
+
+            if (planes.length > 0 && planes[0] !== '') {
+                for (var i = 0; i < planes.length; i++) {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = planes[i];
+                    ul.appendChild(li);
+                }
+            } else {
+                const li = document.createElement('li');
+                li.className = 'list-group-item text-muted';
+                li.textContent = 'No hay planes registrados.';
+                ul.appendChild(li);
+            }
+
+
+            const modal = new bootstrap.Modal(document.getElementById('modalPlanes'));
+            modal.show();
+
+        } catch (err) {
+            console.error('Error :', err);
+        }
+    }       
+</script>

@@ -19,11 +19,11 @@ namespace SGTO.Negocio.Servicios
             _repositorioCobertura = new CoberturaRepositorio();
         }
 
-        public List<CoberturaDto> Listar()
+        public List<CoberturaDto> Listar(string estado = null)
         {
             try
             {
-                return CoberturaMapper.MapearListaADto(_repositorioCobertura.Listar());
+                return CoberturaMapper.MapearListaADto(_repositorioCobertura.Listar(estado));
             }
             catch (Exception)
             {

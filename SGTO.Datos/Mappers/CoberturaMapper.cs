@@ -16,11 +16,11 @@ namespace SGTO.Datos.Mappers
             // de esa forma solo se busca la primera vez (a través del nombre de la columna) y luego
             // solo usa el índice que hace que sea más rápido.
             int idCobertura = lector.GetInt32(lector.GetOrdinal("IdCobertura"));
-            string nombre = lector.GetString(lector.GetOrdinal("Nombre"));
-            string descripcion = lector.IsDBNull(lector.GetOrdinal("Descripcion"))
+            string nombre = lector.GetString(lector.GetOrdinal("NombreCobertura"));
+            string descripcion = lector.IsDBNull(lector.GetOrdinal("DescripcionCobertura"))
                 ? string.Empty
-                : lector.GetString(lector.GetOrdinal("Descripcion"));
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "Estado");
+                : lector.GetString(lector.GetOrdinal("DescripcionCobertura"));
+            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoCobertura");
 
             Cobertura cobertura = new Cobertura(
                 idCobertura,

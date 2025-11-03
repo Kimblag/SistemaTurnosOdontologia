@@ -20,6 +20,18 @@ namespace SGTO.Dominio.Entidades
             Estado = EstadoEntidad.Activo;
         }
 
+        public Plan(int idPlan, string nombre, string descripcion,
+            decimal porcentajeCobertura, Cobertura cobertura, EstadoEntidad estado)
+        {
+            IdPlan = idPlan;
+            Nombre = nombre;
+            Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
+            PorcentajeCobertura = porcentajeCobertura;
+            Cobertura = cobertura;
+            Estado = estado;
+        }
+
+
         public decimal AplicarCobertura(decimal monto)
         {
             return 0;

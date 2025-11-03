@@ -15,6 +15,10 @@ namespace SGTO.Dominio.Entidades
         public List<Plan> Planes { get; set; }
         public EstadoEntidad Estado { get; set; }
 
+        public Cobertura()
+        {
+
+        }
 
         public Cobertura(string nombre, string descripcion)
         {

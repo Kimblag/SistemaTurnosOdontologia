@@ -8,13 +8,25 @@ namespace SGTO.Negocio.Mappers
     {
         public static CoberturaDto MapearADto(Cobertura cobertura)
         {
+            List<string> nombrePlanes = new List<string>();
+
+            if (cobertura.Planes.Count > 0)
+            {
+                foreach (Plan plan in cobertura.Planes)
+                {
+                    nombrePlanes.Add(plan.Nombre);
+                }
+            }
+
             CoberturaDto coberturaDto = new CoberturaDto()
             {
                 IdCobertura = cobertura.IdCobertura,
                 Nombre = cobertura.Nombre,
                 Descripcion = cobertura.Descripcion,
                 CantidadPlanes = cobertura.Planes.Count,
-                Estado = cobertura.Estado.ToString()
+                Estado = cobertura.Estado.ToString(),
+                NombrePlanes = nombrePlanes
+
             };
 
             return coberturaDto;
