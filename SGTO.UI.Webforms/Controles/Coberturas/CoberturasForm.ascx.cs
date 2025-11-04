@@ -1,5 +1,7 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Mappers;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -94,21 +96,29 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         public void ModificarCobertura()
         {
             int idCobertura = ExtraerIdCobertura();
-
+            string nombre = txtNombreCobertura.Text;
+            string descripcion = txtDescripcionCobertura.Text;
+            string estado = ddlEstado.SelectedValue;
             try
             {
-                CoberturaDto coberturaDto = new CoberturaDto
-                {
-                    IdCobertura = idCobertura,
-                    Nombre = txtNombreCobertura.Text,
-                    Descripcion = txtDescripcionCobertura.Text,
-                    Estado = ddlEstado.SelectedValue
-                };
+
+                CoberturaDto coberturaDto = CoberturaMapper.MapearADto(idCobertura, nombre, descripcion, estado);
                 _servicioCobertura.ModificarCobertura(coberturaDto);
+                Session["CoberturaMensajeTitulo"] = "Cobertura modificada";
+                Session["CoberturaMensajeDesc"] = "La cobertura fue modificada correctamente.";
+                Session["ModalTipo"] = "Resultado";
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
+                Session["CoberturaMensajeDesc"] = ex.Message;
+                Session["ModalTipo"] = "Resultado";
             }
             catch (Exception)
             {
-                throw;
+                Session["CoberturaMensajeTitulo"] = "Error inesperado";
+                Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
+                Session["ModalTipo"] = "Resultado";
             }
         }
 
@@ -119,29 +129,17 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
-            try
+            if (ModoEdicion)
             {
-                if (ModoEdicion)
-                {
-                    ModificarCobertura();
-                    Session["CoberturaMensajeTitulo"] = "Cobertura actualizada";
-                    Session["CoberturaMensajeDesc"] = "La cobertura se ha modificado correctamente.";
-                }
-                else
-                {
-                    CrearCobertura();
-                    Session["CoberturaMensajeTitulo"] = "Cobertura creada";
-                    Session["CoberturaMensajeDesc"] = "La cobertura se ha guardado correctamente.";
-                }
-
-                Response.Redirect(Request.RawUrl, false);
+                ModificarCobertura();
             }
-            catch (Exception)
+            else
             {
-                Session["CoberturaMensajeTitulo"] = "Error";
-                Session["CoberturaMensajeDesc"] = "Ocurrió un error al guardar la cobertura.";
-                Response.Redirect(Request.RawUrl, false);
+                CrearCobertura();
+                Session["CoberturaMensajeTitulo"] = "Cobertura creada";
+                Session["CoberturaMensajeDesc"] = "La cobertura se ha guardado correctamente.";
             }
+            Response.Redirect(Request.RawUrl, false);
         }
 
 

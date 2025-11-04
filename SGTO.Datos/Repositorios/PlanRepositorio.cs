@@ -21,5 +21,19 @@ namespace SGTO.Datos.Repositorios
             datos.EjecutarAccion();
         }
 
+        public void ActualizarEstadoPorCobertura(int idCobertura, char nuevoEstado, ConexionDBFactory datos)
+        {
+            string query = @"UPDATE [Plan]
+                     SET Estado = @Estado
+                     WHERE IdCobertura = @IdCobertura";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Estado", nuevoEstado);
+            datos.EstablecerParametros("@IdCobertura", idCobertura);
+            datos.EjecutarAccion();
+        }
+
+
     }
 }

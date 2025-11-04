@@ -107,35 +107,21 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public bool Modificar(Cobertura cobertura)
+        public void Modificar(Cobertura cobertura, ConexionDBFactory datos)
         {
-            bool resultado = false;
-            using (ConexionDBFactory datos = new ConexionDBFactory())
-            {
-                string query = @"UPDATE Cobertura 
+            string query = @"UPDATE Cobertura 
                                 SET Nombre = @Nombre, 
                                     Descripcion = @Descripcion,
                                     Estado = @Estado
                             WHERE IdCobertura = @IdCobertura";
 
-                try
-                {
-                    datos.LimpiarParametros();
-                    datos.DefinirConsulta(query);
-                    datos.EstablecerParametros("@Nombre", cobertura.Nombre);
-                    datos.EstablecerParametros("@Descripcion", cobertura.Descripcion);
-                    datos.EstablecerParametros("@Estado", cobertura.Estado.ToString().ToUpper().Substring(0, 1));
-                    datos.EstablecerParametros("@IdCobertura", cobertura.IdCobertura);
-
-                    datos.EjecutarAccion();
-                    resultado = true;
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
-            return resultado;
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Nombre", cobertura.Nombre);
+            datos.EstablecerParametros("@Descripcion", cobertura.Descripcion);
+            datos.EstablecerParametros("@Estado", cobertura.Estado.ToString().ToUpper()[0]);
+            datos.EstablecerParametros("@IdCobertura", cobertura.IdCobertura);
+            datos.EjecutarAccion();
         }
 
 

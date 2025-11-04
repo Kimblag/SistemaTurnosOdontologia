@@ -33,6 +33,23 @@ namespace SGTO.Negocio.Mappers
             return coberturaDto;
         }
 
+        public static CoberturaDto MapearADto(int idCobertura, string nombre, string descripcion, string estado)
+        {
+            List<string> planes = new List<string>();
+
+            CoberturaDto coberturaDto = new CoberturaDto()
+            {
+                IdCobertura = idCobertura,
+                Nombre = nombre,
+                Descripcion = descripcion,
+                CantidadPlanes = 0,
+                Estado = estado,
+                NombrePlanes = planes
+
+            };
+            return coberturaDto;
+        }
+
         public static List<CoberturaDto> MapearListaADto(List<Cobertura> coberturas)
         {
             List<CoberturaDto> coberturasDtos = new List<CoberturaDto>();
@@ -56,6 +73,8 @@ namespace SGTO.Negocio.Mappers
 
             return cobertura;
         }
+
+
 
     }
 }

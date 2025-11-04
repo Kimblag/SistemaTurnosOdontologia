@@ -160,10 +160,28 @@
 </div>
 
 
+<%-- modal resultado de la ejecucion del servicio --%>
+<div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalResultadoTitulo" class="modal-title">Acción completada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalResultadoDesc"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnModalCerrar" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <script>
     function abrirModalConfirmacion(titulo, descripcion) {
-        console.log("HOLA")
         try {
             document.getElementById('modalTitulo').textContent = titulo || 'Acción completada';
             document.getElementById('modalDesc').textContent = descripcion || '';
@@ -174,5 +192,11 @@
         } catch (err) {
             console.error('Error :', err);
         }
+    }
+
+    function abrirModalResultado(titulo, descripcion) {
+        document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
+        document.getElementById('modalResultadoDesc').textContent = descripcion || '';
+        new bootstrap.Modal(document.getElementById('modalResultado')).show();
     }
 </script>

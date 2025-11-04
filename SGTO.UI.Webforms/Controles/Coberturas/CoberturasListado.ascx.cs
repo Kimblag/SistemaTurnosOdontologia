@@ -79,16 +79,19 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                     _servicioCobertura.DarDeBajaCobertura(idCobertura);
                     Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
                     Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
+                    Session["ModalTipo"] = "Resultado";
                 }
                 catch (ExcepcionReglaNegocio ex)
                 {
                     Session["CoberturaMensajeTitulo"] = "Operación no permitida";
                     Session["CoberturaMensajeDesc"] = ex.Message;
+                    Session["ModalTipo"] = "Resultado";
                 }
                 catch (Exception)
                 {
                     Session["CoberturaMensajeTitulo"] = "Error inesperado";
                     Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
+                    Session["ModalTipo"] = "Resultado";
                 }
 
                 Response.Redirect(Request.RawUrl, false);

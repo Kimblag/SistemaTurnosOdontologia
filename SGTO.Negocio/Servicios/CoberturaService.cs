@@ -52,14 +52,36 @@ namespace SGTO.Negocio.Servicios
 
         public bool ModificarCobertura(CoberturaDto coberturaDto)
         {
-            try
+            Cobertura cobertura = CoberturaMapper.MapearAEntidad(coberturaDto);
+
+            // validar qu eno tenga turnos activos
+            if (_servicioTurno.TieneTurnosActivosPorCobertura(coberturaDto.IdCobertura))
             {
-                Cobertura cobertura = CoberturaMapper.MapearAEntidad(coberturaDto);
-                return _repositorioCobertura.Modificar(cobertura);
+                throw new ExcepcionReglaNegocio("No se puede dar de baja la cobertura porque tiene turnos activos.");
             }
-            catch (Exception)
+
+            char nuevoEstado = coberturaDto.Estado.ToUpper()[0];
+            using (ConexionDBFactory datos = new ConexionDBFactory())
             {
-                throw;
+                try
+                {
+                    datos.IniciarTransaccion();
+                    _repositorioCobertura.Modificar(cobertura, datos);
+                    _repositorioPlan.ActualizarEstadoPorCobertura(cobertura.IdCobertura, nuevoEstado, datos);
+
+                    datos.ConfirmarTransaccion();
+                    return true;
+                }
+                catch (ExcepcionReglaNegocio)
+                {
+                    datos.RollbackTransaccion();
+                    throw;
+                }
+                catch (Exception)
+                {
+                    datos.RollbackTransaccion();
+                    throw new Exception("Error al intentar dar de baja la cobertura.");
+                }
             }
         }
 
@@ -75,7 +97,6 @@ namespace SGTO.Negocio.Servicios
             {
                 try
                 {
-
                     datos.IniciarTransaccion();
 
                     _repositorioCobertura.DarDeBaja(idCobertura, 'I', datos);

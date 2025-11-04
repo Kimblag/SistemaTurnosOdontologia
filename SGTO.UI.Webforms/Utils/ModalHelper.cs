@@ -35,9 +35,18 @@ namespace SGTO.UI.Webforms.Utils
             descripcion = descripcion.Replace("'", "\\'");
 
             string redirect = !string.IsNullOrEmpty(redirectUrl)
-                ? $"document.getElementById('btnModalOk').addEventListener('click', function() " +
-                $"{{ window.location.href = '{redirectUrl}'; }});"
+                ? $@"
+                    ['btnModalOk', 'btnModalCerrar'].forEach(function(id) {{
+                        var btn = document.getElementById(id);
+                        if (btn) {{
+                            btn.addEventListener('click', function() {{
+                                window.location.href = '{redirectUrl}';
+                            }});
+                        }}
+                    }});
+                    "
                 : string.Empty;
+
 
             string script = $@"
                 document.addEventListener('DOMContentLoaded', function() {{
