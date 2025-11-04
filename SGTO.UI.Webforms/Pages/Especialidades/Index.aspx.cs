@@ -1,5 +1,5 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
+﻿using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Servicios; 
 using SGTO.UI.Webforms.MasterPages;
 using System;
 using System.Collections.Generic;
@@ -11,91 +11,95 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
 {
     public partial class Especialidades : System.Web.UI.Page
     {
+        
+        private readonly EspecialidadService _especialidadService;
+
+        public Especialidades()
+        {
+            
+            _especialidadService = new EspecialidadService();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
-                master.EstablecerOpcionMenuActiva("Especialidades");
+                master.EstablecerOpcionMenuActiva("Especialidades"); 
                 master.EstablecerTituloSeccion(this.Page.Title);
             }
-
             if (!IsPostBack)
-                CargarEspecialidades();
+            {
+                CargarEspecialidades(); // 4. Llamar al método de carga
+            }
         }
 
         private void CargarEspecialidades()
         {
-           
-            var listaEspecialidades = new List<Especialidad>
+            try
             {
-                new Especialidad("Ortodoncia", "Corrección de dientes y mandíbulas.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Endodoncia", "Tratamiento de conducto radicular.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Implantología", "Colocación de implantes dentales.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Periodoncia", "Tratamiento de las encías y tejidos que rodean los dientes.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Odontopediatría", "Atención dental especializada en niños.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Cirugía Bucal", "Extracción de piezas dentarias y cirugía de tejidos orales.") { Estado = EstadoEntidad.Activo },
-                new Especialidad("Estética Dental", "Blanqueamientos, carillas y tratamientos estéticos del diente.") { Estado = EstadoEntidad.Inactivo },
-                new Especialidad("Odontología General", "Consultas, limpiezas y tratamientos preventivos.") { Estado = EstadoEntidad.Activo }
+                
+                List<EspecialidadDto> lista = _especialidadService.ObtenerTodasDto();
 
-            };
-
-
-            gvEspecialidades.DataSource = listaEspecialidades;
-            gvEspecialidades.DataBind();
-        }
-
-        protected void btnNuevaEspecialidad_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/Pages/Especialidades/Nuevo.aspx", false);
-        }
-
-        protected void gvEspecialidades_PageIndexChanging(object sender, GridViewPageEventArgs e){}
-
-        protected void gvEspecialidades_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "Editar")
-            {
-                int idEspecialidad = Convert.ToInt32(e.CommandArgument);
-                Response.Redirect($"~/Pages/Especialidades/Editar?id-medico={idEspecialidad}", false);
+                
+                gvEspecialidades.DataSource = lista;
+                gvEspecialidades.DataBind();
             }
-            else if (e.CommandName == "Ver")
+            catch (Exception ex)
             {
-                int idEspecialidad = Convert.ToInt32(e.CommandArgument);
-                //Response.Redirect($"~/Pages/Especialidades/Detalle?id-especialidad={idEspecialidad}", false);
+                
+                System.Diagnostics.Debug.WriteLine($"Error al cargar especialidades: {ex.Message}");
             }
-
         }
 
         protected void gvEspecialidades_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-
-                var especialidad = (Especialidad)e.Row.DataItem;
+                
+                var especialidadDto = (EspecialidadDto)e.Row.DataItem;
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
 
-                if (lblEstado != null && especialidad != null)
+                if (lblEstado != null)
                 {
-                    string cssClass = "badge "; // clase base
+                    string cssClass = "badge ";
 
-
-                    switch (especialidad.Estado)
+                    
+                    if (especialidadDto.Estado == "Activo")
                     {
-                        case EstadoEntidad.Activo:
-                            cssClass += "badge-primary";
-                            break;
-                        case EstadoEntidad.Inactivo:
-                            cssClass += "badge-secondary";
-                            break;
-                        default:
-                            cssClass += "badge-secondary";
-                            break;
+                        cssClass += "badge-primary";
+                    }
+                    else
+                    {
+                        cssClass += "badge-secondary";
                     }
                     lblEstado.Attributes["class"] = cssClass;
-                    lblEstado.InnerText = especialidad.Estado.ToString(); // Mostrar el texto del estado
                 }
             }
+        }
+
+        protected void gvEspecialidades_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvEspecialidades.PageIndex = e.NewPageIndex;
+            CargarEspecialidades();
+        }
+
+        protected void gvEspecialidades_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            int idEspecialidad = Convert.ToInt32(e.CommandArgument);
+            if (e.CommandName == "Editar")
+            {
+                Response.Redirect($"~/Pages/Especialidades/Editar?id-especialidad={idEspecialidad}", false);
+            }
+            else if (e.CommandName == "Ver")
+            {
+                
+                // Response.Redirect($"~/Pages/Especialidades/Detalle?id-especialidad={idEspecialidad}", false);
+            }
+        }
+
+        protected void btnNuevaEspecialidad_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Especialidades/Nuevo", false);
         }
     }
 }
