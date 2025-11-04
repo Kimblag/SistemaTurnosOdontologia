@@ -1,6 +1,8 @@
-﻿using SGTO.Datos.Repositorios;
+﻿using SGTO.Datos.Infraestructura;
+using SGTO.Datos.Repositorios;
 using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,15 @@ namespace SGTO.Negocio.Servicios
     public class CoberturaService
     {
         private readonly CoberturaRepositorio _repositorioCobertura;
+        private readonly PlanRepositorio _repositorioPlan;
+        private readonly TurnoService _servicioTurno;
+
 
         public CoberturaService()
         {
             _repositorioCobertura = new CoberturaRepositorio();
+            _repositorioPlan = new PlanRepositorio();
+            _servicioTurno = new TurnoService();
         }
 
         public List<CoberturaDto> Listar(string estado = null)
@@ -30,5 +37,66 @@ namespace SGTO.Negocio.Servicios
                 throw;
             }
         }
+
+        public CoberturaDto ObtenerCoberturaPorId(int idCobertura)
+        {
+            try
+            {
+                return CoberturaMapper.MapearADto(_repositorioCobertura.ObtenerCoberturaPorId(idCobertura));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool ModificarCobertura(CoberturaDto coberturaDto)
+        {
+            try
+            {
+                Cobertura cobertura = CoberturaMapper.MapearAEntidad(coberturaDto);
+                return _repositorioCobertura.Modificar(cobertura);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool DarDeBajaCobertura(int idCobertura)
+        {
+            if (_servicioTurno.TieneTurnosActivosPorCobertura(idCobertura))
+            {
+                // si tiene turnos activos no podemos dar de baja la cobertura.
+                throw new ExcepcionReglaNegocio("No se puede dar de baja la cobertura porque tiene turnos activos.");
+            }
+            // inicio de la conexion desde acá para hacer una unidad de trabajo con transacciones
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+
+                    datos.IniciarTransaccion();
+
+                    _repositorioCobertura.DarDeBaja(idCobertura, 'I', datos);
+                    _repositorioPlan.DarDeBaja(idCobertura, 'I', datos);
+
+                    datos.ConfirmarTransaccion();
+                    return true;
+                }
+                catch (ExcepcionReglaNegocio)
+                {
+                    datos.RollbackTransaccion();
+                    throw;
+                }
+                catch (Exception)
+                {
+                    datos.RollbackTransaccion();
+                    throw new Exception("Error al intentar dar de baja la cobertura.");
+                }
+            }
+        }
+
+
     }
 }

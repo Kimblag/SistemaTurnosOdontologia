@@ -593,6 +593,7 @@
     <Compile Include="MasterPages\ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ModalHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,12 +1,29 @@
-﻿using System;
+﻿using SGTO.Datos.Repositorios;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SGTO.Negocio.Servicios
 {
-    internal class TurnoService
+    public class TurnoService
     {
+        private readonly TurnoRepositorio _turnoRepositorio;
+
+        public TurnoService()
+        {
+            _turnoRepositorio = new TurnoRepositorio();
+        }
+
+        public bool TieneTurnosActivosPorCobertura(int idCobertura)
+        {
+            try
+            {
+                return _turnoRepositorio.ExisteTurnoActivoPorCobertura(idCobertura);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

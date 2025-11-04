@@ -1,14 +1,16 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
+using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Servicios;
+using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using SGTO.Negocio.Servicios;
-using SGTO.Negocio.DTOs;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace SGTO.UI.Webforms.Controles.Coberturas
 {
@@ -29,6 +31,8 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                     ddlEstado.SelectedValue = estadoFiltroGuardado;
 
                 CargarCoberturas(estadoFiltroGuardado);
+
+                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc");
             }
         }
 
@@ -70,7 +74,24 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             }
             else if (e.CommandName == "Eliminar")
             {
+                try
+                {
+                    _servicioCobertura.DarDeBajaCobertura(idCobertura);
+                    Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
+                    Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
+                }
+                catch (ExcepcionReglaNegocio ex)
+                {
+                    Session["CoberturaMensajeTitulo"] = "Operación no permitida";
+                    Session["CoberturaMensajeDesc"] = ex.Message;
+                }
+                catch (Exception)
+                {
+                    Session["CoberturaMensajeTitulo"] = "Error inesperado";
+                    Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
+                }
 
+                Response.Redirect(Request.RawUrl, false);
             }
         }
 
@@ -143,7 +164,32 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             gvCoberturas.DataBind();
         }
 
+        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
+        {
+            int idCobertura = Convert.ToInt32(hdnIdCoberturaEliminar.Value);
 
+            try
+            {
+               bool resultado = _servicioCobertura.DarDeBajaCobertura(idCobertura);
+                Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
+                Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
+                Session["ModalTipo"] = "Resultado";
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
+                Session["CoberturaMensajeDesc"] = ex.Message;
+                Session["ModalTipo"] = "Resultado";
+            }
+            catch (Exception)
+            {
+                Session["CoberturaMensajeTitulo"] = "Error inesperado";
+                Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
+                Session["ModalTipo"] = "Resultado";
+            }
 
+            Response.Redirect(Request.RawUrl, false);
+
+        }
     }
 }

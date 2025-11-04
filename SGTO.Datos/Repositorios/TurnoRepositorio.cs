@@ -1,12 +1,45 @@
-﻿using System;
+﻿using SGTO.Datos.Infraestructura;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
+
 
 namespace SGTO.Datos.Repositorios
 {
-    internal class TurnoRepositorio
+    public class TurnoRepositorio
     {
+        public bool ExisteTurnoActivoPorCobertura(int idCobertura)
+        {
+            bool resultado = false;
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT COUNT(*)
+                                FROM Turno
+                            WHERE IdCobertura = @IdCobertura
+                                    AND Estado NOT IN ('C', 'Z', 'X')";
+                datos.EstablecerParametros("@IdCobertura", idCobertura);
+                datos.DefinirConsulta(query);
+
+                using (SqlDataReader lector = datos.EjecutarConsulta())
+                {
+
+                    try
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return resultado;
+        }
     }
 }

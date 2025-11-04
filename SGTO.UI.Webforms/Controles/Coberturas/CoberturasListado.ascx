@@ -72,7 +72,7 @@
                             data-nombre='<%# Eval("Nombre") %>'
                             data-descripcion='<%# Eval("Descripcion") %>'
                             data-planes='<%# string.Join("||", ((SGTO.Negocio.DTOs.CoberturaDto)Container.DataItem).NombrePlanes ?? new List<string>()) %>'
-                            onclick="abrirModal(this)">
+                            onclick="abrirModalPlanes(this)">
                             <i class="bi bi-link me-1"></i>Ver Planes
                         </button>
 
@@ -85,11 +85,11 @@
                              <i class="bi bi-pencil"></i>
                         </asp:LinkButton>
 
-                        <asp:LinkButton ID="btnEliminar" runat="server" ToolTip="Eliminar"
-                            CssClass="btn btn-outline-danger btn-sm me-1"
-                            CommandName="Eliminar" CommandArgument='<%# Eval("IdCobertura") %>'>
-                             <i class="bi bi-x"></i>
-                        </asp:LinkButton>
+                        <button type="button"
+                            class="btn btn-outline-danger btn-sm me-1"
+                            onclick="abrirModalConfirmacion(<%# Eval("IdCobertura") %>)">
+                            <i class="bi bi-x"></i>
+                        </button>
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -130,10 +130,55 @@
         </div>
     </div>
 
+
+    <%-- modal de confirmacion --%>
+    <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar baja</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Está seguro de que desea dar de baja esta cobertura?</p>
+                </div>
+                <div class="modal-footer">
+                    <asp:HiddenField ID="hdnIdCoberturaEliminar" runat="server" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <asp:Button ID="btnConfirmarEliminar" runat="server"
+                        CssClass="btn btn-danger"
+                        Text="Confirmar"
+                        OnClick="btnConfirmarEliminar_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <%-- modal resultado de la ejecucion del servicio --%>
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Acción completada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultadoDesc"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 
 <script>
-    function abrirModal(btn) {
+    function abrirModalPlanes(btn) {
         try {
             const nombre = btn.getAttribute('data-nombre');
             const desc = btn.getAttribute('data-descripcion');
@@ -147,12 +192,12 @@
             while (ul.firstChild) ul.removeChild(ul.firstChild);
 
             if (planes.length > 0 && planes[0] !== '') {
-                for (var i = 0; i < planes.length; i++) {
+                planes.forEach(p => {
                     const li = document.createElement('li');
                     li.className = 'list-group-item';
-                    li.textContent = planes[i];
+                    li.textContent = p;
                     ul.appendChild(li);
-                }
+                });
             } else {
                 const li = document.createElement('li');
                 li.className = 'list-group-item text-muted';
@@ -160,12 +205,22 @@
                 ul.appendChild(li);
             }
 
-
             const modal = new bootstrap.Modal(document.getElementById('modalPlanes'));
             modal.show();
-
         } catch (err) {
             console.error('Error :', err);
         }
-    }       
+    }
+
+    function abrirModalConfirmacion(idCobertura) {
+        document.getElementById('<%= hdnIdCoberturaEliminar.ClientID %>').value = idCobertura;
+        new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
+    }
+
+
+    function abrirModalResultado(titulo, descripcion) {
+        document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
+        document.getElementById('modalResultadoDesc').textContent = descripcion || '';
+        new bootstrap.Modal(document.getElementById('modalResultado')).show();
+    }
 </script>

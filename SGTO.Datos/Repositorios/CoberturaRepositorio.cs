@@ -17,9 +17,7 @@ namespace SGTO.Datos.Repositorios
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
-                try
-                {
-                    string query = @"SELECT C.IdCobertura, 
+                string query = @"SELECT C.IdCobertura, 
 	                                       C.Nombre AS NombreCobertura, 
 	                                       C.Descripcion AS DescripcionCobertura,
 	                                       C.Estado AS EstadoCobertura,
@@ -30,12 +28,13 @@ namespace SGTO.Datos.Repositorios
 	                                       P.Estado AS EstadoPlan
 	                                    FROM Cobertura C
 	                                    LEFT JOIN [Plan] P ON C.IdCobertura = P.IdCobertura";
-                    
-                    if (estado != null)
-                    {
-                        query += $" WHERE LOWER(C.Estado) = LOWER('{estado.Substring(0, 1)}')";
-                    }
+                if (estado != null)
+                {
+                    query += $" WHERE LOWER(C.Estado) = LOWER('{estado.Substring(0, 1)}')";
+                }
 
+                try
+                {
                     datos.DefinirConsulta(query);
 
                     // usamos using para aplicar buenas prácticas y evitar conexiones abiertas 
@@ -72,5 +71,87 @@ namespace SGTO.Datos.Repositorios
                 }
             }
         }
+
+
+        public Cobertura ObtenerCoberturaPorId(int idCobertura)
+        {
+            Cobertura cobertura = null;
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT C.IdCobertura,
+                                    C.Nombre AS NombreCobertura,
+                                    C.Descripcion AS DescripcionCobertura,
+                                    C.Estado AS EstadoCobertura
+                                FROM Cobertura C
+                                WHERE C.IdCobertura = @IdCobertura";
+                datos.EstablecerParametros("@IdCobertura", idCobertura);
+                datos.DefinirConsulta(query);
+
+                using (SqlDataReader lector = datos.EjecutarConsulta())
+                {
+                    try
+                    {
+                        if (lector.Read())
+                        {
+                            cobertura = CoberturaMapper.MapearAEntidad(lector);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return cobertura;
+        }
+
+
+        public bool Modificar(Cobertura cobertura)
+        {
+            bool resultado = false;
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"UPDATE Cobertura 
+                                SET Nombre = @Nombre, 
+                                    Descripcion = @Descripcion,
+                                    Estado = @Estado
+                            WHERE IdCobertura = @IdCobertura";
+
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", cobertura.Nombre);
+                    datos.EstablecerParametros("@Descripcion", cobertura.Descripcion);
+                    datos.EstablecerParametros("@Estado", cobertura.Estado.ToString().ToUpper().Substring(0, 1));
+                    datos.EstablecerParametros("@IdCobertura", cobertura.IdCobertura);
+
+                    datos.EjecutarAccion();
+                    resultado = true;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return resultado;
+        }
+
+
+        public void DarDeBaja(int idCobertura, char estado, ConexionDBFactory datos)
+        {
+            string query = @"UPDATE Cobertura 
+                                    SET Estado = @Estado
+                                WHERE IdCobertura = @IdCobertura";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Estado", estado);
+            datos.EstablecerParametros("@IdCobertura", idCobertura);
+            datos.EjecutarAccion();
+        }
+
+
     }
 }

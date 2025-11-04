@@ -36,8 +36,8 @@
                         CssClass="form-select"
                         ID="ddlEstado"
                         runat="server">
-                        <asp:ListItem Selected="True">Activo</asp:ListItem>
-                        <asp:ListItem>Inactivo</asp:ListItem>
+                        <asp:ListItem Selected="True" Value="activo">Activo</asp:ListItem>
+                        <asp:ListItem Value="inactivo">Inactivo</asp:ListItem>
                     </asp:DropDownList>
                 </div>
 
@@ -131,8 +131,48 @@
             <div class="col-6 col-sm-4 col-md-2 d-grid">
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
-                    CssClass="btn btn-primary btn-sm" />
+                    CssClass="btn btn-primary btn-sm"
+                    OnClick="btnGuardar_Click" />
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+<%--modal confirmacion--%>
+<div class="modal" tabindex="-1" id="modalConfirmacion" aria-labelledby="modalConfirmacion" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalTitulo" class="modal-title">Modal título</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalDesc">Mensaje confirmación</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalOk">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function abrirModalConfirmacion(titulo, descripcion) {
+        console.log("HOLA")
+        try {
+            document.getElementById('modalTitulo').textContent = titulo || 'Acción completada';
+            document.getElementById('modalDesc').textContent = descripcion || '';
+
+            const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+            modal.show();
+
+        } catch (err) {
+            console.error('Error :', err);
+        }
+    }
+</script>

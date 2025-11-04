@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Datos.Mappers
 {
@@ -12,8 +9,15 @@ namespace SGTO.Datos.Mappers
     {
         public static EstadoEntidad MapearEstadoEntidad(SqlDataReader lector, string nombreColumna)
         {
+            // metodo para mapear el estado que viene desde la base de datos en forma 'A' o 'I'
             char valor = lector.GetString(lector.GetOrdinal(nombreColumna))[0];
             return valor == 'A' ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
+        }
+
+        public static EstadoEntidad MapearEstadoEntidad(string estado)
+        {
+            // metodo para mapear el estado desde un DTO cuyo valor es un string: "activo", "inactivo"
+            return estado.ToLower() == "activo" ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
         }
 
         public static char ObtenerChar(EstadoEntidad estado)

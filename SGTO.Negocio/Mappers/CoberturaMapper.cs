@@ -1,6 +1,7 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
 using System.Collections.Generic;
+using SGTO.Datos.Mappers;
 
 namespace SGTO.Negocio.Mappers
 {
@@ -41,5 +42,20 @@ namespace SGTO.Negocio.Mappers
             }
             return coberturasDtos;
         }
+
+        public static Cobertura MapearAEntidad(CoberturaDto coberturaDto)
+        {
+            Cobertura cobertura = new Cobertura
+            {
+                IdCobertura = coberturaDto.IdCobertura,
+                Nombre = coberturaDto.Nombre,
+                Descripcion = coberturaDto.Descripcion,
+                Planes = new List<Plan>(),
+                Estado = EnumeracionMapper.MapearEstadoEntidad(coberturaDto.Estado)
+            };
+
+            return cobertura;
+        }
+
     }
 }
