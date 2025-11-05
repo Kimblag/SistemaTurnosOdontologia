@@ -18,7 +18,7 @@
             <asp:Button
                 ID="btnBuscar"
                 runat="server"
-                Text="Buscar"
+                Text="Aplicar Filtro"
                 CssClass="btn btn-outline-primary"
                 OnClick="btnBuscar_Click" />
 
@@ -43,10 +43,13 @@
             OnRowCommand="gvCoberturas_RowCommand"
             DataKeyNames="IdCobertura"
             CssClass="table gridview mb-0"
-            AllowPaging="True" PageSize="5">
+            AllowPaging="True" PageSize="7"
+            AllowSorting="true"
+            OnSorting="gvCoberturas_Sorting"
+            HeaderStyle-CssClass="gv-header">
 
             <Columns>
-                <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
+                <asp:BoundField DataField="Nombre" HeaderText="Nombre" SortExpression="Nombre" />
                 <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                 <asp:BoundField DataField="CantidadPlanes" HeaderText="Cantidad de Planes" />
 

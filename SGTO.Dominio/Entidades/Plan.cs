@@ -11,6 +11,12 @@ namespace SGTO.Dominio.Entidades
         public Cobertura Cobertura { get; set; }
         public EstadoEntidad Estado { get; set; }
 
+        public Plan()
+        {
+
+        }
+
+
         public Plan(string nombre, decimal porcentajeCobertura, Cobertura cobertura, string descripcion)
         {
             Nombre = nombre;

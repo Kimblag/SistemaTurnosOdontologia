@@ -36,7 +36,7 @@
             OnRowCommand="gvPlanes_RowCommand"
             DataKeyNames="IdPlan"
             CssClass="table gridview mb-0"
-            AllowPaging="True" PageSize="5">
+            AllowPaging="True" PageSize="7">
 
             <Columns>
                 <asp:TemplateField HeaderText="Cobertura">

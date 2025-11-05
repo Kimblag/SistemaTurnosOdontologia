@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.SessionState;
 using System.Web.UI;
 
@@ -11,28 +8,33 @@ namespace SGTO.UI.Webforms.Utils
     // ya que estaba repitiendo lo mismo en coberturas form y listado. Ahora se podrá reutilizar en cualquier lugar.
     public static class ModalHelper
     {
-        public static void MostrarModalDesdeSession(Page page, string sessionTituloKey,
-            string sessionDescKey,
-            string redirectUrl = null)
+        public static void MostrarModalDesdeSession(
+                   Page page,
+                   string sessionTituloKey,
+                   string sessionDescKey,
+                   string redirectUrl = null,
+                   string funcionJsPersonalizada = null)
         {
-            // validar primero porque si es null no se puede avanzar (no debería ser null, pero agrego por si acaso)
             if (page == null) throw new ArgumentNullException(nameof(page));
 
-            // aca se obtiene el objeto Session que maneja la página actual en ese momento.
             HttpSessionState session = page.Session;
             if (session[sessionTituloKey] == null)
                 return;
 
-            string titulo = session[sessionTituloKey].ToString();
-            string descripcion = session[sessionDescKey] != null
-                ? session[sessionDescKey].ToString()
-                : string.Empty;
-            string tipoModal = session["ModalTipo"] != null ? session["ModalTipo"].ToString().ToLower() : "confirmacion";
-            string funcionJs = tipoModal == "resultado" ? "abrirModalResultado" : "abrirModalConfirmacion";
+            string titulo = session[sessionTituloKey]?.ToString() ?? string.Empty;
+            string descripcion = session[sessionDescKey]?.ToString() ?? string.Empty;
 
-            // se reemplazan posibles comillas, ya que sino se rompe el script y es un error comprobado que puede ocurrir
+            string tipoModal = session["ModalTipo"]?.ToString()?.ToLower() ?? "confirmacion";
+
+
+            string funcionJs = !string.IsNullOrEmpty(funcionJsPersonalizada)
+                ? funcionJsPersonalizada
+                : (tipoModal == "resultado" ? "abrirModalResultado" : "abrirModalConfirmacion");
+
+
             titulo = titulo.Replace("'", "\\'");
             descripcion = descripcion.Replace("'", "\\'");
+
 
             string redirect = !string.IsNullOrEmpty(redirectUrl)
                 ? $@"
@@ -47,12 +49,16 @@ namespace SGTO.UI.Webforms.Utils
                     "
                 : string.Empty;
 
-
+            // script final
             string script = $@"
                 document.addEventListener('DOMContentLoaded', function() {{
                     if (typeof bootstrap !== 'undefined') {{
-                        {funcionJs}('{titulo}', '{descripcion}');
-                        {redirect}
+                        if (typeof {funcionJs} === 'function') {{
+                            {funcionJs}('{titulo}', '{descripcion}');
+                            {redirect}
+                        }} else {{
+                            console.warn('No se encontró la función JS {funcionJs}');
+                        }}
                     }} else {{
                         console.error('Bootstrap aún no está disponible.');
                     }}
@@ -61,7 +67,7 @@ namespace SGTO.UI.Webforms.Utils
 
             ScriptManager.RegisterStartupScript(page, page.GetType(), "MostrarModal", script, true);
 
-            // se limpia la sesión para que no queden residuos luego de mostrar el modal.
+            // limpiar sesión
             session[sessionTituloKey] = null;
             session[sessionDescKey] = null;
             session["ModalTipo"] = null;

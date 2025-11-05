@@ -1,6 +1,7 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -27,7 +28,8 @@ namespace SGTO.Datos.Repositorios
 	                                       P.PorcentajeCobertura,
 	                                       P.Estado AS EstadoPlan
 	                                    FROM Cobertura C
-	                                    LEFT JOIN [Plan] P ON C.IdCobertura = P.IdCobertura";
+	                                    LEFT JOIN [Plan] P ON C.IdCobertura = P.IdCobertura
+                                        ORDER BY NombreCobertura ASC";
                 if (estado != null)
                 {
                     query += $" WHERE LOWER(C.Estado) = LOWER('{estado.Substring(0, 1)}')";
@@ -72,8 +74,7 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
-
-        public Cobertura ObtenerCoberturaPorId(int idCobertura)
+        public Cobertura ObtenerPorId(int idCobertura)
         {
             Cobertura cobertura = null;
 
@@ -106,7 +107,6 @@ namespace SGTO.Datos.Repositorios
             return cobertura;
         }
 
-
         public void Modificar(Cobertura cobertura, ConexionDBFactory datos)
         {
             string query = @"UPDATE Cobertura 
@@ -119,11 +119,10 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@Nombre", cobertura.Nombre);
             datos.EstablecerParametros("@Descripcion", cobertura.Descripcion);
-            datos.EstablecerParametros("@Estado", cobertura.Estado.ToString().ToUpper()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(cobertura.Estado));
             datos.EstablecerParametros("@IdCobertura", cobertura.IdCobertura);
             datos.EjecutarAccion();
         }
-
 
         public void DarDeBaja(int idCobertura, char estado, ConexionDBFactory datos)
         {
@@ -136,6 +135,88 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Estado", estado);
             datos.EstablecerParametros("@IdCobertura", idCobertura);
             datos.EjecutarAccion();
+        }
+
+
+        public bool ExisteCobertura(string nombreCobertura)
+        {
+            bool resultado = false;
+            string query = @"SELECT COUNT(Nombre)
+                                FROM Cobertura
+                            WHERE UPPER(Nombre) = @Nombre";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", nombreCobertura.ToUpper());
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public int Crear(Cobertura nuevaCobertura, ConexionDBFactory datos)
+        {
+            string query = @"INSERT INTO Cobertura (Nombre, Descripcion, Estado)
+                                OUTPUT INSERTED.IdCobertura
+                            VALUES (@Nombre, @Descripcion, @Estado)";
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Nombre", nuevaCobertura.Nombre);
+            datos.EstablecerParametros("@Descripcion", nuevaCobertura.Descripcion);
+            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevaCobertura.Estado));
+            int idNuevaCobertura = datos.EjecutarAccionEscalar();
+
+            return idNuevaCobertura;
+        }
+
+
+        public bool EstaDadoDeBaja(int idCobertura)
+        {
+            bool estaDadoDeBaja = false;
+            string query = @"SELECT Estado
+                                FROM Cobertura
+                            WHERE IdCobertura = @IdCobertura";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdCobertura", idCobertura);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            if (!lector.IsDBNull(lector.GetOrdinal("Estado")))
+                            {
+                                EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "Estado");
+                                estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
+                            }
+                        }
+                    }
+                    return estaDadoDeBaja;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
 

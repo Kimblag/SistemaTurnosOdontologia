@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SGTO.Negocio.DTOs
+﻿namespace SGTO.Negocio.DTOs
 {
-    internal class PlanDto
+    public class PlanDto
     {
+        public int IdPlan { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; } = string.Empty;
+        public decimal PorcentajeCobertura { get; set; }
+        public string Estado { get; set; }
     }
 }

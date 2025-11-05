@@ -18,12 +18,12 @@ namespace SGTO.Datos.Repositorios
                                 FROM Turno
                             WHERE IdCobertura = @IdCobertura
                                     AND Estado NOT IN ('C', 'Z', 'X')";
-                datos.EstablecerParametros("@IdCobertura", idCobertura);
+                datos.LimpiarParametros();
                 datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdCobertura", idCobertura);
 
                 using (SqlDataReader lector = datos.EjecutarConsulta())
                 {
-
                     try
                     {
                         if (lector.Read())

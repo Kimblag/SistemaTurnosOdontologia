@@ -13,8 +13,20 @@
                         ID="txtNombreCobertura"
                         runat="server"
                         placeholder="Ingrese el nombre..."
-                        CssClass="form-control">
+                        CssClass="form-control" MaxLength="80">
                     </asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvNombre" runat="server"
+                        ControlToValidate="txtNombreCobertura"
+                        ErrorMessage="El nombre es obligatorio."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="CoberturaGroup" />
+                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server"
+                        ControlToValidate="txtNombreCobertura"
+                        ValidationExpression="^[A-Za-z0-9\s]{3,80}$"
+                        ErrorMessage="El nombre debe tener entre 3 y 80 caracteres y solo contener letras, números o espacios."
+                        CssClass="text-danger small"
+                        Display="Dynamic" ValidationGroup="CoberturaGroup" />
                 </div>
 
                 <%-- Descripción --%>
@@ -25,20 +37,17 @@
                         runat="server"
                         placeholder="Ingrese la descripción..."
                         TextMode="MultiLine"
-                        CssClass="form-control descripcion-cobertura">
+                        CssClass="form-control descripcion-cobertura" MaxLength="200">
                     </asp:TextBox>
+
                 </div>
 
                 <%-- Estado --%>
-                <div class="col-12">
-                    <label for="ddlEstado" class="form-label">Estado</label>
-                    <asp:DropDownList
-                        CssClass="form-select"
-                        ID="ddlEstado"
-                        runat="server">
-                        <asp:ListItem Selected="True" Value="activo">Activo</asp:ListItem>
-                        <asp:ListItem Value="inactivo">Inactivo</asp:ListItem>
-                    </asp:DropDownList>
+                <div class="col-12 ml-0">
+                    <label class="form-label">Estado</label>
+                    <div class="form-check p-0">
+                        <asp:CheckBox ID="chkActivo" Text="Activo" CssClass="d-flex gap-2" runat="server" Checked="true" Enabled="false" />
+                    </div>
                 </div>
 
             </div>
@@ -53,24 +62,20 @@
                 </div>
 
                 <asp:Button ID="btnNuevoPlan" runat="server" Text="+ Nuevo Plan"
-                    CssClass="btn btn-primary btn-sm me-1" OnClick="btnNuevoPlan_Click" />
+                    CssClass="btn btn-primary btn-sm me-1"
+                    CausesValidation="false"
+                    OnClientClick="new bootstrap.Modal(document.getElementById('modalNuevoPlan')).show(); return false;" />
+
             </div>
             <div class="content-wrapper">
                 <asp:GridView ID="gvPlanes" runat="server"
                     AutoGenerateColumns="false"
                     OnRowDataBound="gvPlanes_RowDataBound"
-                    OnPageIndexChanging="gvPlanes_PageIndexChanging"
                     OnRowCommand="gvPlanes_RowCommand"
                     DataKeyNames="IdPlan"
-                    CssClass="table gridview mb-0"
-                    AllowPaging="True" PageSize="7">
+                    CssClass="table gridview mb-0">
 
                     <Columns>
-                        <asp:TemplateField HeaderText="Cobertura">
-                            <ItemTemplate>
-                                <%# Eval("Cobertura.Nombre") %>
-                            </ItemTemplate>
-                        </asp:TemplateField>
                         <asp:BoundField DataField="Nombre" HeaderText="Nombre del Plan" />
                         <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                         <asp:BoundField DataField="PorcentajeCobertura" HeaderText="% de Cobertura" />
@@ -90,13 +95,13 @@
                                     runat="server"
                                     CssClass="btn btn-outline-secondary btn-sm me-1"
                                     CommandName="Editar"
-                                    CommandArgument='<%# Eval("IdPlan") %>'>
+                                    CommandArgument='<%# Container.DataItemIndex %>'>
                                  <i class="bi bi-pencil"></i>
                                 </asp:LinkButton>
 
                                 <asp:LinkButton ID="btnEliminar" runat="server"
                                     CssClass="btn btn-outline-danger btn-sm me-1"
-                                    CommandName="Eliminar" CommandArgument='<%# Eval("IdPlan") %>'>
+                                    CommandName="Eliminar" CommandArgument='<%# Container.DataItemIndex %>'>
                              <i class="bi bi-x"></i>
                                 </asp:LinkButton>
                             </ItemTemplate>
@@ -132,7 +137,7 @@
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
                     CssClass="btn btn-primary btn-sm"
-                    OnClick="btnGuardar_Click" />
+                    OnClick="btnGuardar_Click" ValidationGroup="CoberturaGroup" />
             </div>
         </div>
     </div>
@@ -178,6 +183,64 @@
     </div>
 </div>
 
+<%--modal nuevo plan--%>
+<div class="modal fade" id="modalNuevoPlan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger small mt-2" id="lblErrorPlan" runat="server" visible="false"></div>
+                <div class="mb-3">
+                    <label for="txtNombrePlan" class="form-label">Nombre <span class="text-danger">*</span></label>
+                    <asp:TextBox ID="txtNombrePlan" runat="server" CssClass="form-control" MaxLength="80" />
+                    <asp:RequiredFieldValidator ID="rfvNombrePlan" runat="server"
+                        ControlToValidate="txtNombrePlan"
+                        ErrorMessage="Debe ingresar un nombre para el plan."
+                        CssClass="text-danger small"
+                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                    <asp:RegularExpressionValidator ID="revNombrePlan" runat="server"
+                        ControlToValidate="txtNombrePlan"
+                        ValidationExpression="^[A-Za-z0-9\s]{3,80}$"
+                        ErrorMessage="El nombre debe tener entre 3 y 80 caracteres y solo contener letras, números o espacios."
+                        CssClass="text-danger small"
+                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                </div>
+                <div class="mb-3">
+                    <label for="txtDescripcionPlan" class="form-label">Descripción</label>
+                    <asp:TextBox ID="txtDescripcionPlan" runat="server" CssClass="form-control" TextMode="MultiLine" MaxLength="200" />
+                </div>
+                <div class="mb-3">
+                    <label for="txtPorcentajeCobertura" class="form-label">% Cobertura <span class="text-danger">*</span></label>
+                    <asp:TextBox ID="txtPorcentajeCobertura" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvPorcentaje" runat="server"
+                        ControlToValidate="txtPorcentajeCobertura"
+                        ErrorMessage="Debe ingresar un porcentaje."
+                        CssClass="text-danger small"
+                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                    <asp:RangeValidator ID="rngPorcentaje" runat="server"
+                        ControlToValidate="txtPorcentajeCobertura"
+                        MinimumValue="0" MaximumValue="100"
+                        Type="Double"
+                        ErrorMessage="El porcentaje debe estar entre 0 y 100."
+                        CssClass="text-danger small"
+                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <asp:Button ID="btnAgregarPlan" runat="server"
+                    CssClass="btn btn-primary"
+                    Text="Agregar"
+                    OnClick="btnAgregarPlan_Click"
+                    ValidationGroup="PlanGroup" />
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -198,5 +261,10 @@
         document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
         document.getElementById('modalResultadoDesc').textContent = descripcion || '';
         new bootstrap.Modal(document.getElementById('modalResultado')).show();
+    }
+
+    function abrirModalNuevoPlan() {
+        const modal = new bootstrap.Modal(document.getElementById('modalNuevoPlan'));
+        modal.show();
     }
 </script>

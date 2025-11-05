@@ -528,3 +528,28 @@ p, span, button, input, select, label, td, th {
     background-color: rgba(255, 255, 255, 0.6);
     z-index: 1055; /* por encima del resto */
 }
+
+/* =========================================================
+   estilos de checkboxes
+   ========================================================= */
+.m-1 input[type="checkbox"] + label {
+    margin-left: 6px; /* o el valor que prefieras */
+}
+
+/* =========================================================
+   estilos de encabazados de gv ordenables
+   ========================================================= */
+.gv-header a {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+    .gv-header a::after {
+        content: " ⇅";
+        font-size: 1rem;
+        opacity: .5;
+    }

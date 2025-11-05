@@ -18,7 +18,6 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
     {
 
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
-        private List<CoberturaDto> _listadoCoberturasDto = new List<CoberturaDto>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -67,6 +66,9 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
         public void gvCoberturas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            if (e.CommandName == "Sort")
+                return;
+
             int idCobertura = Convert.ToInt32(e.CommandArgument);
             if (e.CommandName == "Editar")
             {
@@ -74,9 +76,10 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             }
             else if (e.CommandName == "Eliminar")
             {
+                TurnoService servicioTurno = new TurnoService();
                 try
                 {
-                    _servicioCobertura.DarDeBajaCobertura(idCobertura);
+                    _servicioCobertura.DarDeBajaCobertura(idCobertura, servicioTurno);
                     Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
                     Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
                     Session["ModalTipo"] = "Resultado";
@@ -103,8 +106,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             try
             {
                 List<CoberturaDto> listado = _servicioCobertura.Listar(estado);
-                _listadoCoberturasDto = listado;
-                gvCoberturas.DataSource = _listadoCoberturasDto;
+                gvCoberturas.DataSource = listado;
                 gvCoberturas.DataBind();
             }
             catch (Exception)
@@ -171,9 +173,10 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         {
             int idCobertura = Convert.ToInt32(hdnIdCoberturaEliminar.Value);
 
+            TurnoService servicioTurno = new TurnoService();
             try
             {
-               bool resultado = _servicioCobertura.DarDeBajaCobertura(idCobertura);
+                bool resultado = _servicioCobertura.DarDeBajaCobertura(idCobertura, servicioTurno);
                 Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
                 Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
                 Session["ModalTipo"] = "Resultado";
@@ -190,9 +193,27 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
                 Session["ModalTipo"] = "Resultado";
             }
-
             Response.Redirect(Request.RawUrl, false);
-
         }
+
+        protected void gvCoberturas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string direccionOrdenamiento = ViewState["direccionOrdenamiento"] as string ?? "ASC";
+
+            direccionOrdenamiento = direccionOrdenamiento == "ASC" ? "DESC" : "ASC";
+            ViewState["direccionOrdenamiento"] = direccionOrdenamiento;
+
+            List<CoberturaDto> coberturas = _servicioCobertura.Listar();
+
+            if (direccionOrdenamiento == "ASC")
+                coberturas.Sort((a, b) => string.Compare(a.Nombre, b.Nombre, StringComparison.OrdinalIgnoreCase));
+            else
+                coberturas.Sort((a, b) => string.Compare(b.Nombre, a.Nombre, StringComparison.OrdinalIgnoreCase));
+
+            gvCoberturas.DataSource = coberturas;
+            gvCoberturas.DataBind();
+        }
+
+
     }
 }

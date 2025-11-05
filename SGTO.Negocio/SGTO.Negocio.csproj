@@ -59,6 +59,7 @@
     <Compile Include="Excepciones\ExcepcionUsuarioNoAutorizado.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
+    <Compile Include="Mappers\PlanMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Seguridad\PasswordHasher.cs" />
     <Compile Include="Seguridad\ServicioAutenticacion.cs" />
