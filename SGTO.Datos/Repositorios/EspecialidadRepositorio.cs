@@ -4,6 +4,7 @@ using SGTO.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace SGTO.Datos.Repositorios
 {
@@ -70,6 +71,35 @@ namespace SGTO.Datos.Repositorios
                     throw;
                 }
             }
+        }
+
+        public void Crear(Especialidad especialidad)
+        {
+           string query = @"INSERT INTO Especialidad (Nombre, Descripcion, Estado)
+                             VALUES (@Nombre, @Descripcion, @Estado)";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+
+                    datos.EstablecerParametros("@Nombre", especialidad.Nombre);
+                    datos.EstablecerParametros("@Descripcion", especialidad.Descripcion);
+                    // el estado es un Enum(ej: Activo), la bd espera un char('A')
+                    // lo convertimos a string ("Activo") y tomamos el primer caracter [0] ('A')
+                    datos.EstablecerParametros("@Estado", especialidad.Estado.ToString()[0]);
+
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                            
+            }
+
         }
     }
 }

@@ -292,3 +292,5 @@ VALUES
 (9,9,9,4,9,'Prevención caries','Aplicación de selladores','2025-10-29'),
 (10,10,10,3,1,'Tártaro leve','Se indicó limpieza y control','2025-10-30');
 GO
+
+select * from Especialidad;

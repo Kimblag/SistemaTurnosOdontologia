@@ -29,7 +29,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             }
             if (!IsPostBack)
             {
-                CargarEspecialidades(); // 4. Llamar al método de carga
+                CargarEspecialidades(); 
             }
         }
 
