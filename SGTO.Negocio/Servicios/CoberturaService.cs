@@ -1,6 +1,7 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Repositorios;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
@@ -50,29 +51,35 @@ namespace SGTO.Negocio.Servicios
 
         public bool ModificarCobertura(CoberturaDto coberturaDto, TurnoService servicioTurno)
         {
-            Cobertura cobertura = CoberturaMapper.MapearAEntidad(coberturaDto);
+            Cobertura coberturaModificada = CoberturaMapper.MapearAEntidad(coberturaDto);
 
-            // validar qu eno tenga turnos activos
-            if (servicioTurno.TieneTurnosActivosPorCobertura(coberturaDto.IdCobertura))
-            {
-                throw new ExcepcionReglaNegocio("No se puede dar de baja la cobertura porque tiene turnos activos.");
-            }
+            // obtener cobertura actual antes de modificar
             Cobertura coberturaActual = _repositorioCobertura.ObtenerPorId(coberturaDto.IdCobertura);
             bool nombreCambiado = !string.Equals(coberturaActual.Nombre.Trim(), coberturaDto.Nombre.Trim(), StringComparison.OrdinalIgnoreCase);
 
+            // validar nombre duplicado solo si cambio el nombre
             if (nombreCambiado && _repositorioCobertura.ExisteCobertura(coberturaDto.Nombre))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe una cobertura con el nombre indicado: {coberturaDto.Nombre}");
             }
 
+            bool seIntentaDarDeBaja =
+                coberturaActual.Estado == EstadoEntidad.Activo &&
+                coberturaModificada.Estado == EstadoEntidad.Inactivo;
+
+            // validar si se intenta dar de baja y tiene turnos activos.
+            if (seIntentaDarDeBaja && servicioTurno.TieneTurnosActivosPorCobertura(coberturaDto.IdCobertura))
+            {
+                throw new ExcepcionReglaNegocio("No se puede dar de baja la cobertura porque tiene turnos activos.");
+            }
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 try
                 {
                     datos.IniciarTransaccion();
-                    _repositorioCobertura.Modificar(cobertura, datos);
-                    _repositorioPlan.ActualizarEstadoPorCobertura(cobertura.IdCobertura, cobertura.Estado, datos);
+                    _repositorioCobertura.Modificar(coberturaModificada, datos);
+                    _repositorioPlan.ActualizarEstadoPorCobertura(coberturaModificada.IdCobertura, coberturaModificada.Estado, datos);
 
                     datos.ConfirmarTransaccion();
                     return true;
@@ -130,15 +137,15 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool CrearCobertura(CoberturaDto coberturaDto, List<PlanDto> listaPlanesDto)
+        public bool CrearCobertura(CoberturaDto nuevaCoberturaDto, List<PlanDto> listaPlanesDto)
         {
             // validar que no exista la cobertura con el mismo nombre
-            if (_repositorioCobertura.ExisteCobertura(coberturaDto.Nombre))
+            if (_repositorioCobertura.ExisteCobertura(nuevaCoberturaDto.Nombre))
             {
-                throw new ExcepcionReglaNegocio($"Ya existe una cobertura con el nombre indicado: {coberturaDto.Nombre}");
+                throw new ExcepcionReglaNegocio($"Ya existe una cobertura con el nombre indicado: {nuevaCoberturaDto.Nombre}");
             }
 
-            Cobertura nuevaCobertura = CoberturaMapper.MapearAEntidad(coberturaDto);
+            Cobertura nuevaCobertura = CoberturaMapper.MapearAEntidad(nuevaCoberturaDto);
 
             // iniciar transaccion
             using (ConexionDBFactory datos = new ConexionDBFactory())
@@ -149,7 +156,7 @@ namespace SGTO.Negocio.Servicios
                     int idNuevaCobertura = _repositorioCobertura.Crear(nuevaCobertura, datos);
                     if (idNuevaCobertura == 0)
                     {
-                        throw new Exception("Nos e pudo insertar la cobertura.");
+                        throw new Exception("No se pudo insertar la cobertura.");
                     }
 
                     if (listaPlanesDto.Count > 0)

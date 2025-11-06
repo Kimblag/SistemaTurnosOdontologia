@@ -33,6 +33,24 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         protected global::System.Web.UI.WebControls.TextBox txtNombrePlan;
 
         /// <summary>
+        /// rfvNombre control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvNombre;
+
+        /// <summary>
+        /// RegularExpressionValidator1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+
+        /// <summary>
         /// txtDescripcionPlan control.
         /// </summary>
         /// <remarks>
@@ -51,13 +69,40 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         protected global::System.Web.UI.WebControls.TextBox txtPorcentajeCobertura;
 
         /// <summary>
-        /// ddlEstado control.
+        /// rfvPorcentaje control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPorcentaje;
+
+        /// <summary>
+        /// rvPorcentaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvPorcentaje;
+
+        /// <summary>
+        /// revPorcentaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revPorcentaje;
+
+        /// <summary>
+        /// chkActivo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkActivo;
 
         /// <summary>
         /// btnCancelar control.

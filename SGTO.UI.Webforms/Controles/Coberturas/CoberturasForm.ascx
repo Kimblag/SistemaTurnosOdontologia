@@ -37,7 +37,7 @@
                         runat="server"
                         placeholder="Ingrese la descripción..."
                         TextMode="MultiLine"
-                        CssClass="form-control descripcion-cobertura" MaxLength="200">
+                        CssClass="form-control descripcion-textarea" MaxLength="200">
                     </asp:TextBox>
 
                 </div>

@@ -69,26 +69,6 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             {
                 Response.Redirect($"~/Pages/CoberturasPlanes/EditarPlan?id-plan={idPlan}", false);
             }
-            //else if (e.CommandName == "Eliminar")
-            //{
-            //    TurnoService servicioTurno = new TurnoService();
-            //    try
-            //    {
-            //        _servicioPlanes.DarDeBajaPlan(idPlan, servicioTurno);
-            //        MensajeUiHelper.SetearMensaje(
-            //            "Plan dado de baja",
-            //            "El plan fue dado de baja correctamente."
-            //        );
-            //    }
-            //    catch (Exception)
-            //    {
-            //        MensajeUiHelper.SetearMensaje(
-            //           "Error inesperado",
-            //           "Ocurrió un error al intentar dar de baja el plan."
-            //       );
-            //    }
-            //    Response.Redirect(Request.RawUrl, false);
-            //}
         }
 
         private void CargarPlanes(string estado = null)

@@ -52,6 +52,32 @@ namespace SGTO.Datos.Repositorios
             datos.EjecutarAccion();
         }
 
+        public void Crear(Plan nuevoPlan)
+        {
+            string query = @"INSERT INTO [Plan] (Nombre, Descripcion, PorcentajeCobertura, IdCobertura, Estado)
+                                VALUES (@Nombre, @Descripcion, @PorcentajeCobertura, @IdCobertura, @Estado)";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", nuevoPlan.Nombre);
+                    datos.EstablecerParametros("@Descripcion", nuevoPlan.Descripcion);
+                    datos.EstablecerParametros("@PorcentajeCobertura", nuevoPlan.PorcentajeCobertura);
+                    datos.EstablecerParametros("@IdCobertura", nuevoPlan.Cobertura.IdCobertura);
+                    datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevoPlan.Estado));
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+        }
+
 
         public void Crear(List<Plan> planes, ConexionDBFactory datos)
         {
@@ -175,6 +201,116 @@ namespace SGTO.Datos.Repositorios
                 }
             }
         }
+
+
+        public Plan ObtenerPlanPorId(int idPlan)
+        {
+            Plan plan = new Plan();
+            string query = @"SELECT P.IdPlan,
+	                                P.Nombre AS NombrePlan,
+	                                P.Descripcion AS DescripcionPlan,
+	                                P.PorcentajeCobertura,
+	                                P.Estado AS EstadoPlan,
+                                    C.IdCobertura, 
+	                                C.Nombre AS NombreCobertura, 
+	                                C.Descripcion AS DescripcionCobertura,
+	                                C.Estado AS EstadoCobertura
+                                FROM [Plan] P
+                                LEFT JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                                WHERE IdPlan = @IdPlan";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdPlan", idPlan);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            Cobertura cobertura = CoberturaMapper.MapearAEntidad(lector);
+                            plan = PlanMapper.MapearAEntidad(lector, cobertura);
+
+                        }
+                    }
+                    return plan;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        public bool ExistePlan(string nombrePlan, int idCobertura)
+        {
+            bool resultado = false;
+            string query = @"SELECT COUNT(Nombre)
+                                FROM [Plan]
+                            WHERE UPPER(Nombre) = @Nombre AND IdCobertura = @IdCobertura";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", nombrePlan.ToUpper());
+                    datos.EstablecerParametros("@IdCobertura", idCobertura);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        public void Modificar(Plan plan)
+        {
+            string query = @"UPDATE [Plan] 
+                                SET Nombre = @Nombre, 
+                                    Descripcion = @Descripcion,
+                                    PorcentajeCobertura = @PorcentajeCobertura,
+                                    Estado = @Estado
+                            WHERE IdPlan = @IdPlan";
+
+            using(ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdPlan", plan.IdPlan);
+                    datos.EstablecerParametros("@Nombre", plan.Nombre);
+                    datos.EstablecerParametros("@Descripcion", plan.Descripcion);
+                    datos.EstablecerParametros("@PorcentajeCobertura", plan.PorcentajeCobertura);
+                    datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(plan.Estado));
+
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+        }
+
+
 
 
     }

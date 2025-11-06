@@ -12,7 +12,7 @@ namespace SGTO.Negocio.DTOs
         public string Nombre { get; set; }
         public string Descripcion { get; set; } = string.Empty;
         public int CantidadPlanes { get; set; }
-        public string Estado { get; set; }
+        public string Estado { get; set; } // activo - inactivo
         public List<string> NombrePlanes { get; set; } = new List<string>();
     }
 }

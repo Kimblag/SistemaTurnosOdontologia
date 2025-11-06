@@ -491,7 +491,7 @@ p, span, button, input, select, label, td, th {
 /* =========================================================
    Para textareas
    ========================================================= */
-.descripcion-cobertura {
+.descripcion-textarea {
     resize: none; /* evita redimensionar manualmente */
     height: 6rem; /* altura fija solo para este campo */
     line-height: 1.4;

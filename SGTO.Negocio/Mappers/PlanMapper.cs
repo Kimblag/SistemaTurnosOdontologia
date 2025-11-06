@@ -70,6 +70,24 @@ namespace SGTO.Negocio.Mappers
             return planDto;
         }
 
+        public static PlanDto MapearADto(int idPlan, string nombre,
+            string descripcion, decimal porcentajeCobertura, string estado,
+            int idCobertura, string nombreCobertura = null)
+        {
+            PlanDto planDto = new PlanDto()
+            {
+                IdPlan = idPlan,
+                Nombre = nombre,
+                Descripcion = descripcion,
+                PorcentajeCobertura = porcentajeCobertura,
+                Estado = estado,
+                IdCobertura = idCobertura,
+                NombreCobertura = nombreCobertura ?? string.Empty
+            };
+
+            return planDto;
+        }
+
         public static List<PlanDto> MapearListaADto(List<Plan> planes)
         {
             List<PlanDto> planesDto = new List<PlanDto>();

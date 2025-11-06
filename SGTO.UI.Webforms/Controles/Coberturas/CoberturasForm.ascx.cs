@@ -8,7 +8,6 @@ using SGTO.UI.Webforms.Pages.Turnos;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -70,10 +69,15 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                     btnAgregarPlan.Text = "Guardar cambios";
 
-                    Session["CoberturaMensajeTitulo"] = "Cobertura modificada";
-                    Session["CoberturaMensajeDesc"] = "La cobertura fue modificada correctamente.";
-                    Session["ModalTipo"] = "Resultado";
-                    ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalNuevoPlan");
+                    MensajeUiHelper.SetearYMostrar(
+                       this.Page,
+                       "Cobertura modificada",
+                       "La cobertura fue modificada correctamente.",
+                       "Resultado",
+                       null,
+                       "abrirModalNuevoPlan"
+                   );
+
                 }
             }
             else if (e.CommandName == "Eliminar")
@@ -106,7 +110,12 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             }
             catch (Exception)
             {
-                throw;
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al cargar los datos de la cobertura seleccionada.",
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
             }
         }
 
@@ -131,24 +140,30 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 CoberturaDto coberturaDto = CoberturaMapper.MapearADto(idCobertura, nombre, descripcion, estado);
                 TurnoService servicioTurno = new TurnoService();
                 _servicioCobertura.ModificarCobertura(coberturaDto, servicioTurno);
-                Session["CoberturaMensajeTitulo"] = "Cobertura modificada";
-                Session["CoberturaMensajeDesc"] = "La cobertura fue modificada correctamente.";
-                Session["ModalTipo"] = "Resultado";
+
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Cobertura modificada",
+                   "La cobertura fue modificada correctamente.",
+                   "Resultado");
                 Response.Redirect(Request.RawUrl, false);
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Operación no permitida",
+                   ex.Message,
+                   "Resultado",
+                   null,
+                   "abrirModalResultado");
             }
             catch (Exception)
             {
-                Session["CoberturaMensajeTitulo"] = "Error inesperado";
-                Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                     "Error inesperado",
+                     "Ocurrió un error al intentar dar de baja la cobertura.",
+                     "Resultado",
+                     null,
+                     "abrirModalResultado");
             }
         }
 
@@ -164,28 +179,34 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 ValidarCamposCobertura();
 
                 _servicioCobertura.CrearCobertura(coberturaDto, planes);
-                Session["CoberturaMensajeTitulo"] = "Cobertura creada";
-                Session["CoberturaMensajeDesc"] = "La cobertura se ha creado correctamente.";
-                ModalHelper.MostrarModalDesdeSession(this.Page,
-                    "CoberturaMensajeTitulo",
-                    "CoberturaMensajeDesc",
-                    VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
-                    "abrirModalResultado");
+
+                MensajeUiHelper.SetearYMostrar(
+                   this.Page,
+                   "Cobertura creada",
+                   "La cobertura se ha creado correctamente.",
+                   "Resultado",
+                   VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                   "abrirModalResultado"
+               );
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Operación no permitida",
+                   ex.Message,
+                   "Resultado",
+                   null,
+                   "abrirModalResultado");
                 return;
             }
             catch (Exception ex)
             {
-                Session["CoberturaMensajeTitulo"] = "Error";
-                Session["CoberturaMensajeDesc"] = "Ocurrió un error al crear la cobertura: " + ex.Message;
-                Session["ModalTipo"] = "resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Error",
+                    "Ocurrió un error al crear la cobertura: " + ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
                 return;
             }
         }
@@ -212,11 +233,13 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
             if (!decimal.TryParse(txtPorcentajeCobertura.Text, out decimal porcentaje))
             {
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = "El porcentaje de cobertura debe ser un número entre 0 y 100.";
-                Session["ModalTipo"] = "Resultado";
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Operación no permitida",
+                   "El porcentaje de cobertura debe ser un número entre 0 y 100.",
+                   "Resultado",
+                   null,
+                   "abrirModalNuevoPlan");
 
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalNuevoPlan");
                 lblErrorPlan.InnerText = "El porcentaje de cobertura debe ser un número entre 0 y 100.";
                 lblErrorPlan.Visible = true;
 
@@ -269,10 +292,12 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             catch (ExcepcionReglaNegocio ex)
             {
                 // mantener estos mensajes en session porque son lso que hacen que se abra el modal
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalNuevoPlan");
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalNuevoPlan");
                 // setear el label de error
                 lblErrorPlan.InnerText = ex.Message;
                 lblErrorPlan.Visible = true;

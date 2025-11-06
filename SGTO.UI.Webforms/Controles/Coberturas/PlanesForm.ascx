@@ -12,21 +12,30 @@
                     CssClass="form-select"
                     ID="ddlCobertura"
                     runat="server">
-                    <asp:ListItem Selected="True">OSDE</asp:ListItem>
-                    <asp:ListItem>OSPIN</asp:ListItem>
-                    <asp:ListItem>OSECAC</asp:ListItem>
                 </asp:DropDownList>
             </div>
 
             <%-- Nombre --%>
             <div class="col-12">
-                <label for="txtNombreCobertura" class="form-label">Nombre del Plan</label>
+                <label for="txtNombrePlan" class="form-label">Nombre del Plan</label>
                 <asp:TextBox
                     ID="txtNombrePlan"
                     runat="server"
                     placeholder="Ingrese el nombre..."
                     CssClass="form-control">
                 </asp:TextBox>
+                <asp:RequiredFieldValidator ID="rfvNombre" runat="server"
+                    ControlToValidate="txtNombrePlan"
+                    ErrorMessage="El nombre es obligatorio."
+                    CssClass="text-danger small"
+                    Display="Dynamic"
+                    ValidationGroup="PlanGroup" />
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server"
+                    ControlToValidate="txtNombrePlan"
+                    ValidationExpression="^[A-Za-z0-9\s]{3,80}$"
+                    ErrorMessage="El nombre debe tener entre 3 y 80 caracteres y solo contener letras, números o espacios."
+                    CssClass="text-danger small"
+                    Display="Dynamic" ValidationGroup="PlanGroup" />
             </div>
 
             <%-- Descripción --%>
@@ -37,7 +46,8 @@
                     runat="server"
                     placeholder="Ingrese la descripción..."
                     TextMode="MultiLine"
-                    CssClass="form-control descripcion-cobertura">
+                    CssClass="form-control descripcion-textarea"
+                    MaxLength="200">
                 </asp:TextBox>
             </div>
 
@@ -52,22 +62,53 @@
                         placeholder="Ej.: 40..."
                         TextMode="Number"
                         MaxLength="3"
-                        CssClass="form-control">
+                        CssClass="form-control"
+                        step="0.01"
+                        min="0"
+                        max="100">
                     </asp:TextBox>
                     <span class="input-group-text">%</span>
                 </div>
+                <asp:RequiredFieldValidator
+                    ID="rfvPorcentaje"
+                    runat="server"
+                    ControlToValidate="txtPorcentajeCobertura"
+                    ErrorMessage="El porcentaje es obligatorio."
+                    CssClass="text-danger small"
+                    Display="Dynamic"
+                    ValidationGroup="PlanGroup" />
+
+
+                <asp:RangeValidator
+                    ID="rvPorcentaje"
+                    runat="server"
+                    ControlToValidate="txtPorcentajeCobertura"
+                    MinimumValue="0"
+                    MaximumValue="100"
+                    Type="Double"
+                    ErrorMessage="El porcentaje debe estar entre 0 y 100."
+                    CssClass="text-danger small"
+                    Display="Dynamic"
+                    ValidationGroup="PlanGroup" />
+
+
+                <asp:RegularExpressionValidator
+                    ID="revPorcentaje"
+                    runat="server"
+                    ControlToValidate="txtPorcentajeCobertura"
+                    ValidationExpression="^\d{1,3}(\.\d{1,2})?$"
+                    ErrorMessage="Ingrese un número válido (por ejemplo 25 o 75.5)."
+                    CssClass="text-danger small"
+                    Display="Dynamic"
+                    ValidationGroup="PlanGroup" />
             </div>
 
             <%-- Estado --%>
-            <div class="col-12">
-                <label for="ddlEstado" class="form-label">Estado</label>
-                <asp:DropDownList
-                    CssClass="form-select"
-                    ID="ddlEstado"
-                    runat="server">
-                    <asp:ListItem Selected="True">Activo</asp:ListItem>
-                    <asp:ListItem>Inactivo</asp:ListItem>
-                </asp:DropDownList>
+            <div class="col-12 ml-0">
+                <label class="form-label">Estado</label>
+                <div class="form-check p-0">
+                    <asp:CheckBox ID="chkActivo" Text="Activo" CssClass="d-flex gap-2" runat="server" Checked="true" Enabled="false" />
+                </div>
             </div>
 
         </div>
@@ -88,7 +129,8 @@
             <div class="col-6 col-sm-4 col-md-2 d-grid">
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
-                    CssClass="btn btn-primary btn-sm" />
+                    CssClass="btn btn-primary btn-sm" 
+                    OnClick="btnGuardar_Click"/>
             </div>
         </div>
     </div>

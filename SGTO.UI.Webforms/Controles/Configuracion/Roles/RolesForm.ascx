@@ -26,7 +26,7 @@
                         runat="server"
                         TextMode="MultiLine"
                         placeholder="Ingrese la descripción..."
-                        CssClass="form-control descripcion-cobertura">
+                        CssClass="form-control descripcion-textarea">
                     </asp:TextBox>
                 </div>
 
