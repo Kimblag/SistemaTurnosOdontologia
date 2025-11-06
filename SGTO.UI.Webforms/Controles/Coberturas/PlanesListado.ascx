@@ -9,18 +9,34 @@
         <div class="d-flex gap-2 align-items-center w-50">
             <asp:TextBox ID="txtBuscarPlanes" runat="server" CssClass="form-control" placeholder="Buscar Planes..."></asp:TextBox>
 
-            <asp:DropDownList ID="ddlCoberturas" runat="server" CssClass="form-select">
-                <asp:ListItem Text="Todas" />
-                <asp:ListItem Text="OSDE" />
-                <asp:ListItem Text="OSECAC" />
-                <asp:ListItem Text="Swiss Medical" />
+            <asp:DropDownList ID="ddlCoberturas" runat="server" 
+                CssClass="form-select"
+                 AutoPostBack="True" 
+                OnSelectedIndexChanged="ddlCoberturas_SelectedIndexChanged">
             </asp:DropDownList>
 
-            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                <asp:ListItem Text="Todos" />
-                <asp:ListItem Text="Activo" />
-                <asp:ListItem Text="Inactivo" />
+            <asp:DropDownList ID="ddlEstado" runat="server" 
+                CssClass="form-select" 
+                AutoPostBack="True" 
+                OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+                <asp:ListItem Text="Todos" Value="todos" />
+                <asp:ListItem Text="Activo" Value="activo" />
+                <asp:ListItem Text="Inactivo" Value="inactivo" />
             </asp:DropDownList>
+
+            <asp:Button
+                ID="btnBuscar"
+                runat="server"
+                Text="Aplicar Filtro"
+                CssClass="btn btn-outline-primary"
+                OnClick="btnBuscar_Click" />
+
+            <asp:Button
+                ID="btnLimpiar"
+                runat="server"
+                Text="Limpiar"
+                CssClass="btn btn-outline-secondary"
+                OnClick="btnLimpiar_Click" />
         </div>
 
         <asp:Button ID="btnNuevaPlanes" runat="server" Text="+ Nuevo Plan"
@@ -39,11 +55,7 @@
             AllowPaging="True" PageSize="7">
 
             <Columns>
-                <asp:TemplateField HeaderText="Cobertura">
-                    <ItemTemplate>
-                        <%# Eval("Cobertura.Nombre") %>
-                    </ItemTemplate>
-                </asp:TemplateField>
+                <asp:BoundField DataField="NombreCobertura" HeaderText="Cobertura" />
                 <asp:BoundField DataField="Nombre" HeaderText="Nombre del Plan" />
                 <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                 <asp:BoundField DataField="PorcentajeCobertura" HeaderText="% de Cobertura" />
@@ -51,7 +63,7 @@
                 <%--columna estado--%>
                 <asp:TemplateField HeaderText="Estado">
                     <ItemTemplate>
-                        <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                        <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                     </ItemTemplate>
                 </asp:TemplateField>
 
@@ -68,12 +80,12 @@
                              <i class="bi bi-pencil"></i>
                         </asp:LinkButton>
 
-                        <asp:LinkButton ID="btnEliminar" runat="server"
-                            ToolTip="Eliminar"
-                            CssClass="btn btn-outline-danger btn-sm me-1"
-                            CommandName="Eliminar" CommandArgument='<%# Eval("IdPlan") %>'>
-                             <i class="bi bi-x"></i>
-                        </asp:LinkButton>
+                        <button type="button"
+                            class="btn btn-outline-danger btn-sm me-1"
+                            data-id='<%# Eval("IdPlan") %>'
+                            onclick="abrirModalConfirmacion('<%# Eval("IdPlan") %>', 'plan')">
+                            <i class="bi bi-x"></i>
+                        </button>
                     </ItemTemplate>
                 </asp:TemplateField>
 

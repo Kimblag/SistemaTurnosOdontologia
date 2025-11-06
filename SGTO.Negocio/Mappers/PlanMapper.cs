@@ -54,5 +54,31 @@ namespace SGTO.Negocio.Mappers
             return planes;
         }
 
+        public static PlanDto MapearADto(Plan plan)
+        {
+            PlanDto planDto = new PlanDto()
+            {
+                IdPlan = plan.IdPlan,
+                Nombre = plan.Nombre,
+                Descripcion = plan.Descripcion,
+                PorcentajeCobertura = plan.PorcentajeCobertura,
+                Estado = plan.Estado.ToString(),
+                IdCobertura = plan.Cobertura.IdCobertura,
+                NombreCobertura = plan.Cobertura.Nombre
+            };
+
+            return planDto;
+        }
+
+        public static List<PlanDto> MapearListaADto(List<Plan> planes)
+        {
+            List<PlanDto> planesDto = new List<PlanDto>();
+            foreach (Plan plan in planes)
+            {
+                planesDto.Add(MapearADto(plan));
+            }
+            return planesDto;
+        }
+
     }
 }

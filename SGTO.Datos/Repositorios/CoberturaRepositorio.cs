@@ -15,7 +15,6 @@ namespace SGTO.Datos.Repositorios
         {
             List<Cobertura> coberturas = new List<Cobertura>();
 
-
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 string query = @"SELECT C.IdCobertura, 
@@ -29,11 +28,12 @@ namespace SGTO.Datos.Repositorios
 	                                       P.Estado AS EstadoPlan
 	                                    FROM Cobertura C
 	                                    LEFT JOIN [Plan] P ON C.IdCobertura = P.IdCobertura
+                                        {{WHERE}}
                                         ORDER BY NombreCobertura ASC";
-                if (estado != null)
-                {
-                    query += $" WHERE LOWER(C.Estado) = LOWER('{estado.Substring(0, 1)}')";
-                }
+
+                query = estado != null
+                       ? query.Replace("{{WHERE}}", $" WHERE UPPER(C.Estado) = UPPER('{estado[0]}')")
+                       : query.Replace("{{WHERE}}", " ");
 
                 try
                 {
@@ -64,7 +64,6 @@ namespace SGTO.Datos.Repositorios
                             }
                         }
                     }
-
                     return coberturas;
                 }
                 catch (Exception)

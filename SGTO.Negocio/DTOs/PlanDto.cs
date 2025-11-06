@@ -7,5 +7,7 @@
         public string Descripcion { get; set; } = string.Empty;
         public decimal PorcentajeCobertura { get; set; }
         public string Estado { get; set; }
+        public int IdCobertura { get; set; }
+        public string NombreCobertura { get; set; }
     }
 }

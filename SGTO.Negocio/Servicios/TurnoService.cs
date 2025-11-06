@@ -25,5 +25,16 @@ namespace SGTO.Negocio.Servicios
                 throw;
             }
         }
+        public bool TieneTurnosActivosPorPlan(int idPlan)
+        {
+            try
+            {
+                return _turnoRepositorio.ExisteTurnoActivoPorPlan(idPlan);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

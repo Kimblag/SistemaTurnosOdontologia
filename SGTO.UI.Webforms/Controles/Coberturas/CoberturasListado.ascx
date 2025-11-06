@@ -90,8 +90,10 @@
 
                         <button type="button"
                             class="btn btn-outline-danger btn-sm me-1"
-                            onclick="abrirModalConfirmacion(<%# Eval("IdCobertura") %>)">
+                            data-id='<%# Eval("IdCobertura") %>'
+                            onclick="abrirModalConfirmacion('<%# Eval("IdCobertura") %>', 'cobertura')">
                             <i class="bi bi-x"></i>
+                        </button>
                         </button>
                     </ItemTemplate>
                 </asp:TemplateField>
@@ -133,97 +135,79 @@
         </div>
     </div>
 
-
-    <%-- modal de confirmacion --%>
-    <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Confirmar baja</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Está seguro de que desea dar de baja esta cobertura?</p>
-                </div>
-                <div class="modal-footer">
-                    <asp:HiddenField ID="hdnIdCoberturaEliminar" runat="server" />
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <asp:Button ID="btnConfirmarEliminar" runat="server"
-                        CssClass="btn btn-danger"
-                        Text="Confirmar"
-                        OnClick="btnConfirmarEliminar_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <%-- modal resultado de la ejecucion del servicio --%>
-    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="modalResultadoTitulo" class="modal-title">Acción completada</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="modalResultadoDesc"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
 </div>
 
 <script>
-    function abrirModalPlanes(btn) {
-        try {
-            const nombre = btn.getAttribute('data-nombre');
-            const desc = btn.getAttribute('data-descripcion');
-            const planesRaw = btn.getAttribute('data-planes') || '';
-            const planes = planesRaw ? planesRaw.split('||') : [];
+    document.addEventListener("DOMContentLoaded", () => {
 
-            document.getElementById('modalTitulo').textContent = nombre || 'Planes';
-            document.getElementById('modalDesc').textContent = desc || '';
 
-            const ul = document.getElementById('listadoPlanes');
-            while (ul.firstChild) ul.removeChild(ul.firstChild);
+        window.abrirModalPlanes = function (btn) {
+            try {
+                const nombre = btn.getAttribute('data-nombre');
+                const desc = btn.getAttribute('data-descripcion');
+                const planesRaw = btn.getAttribute('data-planes') || '';
+                const planes = planesRaw ? planesRaw.split('||') : [];
 
-            if (planes.length > 0 && planes[0] !== '') {
-                planes.forEach(p => {
+                document.getElementById('modalTitulo').textContent = nombre || 'Planes';
+                document.getElementById('modalDesc').textContent = desc || '';
+
+                const ul = document.getElementById('listadoPlanes');
+                ul.innerHTML = '';
+
+                if (planes.length > 0 && planes[0] !== '') {
+                    planes.forEach(p => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+                        li.textContent = p;
+                        ul.appendChild(li);
+                    });
+                } else {
                     const li = document.createElement('li');
-                    li.className = 'list-group-item';
-                    li.textContent = p;
+                    li.className = 'list-group-item text-muted';
+                    li.textContent = 'No hay planes registrados.';
                     ul.appendChild(li);
-                });
-            } else {
-                const li = document.createElement('li');
-                li.className = 'list-group-item text-muted';
-                li.textContent = 'No hay planes registrados.';
-                ul.appendChild(li);
+                }
+
+                const modal = new bootstrap.Modal(document.getElementById('modalPlanes'));
+                modal.show();
+            } catch (err) {
+                console.error('Error en abrirModalPlanes:', err);
             }
-
-            const modal = new bootstrap.Modal(document.getElementById('modalPlanes'));
-            modal.show();
-        } catch (err) {
-            console.error('Error :', err);
-        }
-    }
-
-    function abrirModalConfirmacion(idCobertura) {
-        document.getElementById('<%= hdnIdCoberturaEliminar.ClientID %>').value = idCobertura;
-        new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
-    }
+        };
 
 
-    function abrirModalResultado(titulo, descripcion) {
-        document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
-        document.getElementById('modalResultadoDesc').textContent = descripcion || '';
-        new bootstrap.Modal(document.getElementById('modalResultado')).show();
-    }
+        <%--window.abrirModalConfirmacion = function (btn) {
+            try {
+                const idCobertura = btn.getAttribute('data-id');
+                console.log("CONFIRMACION");
+                console.log(idCobertura);
+
+                const hidden = document.getElementById('<%= hdnIdCoberturaEliminar.ClientID %>');
+                if (hidden) {
+                    hidden.value = idCobertura;
+                    console.log("hidden seteado con:", hidden.value);
+                } else {
+                    console.error("No se encontró el hidden field.");
+                }
+
+                const modal = new bootstrap.Modal(document.getElementById('modalConfirmarCobertura'));
+                modal.show();
+            } catch (err) {
+                console.error("Error en abrirModalConfirmacion:", err);
+            }
+        };
+
+
+        window.abrirModalResultado = function (titulo, descripcion) {
+            try {
+                document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
+                document.getElementById('modalResultadoDesc').textContent = descripcion || '';
+                const modal = new bootstrap.Modal(document.getElementById('modalResultadoCobertura'));
+                modal.show();
+            } catch (err) {
+                console.error("Error en abrirModalResultado:", err);
+            }
+        };--%>
+
+    });
 </script>

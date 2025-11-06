@@ -41,5 +41,38 @@ namespace SGTO.Datos.Repositorios
 
             return resultado;
         }
+
+        public bool ExisteTurnoActivoPorPlan(int idPlan)
+        {
+            bool resultado = false;
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT COUNT(*)
+                                    FROM Turno
+                                WHERE IdPlan = @IdPlan
+                                    AND Estado NOT IN ('C', 'Z', 'X')";
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdPlan", idPlan);
+
+                using (SqlDataReader lector = datos.EjecutarConsulta())
+                {
+                    try
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return resultado;
+        }
     }
 }

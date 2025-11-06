@@ -55,4 +55,115 @@
 
     </div>
 
+    <%--modal de confirmación--%>
+    <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalConfirmarTitulo" class="modal-title">Confirmar acción</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalConfirmarTexto"></p>
+                </div>
+                <div class="modal-footer">
+                    <asp:HiddenField ID="hdnIdEliminar" runat="server" />
+                    <asp:HiddenField ID="hdnTipoEliminar" runat="server" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <asp:Button ID="btnConfirmarEliminar" runat="server"
+                        CssClass="btn btn-danger"
+                        Text="Confirmar"
+                        OnClick="btnConfirmarEliminar_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%-- modal resultado --%>
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultadoDesc"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Guardar tab activa en la sesion storage del navegador
+            const tabLocalStorage = "activeTabCoberturasPlanes";
+
+            const ultimaTab = sessionStorage.getItem(tabLocalStorage);
+            //console.log(ultimaTab)
+            if (ultimaTab) {
+                const tab = document.querySelector(`[data-bs-target="${ultimaTab}"]`);
+                //console.log("busqueda", tab)
+                if (tab) {
+                    const bootstrabTab = new bootstrap.Tab(tab);
+                    bootstrabTab.show();
+                }
+            }
+
+            /// guardar la tab cuandos e cambia 
+            const botonTab = document.querySelectorAll('button[data-bs-toggle="tab"]');
+            botonTab.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function (event) {
+                    const target = event.target.getAttribute('data-bs-target');
+                    sessionStorage.setItem(tabLocalStorage, target);
+                });
+            });
+
+
+
+
+            // modal de confirmación    
+            window.abrirModalConfirmacion = function (id, tipo) {
+                try {
+                    document.getElementById('<%= hdnIdEliminar.ClientID %>').value = id;
+                    document.getElementById('<%= hdnTipoEliminar.ClientID %>').value = tipo;
+
+                    const titulo = tipo === "plan"
+                        ? "Confirmar baja de plan"
+                        : "Confirmar baja de cobertura";
+
+                    const texto = tipo === "plan"
+                        ? "¿Está seguro de que desea dar de baja este plan?"
+                        : "¿Está seguro de que desea dar de baja esta cobertura?";
+
+                    document.getElementById('modalConfirmarTitulo').textContent = titulo;
+                    document.getElementById('modalConfirmarTexto').textContent = texto;
+
+                    new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
+                } catch (err) {
+                    console.error("Error al abrir modal de confirmación:", err);
+                }
+            };
+
+
+            // modal resultado
+            window.abrirModalResultado = function (titulo, descripcion) {
+                try {
+                    document.getElementById('modalResultadoTitulo').textContent = titulo || "Resultado";
+                    document.getElementById('modalResultadoDesc').textContent = descripcion || "";
+                    new bootstrap.Modal(document.getElementById('modalResultado')).show();
+                } catch (err) {
+                    console.error("Error al abrir modal de resultado:", err);
+                }
+            };
+
+
+        });
+    </script>
+
 </asp:Content>

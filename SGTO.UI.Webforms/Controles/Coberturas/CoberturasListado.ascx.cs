@@ -18,12 +18,12 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
     {
 
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
-
+        private const string KEY_ESTADO_COBERTURAS = "FiltroEstadoCoberturas";
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                string estadoFiltroGuardado = Session["FiltroEstadoCoberturas"] as string;
+                string estadoFiltroGuardado = Session[KEY_ESTADO_COBERTURAS] as string;
 
                 /// retomamos el valor del filtro si es que hay algo
                 if (estadoFiltroGuardado != null)
@@ -31,7 +31,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                 CargarCoberturas(estadoFiltroGuardado);
 
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc");
+                MensajeUiHelper.MostrarModal(this.Page);
             }
         }
 
@@ -40,12 +40,12 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             // cambiar los colores de los basges según estado
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                CoberturaDto cobertura = (CoberturaDto)e.Row.DataItem;
+                CoberturaDto coberturaDto = (CoberturaDto)e.Row.DataItem;
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
-                if (lblEstado != null && cobertura != null)
+                if (lblEstado != null && coberturaDto != null)
                 {
-                    if (cobertura.Estado == "Activo")
+                    if (coberturaDto.Estado == "Activo")
                     {
                         lblEstado.Attributes["class"] = "badge badge-success";
                     }
@@ -60,7 +60,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         public void gvCoberturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvCoberturas.PageIndex = e.NewPageIndex;
-            string estadoFiltroActual = Session["FiltroEstadoCoberturas"] as string;
+            string estadoFiltroActual = Session[KEY_ESTADO_COBERTURAS] as string;
             CargarCoberturas(estadoFiltroActual);
         }
 
@@ -74,45 +74,27 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             {
                 Response.Redirect($"~/Pages/CoberturasPlanes/EditarCobertura?id-cobertura={idCobertura}", false);
             }
-            else if (e.CommandName == "Eliminar")
-            {
-                TurnoService servicioTurno = new TurnoService();
-                try
-                {
-                    _servicioCobertura.DarDeBajaCobertura(idCobertura, servicioTurno);
-                    Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
-                    Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
-                    Session["ModalTipo"] = "Resultado";
-                }
-                catch (ExcepcionReglaNegocio ex)
-                {
-                    Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                    Session["CoberturaMensajeDesc"] = ex.Message;
-                    Session["ModalTipo"] = "Resultado";
-                }
-                catch (Exception)
-                {
-                    Session["CoberturaMensajeTitulo"] = "Error inesperado";
-                    Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
-                    Session["ModalTipo"] = "Resultado";
-                }
-
-                Response.Redirect(Request.RawUrl, false);
-            }
         }
 
         private void CargarCoberturas(string estado = null)
         {
+            List<CoberturaDto> listado = new List<CoberturaDto>();
             try
             {
-                List<CoberturaDto> listado = _servicioCobertura.Listar(estado);
+                listado = _servicioCobertura.Listar(estado);
                 gvCoberturas.DataSource = listado;
                 gvCoberturas.DataBind();
             }
             catch (Exception)
             {
-                // TODO: mostrar error en la UI de forma linda con un mensaje
-                throw;
+                gvCoberturas.DataSource = listado;
+                gvCoberturas.DataBind();
+
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error al cargar coberturas",
+                    "Ocurrió un error inesperado al intentar obtener la lista de coberturas."
+                );
             }
         }
 
@@ -134,7 +116,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             // ´método para resetear filtros y limpiar el 
-            Session["FiltroEstadoCoberturas"] = null;
+            Session[KEY_ESTADO_COBERTURAS] = null;
             ddlEstado.SelectedValue = "todos";
             txtBuscarCobertura.Text = string.Empty;
             CargarCoberturas();
@@ -146,54 +128,30 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             string estadoSeleccionado = ddlEstado.SelectedValue;
             string textoBusqueda = txtBuscarCobertura.Text.ToLower();
 
-            Session["FiltroEstadoCoberturas"] = estadoSeleccionado == "todos"
+            Session[KEY_ESTADO_COBERTURAS] = estadoSeleccionado == "todos"
                 ? null
                 : estadoSeleccionado;
 
-            List<CoberturaDto> lista = _servicioCobertura.Listar(Session["FiltroEstadoCoberturas"] as string);
+            List<CoberturaDto> lista = _servicioCobertura.Listar(Session[KEY_ESTADO_COBERTURAS] as string);
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
                 List<CoberturaDto> listaFiltrada = new List<CoberturaDto>();
 
                 foreach (CoberturaDto dto in lista)
-
+                {
                     if ((dto.Nombre != null && dto.Nombre.ToLower().Contains(textoBusqueda))
-                        || (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoBusqueda)))
+                       || (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoBusqueda)))
                     {
                         listaFiltrada.Add(dto);
                     }
+                }
+
+
                 lista = listaFiltrada;
             }
             gvCoberturas.DataSource = lista;
             gvCoberturas.DataBind();
-        }
-
-        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
-        {
-            int idCobertura = Convert.ToInt32(hdnIdCoberturaEliminar.Value);
-
-            TurnoService servicioTurno = new TurnoService();
-            try
-            {
-                bool resultado = _servicioCobertura.DarDeBajaCobertura(idCobertura, servicioTurno);
-                Session["CoberturaMensajeTitulo"] = "Cobertura dada de baja";
-                Session["CoberturaMensajeDesc"] = "La cobertura y sus planes fueron dados de baja correctamente.";
-                Session["ModalTipo"] = "Resultado";
-            }
-            catch (ExcepcionReglaNegocio ex)
-            {
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-            }
-            catch (Exception)
-            {
-                Session["CoberturaMensajeTitulo"] = "Error inesperado";
-                Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
-                Session["ModalTipo"] = "Resultado";
-            }
-            Response.Redirect(Request.RawUrl, false);
         }
 
         protected void gvCoberturas_Sorting(object sender, GridViewSortEventArgs e)
