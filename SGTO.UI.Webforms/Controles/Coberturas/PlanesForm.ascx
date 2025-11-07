@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PlanesForm.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Coberturas.PlanesForm" %>
 
 <div class="card shadow-sm p-5 gap-5 cobertura-form">
+    
+    <asp:Label ID="lblEstadoInfo" runat="server" CssClass="alert alert-danger" role="alert" Visible="false"></asp:Label>
 
     <div class="mb-3">
         <div class="row gy-4">

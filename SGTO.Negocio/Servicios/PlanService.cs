@@ -1,11 +1,12 @@
 ﻿using SGTO.Datos.Repositorios;
-using SGTO.Dominio.Enums;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 namespace SGTO.Negocio.Servicios
@@ -66,12 +67,18 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public bool CrearPlan(PlanDto nuevoPlanDto)
+        public bool CrearPlan(PlanDto nuevoPlanDto, CoberturaService servicioCobertura)
         {
             if (_repositorioPlan.ExistePlan(nuevoPlanDto.Nombre, nuevoPlanDto.IdCobertura))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe un plan con el nombre indicado: {nuevoPlanDto.Nombre}");
             }
+
+            if (servicioCobertura.EsCoberturaInactiva(nuevoPlanDto.IdCobertura))
+            {
+                throw new ExcepcionReglaNegocio("No se puede crear un plan para una cobertura inactiva.");
+            }
+
 
             try
             {
@@ -90,8 +97,11 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public bool ModificarPlan(PlanDto planDto, TurnoService servicioTurno)
+        public bool ModificarPlan(PlanDto planDto, TurnoService servicioTurno, CoberturaService servicioCobertura)
         {
+            if (planDto.IdCobertura <= 0)
+                throw new ExcepcionReglaNegocio("El plan debe estar asociado a una cobertura válida.");
+
             Cobertura cobertura = new Cobertura() { IdCobertura = planDto.IdCobertura };
             Plan planModificado = PlanMapper.MapearAEntidad(planDto, cobertura);
 
@@ -108,9 +118,20 @@ namespace SGTO.Negocio.Servicios
                 planActual.Estado == EstadoEntidad.Activo &&
                 planModificado.Estado == EstadoEntidad.Inactivo;
 
+            bool seIntentaDarDeAlta =
+               planActual.Estado == EstadoEntidad.Inactivo &&
+               planModificado.Estado == EstadoEntidad.Activo;
+
+            // si tiene turnos activos no se puede dar de baja
             if (seIntentaDarDeBaja && servicioTurno.TieneTurnosActivosPorPlan(planModificado.IdPlan))
             {
                 throw new ExcepcionReglaNegocio("No se puede dar de baja el plan porque tiene turnos activos.");
+            }
+
+            // validar si se intenta volver a activar un plan cuya cobertura se encuentra dada de baja: no permitir activar.
+            if (seIntentaDarDeAlta && servicioCobertura.EsCoberturaInactiva(cobertura.IdCobertura))
+            {
+                throw new ExcepcionReglaNegocio("No se puede activar plan porque la cobertura se encuentra dada de baja.");
             }
 
             try

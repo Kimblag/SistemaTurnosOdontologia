@@ -178,5 +178,18 @@ namespace SGTO.Negocio.Servicios
         }
 
 
+        public bool EsCoberturaInactiva(int idCobertura)
+        {
+            try
+            {
+                return _repositorioCobertura.EstaDadoDeBaja(idCobertura);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

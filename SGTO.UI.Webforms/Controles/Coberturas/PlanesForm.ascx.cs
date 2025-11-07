@@ -56,6 +56,12 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 txtDescripcionPlan.Text = planDto.Descripcion;
                 txtPorcentajeCobertura.Text = planDto.PorcentajeCobertura.ToString();
                 chkActivo.Checked = planDto.Estado.ToLower() == "activo";
+
+                CoberturaService coberturaService = new CoberturaService();
+                if (coberturaService.EsCoberturaInactiva(planDto.IdCobertura))
+                {
+                    DeshabilitarFormularioPorCoberturaInactiva();
+                }
             }
             catch (Exception)
             {
@@ -73,11 +79,33 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         {
             try
             {
-                List<CoberturaDto> coberturas = _servicioCobertura.Listar("activo");
+                List<CoberturaDto> coberturas;
+
+                if (ModoEdicion)
+                {
+                    // si estoy editando, cargo todas las coberturas (activas e inactivas)
+                    coberturas = _servicioCobertura.Listar();
+                }
+                else
+                {
+                    coberturas = _servicioCobertura.Listar("activo");
+                }
+
+                if (coberturas == null || coberturas.Count == 0)
+                {
+                    ddlCobertura.Items.Clear();
+                    ddlCobertura.Items.Add(new ListItem("No hay coberturas disponibles", ""));
+                    ddlCobertura.Enabled = false;
+                    return;
+                }
+
                 ddlCobertura.DataSource = coberturas;
                 ddlCobertura.DataTextField = "Nombre";
                 ddlCobertura.DataValueField = "IdCobertura";
                 ddlCobertura.DataBind();
+
+                if (ModoEdicion)
+                    ddlCobertura.Enabled = !ModoEdicion;
             }
             catch (Exception ex)
             {
@@ -114,8 +142,8 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                 PlanDto nuevoPlanDto = PlanMapper.MapearADto(0, nombre, descripcion, porcentajeCobertura, estado, idCobertura);
 
-
-                _servicioPlan.CrearPlan(nuevoPlanDto);
+                CoberturaService servicioCobertura = new CoberturaService();
+                _servicioPlan.CrearPlan(nuevoPlanDto, servicioCobertura);
 
                 MensajeUiHelper.SetearYMostrar(
                      this.Page,
@@ -166,7 +194,8 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                 PlanDto planDto = PlanMapper.MapearADto(idPlan, nombre, descripcion, porcentajeCobertura, estado, idCobertura);
                 TurnoService servicioTurno = new TurnoService();
-                _servicioPlan.ModificarPlan(planDto, servicioTurno);
+                CoberturaService servicioCobertura = new CoberturaService();
+                _servicioPlan.ModificarPlan(planDto, servicioTurno, servicioCobertura);
 
                 MensajeUiHelper.SetearYMostrar(this.Page,
                   "Plan modificado",
@@ -212,12 +241,25 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 throw new ExcepcionReglaNegocio("El porcentaje de cobertura del plan debe estar entre 0 y 100.");
         }
 
-        public int ExtraerIdPlan()
+        private int ExtraerIdPlan()
         {
             string idPlanString = Request.QueryString["id-plan"] ?? string.Empty;
             if (!string.IsNullOrEmpty(idPlanString) && int.TryParse(idPlanString, out int idPlan))
                 return idPlan;
             return 0;
+        }
+
+        private void DeshabilitarFormularioPorCoberturaInactiva()
+        {
+            txtNombrePlan.Enabled = false;
+            txtDescripcionPlan.Enabled = false;
+            txtPorcentajeCobertura.Enabled = false;
+            chkActivo.Enabled = false;
+            ddlCobertura.Enabled = false;
+            btnGuardar.Enabled = false;
+
+            lblEstadoInfo.Visible = true;
+            lblEstadoInfo.Text = "La cobertura asociada a este plan está inactiva. No es posible modificar sus datos.";
         }
 
 
