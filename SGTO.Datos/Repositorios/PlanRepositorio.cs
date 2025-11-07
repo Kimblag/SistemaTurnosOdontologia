@@ -114,9 +114,12 @@ namespace SGTO.Datos.Repositorios
                                     C.IdCobertura, 
 	                                C.Nombre AS NombreCobertura, 
 	                                C.Descripcion AS DescripcionCobertura,
+                                    CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente,
 	                                C.Estado AS EstadoCobertura
                                 FROM [Plan] P
                                 LEFT JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                                LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                     ON CPH.IdCobertura = C.IdCobertura AND CPH.Estado = 'A'
                                 {{WHERE}}                                
                                 ORDER BY P.Nombre ASC";
 
@@ -214,9 +217,13 @@ namespace SGTO.Datos.Repositorios
                                     C.IdCobertura, 
 	                                C.Nombre AS NombreCobertura, 
 	                                C.Descripcion AS DescripcionCobertura,
+                                    CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente,
 	                                C.Estado AS EstadoCobertura
                                 FROM [Plan] P
                                 LEFT JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                                LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                    ON CPH.IdCobertura = C.IdCobertura 
+                                    AND CPH.Estado = 'A'
                                 WHERE IdPlan = @IdPlan";
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
@@ -288,7 +295,7 @@ namespace SGTO.Datos.Repositorios
                                     Estado = @Estado
                             WHERE IdPlan = @IdPlan";
 
-            using(ConexionDBFactory datos = new ConexionDBFactory())
+            using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 try
                 {

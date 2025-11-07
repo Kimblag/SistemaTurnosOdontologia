@@ -135,8 +135,10 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 int.TryParse(ddlCobertura.SelectedValue, out int idCobertura);
                 string nombre = txtNombrePlan.Text.Trim();
                 string descripcion = txtDescripcionPlan.Text.Trim();
-                decimal.TryParse(txtPorcentajeCobertura.Text, out decimal porcentajeCobertura);
                 string estado = chkActivo.Checked ? "activo" : "inactivo";
+
+                if (!decimal.TryParse(txtPorcentajeCobertura.Text, out decimal porcentajeCobertura))
+                    throw new ArgumentException("El porcentaje de cobertura debe ser un número válido.");
 
                 ValidarCamposPlan(nombre, descripcion, porcentajeCobertura);
 
@@ -153,6 +155,15 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                      VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
                      "abrirModalResultado"
                  );
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Dato inválido",
+                   ex.Message,
+                   "Resultado",
+                   null,
+                   "abrirModalResultado");
             }
             catch (ExcepcionReglaNegocio ex)
             {
@@ -187,8 +198,9 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 int.TryParse(ddlCobertura.SelectedValue, out int idCobertura);
                 string nombre = txtNombrePlan.Text.Trim();
                 string descripcion = txtDescripcionPlan.Text.Trim();
-                decimal.TryParse(txtPorcentajeCobertura.Text, out decimal porcentajeCobertura);
                 string estado = chkActivo.Checked ? "activo" : "inactivo";
+                if (!decimal.TryParse(txtPorcentajeCobertura.Text, out decimal porcentajeCobertura))
+                    throw new ArgumentException("El porcentaje de cobertura debe ser un número válido.");
 
                 ValidarCamposPlan(nombre, descripcion, porcentajeCobertura);
 
@@ -202,6 +214,15 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                   "El plan fue modificado correctamente.",
                   "Resultado",
                    VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                   "abrirModalResultado");
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Dato inválido",
+                   ex.Message,
+                   "Resultado",
+                   null,
                    "abrirModalResultado");
             }
             catch (ExcepcionReglaNegocio ex)
@@ -232,13 +253,13 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         private void ValidarCamposPlan(string nombre, string descripcion, decimal porcentajeCobertura)
         {
             if (!ValidadorCampos.EsTextoValido(nombre, 3, 50))
-                throw new ExcepcionReglaNegocio("El nombre del plan debe tener entre 3 y 50 caracteres y no puede estar vacío.");
+                throw new ArgumentException("El nombre del plan debe tener entre 3 y 50 caracteres y no puede estar vacío.");
 
             if (!string.IsNullOrWhiteSpace(descripcion) && !ValidadorCampos.TieneLongitudMinima(descripcion, 10))
-                throw new ExcepcionReglaNegocio("La descripción del plan debe tener al menos 10 caracteres si se completa.");
+                throw new ArgumentException("La descripción del plan debe tener al menos 10 caracteres si se completa.");
 
             if (!ValidadorCampos.EsPorcentajeCoberturaValido(porcentajeCobertura))
-                throw new ExcepcionReglaNegocio("El porcentaje de cobertura del plan debe estar entre 0 y 100.");
+                throw new ArgumentException("El porcentaje de cobertura del plan debe estar entre 0 y 100.");
         }
 
         private int ExtraerIdPlan()

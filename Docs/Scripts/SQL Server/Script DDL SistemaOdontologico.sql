@@ -218,3 +218,55 @@ CREATE TABLE HistoriaClinicaRegistro(
 );
 
 GO
+
+CREATE TABLE PacienteCoberturaHistorial (
+    IdPacienteCoberturaHistorial INT PRIMARY KEY IDENTITY(1,1),
+    IdPaciente INT NOT NULL,
+    IdCobertura INT NOT NULL,
+    IdPlan INT NULL,
+    FechaInicio DATE NOT NULL DEFAULT GETDATE(),
+    FechaFin DATE NULL,
+    MotivoCambio NVARCHAR(200) NULL,
+    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = histórico cerrado
+
+    CONSTRAINT FK_PacienteCoberturaHistorial_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
+    CONSTRAINT FK_PacienteCoberturaHistorial_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
+    CONSTRAINT FK_PacienteCoberturaHistorial_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
+    CONSTRAINT CHK_PacienteCoberturaHistorial_Estado CHECK (Estado IN ('A','I'))
+);
+
+GO
+
+ALTER TABLE Paciente
+ADD CONSTRAINT FK_Paciente_Cobertura_Actual FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
+    CONSTRAINT FK_Paciente_Plan_Actual FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan);
+
+GO
+
+CREATE TABLE CoberturaPorcentajeHistorial (
+    IdHistorial INT IDENTITY(1,1) PRIMARY KEY,
+    IdCobertura INT NOT NULL,
+    PorcentajeCobertura DECIMAL(5,2) NOT NULL,
+    FechaInicio DATE NOT NULL DEFAULT GETDATE(),
+    FechaFin DATE NULL,
+    Estado CHAR(1) NOT NULL DEFAULT 'A',   -- A = Activo, I = Inactivo (cerrado)
+    MotivoCambio NVARCHAR(200) NULL,
+    CONSTRAINT FK_CoberturaPorcentajeHistorial_Cobertura 
+        FOREIGN KEY (IdCobertura) REFERENCES Cobertura(IdCobertura),
+    CONSTRAINT CHK_CoberturaPorcentajeHistorial_Estado CHECK (Estado IN ('A','I'))
+);
+GO
+
+CREATE TABLE PlanPorcentajeHistorial (
+    IdHistorial INT IDENTITY(1,1) PRIMARY KEY,
+    IdPlan INT NOT NULL,
+    PorcentajeCobertura DECIMAL(5,2) NOT NULL,
+    FechaInicio DATE NOT NULL DEFAULT GETDATE(),
+    FechaFin DATE NULL,
+    Estado CHAR(1) NOT NULL DEFAULT 'A',   -- A = vigente, I = cerrado
+    MotivoCambio NVARCHAR(200) NULL,
+    CONSTRAINT FK_PlanPorcentajeHistorial_Plan 
+        FOREIGN KEY (IdPlan) REFERENCES [Plan](IdPlan),
+    CONSTRAINT CHK_PlanPorcentajeHistorial_Estado CHECK (Estado IN ('A','I'))
+);
+GO

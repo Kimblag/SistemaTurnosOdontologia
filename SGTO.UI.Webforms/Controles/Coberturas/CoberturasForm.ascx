@@ -8,7 +8,9 @@
 
                 <%-- Nombre --%>
                 <div class="col-12">
-                    <label for="txtNombreCobertura" class="form-label">Nombre</label>
+                    <label for="txtNombreCobertura" class="form-label">
+                        Nombre <span class="text-danger">*</span>
+                    </label>
                     <asp:TextBox
                         ID="txtNombreCobertura"
                         runat="server"
@@ -40,6 +42,52 @@
                         CssClass="form-control descripcion-textarea" MaxLength="200">
                     </asp:TextBox>
 
+                </div>
+
+                <%-- porcentaje cobertura --%>
+                <div class="col-12">
+                    <label for="txtPorcentaje" class="form-label">Porcentaje de cobertura</label>
+                    <div class="input-group mb-3">
+                        <asp:TextBox
+                            ID="txtPorcentaje"
+                            runat="server"
+                            placeholder="Ej.: 40..."
+                            TextMode="Number"
+                            MaxLength="3"
+                            CssClass="form-control"
+                            step="0.01"
+                            min="0"
+                            max="100">
+                        </asp:TextBox>
+                        <span class="input-group-text">%</span>
+                    </div>
+
+
+                    <asp:RangeValidator
+                        ID="rvPorcentaje"
+                        runat="server"
+                        ControlToValidate="txtPorcentaje"
+                        MinimumValue="0"
+                        MaximumValue="100"
+                        Type="Double"
+                        ErrorMessage="El porcentaje debe estar entre 0 y 100."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="CoberturaGroup"
+                        ValidateEmptyText="false" />
+
+                    <asp:RegularExpressionValidator
+                        ID="revPorcentaje"
+                        runat="server"
+                        ControlToValidate="txtPorcentaje"
+                        ValidationExpression="^\d{1,3}(\.\d{1,2})?$"
+                        ErrorMessage="Ingrese un número válido (por ejemplo 25 o 75.5)."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="CoberturaGroup"
+                        ValidateEmptyText="false" />
+                    <small class="text-muted">Este porcentaje solo se aplica a coberturas sin planes asociados. 
+                    Si la cobertura tiene planes, use los porcentajes de cada plan.</small>
                 </div>
 
                 <%-- Estado --%>
@@ -200,13 +248,13 @@
                         ControlToValidate="txtNombrePlan"
                         ErrorMessage="Debe ingresar un nombre para el plan."
                         CssClass="text-danger small"
-                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                        Display="Dynamic" ValidationGroup="PlanCoberturaGroup" />
                     <asp:RegularExpressionValidator ID="revNombrePlan" runat="server"
                         ControlToValidate="txtNombrePlan"
                         ValidationExpression="^[A-Za-z0-9\s]{3,80}$"
                         ErrorMessage="El nombre debe tener entre 3 y 80 caracteres y solo contener letras, números o espacios."
                         CssClass="text-danger small"
-                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                        Display="Dynamic" ValidationGroup="PlanCoberturaGroup" />
                 </div>
                 <div class="mb-3">
                     <label for="txtDescripcionPlan" class="form-label">Descripción</label>
@@ -219,14 +267,14 @@
                         ControlToValidate="txtPorcentajeCobertura"
                         ErrorMessage="Debe ingresar un porcentaje."
                         CssClass="text-danger small"
-                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                        Display="Dynamic" ValidationGroup="PlanCoberturaGroup" />
                     <asp:RangeValidator ID="rngPorcentaje" runat="server"
                         ControlToValidate="txtPorcentajeCobertura"
                         MinimumValue="0" MaximumValue="100"
                         Type="Double"
                         ErrorMessage="El porcentaje debe estar entre 0 y 100."
                         CssClass="text-danger small"
-                        Display="Dynamic" ValidationGroup="PlanGroup" />
+                        Display="Dynamic" ValidationGroup="PlanCoberturaGroup" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -235,7 +283,7 @@
                     CssClass="btn btn-primary"
                     Text="Agregar"
                     OnClick="btnAgregarPlan_Click"
-                    ValidationGroup="PlanGroup" />
+                    ValidationGroup="PlanCoberturaGroup" />
             </div>
 
         </div>

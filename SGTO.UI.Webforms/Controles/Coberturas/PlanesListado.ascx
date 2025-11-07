@@ -9,15 +9,15 @@
         <div class="d-flex gap-2 align-items-center w-50">
             <asp:TextBox ID="txtBuscarPlanes" runat="server" CssClass="form-control" placeholder="Buscar Planes..."></asp:TextBox>
 
-            <asp:DropDownList ID="ddlCoberturas" runat="server" 
+            <asp:DropDownList ID="ddlCoberturas" runat="server"
                 CssClass="form-select"
-                 AutoPostBack="True" 
+                AutoPostBack="True"
                 OnSelectedIndexChanged="ddlCoberturas_SelectedIndexChanged">
             </asp:DropDownList>
 
-            <asp:DropDownList ID="ddlEstado" runat="server" 
-                CssClass="form-select" 
-                AutoPostBack="True" 
+            <asp:DropDownList ID="ddlEstado" runat="server"
+                CssClass="form-select"
+                AutoPostBack="True"
                 OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
                 <asp:ListItem Text="Todos" Value="todos" />
                 <asp:ListItem Text="Activo" Value="activo" />
@@ -55,10 +55,10 @@
             AllowPaging="True" PageSize="7">
 
             <Columns>
-                <asp:BoundField DataField="NombreCobertura" HeaderText="Cobertura" />
                 <asp:BoundField DataField="Nombre" HeaderText="Nombre del Plan" />
                 <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                 <asp:BoundField DataField="PorcentajeCobertura" HeaderText="% de Cobertura" />
+                <asp:BoundField DataField="NombreCobertura" HeaderText="Cobertura Asociada" />
 
                 <%--columna estado--%>
                 <asp:TemplateField HeaderText="Estado">

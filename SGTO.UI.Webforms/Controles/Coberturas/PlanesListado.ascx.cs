@@ -79,8 +79,9 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 gvPlanes.DataSource = listado;
                 gvPlanes.DataBind();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 gvPlanes.DataSource = new List<PlanDto>();
                 gvPlanes.DataBind();
 

@@ -51,6 +51,33 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         protected global::System.Web.UI.WebControls.TextBox txtDescripcionCobertura;
 
         /// <summary>
+        /// txtPorcentaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPorcentaje;
+
+        /// <summary>
+        /// rvPorcentaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RangeValidator rvPorcentaje;
+
+        /// <summary>
+        /// revPorcentaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revPorcentaje;
+
+        /// <summary>
         /// chkActivo control.
         /// </summary>
         /// <remarks>

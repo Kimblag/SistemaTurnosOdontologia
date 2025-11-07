@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="PlanesForm.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Coberturas.PlanesForm" %>
 
 <div class="card shadow-sm p-5 gap-5 cobertura-form">
-    
+
     <asp:Label ID="lblEstadoInfo" runat="server" CssClass="alert alert-danger" role="alert" Visible="false"></asp:Label>
 
     <div class="mb-3">
@@ -9,7 +9,7 @@
 
             <%-- cobertura asociada --%>
             <div class="col-12">
-                <label for="ddlCobertura" class="form-label">Cobertura Asociada</label>
+                <label for="ddlCobertura" class="form-label">Cobertura Asociada <span class="text-danger">*</span></label>
                 <asp:DropDownList
                     CssClass="form-select"
                     ID="ddlCobertura"
@@ -19,7 +19,9 @@
 
             <%-- Nombre --%>
             <div class="col-12">
-                <label for="txtNombrePlan" class="form-label">Nombre del Plan</label>
+                <label for="txtNombrePlan" class="form-label">
+                    Nombre del Plan <span class="text-danger">*</span>
+                </label>
                 <asp:TextBox
                     ID="txtNombrePlan"
                     runat="server"
@@ -56,7 +58,7 @@
 
             <%-- porcentaje cobertura --%>
             <div class="col-12">
-                <label for="txtPorcentajeCobertura" class="form-label">Porcentaje de cobertura</label>
+                <label for="txtPorcentajeCobertura" class="form-label">Porcentaje de cobertura <span class="text-danger">*</span></label>
                 <div class="input-group mb-3">
                     <asp:TextBox
                         ID="txtPorcentajeCobertura"
@@ -131,8 +133,8 @@
             <div class="col-6 col-sm-4 col-md-2 d-grid">
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
-                    CssClass="btn btn-primary btn-sm" 
-                    OnClick="btnGuardar_Click"/>
+                    CssClass="btn btn-primary btn-sm"
+                    OnClick="btnGuardar_Click" />
             </div>
         </div>
     </div>

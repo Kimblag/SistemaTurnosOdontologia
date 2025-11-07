@@ -26,14 +26,15 @@ namespace SGTO.Negocio.Mappers
                 Descripcion = cobertura.Descripcion,
                 CantidadPlanes = cobertura.Planes.Count,
                 Estado = cobertura.Estado.ToString(),
-                NombrePlanes = nombrePlanes
+                NombrePlanes = nombrePlanes,
+                PorcentajeCobertura = cobertura.PorcentajeCobertura
 
             };
 
             return coberturaDto;
         }
 
-        public static CoberturaDto MapearADto(int idCobertura, string nombre, string descripcion, string estado)
+        public static CoberturaDto MapearADto(int idCobertura, string nombre, string descripcion, string estado, decimal? porcentajeCobertura = null)
         {
             List<string> planes = new List<string>();
 
@@ -44,7 +45,8 @@ namespace SGTO.Negocio.Mappers
                 Descripcion = descripcion,
                 CantidadPlanes = 0,
                 Estado = estado,
-                NombrePlanes = planes
+                NombrePlanes = planes,
+                PorcentajeCobertura = porcentajeCobertura
 
             };
             return coberturaDto;
@@ -68,6 +70,7 @@ namespace SGTO.Negocio.Mappers
                 Nombre = coberturaDto.Nombre,
                 Descripcion = coberturaDto.Descripcion,
                 Planes = new List<Plan>(),
+                PorcentajeCobertura = coberturaDto.PorcentajeCobertura,
                 Estado = EnumeracionMapper.MapearEstadoEntidad(coberturaDto.Estado)
             };
 

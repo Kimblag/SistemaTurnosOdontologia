@@ -5,6 +5,7 @@ using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 
 namespace SGTO.Datos.Repositorios
@@ -21,6 +22,7 @@ namespace SGTO.Datos.Repositorios
 	                                       C.Nombre AS NombreCobertura, 
 	                                       C.Descripcion AS DescripcionCobertura,
 	                                       C.Estado AS EstadoCobertura,
+                                           CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente,
 	                                       P.IdPlan,
 	                                       P.Nombre AS NombrePlan,
 	                                       P.Descripcion AS DescripcionPlan,
@@ -28,6 +30,8 @@ namespace SGTO.Datos.Repositorios
 	                                       P.Estado AS EstadoPlan
 	                                    FROM Cobertura C
 	                                    LEFT JOIN [Plan] P ON C.IdCobertura = P.IdCobertura
+                                        LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                            ON CPH.IdCobertura = C.IdCobertura AND CPH.Estado = 'A'
                                         {{WHERE}}
                                         ORDER BY NombreCobertura ASC";
 
@@ -66,8 +70,9 @@ namespace SGTO.Datos.Repositorios
                     }
                     return coberturas;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("Capa datos" + ex.Message);
                     throw;
                 }
             }
@@ -79,11 +84,16 @@ namespace SGTO.Datos.Repositorios
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
-                string query = @"SELECT C.IdCobertura,
+                string query = @"SELECT 
+                                    C.IdCobertura,
                                     C.Nombre AS NombreCobertura,
                                     C.Descripcion AS DescripcionCobertura,
-                                    C.Estado AS EstadoCobertura
+                                    C.Estado AS EstadoCobertura,
+                                    CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente
                                 FROM Cobertura C
+                                LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                    ON CPH.IdCobertura = C.IdCobertura 
+                                    AND CPH.Estado = 'A'
                                 WHERE C.IdCobertura = @IdCobertura";
                 datos.EstablecerParametros("@IdCobertura", idCobertura);
                 datos.DefinirConsulta(query);

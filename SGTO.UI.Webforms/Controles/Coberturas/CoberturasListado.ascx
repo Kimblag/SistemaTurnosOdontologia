@@ -175,39 +175,5 @@
             }
         };
 
-
-        <%--window.abrirModalConfirmacion = function (btn) {
-            try {
-                const idCobertura = btn.getAttribute('data-id');
-                console.log("CONFIRMACION");
-                console.log(idCobertura);
-
-                const hidden = document.getElementById('<%= hdnIdCoberturaEliminar.ClientID %>');
-                if (hidden) {
-                    hidden.value = idCobertura;
-                    console.log("hidden seteado con:", hidden.value);
-                } else {
-                    console.error("No se encontró el hidden field.");
-                }
-
-                const modal = new bootstrap.Modal(document.getElementById('modalConfirmarCobertura'));
-                modal.show();
-            } catch (err) {
-                console.error("Error en abrirModalConfirmacion:", err);
-            }
-        };
-
-
-        window.abrirModalResultado = function (titulo, descripcion) {
-            try {
-                document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
-                document.getElementById('modalResultadoDesc').textContent = descripcion || '';
-                const modal = new bootstrap.Modal(document.getElementById('modalResultadoCobertura'));
-                modal.show();
-            } catch (err) {
-                console.error("Error en abrirModalResultado:", err);
-            }
-        };--%>
-
     });
 </script>

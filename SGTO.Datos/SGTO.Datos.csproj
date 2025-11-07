@@ -58,6 +58,7 @@
     <Compile Include="Mappers\UsuarioMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorios\BaseRepositorio.cs" />
+    <Compile Include="Repositorios\CoberturaPorcentajeHistorialRepositorio.cs" />
     <Compile Include="Repositorios\CoberturaRepositorio.cs" />
     <Compile Include="Repositorios\EspecialidadRepositorio.cs" />
     <Compile Include="Repositorios\MedicoRepositorio.cs" />

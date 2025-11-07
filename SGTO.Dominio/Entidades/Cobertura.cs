@@ -12,6 +12,7 @@ namespace SGTO.Dominio.Entidades
         public int IdCobertura { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; } = string.Empty;
+        public decimal? PorcentajeCobertura { get; set; } = null;
         public List<Plan> Planes { get; set; }
         public EstadoEntidad Estado { get; set; }
 
@@ -26,23 +27,26 @@ namespace SGTO.Dominio.Entidades
             Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
             Planes = new List<Plan>();
             Estado = EstadoEntidad.Activo;
+            PorcentajeCobertura = 0;
         }
 
-        public Cobertura(int idCobertura, string nombre, string descripcion, EstadoEntidad estado)
+        public Cobertura(int idCobertura, string nombre, string descripcion, decimal? porcentajeCobertura, EstadoEntidad estado)
         {
             IdCobertura = idCobertura;
             Nombre = nombre;
             Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
             Planes = new List<Plan>();
+            PorcentajeCobertura = porcentajeCobertura;
             Estado = estado;
         }
 
-        public Cobertura(int idCobertura, string nombre, string descripcion, List<Plan> planes, EstadoEntidad estado)
+        public Cobertura(int idCobertura, string nombre, string descripcion, decimal? porcentajeCobertura, List<Plan> planes, EstadoEntidad estado)
         {
             IdCobertura = idCobertura;
             Nombre = nombre;
             Descripcion = !string.IsNullOrEmpty(descripcion) ? descripcion : string.Empty;
             Planes = planes;
+            PorcentajeCobertura = porcentajeCobertura;
             Estado = estado;
         }
     }

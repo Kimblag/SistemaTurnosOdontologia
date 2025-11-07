@@ -106,6 +106,16 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 CoberturaDto coberturaDto = _servicioCobertura.ObtenerCoberturaPorId(idCobertura);
                 txtNombreCobertura.Text = coberturaDto.Nombre;
                 txtDescripcionCobertura.Text = coberturaDto.Descripcion;
+                if (coberturaDto.PorcentajeCobertura is null)
+                {
+                    txtPorcentaje.Enabled = false;
+                    txtPorcentaje.Text = string.Empty; // sin valor
+                }
+                else
+                {
+                    txtPorcentaje.Enabled = true;
+                    txtPorcentaje.Text = coberturaDto.PorcentajeCobertura.Value.ToString("N0"); // muestra "0", "40", "55", etc.
+                }
                 chkActivo.Checked = coberturaDto.Estado.ToLower() == "activo";
             }
             catch (Exception)
@@ -135,17 +145,26 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             string nombre = txtNombreCobertura.Text;
             string descripcion = txtDescripcionCobertura.Text;
             string estado = chkActivo.Checked ? "activo" : "inactivo";
+            decimal? porcentajeCobertura = null;
+            if (decimal.TryParse(txtPorcentaje.Text, out decimal valor))
+            {
+                porcentajeCobertura = valor;
+            }
             try
             {
-                CoberturaDto coberturaDto = CoberturaMapper.MapearADto(idCobertura, nombre, descripcion, estado);
+                CoberturaDto coberturaDto = CoberturaMapper.MapearADto(idCobertura, nombre, descripcion, estado, porcentajeCobertura);
                 TurnoService servicioTurno = new TurnoService();
                 _servicioCobertura.ModificarCobertura(coberturaDto, servicioTurno);
 
-                MensajeUiHelper.SetearYMostrar(this.Page,
-                   "Cobertura modificada",
+                MensajeUiHelper.SetearYMostrar(
+                this.Page,
+               "Cobertura modificada",
                    "La cobertura fue modificada correctamente.",
-                   "Resultado");
-                Response.Redirect(Request.RawUrl, false);
+                "Resultado",
+                VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                "abrirModalResultado"
+            );
+
             }
             catch (ExcepcionReglaNegocio ex)
             {
@@ -169,13 +188,20 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
         private void CrearCobertura()
         {
-            string nombre = txtNombreCobertura.Text;
-            string descripcion = txtDescripcionCobertura.Text;
-            string estado = chkActivo.Checked ? "activo" : "inactivo";
-            CoberturaDto coberturaDto = CoberturaMapper.MapearADto(0, nombre, descripcion, estado);
-            var planes = Session[_keySessionListaPlanes] as List<PlanDto> ?? new List<PlanDto>();
             try
             {
+                string nombre = txtNombreCobertura.Text;
+                string descripcion = txtDescripcionCobertura.Text;
+                string estado = chkActivo.Checked ? "activo" : "inactivo";
+
+                decimal? porcentajeCobertura = null;
+                if (decimal.TryParse(txtPorcentaje.Text, out decimal valor))
+                {
+                    porcentajeCobertura = valor;
+                }
+
+                CoberturaDto coberturaDto = CoberturaMapper.MapearADto(0, nombre, descripcion, estado, porcentajeCobertura);
+                var planes = Session[_keySessionListaPlanes] as List<PlanDto> ?? new List<PlanDto>();
                 ValidarCamposCobertura();
 
                 _servicioCobertura.CrearCobertura(coberturaDto, planes);

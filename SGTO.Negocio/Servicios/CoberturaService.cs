@@ -7,9 +7,7 @@ using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace SGTO.Negocio.Servicios
 {
@@ -17,12 +15,15 @@ namespace SGTO.Negocio.Servicios
     {
         private readonly CoberturaRepositorio _repositorioCobertura;
         private readonly PlanRepositorio _repositorioPlan;
+        private readonly CoberturaPorcentajeHistorialRepositorio _repositorioHistorial;
+
 
 
         public CoberturaService()
         {
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
+            _repositorioHistorial = new CoberturaPorcentajeHistorialRepositorio();
         }
 
         public List<CoberturaDto> Listar(string estado = null)
@@ -31,8 +32,9 @@ namespace SGTO.Negocio.Servicios
             {
                 return CoberturaMapper.MapearListaADto(_repositorioCobertura.Listar(estado));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine("ERROR: " + ex.Message);
                 throw;
             }
         }
@@ -78,9 +80,25 @@ namespace SGTO.Negocio.Servicios
                 try
                 {
                     datos.IniciarTransaccion();
+
                     _repositorioCobertura.Modificar(coberturaModificada, datos);
                     _repositorioPlan.ActualizarEstadoPorCobertura(coberturaModificada.IdCobertura, coberturaModificada.Estado, datos);
 
+                    //porcentaje histórico
+                    if (coberturaDto.PorcentajeCobertura.HasValue)
+                    {
+                        decimal? vigente = _repositorioHistorial.ObtenerPorcentajeActivo(coberturaDto.IdCobertura, datos);
+                        if (vigente != coberturaDto.PorcentajeCobertura.Value)
+                        {
+                            _repositorioHistorial.CerrarPorcentajeActivo(coberturaDto.IdCobertura, datos);
+                            _repositorioHistorial.InsertarNuevoPorcentaje(
+                                coberturaDto.IdCobertura,
+                                coberturaDto.PorcentajeCobertura.Value,
+                                "Actualización manual desde edición de cobertura",
+                                datos
+                            );
+                        }
+                    }
                     datos.ConfirmarTransaccion();
                     return true;
                 }
@@ -153,6 +171,7 @@ namespace SGTO.Negocio.Servicios
                 try
                 {
                     datos.IniciarTransaccion();
+
                     int idNuevaCobertura = _repositorioCobertura.Crear(nuevaCobertura, datos);
                     if (idNuevaCobertura == 0)
                     {
@@ -165,6 +184,15 @@ namespace SGTO.Negocio.Servicios
                         List<Plan> planes = PlanMapper.MapearAEntidad(listaPlanesDto, nuevaCobertura);
                         _repositorioPlan.Crear(planes, datos);
                     }
+                    else if (nuevaCobertura.PorcentajeCobertura.HasValue)
+                    {
+                        _repositorioHistorial.InsertarNuevoPorcentaje(
+                            idNuevaCobertura,
+                            nuevaCobertura.PorcentajeCobertura.Value,
+                            "Registro inicial de cobertura sin planes",
+                            datos
+                        );
+                    }
 
                     datos.ConfirmarTransaccion();
                     return true;
@@ -176,7 +204,6 @@ namespace SGTO.Negocio.Servicios
                 }
             }
         }
-
 
         public bool EsCoberturaInactiva(int idCobertura)
         {
