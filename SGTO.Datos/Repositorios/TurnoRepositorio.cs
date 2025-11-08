@@ -1,4 +1,6 @@
 ﻿using SGTO.Datos.Infraestructura;
+using SGTO.Datos.Mappers;
+using SGTO.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -106,6 +108,58 @@ namespace SGTO.Datos.Repositorios
                 }
             }
             return resultado;
+        }
+
+
+        public List<Turno> ListaPorPaciente(int idPaciente)
+        {
+            List<Turno> turnos = new List<Turno>();
+
+            string query = @"
+                            SELECT 
+                                T.IdTurno,
+                                T.FechaInicio,
+                                T.FechaFin,
+                                T.Estado AS EstadoTurno,
+                                T.Observaciones,
+                                M.IdMedico,
+                                M.Nombre AS NombreMedico,
+                                M.Apellido AS ApellidoMedico,
+                                E.IdEspecialidad,
+                                E.Nombre AS NombreEspecialidad,
+                                TR.IdTratamiento,
+                                TR.Nombre AS NombreTratamiento
+                            FROM Turno T
+                                INNER JOIN Medico M ON T.IdMedico = M.IdMedico
+                                INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                                INNER JOIN Tratamiento TR ON T.IdTratamiento = TR.IdTratamiento
+                            WHERE T.IdPaciente = @IdPaciente
+                            ORDER BY T.FechaInicio DESC";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.EstablecerParametros("@IdPaciente", idPaciente);
+                datos.DefinirConsulta(query);
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Turno turno = TurnoMapper.MapearAEntidadBasico(lector);
+                            turnos.Add(turno);
+                        }
+                    }
+                    return turnos;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+            }
+
         }
 
 

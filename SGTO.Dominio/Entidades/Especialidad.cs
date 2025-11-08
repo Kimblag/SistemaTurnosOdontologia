@@ -1,9 +1,6 @@
 ﻿using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
@@ -14,6 +11,11 @@ namespace SGTO.Dominio.Entidades
         public string Descripcion { get; set; } = string.Empty;
         public List<Tratamiento> TratamientosAsociados { get; set; }
         public EstadoEntidad Estado { get; set; }
+
+        public Especialidad()
+        {
+
+        }
 
         public Especialidad(string nombre, string descripcion)
         {

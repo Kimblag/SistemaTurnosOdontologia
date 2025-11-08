@@ -76,12 +76,20 @@
                         <Columns>
                             <asp:BoundField DataField="Fecha" HeaderText="Fecha" />
                             <asp:BoundField DataField="Hora" HeaderText="Hora" />
-                            <asp:BoundField DataField="Profesional" HeaderText="Profesional" />
-                            <asp:BoundField DataField="Motivo" HeaderText="Motivo" />
+                            <asp:BoundField DataField="Medico" HeaderText="Médico" />
+                            <asp:BoundField DataField="Observaciones" HeaderText="Observaciones" />
 
                             <asp:TemplateField HeaderText="Estado">
                                 <ItemTemplate>
-                                    <span id="lblEstado" runat="server" class="badge"><%# Eval("EstadoTexto") %></span>
+                                    <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+                            <asp:TemplateField HeaderText="Acciones">
+                                <ItemTemplate>
+                                    <a href='<%# ResolveUrl("~/Pages/Turnos/Detalle.aspx?id-turno=" + Eval("IdTurnoPaciente")) %>'
+                                        class="btn btn-sm btn-outline-primary">Ver detalle
+                                    </a>
                                 </ItemTemplate>
                             </asp:TemplateField>
 
@@ -101,5 +109,42 @@
 
         </div>
     </div>
+
+
+    <%-- modal resultado --%>
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultadoDesc"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // modal resultado
+            window.abrirModalResultado = function (titulo, descripcion) {
+                try {
+                    document.getElementById('modalResultadoTitulo').textContent = titulo || "Resultado";
+                    document.getElementById('modalResultadoDesc').textContent = descripcion || "";
+                    new bootstrap.Modal(document.getElementById('modalResultado')).show();
+                } catch (err) {
+                    console.error("Error al abrir modal de resultado:", err);
+                }
+            };
+        });
+    </script>
 
 </asp:Content>

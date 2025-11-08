@@ -1,9 +1,6 @@
 ﻿using SGTO.Dominio.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SGTO.Dominio.Entidades
 {
@@ -16,6 +13,11 @@ namespace SGTO.Dominio.Entidades
         public decimal CostoBase { get; set; }
         public Especialidad Especialidad { get; set; }
         public EstadoEntidad Estado { get; set; }
+
+        public Tratamiento()
+        {
+
+        }
 
         public Tratamiento(string nombre, string descripcion, decimal costoBase,
             Especialidad especialidad)

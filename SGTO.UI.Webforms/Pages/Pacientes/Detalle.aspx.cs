@@ -1,10 +1,15 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
+using SGTO.Negocio.DTOs.Pacientes;
+using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -14,6 +19,8 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 {
     public partial class Detalle : System.Web.UI.Page
     {
+        private readonly PacienteService _servicioPaciente = new PacienteService();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
@@ -22,147 +29,120 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                 master.EstablecerTituloSeccion(this.Page.Title);
             }
             if (!IsPostBack)
-                CargarDetallePaciente();
+            {
+                int idPaciente = ExtraerIdPaciente();
+                if (idPaciente == 0)
+                {
+                    MensajeUiHelper.SetearYMostrar(
+                        this.Page,
+                        "Paciente no encontrado",
+                        "No se especificó un paciente válido.",
+                        "Resultado",
+                        VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                        "abrirModalResultado"
+                    );
+                    return;
+                }
+                CargarDetallePaciente(idPaciente);
+                ModalHelper.MostrarModalDesdeSession(this.Page, "PacienteMensajeTitulo", "PacienteMensajeDesc", "/Pages/Pacientes/Index");
+            }
         }
 
-        protected void gvTurnosPaciente_PageIndexChanging(object sender, GridViewPageEventArgs e) { }
-        protected void gvTurnosPaciente_RowCommand(object sender, GridViewCommandEventArgs e) { }
-
-        private void CargarDetallePaciente()
+        private int ExtraerIdPaciente()
         {
-            // método de test para probar vista detalle
-            // datos paciente test
-            var cobertura = new Cobertura("OSDE", "Cobertura médica prepaga");
-            var plan = new Plan("310", 0.90m, cobertura, "Plan 310 odontológico");
+            string idStr = Request.QueryString["id-paciente"] ?? string.Empty;
+            return int.TryParse(idStr, out int id) ? id : 0;
+        }
 
-            var paciente = new Paciente(
-                idPaciente: 1,
-                nombre: "Ana María",
-                apellido: "García",
-                dni: new DocumentoIdentidad("28123456"),
-                fechaNacimiento: new DateTime(1980, 5, 15),
-                genero: Genero.Femenino,
-                telefono: new Telefono("11-5555-4444"),
-                email: new Email("anamgarcia@email.com"),
-                cobertura: cobertura,
-                plan: plan,
-                turnos: new List<Turno>(),
-                historiaClinica: new List<HistoriaClinicaRegistro>()
-            );
-
-            // medicos y especialidades de test
-            var especialidadGeneral = new Especialidad("Odontología General", "Tratamientos dentales generales");
-            var tratamientos = new List<Tratamiento>
+        private void CargarDetallePaciente(int idPaciente)
+        {
+            try
             {
-                new Tratamiento("Consulta odontológica", "Evaluación inicial del paciente", 8000, especialidadGeneral),
-                new Tratamiento("Limpieza dental", "Limpieza profunda y profilaxis", 9500, especialidadGeneral),
-                new Tratamiento("Control", "Control post tratamiento", 7000, especialidadGeneral)
-            };
-            especialidadGeneral.TratamientosAsociados.AddRange(tratamientos);
+                PacienteDetalleDto dto = _servicioPaciente.ObtenerDetalle(idPaciente);
 
-            var rolMedico = new Rol("Médico", "Acceso a gestión de pacientes y turnos", new List<Permiso>());
-            var usuarioDrPerez = new Usuario(
-                "Juan", "Pérez", new Email("juan.perez@clinic.com"),
-                "jperez", "hashed1234", rolMedico
-            );
-
-            var medico = new Medico(
-                idMedico: 1,
-                nombre: "Juan",
-                apellido: "Pérez",
-                dni: new DocumentoIdentidad("27333444"),
-                fechaNacimiento: new DateTime(1975, 3, 12),
-                genero: Genero.Masculino,
-                telefono: new Telefono("11-6000-0001"),
-                email: new Email("juan.perez@clinic.com"),
-                matricula: "MP-45892",
-                especialidades: new List<Especialidad> { especialidadGeneral },
-                turnosAsignados: new List<Turno>(),
-                usuario: usuarioDrPerez
-            );
-
-            // turnos test
-            var turnos = new List<Turno>
-            {
-                new Turno(
-                    paciente,
-                    medico,
-                    especialidadGeneral,
-                    tratamientos[0],
-                    new HorarioTurno(
-                        new DateTime(2023, 7, 20, 10, 0, 0),
-                        new DateTime(2023, 7, 20, 11, 0, 0)
-                    )
-                )
+                if (dto == null)
                 {
-                    Estado = EstadoTurno.Cerrado,
-                    Observaciones = "Control general post limpieza"
-                },
-
-                new Turno(
-                    paciente,
-                    medico,
-                    especialidadGeneral,
-                    tratamientos[1],
-                    new HorarioTurno(
-                        new DateTime(2023, 5, 15, 15, 30, 0),
-                        new DateTime(2023, 5, 15, 16, 30, 0)
-                    )
-                )
-                {
-                    Estado = EstadoTurno.Cerrado,
-                    Observaciones = "Limpieza anual"
-                },
-
-                new Turno(
-                    paciente,
-                    medico,
-                    especialidadGeneral,
-                    tratamientos[2],
-                    new HorarioTurno(
-                        new DateTime(2023, 3, 2, 9, 0, 0),
-                        new DateTime(2023, 3, 2, 10, 0, 0)
-                    )
-                )
-                {
-                    Estado = EstadoTurno.Cerrado,
-                    Observaciones = "Consulta inicial del paciente"
+                    MensajeUiHelper.SetearYMostrar(
+                        this.Page,
+                        "Paciente no encontrado",
+                        "No se encontró el paciente solicitado.",
+                        "Resultado",
+                        VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                        "abrirModalResultado"
+                    );
+                    return;
                 }
-            };
 
-            paciente.Turnos = turnos;
-
-
-            var table = new DataTable();
-            table.Columns.Add("Fecha");
-            table.Columns.Add("Hora");
-            table.Columns.Add("Profesional");
-            table.Columns.Add("Motivo");
-            table.Columns.Add("EstadoTexto");
-            foreach (var t in paciente.Turnos)
+                CargarDatosPaciente(dto);
+            }
+            catch (ExcepcionReglaNegocio ex)
             {
-                table.Rows.Add(
-                    t.Horario.Inicio.ToString("dd/MM/yyyy"),
-                    t.Horario.Inicio.ToString("HH:mm"),
-                    $"{t.Medico.Nombre} {t.Medico.Apellido}",
-                    t.Tratamiento?.Nombre ?? "—",
-                    t.Estado.ToString()
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                    "abrirModalResultado"
                 );
             }
-            gvTurnosPaciente.DataSource = table;
-            gvTurnosPaciente.DataBind();
-
-
-            lblNombreCompleto.Text = $"{paciente.Nombre} {paciente.Apellido}";
-            lblDni.Text = paciente.Dni.Numero;
-            lblFechaNacimiento.Text = paciente.FechaNacimiento.ToString("dd/MM/yyyy");
-            lblGenero.Text = paciente.Genero.ToString();
-            lblTelefono.Text = paciente.Telefono.Numero;
-            lblEmail.Text = paciente.Email.Valor;
-            lblCobertura.Text = paciente.Cobertura.Nombre;
-            lblPlan.Text = paciente.Plan.Nombre;
-            lblEstado.Text = paciente.Estado.ToString();
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al cargar detalle de paciente: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al intentar cargar el detalle del paciente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                    "abrirModalResultado"
+                );
+            }
         }
+
+
+        private void CargarDatosPaciente(PacienteDetalleDto dto)
+        {
+            lblNombreCompleto.Text = dto.NombreCompleto;
+            lblDni.Text = dto.Dni;
+            lblFechaNacimiento.Text = dto.FechaNacimiento;
+            lblGenero.Text = dto.Genero;
+            lblTelefono.Text = dto.Telefono;
+            lblEmail.Text = dto.Email;
+            lblCobertura.Text = dto.Cobertura;
+            lblPlan.Text = dto.Plan;
+
+            lblEstado.Text = dto.Estado;
+            lblEstado.CssClass = dto.Estado == "Activo" ? "badge bg-success" : "badge bg-secondary";
+
+            gvTurnosPaciente.DataSource = dto.Turnos;
+            gvTurnosPaciente.DataBind();
+        }
+
+        protected void gvTurnosPaciente_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            try
+            {
+                gvTurnosPaciente.PageIndex = e.NewPageIndex;
+                int idPaciente = ExtraerIdPaciente();
+                CargarDetallePaciente(idPaciente);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error en paginación de turnos: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error de paginación",
+                    "Ocurrió un error al intentar mostrar los turnos.",
+                    "Resultado",
+                    null,
+                    "abrirModalResultado"
+                );
+            }
+        }
+
+        protected void gvTurnosPaciente_RowCommand(object sender, GridViewCommandEventArgs e) { }
+
 
     }
 }

@@ -19,6 +19,12 @@ namespace SGTO.Dominio.Entidades
         public List<HorarioAtencion> HorariosAtencion { get; set; }
         public Usuario Usuario { get; set; } // el usuario de la app
 
+
+        public Medico()
+        {
+            
+        }
+
         public Medico(string nombre, string apellido, DocumentoIdentidad dni,
            DateTime fechaNacimiento, Genero genero, Telefono telefono, Email email,
            string matricula, List<Especialidad> especialidades, Usuario usuario)

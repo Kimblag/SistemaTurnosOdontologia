@@ -74,6 +74,23 @@ namespace SGTO.Negocio.Mappers
         }
 
 
+        public static PacienteDetalleDto MapearADetalleDto(Paciente paciente)
+        {
+            return new PacienteDetalleDto()
+            {
+                IdPaciente = paciente.IdPaciente,
+                NombreCompleto = $"{paciente.Apellido} {paciente.Nombre}",
+                Dni = paciente.Dni.Numero,
+                FechaNacimiento = paciente.FechaNacimiento.ToString("dd/MM/yyyy"),
+                Genero = paciente.Genero.ToString(),
+                Telefono = paciente.Telefono.Numero,
+                Email = paciente.Email.Valor,
+                Cobertura = paciente.Cobertura?.Nombre ?? "-",
+                Plan = paciente.Plan?.Nombre ?? "-",
+                Estado = paciente.Estado.ToString()
+            };
+        }
+
 
     }
 }

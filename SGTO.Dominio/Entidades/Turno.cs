@@ -17,6 +17,11 @@ namespace SGTO.Dominio.Entidades
         public EstadoTurno Estado { get; set; }
         public string Observaciones { get; set; }
 
+        public Turno()
+        {
+            
+        }
+
         public Turno(Paciente paciente, Medico medico, Especialidad especialidad, Tratamiento tratamiento, HorarioTurno horario)
         {
             Paciente = paciente;

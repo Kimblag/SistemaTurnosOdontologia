@@ -165,6 +165,7 @@
     <Content Include="Pages\Tratamientos\Editar.aspx" />
     <Content Include="Pages\Tratamientos\Index.aspx" />
     <Content Include="Pages\Tratamientos\Nuevo.aspx" />
+    <Content Include="Pages\Turnos\Detalle.aspx" />
     <Content Include="Pages\Turnos\Editar.aspx" />
     <Content Include="Pages\Turnos\Index.aspx" />
     <Content Include="Pages\Turnos\Nuevo.aspx" />
@@ -549,6 +550,13 @@
     </Compile>
     <Compile Include="Pages\Tratamientos\Nuevo.aspx.designer.cs">
       <DependentUpon>Nuevo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Turnos\Detalle.aspx.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Turnos\Detalle.aspx.designer.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Turnos\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>

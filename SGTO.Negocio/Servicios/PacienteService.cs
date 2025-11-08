@@ -16,12 +16,14 @@ namespace SGTO.Negocio.Servicios
         private readonly PacienteRepositorio _repositorioPaciente;
         private readonly PlanRepositorio _repositorioPlan;
         private readonly CoberturaRepositorio _repositorioCobertura;
+        private readonly TurnoRepositorio _repositorioTurno;
 
         public PacienteService()
         {
             _repositorioPaciente = new PacienteRepositorio();
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
+            _repositorioTurno = new TurnoRepositorio();
         }
 
 
@@ -178,6 +180,29 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+
+        public PacienteDetalleDto ObtenerDetalle(int idPaciente)
+        {
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(idPaciente);
+            if (paciente == null)
+                throw new ExcepcionReglaNegocio("No se encontró el paciente indicado.");
+
+            try
+            {
+                List<Turno> turnos = _repositorioTurno.ListaPorPaciente(idPaciente);
+                PacienteDetalleDto pacienteDetalleDto = PacienteMapper.MapearADetalleDto(paciente);
+                pacienteDetalleDto.Turnos = TurnoMapper.MapearListaTurnoPacienteDto(turnos);
+
+                return pacienteDetalleDto;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
+        }
 
 
     }

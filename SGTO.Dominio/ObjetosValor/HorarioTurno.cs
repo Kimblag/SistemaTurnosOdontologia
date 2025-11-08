@@ -9,10 +9,28 @@ namespace SGTO.Dominio.ObjetosValor
         public DateTime Inicio { get; set; }
         public DateTime Fin { get; set; }
 
-        public HorarioTurno(DateTime inicio, DateTime fin)
+        public HorarioTurno(DateTime inicio, DateTime fin, bool validar = true, int duracionEsperadaMinutos = 60)
         {
+            // constructor que recibe el parámetro opcional porque si viene de base de datos no hay que validar
+            // solo cuando es creación.
+            if (inicio >= fin)
+                throw new ArgumentException("La hora de inicio debe ser anterior a la hora de fin.");
+
+            var duracion = (fin - inicio).TotalMinutes;
+            if (duracion != duracionEsperadaMinutos)
+                throw new ArgumentException($"La duración del turno debe ser de {duracionEsperadaMinutos} minutos.");
+
+
+            if (validar && fin < DateTime.Now)
+                throw new ArgumentException("El horario del turno no puede estar en el pasado.");
+
             Inicio = inicio;
             Fin = fin;
+        }
+
+        public override string ToString()
+        {
+            return $"{Inicio:HH:mm} - {Fin:HH:mm}";
         }
 
         public bool EsValido()
