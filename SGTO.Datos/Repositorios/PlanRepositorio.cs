@@ -12,19 +12,6 @@ namespace SGTO.Datos.Repositorios
     public class PlanRepositorio
     {
 
-        public void DarDeBaja(int idCobertura, char estado, ConexionDBFactory datos)
-        {
-            string query = @"UPDATE [Plan] 
-                                    SET Estado = @Estado
-                                WHERE IdCobertura = @IdCobertura";
-
-            datos.LimpiarParametros();
-            datos.DefinirConsulta(query);
-            datos.EstablecerParametros("@Estado", estado);
-            datos.EstablecerParametros("@IdCobertura", idCobertura);
-            datos.EjecutarAccion();
-        }
-
         public void ActualizarEstadoPorCobertura(int idCobertura, EstadoEntidad nuevoEstado, ConexionDBFactory datos)
         {
             string query = @"UPDATE [Plan]
@@ -203,7 +190,7 @@ namespace SGTO.Datos.Repositorios
             return planes;
         }
 
-        public bool EstadoDadoDeBaja(int idPlan)
+        public bool EstaDadoDeBaja(int idPlan)
         {
             bool estaDadoDeBaja = false;
             string query = @"SELECT Estado
@@ -237,7 +224,7 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
-        public void DarDeBaja(int idPlan, char estado)
+        public void ActualizarEstado(int idPlan, char estado)
         {
             string query = @"UPDATE [Plan] SET Estado = @Estado WHERE IdPlan = @IdPlan";
 
@@ -259,7 +246,7 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public Plan ObtenerPlanPorId(int idPlan)
+        public Plan ObtenerPorId(int idPlan)
         {
             Plan plan = new Plan();
             string query = @"SELECT P.IdPlan,
@@ -306,7 +293,7 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public bool ExistePlan(string nombrePlan, int idCobertura)
+        public bool ExistePorNombre(string nombrePlan, int idCobertura)
         {
             bool resultado = false;
             string query = @"SELECT COUNT(Nombre)

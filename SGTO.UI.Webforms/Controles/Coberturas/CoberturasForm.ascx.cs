@@ -103,7 +103,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         {
             try
             {
-                CoberturaDto coberturaDto = _servicioCobertura.ObtenerCoberturaPorId(idCobertura);
+                CoberturaDto coberturaDto = _servicioCobertura.ObtenerPorId(idCobertura);
                 txtNombreCobertura.Text = coberturaDto.Nombre;
                 txtDescripcionCobertura.Text = coberturaDto.Descripcion;
                 if (coberturaDto.PorcentajeCobertura is null)
@@ -154,7 +154,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             {
                 CoberturaDto coberturaDto = CoberturaMapper.MapearADto(idCobertura, nombre, descripcion, estado, porcentajeCobertura);
                 TurnoService servicioTurno = new TurnoService();
-                _servicioCobertura.ModificarCobertura(coberturaDto, servicioTurno);
+                _servicioCobertura.Modificar(coberturaDto, servicioTurno);
 
                 MensajeUiHelper.SetearYMostrar(
                 this.Page,
@@ -204,7 +204,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 var planes = Session[_keySessionListaPlanes] as List<PlanDto> ?? new List<PlanDto>();
                 ValidarCamposCobertura();
 
-                _servicioCobertura.CrearCobertura(coberturaDto, planes);
+                _servicioCobertura.Crear(coberturaDto, planes);
 
                 MensajeUiHelper.SetearYMostrar(
                    this.Page,

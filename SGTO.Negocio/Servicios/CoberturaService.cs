@@ -39,7 +39,7 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public CoberturaDto ObtenerCoberturaPorId(int idCobertura)
+        public CoberturaDto ObtenerPorId(int idCobertura)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool ModificarCobertura(CoberturaDto coberturaDto, TurnoService servicioTurno)
+        public bool Modificar(CoberturaDto coberturaDto, TurnoService servicioTurno)
         {
             Cobertura coberturaModificada = CoberturaMapper.MapearAEntidad(coberturaDto);
 
@@ -60,7 +60,7 @@ namespace SGTO.Negocio.Servicios
             bool nombreCambiado = !string.Equals(coberturaActual.Nombre.Trim(), coberturaDto.Nombre.Trim(), StringComparison.OrdinalIgnoreCase);
 
             // validar nombre duplicado solo si cambio el nombre
-            if (nombreCambiado && _repositorioCobertura.ExisteCobertura(coberturaDto.Nombre))
+            if (nombreCambiado && _repositorioCobertura.ExistePorNombre(coberturaDto.Nombre))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe una cobertura con el nombre indicado: {coberturaDto.Nombre}");
             }
@@ -115,7 +115,7 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool DarDeBajaCobertura(int idCobertura, TurnoService servicioTurno)
+        public bool DarDeBaja(int idCobertura, TurnoService servicioTurno)
         {
             if (servicioTurno.TieneTurnosActivosPorCobertura(idCobertura))
             {
@@ -137,7 +137,7 @@ namespace SGTO.Negocio.Servicios
                     datos.IniciarTransaccion();
 
                     _repositorioCobertura.DarDeBaja(idCobertura, 'I', datos);
-                    _repositorioPlan.DarDeBaja(idCobertura, 'I', datos);
+                    _repositorioPlan.ActualizarEstadoPorCobertura(idCobertura, EstadoEntidad.Inactivo, datos);
 
                     datos.ConfirmarTransaccion();
                     return true;
@@ -155,10 +155,10 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool CrearCobertura(CoberturaDto nuevaCoberturaDto, List<PlanDto> listaPlanesDto)
+        public bool Crear(CoberturaDto nuevaCoberturaDto, List<PlanDto> listaPlanesDto)
         {
             // validar que no exista la cobertura con el mismo nombre
-            if (_repositorioCobertura.ExisteCobertura(nuevaCoberturaDto.Nombre))
+            if (_repositorioCobertura.ExistePorNombre(nuevaCoberturaDto.Nombre))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe una cobertura con el nombre indicado: {nuevaCoberturaDto.Nombre}");
             }
@@ -205,7 +205,7 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool EsCoberturaInactiva(int idCobertura)
+        public bool EstaInactiva(int idCobertura)
         {
             try
             {

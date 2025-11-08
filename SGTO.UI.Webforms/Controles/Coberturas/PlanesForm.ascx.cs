@@ -50,7 +50,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         {
             try
             {
-                PlanDto planDto = _servicioPlan.ObtenerPlanPorId(idPlan);
+                PlanDto planDto = _servicioPlan.ObtenerPorId(idPlan);
                 ddlCobertura.SelectedValue = planDto.IdCobertura.ToString();
                 txtNombrePlan.Text = planDto.Nombre;
                 txtDescripcionPlan.Text = planDto.Descripcion;
@@ -58,7 +58,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 chkActivo.Checked = planDto.Estado.ToLower() == "activo";
 
                 CoberturaService coberturaService = new CoberturaService();
-                if (coberturaService.EsCoberturaInactiva(planDto.IdCobertura))
+                if (coberturaService.EstaInactiva(planDto.IdCobertura))
                 {
                     DeshabilitarFormularioPorCoberturaInactiva();
                 }
@@ -145,7 +145,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 PlanDto nuevoPlanDto = PlanMapper.MapearADto(0, nombre, descripcion, porcentajeCobertura, estado, idCobertura);
 
                 CoberturaService servicioCobertura = new CoberturaService();
-                _servicioPlan.CrearPlan(nuevoPlanDto, servicioCobertura);
+                _servicioPlan.Crear(nuevoPlanDto, servicioCobertura);
 
                 MensajeUiHelper.SetearYMostrar(
                      this.Page,
@@ -207,7 +207,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 PlanDto planDto = PlanMapper.MapearADto(idPlan, nombre, descripcion, porcentajeCobertura, estado, idCobertura);
                 TurnoService servicioTurno = new TurnoService();
                 CoberturaService servicioCobertura = new CoberturaService();
-                _servicioPlan.ModificarPlan(planDto, servicioTurno, servicioCobertura);
+                _servicioPlan.Modificar(planDto, servicioTurno, servicioCobertura);
 
                 MensajeUiHelper.SetearYMostrar(this.Page,
                   "Plan modificado",

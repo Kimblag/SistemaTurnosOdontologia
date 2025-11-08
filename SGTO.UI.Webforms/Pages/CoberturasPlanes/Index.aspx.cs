@@ -36,7 +36,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
                 if (tipo == "cobertura")
                 {
                     CoberturaService servicioCobertura = new CoberturaService();
-                    servicioCobertura.DarDeBajaCobertura(id, servicioTurno);
+                    servicioCobertura.DarDeBaja(id, servicioTurno);
 
                     MensajeUiHelper.SetearMensaje("Cobertura dada de baja", "La cobertura y sus planes fueron dados de baja correctamente.");
                 }
@@ -44,7 +44,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
                 {
 
                     PlanService servicioPlan = new PlanService();
-                    servicioPlan.DarDeBajaPlan(id, servicioTurno);
+                    servicioPlan.DarDeBaja(id, servicioTurno);
 
                     MensajeUiHelper.SetearMensaje("Plan dado de baja", "El plan fue dado de baja correctamente.");
                 }

@@ -147,7 +147,7 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public bool ExisteCobertura(string nombreCobertura)
+        public bool ExistePorNombre(string nombreCobertura)
         {
             bool resultado = false;
             string query = @"SELECT COUNT(Nombre)

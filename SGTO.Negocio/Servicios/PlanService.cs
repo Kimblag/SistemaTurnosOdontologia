@@ -6,8 +6,7 @@ using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
+
 
 namespace SGTO.Negocio.Servicios
 {
@@ -44,19 +43,19 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public bool DarDeBajaPlan(int idPlan, TurnoService servicioTurno)
+        public bool DarDeBaja(int idPlan, TurnoService servicioTurno)
         {
             // si tiene turnos activos no podemos dar de baja.
             if (servicioTurno.TieneTurnosActivosPorPlan(idPlan))
                 throw new ExcepcionReglaNegocio("No se puede dar de baja el plan porque tiene turnos activos.");
 
             // si ya está dado de baja, no puede volver a darse de baja
-            if (_repositorioPlan.EstadoDadoDeBaja(idPlan))
+            if (_repositorioPlan.EstaDadoDeBaja(idPlan))
                 throw new ExcepcionReglaNegocio("El plan ya se encuentra dado de baja.");
 
             try
             {
-                _repositorioPlan.DarDeBaja(idPlan, EstadoEntidad.Inactivo.ToString()[0]);
+                _repositorioPlan.ActualizarEstado(idPlan, EstadoEntidad.Inactivo.ToString()[0]);
                 return true;
             }
             catch (Exception)
@@ -66,11 +65,11 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public PlanDto ObtenerPlanPorId(int idPlan)
+        public PlanDto ObtenerPorId(int idPlan)
         {
             try
             {
-                return PlanMapper.MapearADto(_repositorioPlan.ObtenerPlanPorId(idPlan));
+                return PlanMapper.MapearADto(_repositorioPlan.ObtenerPorId(idPlan));
             }
             catch (Exception)
             {
@@ -79,14 +78,14 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public bool CrearPlan(PlanDto nuevoPlanDto, CoberturaService servicioCobertura)
+        public bool Crear(PlanDto nuevoPlanDto, CoberturaService servicioCobertura)
         {
-            if (_repositorioPlan.ExistePlan(nuevoPlanDto.Nombre, nuevoPlanDto.IdCobertura))
+            if (_repositorioPlan.ExistePorNombre(nuevoPlanDto.Nombre, nuevoPlanDto.IdCobertura))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe un plan con el nombre indicado: {nuevoPlanDto.Nombre}");
             }
 
-            if (servicioCobertura.EsCoberturaInactiva(nuevoPlanDto.IdCobertura))
+            if (servicioCobertura.EstaInactiva(nuevoPlanDto.IdCobertura))
             {
                 throw new ExcepcionReglaNegocio("No se puede crear un plan para una cobertura inactiva.");
             }
@@ -109,7 +108,7 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public bool ModificarPlan(PlanDto planDto, TurnoService servicioTurno, CoberturaService servicioCobertura)
+        public bool Modificar(PlanDto planDto, TurnoService servicioTurno, CoberturaService servicioCobertura)
         {
             if (planDto.IdCobertura <= 0)
                 throw new ExcepcionReglaNegocio("El plan debe estar asociado a una cobertura válida.");
@@ -117,11 +116,11 @@ namespace SGTO.Negocio.Servicios
             Cobertura cobertura = new Cobertura() { IdCobertura = planDto.IdCobertura };
             Plan planModificado = PlanMapper.MapearAEntidad(planDto, cobertura);
 
-            Plan planActual = _repositorioPlan.ObtenerPlanPorId(planDto.IdPlan);
+            Plan planActual = _repositorioPlan.ObtenerPorId(planDto.IdPlan);
 
             bool nombreCambiado = !string.Equals(planModificado.Nombre.Trim(), planActual.Nombre.Trim(), StringComparison.OrdinalIgnoreCase);
 
-            if (nombreCambiado && _repositorioPlan.ExistePlan(planModificado.Nombre, cobertura.IdCobertura))
+            if (nombreCambiado && _repositorioPlan.ExistePorNombre(planModificado.Nombre, cobertura.IdCobertura))
             {
                 throw new ExcepcionReglaNegocio($"Ya existe un plan con el nombre indicado: {planModificado.Nombre}");
             }
@@ -141,7 +140,7 @@ namespace SGTO.Negocio.Servicios
             }
 
             // validar si se intenta volver a activar un plan cuya cobertura se encuentra dada de baja: no permitir activar.
-            if (seIntentaDarDeAlta && servicioCobertura.EsCoberturaInactiva(cobertura.IdCobertura))
+            if (seIntentaDarDeAlta && servicioCobertura.EstaInactiva(cobertura.IdCobertura))
             {
                 throw new ExcepcionReglaNegocio("No se puede activar plan porque la cobertura se encuentra dada de baja.");
             }
