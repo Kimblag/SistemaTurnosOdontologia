@@ -41,5 +41,37 @@ namespace SGTO.Negocio.Servicios
             _repositorio.Crear(nuevaEspecialidad);
         }
 
+        public EspecialidadDto ObtenerEspecialidadPorId(int idEspecialidad)
+        {
+            try
+            {
+                return EspecialidadMapper.MapearADto(_repositorio.ObtenerPorId(idEspecialidad));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ModificarEspecialidad(EspecialidadDto dtoModificado)
+        {
+            try
+            {
+                // 1. (Opcional pero recomendado: validación de duplicados,
+                //    como la que vimos para "Crear o Reactivar")
+                //    Por ahora lo hacemos simple.
+
+                // 2. Mapea el DTO (que tiene los datos nuevos) a una Entidad
+                Especialidad entidadModificada = EspecialidadMapper.MapearAEntidad(dtoModificado);
+
+                // 3. Llama al repositorio con el método que creamos en el Paso 2.1
+                _repositorio.Modificar(entidadModificada);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
+
 }

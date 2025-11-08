@@ -83,13 +83,9 @@ namespace SGTO.Datos.Repositorios
                 try
                 {
                     datos.DefinirConsulta(query);
-
                     datos.EstablecerParametros("@Nombre", especialidad.Nombre);
                     datos.EstablecerParametros("@Descripcion", especialidad.Descripcion);
-                    // el estado es un Enum(ej: Activo), la bd espera un char('A')
-                    // lo convertimos a string ("Activo") y tomamos el primer caracter [0] ('A')
-                    datos.EstablecerParametros("@Estado", especialidad.Estado.ToString()[0]);
-
+                    datos.EstablecerParametros("@Estado", (char)especialidad.Estado);
                     datos.EjecutarAccion();
                 }
                 catch (Exception)
@@ -101,5 +97,67 @@ namespace SGTO.Datos.Repositorios
             }
 
         }
+
+
+        public Especialidad ObtenerPorId(int id)
+        {
+            Especialidad especialidad = null; 
+
+            string query = @"SELECT IdEspecialidad, 
+                            Nombre AS NombreEspecialidad, 
+                            Descripcion AS DescripcionEspecialidad,
+                            Estado AS EstadoEspecialidad
+                        FROM Especialidad
+                        WHERE IdEspecialidad = @IdEspecialidad";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdEspecialidad", id);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            especialidad = EspecialidadMapper.MapearAEntidad(lector);
+                        }
+                    }
+
+                    return especialidad;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+        public void Modificar(Especialidad especialidad)
+        {
+            string query = @"UPDATE Especialidad 
+                     SET Nombre = @Nombre, 
+                         Descripcion = @Descripcion, 
+                         Estado = @Estado
+                     WHERE IdEspecialidad = @IdEspecialidad";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", especialidad.Nombre);
+                    datos.EstablecerParametros("@Descripcion", especialidad.Descripcion);
+                    datos.EstablecerParametros("@Estado", (char)especialidad.Estado);
+                    datos.EstablecerParametros("@IdEspecialidad", especialidad.IdEspecialidad);
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

@@ -19,13 +19,12 @@
             </div>
 
             <%-- Estado --%>
-            <div class="col-12 col-md-6">
-                <label for="<%= ddlEstado.ClientID %>" class="form-label">Estado</label>
-                <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                    <asp:ListItem Value="1" Selected="True">Activo</asp:ListItem>
-                    <asp:ListItem Value="0">Inactivo</asp:ListItem>
-                </asp:DropDownList>
-            </div>
+            <div class="col-12 ml-0">
+    <label class="form-label">Estado</label>
+    <div class="form-check p-0">
+        <asp:CheckBox ID="chkActivo" Text="Activo" CssClass="d-flex gap-2" runat="server" Checked="true" Enabled="false" />
+    </div>
+            
         </div>
 
         <%-- Descripción --%>
@@ -79,3 +78,67 @@
     </div>
 
 </div>
+
+
+<%-- Modal confirmacion--%>
+<div class="modal" tabindex="-1" id="modalConfirmacion" aria-labelledby="modalConfirmacion" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalTitulo" class="modal-title">Modal título</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalDesc">Mensaje confirmación</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalOk">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%-- Modal resultado de la ejecucion del servicio --%>
+<div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalResultadoTitulo" class="modal-title">Acción completada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modalResultadoDesc"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnModalCerrar" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalConfirmacion(titulo, descripcion) {
+        try {
+            document.getElementById('modalTitulo').textContent = titulo || 'Acción completada';
+            document.getElementById('modalDesc').textContent = descripcion || '';
+
+            const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
+            modal.show();
+
+        } catch (err) {
+            console.error('Error :', err);
+        }
+    }
+
+    function abrirModalResultado(titulo, descripcion) {
+        document.getElementById('modalResultadoTitulo').textContent = titulo || 'Acción completada';
+        document.getElementById('modalResultadoDesc').textContent = descripcion || '';
+        new bootstrap.Modal(document.getElementById('modalResultado')).show();
+    }
+
+    function abrirModalNuevoPlan() {
+        const modal = new bootstrap.Modal(document.getElementById('modalNuevoPlan'));
+        modal.show();
+    }
+</script>
