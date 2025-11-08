@@ -1,4 +1,5 @@
-﻿using SGTO.Dominio.Entidades;
+﻿using SGTO.Datos.Utils;
+using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,15 @@ namespace SGTO.Datos.Mappers
                 ? string.Empty
                 : lector.GetString(lector.GetOrdinal("DescripcionCobertura"));
             EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoCobertura");
-            decimal? porcentajeCobertura = lector.IsDBNull(lector.GetOrdinal("PorcentajeCoberturaVigente"))
-                ? (decimal?)null
-                : lector.GetDecimal(lector.GetOrdinal("PorcentajeCoberturaVigente"));
+
+
+            decimal? porcentajeCobertura = null;
+
+            if (SqlDataReaderHelper.TieneColumna(lector, "PorcentajeCoberturaVigente")
+                && !lector.IsDBNull(lector.GetOrdinal("PorcentajeCoberturaVigente")))
+            {
+                porcentajeCobertura = lector.GetDecimal(lector.GetOrdinal("PorcentajeCoberturaVigente"));
+            }
 
             Cobertura cobertura = new Cobertura(
                 idCobertura,

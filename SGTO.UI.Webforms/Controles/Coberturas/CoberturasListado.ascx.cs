@@ -46,7 +46,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
                 if (lblEstado != null && coberturaDto != null)
                 {
-                    if (coberturaDto.Estado == "Activo")
+                    if (coberturaDto.Estado.ToLower() == "activo")
                     {
                         lblEstado.Attributes["class"] = "badge badge-success";
                     }

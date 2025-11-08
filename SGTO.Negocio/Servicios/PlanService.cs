@@ -32,6 +32,18 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+        public List<PlanDto> ListarPorCobertura(int idCobertura, string estado = null)
+        {
+            try
+            {
+                return PlanMapper.MapearListaADto(_repositorioPlan.ListarPorCobertura(idCobertura, estado));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public bool DarDeBajaPlan(int idPlan, TurnoService servicioTurno)
         {
             // si tiene turnos activos no podemos dar de baja.

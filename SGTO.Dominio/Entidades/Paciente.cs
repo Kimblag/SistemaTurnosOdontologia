@@ -14,6 +14,11 @@ namespace SGTO.Dominio.Entidades
         public List<Turno> Turnos { get; set; }
         public List<HistoriaClinicaRegistro> HistoriaClinica { get; set; }
 
+        public Paciente() : base()
+        {
+            Turnos = new List<Turno>();
+            HistoriaClinica = new List<HistoriaClinicaRegistro>();
+        }
 
         public Paciente(string nombre, string apellido, DocumentoIdentidad dni,
             DateTime fechaNacimiento, Genero genero, Telefono telefono, Email email,
@@ -35,17 +40,23 @@ namespace SGTO.Dominio.Entidades
             IdPaciente = idPaciente;
             Cobertura = cobertura;
             Plan = plan;
-            Turnos = turnos;
+            Turnos = turnos ?? new List<Turno>();
             HistoriaClinica = historiaClinica;
         }
 
+        // metodos de comportamiento de un paciente
         public void AgregarTurno(Turno turno)
         {
+            if (turno == null)
+                throw new ArgumentException("El turno no puede ser nulo.");
             Turnos.Add(turno);
         }
 
         public void AgregarRegistroHistoria(HistoriaClinicaRegistro registro)
         {
+            if (registro == null)
+                throw new ArgumentException("El registro no puede ser nulo.");
+
             HistoriaClinica.Add(registro);
         }
 
@@ -65,7 +76,28 @@ namespace SGTO.Dominio.Entidades
 
         public bool TieneTurnoEnHorario(DateTime fechaHora)
         {
-            return true;
+            if (Turnos == null || Turnos.Count == 0)
+                return false;
+
+            foreach (Turno turno in Turnos)
+            {
+                if (turno.Horario == null)
+                    continue;
+
+                if (turno.Estado == EstadoTurno.Cancelado ||
+                    turno.Estado == EstadoTurno.Cerrado)
+                    continue;
+
+                if (fechaHora >= turno.Horario.Inicio &&
+                    fechaHora < turno.Horario.Fin)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
+
+
+
     }
 }

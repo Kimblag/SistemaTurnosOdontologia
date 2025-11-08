@@ -102,7 +102,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             try
             {
                 CoberturaService servicioCobertura = new CoberturaService();
-                List<CoberturaDto> coberturas = servicioCobertura.Listar("activo");
+                List<CoberturaDto> coberturas = servicioCobertura.Listar();
 
                 ddlCoberturas.DataSource = coberturas;
                 ddlCoberturas.DataTextField = "Nombre";

@@ -11,13 +11,11 @@
 
             <asp:DropDownList ID="ddlCoberturas" runat="server"
                 CssClass="form-select"
-                AutoPostBack="True"
                 OnSelectedIndexChanged="ddlCoberturas_SelectedIndexChanged">
             </asp:DropDownList>
 
             <asp:DropDownList ID="ddlEstado" runat="server"
                 CssClass="form-select"
-                AutoPostBack="True"
                 OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
                 <asp:ListItem Text="Todos" Value="todos" />
                 <asp:ListItem Text="Activo" Value="activo" />

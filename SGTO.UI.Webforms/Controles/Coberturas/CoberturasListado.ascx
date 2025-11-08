@@ -9,7 +9,7 @@
         <div class="d-flex gap-2 align-items-center w-50">
             <asp:TextBox ID="txtBuscarCobertura" runat="server" CssClass="form-control" placeholder="Buscar cobertura..."></asp:TextBox>
 
-            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" AutoPostBack="True" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
                 <asp:ListItem Selected="True" Text="Todos" Value="todos" />
                 <asp:ListItem Text="Activo" Value="activo" />
                 <asp:ListItem Text="Inactivo" Value="inactivo" />

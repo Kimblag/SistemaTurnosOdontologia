@@ -74,5 +74,40 @@ namespace SGTO.Datos.Repositorios
             }
             return resultado;
         }
+
+        public bool ExisteTurnoActivoPorPaciente(int idPaciente)
+        {
+            bool resultado = false;
+            string query = @"SELECT COUNT(*)
+                         FROM Turno
+                         WHERE IdPaciente = @IdPaciente
+                           AND Estado NOT IN ('C', 'Z', 'X')";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdPaciente", idPaciente);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return resultado;
+        }
+
+
     }
 }

@@ -31,6 +31,11 @@ namespace SGTO.Dominio.Entidades.Base
             FechaAlta = DateTime.Today;
         }
 
+        protected Persona()
+        {
+            
+        }
+
         public string NombreCompleto()
         {
             return $"{Nombre} {Apellido}";

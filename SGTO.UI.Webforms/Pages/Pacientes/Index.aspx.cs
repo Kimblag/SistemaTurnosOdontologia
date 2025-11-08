@@ -1,10 +1,10 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
-using SGTO.Dominio.ObjetosValor;
+﻿using SGTO.Negocio.DTOs;
+using SGTO.Negocio.DTOs.Pacientes;
+using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -14,6 +14,11 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 {
     public partial class Pacientes : System.Web.UI.Page
     {
+        private readonly PacienteService _servicioPaciente = new PacienteService();
+        private const string KEY_PACIENTE_BUSQUEDA = "FiltroPacienteBusqueda";
+        private const string KEY_PACIENTE_CAMPO = "FiltroPacienteCampo";
+        private const string KEY_PACIENTE_CRITERIO = "FiltroPacienteCriterio";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
@@ -21,145 +26,192 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
             }
-            if (!IsPostBack) CargarPacientes();
+            if (!IsPostBack)
+            {
+                // verificar si tenemos filtros
+                txtBuscar.Text = Session[KEY_PACIENTE_BUSQUEDA] as string ?? string.Empty;
+                string campo = Session[KEY_PACIENTE_CAMPO] as string;
+                if (!string.IsNullOrEmpty(campo))
+                {
+                    ddlCampo.SelectedValue = campo;
+                    CargarCriterios(campo);
+                }
+
+                string criterio = Session[KEY_PACIENTE_CRITERIO] as string;
+                if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
+                {
+                    ddlCriterio.SelectedValue = criterio;
+                    ddlCriterio.Enabled = true;
+                }
+                AplicarFiltros();
+            }
         }
 
-        private void CargarPacientes()
+
+        private void CargarPacientes(string estado = null)
         {
-            // metodo para testear lista de pacientes
-            var osde = new Cobertura("OSDE", "Cobertura médica prepaga");
-            var galeno = new Cobertura("Galeno", "Cobertura médica integral");
-            var swiss = new Cobertura("Swiss Medical", "Cobertura premium");
-            var medicus = new Cobertura("Medicus", "Cobertura urbana");
-            var particular = new Cobertura("Particular", "Paciente particular");
-
-
-            List<Paciente> lista = new List<Paciente>
+            List<PacienteListadoDto> listado = new List<PacienteListadoDto>();
+            try
             {
-                new Paciente(1, "Carla", "Ramírez", new DocumentoIdentidad("38555666"),
-                    new DateTime(1995, 3, 14), Genero.Femenino,
-                    new Telefono("11-6543-2211"), new Email("carla.ramirez@example.com"),
-                    osde, new Plan("210", 0.80m, osde, "Plan clásico 80% cobertura"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+                listado = _servicioPaciente.ListarPacientes(estado);
+                gvPacientes.DataSource = listado;
+                gvPacientes.DataBind();
 
-                new Paciente(2, "Luciano", "Pérez", new DocumentoIdentidad("37222444"),
-                    new DateTime(1988, 9, 2), Genero.Masculino,
-                    new Telefono("11-6001-2233"), new Email("luciano.perez@example.com"),
-                    swiss, new Plan("SMG20", 0.90m, swiss, "Plan 90% cobertura en odontología"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
 
-                new Paciente(3, "Sofía", "Fernández", new DocumentoIdentidad("42111888"),
-                    new DateTime(2000, 7, 25), Genero.Femenino,
-                    new Telefono("11-7033-5599"), new Email("sofia.fernandez@example.com"),
-                    galeno, new Plan("400", 0.85m, galeno, "Plan integral 85%"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            }
+            catch (Exception ex)
+            {
+                gvPacientes.DataSource = listado;
+                gvPacientes.DataBind();
+                MensajeUiHelper.SetearYMostrar(
+                   this.Page,
+                   "Error al cargar pacientes",
+                   "Ocurrió un error inesperado al intentar obtener la lista de pacientes." + ex.Message
+               );
+            }
+        }
 
-                new Paciente(4, "Martín", "Domínguez", new DocumentoIdentidad("39544222"),
-                    new DateTime(1992, 11, 10), Genero.Masculino,
-                    new Telefono("11-8855-2231"), new Email("martin.dominguez@example.com"),
-                    particular, null,
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+        private void CargarCoberturasDropdown()
+        {
+            try
+            {
+                var servicioCobertura = new CoberturaService();
+                var coberturas = servicioCobertura.Listar("activo");
 
-                new Paciente(5, "Julieta", "Morales", new DocumentoIdentidad("43444555"),
-                    new DateTime(1998, 1, 5), Genero.Femenino,
-                    new Telefono("11-7774-9912"), new Email("julieta.morales@example.com"),
-                    medicus, new Plan("Medicus Azul", 0.75m, medicus, "Plan Azul 75% cobertura"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+                foreach (var c in coberturas)
+                {
+                    ddlCriterio.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-                new Paciente(6, "Tomás", "Gómez", new DocumentoIdentidad("40223311"),
-                    new DateTime(1990, 4, 20), Genero.Masculino,
-                    new Telefono("11-9123-4412"), new Email("tomas.gomez@example.com"),
-                    particular, null,
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+        private void CargarCriterios(string campo)
+        {
+            ddlCriterio.Items.Clear();
+            ddlCriterio.Enabled = false;
 
-                new Paciente(7, "Camila", "López", new DocumentoIdentidad("42899877"),
-                    new DateTime(1997, 6, 18), Genero.Femenino,
-                    new Telefono("11-6342-7888"), new Email("camila.lopez@example.com"),
-                    osde, new Plan("310", 0.90m, osde, "Plan 310 odontológico"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            if (string.IsNullOrEmpty(campo))
+            {
+                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
+                return;
+            }
 
-                new Paciente(8, "Ezequiel", "Martínez", new DocumentoIdentidad("41022764"),
-                    new DateTime(1985, 12, 4), Genero.Masculino,
-                    new Telefono("11-5556-4432"), new Email("ezequiel.martinez@example.com"),
-                    galeno, new Plan("220", 0.70m, galeno, "Plan básico 70%"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            campo = campo.ToLower();
 
-                new Paciente(9, "Agustina", "Ruiz", new DocumentoIdentidad("43777888"),
-                    new DateTime(1999, 10, 11), Genero.Femenino,
-                    new Telefono("11-6112-2398"), new Email("agustina.ruiz@example.com"),
-                    particular, null,
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            if (campo == "estado")
+            {
+                ddlCriterio.Enabled = true;
+                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
+                ddlCriterio.Items.Add(new ListItem("Activo", "A"));
+                ddlCriterio.Items.Add(new ListItem("Inactivo", "I"));
+            }
+            else if (campo == "cobertura")
+            {
+                ddlCriterio.Enabled = true;
+                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
+                CargarCoberturasDropdown();
+            }
+            if (ddlCriterio.Items.Count > 0)
+                ddlCriterio.SelectedIndex = 0;
+        }
 
-                new Paciente(10, "Federico", "Torres", new DocumentoIdentidad("39666123"),
-                    new DateTime(1991, 2, 17), Genero.Masculino,
-                    new Telefono("11-7234-5589"), new Email("federico.torres@example.com"),
-                    swiss, new Plan("SMG10", 0.75m, swiss, "Plan 75% cobertura básica"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
 
-                new Paciente(11, "Valentina", "Sosa", new DocumentoIdentidad("44455999"),
-                    new DateTime(1996, 5, 23), Genero.Femenino,
-                    new Telefono("11-9087-6631"), new Email("valentina.sosa@example.com"),
-                    osde, new Plan("410", 0.95m, osde, "Plan 410 Premium"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+        private void AplicarFiltros()
+        {
+            string textoBusqueda = txtBuscar.Text.Trim();
+            string campo = ddlCampo.SelectedValue;
+            string criterio = ddlCriterio.SelectedValue;
 
-                new Paciente(12, "Diego", "Navarro", new DocumentoIdentidad("38999111"),
-                    new DateTime(1983, 8, 12), Genero.Masculino,
-                    new Telefono("11-5433-2299"), new Email("diego.navarro@example.com"),
-                    particular, null,
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            Session[KEY_PACIENTE_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
+            Session[KEY_PACIENTE_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
+            Session[KEY_PACIENTE_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
 
-                new Paciente(13, "Florencia", "Vega", new DocumentoIdentidad("42666555"),
-                    new DateTime(1994, 9, 30), Genero.Femenino,
-                    new Telefono("11-7344-8800"), new Email("florencia.vega@example.com"),
-                    medicus, new Plan("Medicus Rojo", 0.85m, medicus, "Plan Rojo 85%"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            List<PacienteListadoDto> lista = _servicioPaciente.ListarPacientes();
 
-                new Paciente(14, "Nicolás", "Castro", new DocumentoIdentidad("40111222"),
-                    new DateTime(1989, 11, 8), Genero.Masculino,
-                    new Telefono("11-6122-4467"), new Email("nicolas.castro@example.com"),
-                    osde, new Plan("210", 0.80m, osde, "Plan clásico 80% cobertura"),
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>()),
+            if (!string.IsNullOrEmpty(textoBusqueda))
+            {
+                string texto = textoBusqueda.ToLower();
+                List<PacienteListadoDto> filtrada = new List<PacienteListadoDto>();
 
-                new Paciente(15, "Milagros", "Ponce", new DocumentoIdentidad("44555123"),
-                    new DateTime(1997, 3, 5), Genero.Femenino,
-                    new Telefono("11-8809-7710"), new Email("milagros.ponce@example.com"),
-                    particular, null,
-                    new List<Turno>(), new List<HistoriaClinicaRegistro>())
-            };
+                foreach (var p in lista)
+                {
+                    bool coincide =
+                        (!string.IsNullOrEmpty(p.NombreCompleto) && p.NombreCompleto.ToLower().Contains(texto)) ||
+                        (!string.IsNullOrEmpty(p.Dni) && p.Dni.ToLower().Contains(texto)) ||
+                        (!string.IsNullOrEmpty(p.Email) && p.Email.ToLower().Contains(texto));
+
+                    if (coincide)
+                        filtrada.Add(p);
+                }
+
+                lista = filtrada;
+            }
+
+            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
+            {
+                List<PacienteListadoDto> filtrada = new List<PacienteListadoDto>();
+
+                if (campo == "Estado")
+                {
+                    foreach (var p in lista)
+                    {
+                        if (!string.IsNullOrEmpty(p.Estado.ToString()) &&
+                            p.Estado.ToString().StartsWith(criterio, StringComparison.OrdinalIgnoreCase))
+                        {
+                            filtrada.Add(p);
+                        }
+                    }
+                }
+                else if (campo == "Cobertura")
+                {
+                    if (int.TryParse(criterio, out int idCoberturaSeleccionada))
+                    {
+                        foreach (var p in lista)
+                        {
+                            if (p.IdCobertura.HasValue && p.IdCobertura.Value == idCoberturaSeleccionada)
+                                filtrada.Add(p);
+                        }
+                    }
+                }
+                lista = filtrada;
+            }
 
             gvPacientes.DataSource = lista;
             gvPacientes.DataBind();
         }
 
-        protected void gvTurnos_RowDataBound(object sender, GridViewRowEventArgs e)
+
+        protected void gvPacientes_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                var paciente = (Paciente)e.Row.DataItem;
+                PacienteListadoDto pacienteDto = (PacienteListadoDto)e.Row.DataItem;
+
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
 
-                if (lblEstado != null)
+                if (lblEstado != null && pacienteDto != null)
                 {
-                    string cssClass = "badge "; // clase base
-
-                    switch (paciente.Estado)
+                    if (pacienteDto.Estado.ToString().ToLower() == "activo")
                     {
-                        case EstadoEntidad.Activo:
-                            cssClass += "badge-primary";
-                            break;
-                        case EstadoEntidad.Inactivo:
-                            cssClass += "badge-secondary";
-                            break;
-                        default:
-                            cssClass += "badge-secondary";
-                            break;
+                        lblEstado.Attributes["class"] = "badge badge-success";
                     }
-                    lblEstado.Attributes["class"] = cssClass;
+                    else
+                    {
+                        lblEstado.Attributes["class"] = "badge badge-warning";
+                    }
                 }
             }
         }
 
-        protected void gvPacientes_PageIndexChanging(object sender, GridViewPageEventArgs e) { }
+        protected void gvPacientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPacientes.PageIndex = e.NewPageIndex;
+            AplicarFiltros();
+        }
 
         protected void gvPacientes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -178,5 +230,38 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
         {
             Response.Redirect("~/Pages/Pacientes/Nuevo", false);
         }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            AplicarFiltros();
+        }
+
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            Session[KEY_PACIENTE_BUSQUEDA] = null;
+            Session[KEY_PACIENTE_CAMPO] = null;
+            Session[KEY_PACIENTE_CRITERIO] = null;
+
+            txtBuscar.Text = string.Empty;
+            ddlCampo.SelectedIndex = 0;
+            ddlCriterio.Items.Clear();
+            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
+            ddlCriterio.Enabled = false;
+
+            CargarPacientes();
+        }
+
+        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string campo = ddlCampo.SelectedValue;
+
+            Session[KEY_PACIENTE_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
+
+            CargarCriterios(campo);
+
+            Session[KEY_PACIENTE_CRITERIO] = null;
+        }
+
+
     }
 }

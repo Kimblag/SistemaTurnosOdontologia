@@ -149,6 +149,59 @@ namespace SGTO.Datos.Repositorios
             }
             return planes;
         }
+        public List<Plan> ListarPorCobertura(int idCobertura, string estado = null)
+        {
+            List<Plan> planes = new List<Plan>();
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+
+                string query = @"SELECT P.IdPlan,
+	                                P.Nombre AS NombrePlan,
+	                                P.Descripcion AS DescripcionPlan,
+	                                P.PorcentajeCobertura,
+	                                P.Estado AS EstadoPlan,
+                                    C.IdCobertura, 
+	                                C.Nombre AS NombreCobertura, 
+	                                C.Descripcion AS DescripcionCobertura,
+                                    CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente,
+	                                C.Estado AS EstadoCobertura
+                                FROM [Plan] P
+                                LEFT JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                                LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                     ON CPH.IdCobertura = C.IdCobertura AND CPH.Estado = 'A'
+                                WHERE C.IdCobertura = @IdCobertura
+                                {{FILTROS}}
+                                ORDER BY P.Nombre ASC";
+
+                query = estado != null
+                    ? query.Replace("{{FILTROS}}", $" AND UPPER(P.Estado) = UPPER('{estado[0]}')")
+                    : query.Replace("{{FILTROS}}", " ");
+
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdCobertura", idCobertura);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Cobertura cobertura = CoberturaMapper.MapearAEntidad(lector);
+                            Plan plan = PlanMapper.MapearAEntidad(lector, cobertura);
+
+                            planes.Add(plan);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return planes;
+        }
 
         public bool EstadoDadoDeBaja(int idPlan)
         {

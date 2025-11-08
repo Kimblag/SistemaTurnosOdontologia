@@ -69,6 +69,7 @@
     <Compile Include="Repositorios\TratamientoRepositorio.cs" />
     <Compile Include="Repositorios\TurnoRepositorio.cs" />
     <Compile Include="Repositorios\UsuarioRepositorio.cs" />
+    <Compile Include="Utils\SqlDataReaderHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SGTO.Comun\SGTO.Comun.csproj">

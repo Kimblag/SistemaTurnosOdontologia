@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SGTO.Negocio.DTOs
+namespace SGTO.Negocio.DTOs.Pacientes
 {
-    internal class PacienteDto
+    internal class PacienteCreacionDto
     {
     }
 }

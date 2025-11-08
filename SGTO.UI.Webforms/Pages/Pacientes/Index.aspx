@@ -32,6 +32,7 @@
                             runat="server"
                             CssClass="form-select"
                             Width="170"
+                            OnSelectedIndexChanged="ddlCampo_SelectedIndexChanged"
                             AutoPostBack="true">
                             <asp:ListItem Text="Filtrar por..." Value="" />
                             <asp:ListItem Text="Cobertura" Value="Cobertura" />
@@ -47,9 +48,23 @@
                             CssClass="form-select"
                             Width="220"
                             Enabled="false">
-                            <asp:ListItem Text="Seleccione un criterio" Value="" />
+                            <asp:ListItem Text="Seleccione un criterio" Value=""></asp:ListItem>
                         </asp:DropDownList>
                     </div>
+
+                    <asp:Button
+                        ID="btnBuscar"
+                        runat="server"
+                        Text="Aplicar Filtro"
+                        CssClass="btn btn-outline-primary"
+                        OnClick="btnBuscar_Click" />
+
+                    <asp:Button
+                        ID="btnLimpiar"
+                        runat="server"
+                        Text="Limpiar"
+                        CssClass="btn btn-outline-secondary"
+                        OnClick="btnLimpiar_Click" />
 
                 </div>
 
@@ -60,7 +75,7 @@
                         runat="server"
                         Text="+ Nuevo Paciente"
                         OnClick="btnNuevoPaciente_Click"
-                        CssClass="btn btn-sm btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
+                        CssClass="btn btn-primary btn-sm me-1" />
                 </div>
             </div>
         </div>
@@ -71,46 +86,25 @@
 
             <asp:GridView ID="gvPacientes" runat="server"
                 AutoGenerateColumns="false"
-                OnRowDataBound="gvTurnos_RowDataBound"
+                OnRowDataBound="gvPacientes_RowDataBound"
                 OnPageIndexChanging="gvPacientes_PageIndexChanging"
                 OnRowCommand="gvPacientes_RowCommand"
                 DataKeyNames="IdPaciente"
                 CssClass="table gridview mb-0"
                 AllowPaging="True" PageSize="7">
                 <Columns>
-                    <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
-                    <asp:BoundField DataField="Apellido" HeaderText="Apellido" />
-                    <asp:TemplateField HeaderText="DNI">
-                        <ItemTemplate>
-                            <%# Eval("Dni.Numero") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <asp:BoundField DataField="NombreCompleto" HeaderText="Apellido y Nombre" />
+                    <asp:BoundField DataField="Dni" HeaderText="Documento de Identidad" />
+                    <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
+                    <asp:BoundField DataField="Email" HeaderText="Email" />
+                    <asp:BoundField DataField="NombreCobertura" HeaderText="Cobertura" />
+                    <asp:BoundField DataField="NombrePlan" HeaderText="Plan" />
 
-                    <asp:TemplateField HeaderText="Cobertura">
-                        <ItemTemplate>
-                            <%# Eval("Cobertura.Nombre") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Plan">
-                        <ItemTemplate>
-                            <%# Eval("Plan.Nombre") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Teléfono">
-                        <ItemTemplate>
-                            <%# Eval("Telefono.Numero") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Email">
-                        <ItemTemplate>
-                            <%# Eval("Email.Valor") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
 
                     <%--columna estado--%>
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                            <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                         </ItemTemplate>
                     </asp:TemplateField>
 
