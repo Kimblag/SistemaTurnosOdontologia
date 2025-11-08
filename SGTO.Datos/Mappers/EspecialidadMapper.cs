@@ -15,7 +15,7 @@ namespace SGTO.Datos.Mappers
             string descripcion = lector.IsDBNull(lector.GetOrdinal("DescripcionEspecialidad"))
                 ? string.Empty
                 : lector.GetString(lector.GetOrdinal("DescripcionEspecialidad"));
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoEspecialidad");
+            EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "EstadoEspecialidad");
 
           
             Especialidad especialidad = new Especialidad(

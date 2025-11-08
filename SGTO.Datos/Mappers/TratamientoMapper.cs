@@ -20,7 +20,7 @@ namespace SGTO.Datos.Mappers
 
             decimal costoBase = lector.GetDecimal(lector.GetOrdinal("CostoBase"));
 
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoTratamiento");
+            EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "EstadoTratamiento");
 
             
             Tratamiento tratamiento = new Tratamiento(

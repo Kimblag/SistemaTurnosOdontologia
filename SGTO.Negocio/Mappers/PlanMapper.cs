@@ -18,7 +18,7 @@ namespace SGTO.Negocio.Mappers
                 IdPlan = planDto.IdPlan != 0 ? planDto.IdPlan : 0,
                 Nombre = planDto.Nombre,
                 Descripcion = planDto.Descripcion,
-                Estado = EnumeracionMapper.MapearEstadoEntidad(planDto.Estado),
+                Estado = EnumeracionMapperNegocio.MapearEstadoEntidad(planDto.Estado),
                 Cobertura = new Cobertura(),
                 PorcentajeCobertura = planDto.PorcentajeCobertura,
             };
@@ -40,7 +40,7 @@ namespace SGTO.Negocio.Mappers
                 {
                     Nombre = dto.Nombre,
                     Descripcion = dto.Descripcion,
-                    Estado = EnumeracionMapper.MapearEstadoEntidad(dto.Estado),
+                    Estado = EnumeracionMapperNegocio.MapearEstadoEntidad(dto.Estado),
                     PorcentajeCobertura = dto.PorcentajeCobertura
                 };
 

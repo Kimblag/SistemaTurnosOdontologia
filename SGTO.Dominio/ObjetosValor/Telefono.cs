@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SGTO.Comun.Validacion;
+using System;
 
 namespace SGTO.Dominio.ObjetosValor
 {
     public class Telefono
     {
-        public string Numero { get; set; }
+        public string Numero { get; }
 
         public Telefono(string valor)
         {
-            Numero = valor;
+            if (string.IsNullOrWhiteSpace(valor))
+                throw new ArgumentException("El teléfono no puede estar vacío.");
+
+            if (!ValidadorCampos.EsTelefonoValido(valor))
+                throw new ArgumentException("El formato del teléfono no es válido.");
+
+            Numero = valor.Trim();
         }
 
-        public bool EsValido()
+        public override string ToString()
         {
-            return true;
-        }
-
-        public string Normalizar()
-        {
-            return "";
+            return Numero;
         }
     }
 }

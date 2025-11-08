@@ -47,7 +47,7 @@
     <Compile Include="Infraestructura\ConexionDBFactory.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\ConfiguracionMapper.cs" />
-    <Compile Include="Mappers\EnumeracionMapper.cs" />
+    <Compile Include="Mappers\EnumeracionMapperDatos.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
     <Compile Include="Mappers\MedicoMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />

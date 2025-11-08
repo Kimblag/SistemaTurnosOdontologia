@@ -17,11 +17,11 @@ namespace SGTO.Datos.Mappers
             string nombre = lector.GetString(lector.GetOrdinal("NombrePaciente"));
             string apellido = lector.GetString(lector.GetOrdinal("ApellidoPaciente"));
             string numeroDocumento = lector.GetString(lector.GetOrdinal("NumeroDocumento"));
-            Genero genero = EnumeracionMapper.MapearGenero(lector, "Genero");
+            Genero genero = EnumeracionMapperDatos.MapearGenero(lector, "Genero");
             string telefono = lector.GetString(lector.GetOrdinal("Telefono"));
             string email = lector.GetString(lector.GetOrdinal("Email"));
             DateTime fechaNacimiento = lector.GetDateTime(lector.GetOrdinal("FechaNacimiento"));
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoPaciente");
+            EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "EstadoPaciente");
 
             var paciente = new Paciente()
             {

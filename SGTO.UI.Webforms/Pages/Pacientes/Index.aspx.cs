@@ -53,7 +53,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             List<PacienteListadoDto> listado = new List<PacienteListadoDto>();
             try
             {
-                listado = _servicioPaciente.ListarPacientes(estado);
+                listado = _servicioPaciente.Listar(estado);
                 gvPacientes.DataSource = listado;
                 gvPacientes.DataBind();
 
@@ -130,7 +130,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             Session[KEY_PACIENTE_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
             Session[KEY_PACIENTE_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
 
-            List<PacienteListadoDto> lista = _servicioPaciente.ListarPacientes();
+            List<PacienteListadoDto> lista = _servicioPaciente.Listar();
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
@@ -262,6 +262,9 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             Session[KEY_PACIENTE_CRITERIO] = null;
         }
 
+        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

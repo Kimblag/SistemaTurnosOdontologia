@@ -128,7 +128,7 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@Nombre", cobertura.Nombre);
             datos.EstablecerParametros("@Descripcion", cobertura.Descripcion);
-            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(cobertura.Estado));
+            datos.EstablecerParametros("@Estado", cobertura.Estado.ToString()[0]);
             datos.EstablecerParametros("@IdCobertura", cobertura.IdCobertura);
             datos.EjecutarAccion();
         }
@@ -187,7 +187,7 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@Nombre", nuevaCobertura.Nombre);
             datos.EstablecerParametros("@Descripcion", nuevaCobertura.Descripcion);
-            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevaCobertura.Estado));
+            datos.EstablecerParametros("@Estado", nuevaCobertura.Estado.ToString()[0]);
             int idNuevaCobertura = datos.EjecutarAccionEscalar();
 
             return idNuevaCobertura;
@@ -214,7 +214,7 @@ namespace SGTO.Datos.Repositorios
                         {
                             if (!lector.IsDBNull(lector.GetOrdinal("Estado")))
                             {
-                                EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "Estado");
+                                EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado");
                                 estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
                             }
                         }

@@ -17,7 +17,7 @@ namespace SGTO.Datos.Mappers
                 ? string.Empty
                 : lector.GetString(lector.GetOrdinal("DescripcionPlan"));
             decimal porcentajeCobertura = lector.GetDecimal(lector.GetOrdinal("PorcentajeCobertura"));
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoPlan");
+            EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "EstadoPlan");
 
             Plan plan = new Plan(
                 idPlan,

@@ -3,9 +3,7 @@ using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs.Pacientes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SGTO.Negocio.Mappers
 {
@@ -53,12 +51,12 @@ namespace SGTO.Negocio.Mappers
                 Apellido = entidad.Apellido,
                 Dni = entidad.Dni != null ? entidad.Dni.Numero : string.Empty,
                 FechaNacimiento = entidad.FechaNacimiento,
-                Genero = EnumeracionMapper.ObtenerChar(entidad.Genero),
+                Genero = EnumeracionMapperNegocio.ObtenerChar(entidad.Genero),
                 Telefono = entidad.Telefono != null ? entidad.Telefono.Numero : string.Empty,
                 Email = entidad.Email != null ? entidad.Email.Valor : string.Empty,
                 IdCobertura = entidad.Cobertura != null ? (int?)entidad.Cobertura.IdCobertura : null,
                 IdPlan = entidad.Plan != null ? (int?)entidad.Plan.IdPlan : null,
-                Estado = EnumeracionMapper.ObtenerChar(entidad.Estado)
+                Estado = EnumeracionMapperNegocio.ObtenerChar(entidad.Estado)
             };
 
             return dto;

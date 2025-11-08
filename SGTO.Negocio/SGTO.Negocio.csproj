@@ -61,6 +61,7 @@
     <Compile Include="Excepciones\ExcepcionReglaNegocio.cs" />
     <Compile Include="Excepciones\ExcepcionUsuarioNoAutorizado.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />
+    <Compile Include="Mappers\EnumeracionMapperNegocio.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />
     <Compile Include="Mappers\PlanMapper.cs" />

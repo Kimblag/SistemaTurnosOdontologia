@@ -71,7 +71,7 @@ namespace SGTO.Negocio.Mappers
                 Descripcion = coberturaDto.Descripcion,
                 Planes = new List<Plan>(),
                 PorcentajeCobertura = coberturaDto.PorcentajeCobertura,
-                Estado = EnumeracionMapper.MapearEstadoEntidad(coberturaDto.Estado)
+                Estado = EnumeracionMapperNegocio.MapearEstadoEntidad(coberturaDto.Estado)
             };
 
             return cobertura;

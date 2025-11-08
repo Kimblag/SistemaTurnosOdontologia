@@ -60,7 +60,7 @@ namespace SGTO.Negocio.Mappers
         public static Especialidad MapearAEntidad(EspecialidadDto especialidadDto)
         {
           
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(especialidadDto.Estado);
+            EstadoEntidad estado = EnumeracionMapperNegocio.MapearEstadoEntidad(especialidadDto.Estado);
 
             List<Tratamiento> tratamientosAsociados = new List<Tratamiento>();
 

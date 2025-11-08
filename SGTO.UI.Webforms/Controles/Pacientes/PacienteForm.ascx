@@ -188,7 +188,8 @@
             <div class="col-6 col-sm-4 col-md-2 d-grid">
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
-                    CssClass="btn btn-primary btn-sm" />
+                    CssClass="btn btn-primary btn-sm"
+                    OnClick="btnGuardar_Click" />
             </div>
         </div>
     </div>

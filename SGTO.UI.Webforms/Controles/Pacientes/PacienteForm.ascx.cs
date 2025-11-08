@@ -1,5 +1,7 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Pacientes;
+using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -27,6 +29,12 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
             if (idPaciente != 0)
             {
                 ModoEdicion = true;
+
+            }
+            else
+            {
+                ddlEstado.Enabled = false;
+                ddlEstado.SelectedValue = "A";
             }
 
             if (!IsPostBack)
@@ -37,6 +45,8 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
                 {
                     CargarDetallePaciente(idPaciente);
                 }
+
+                ModalHelper.MostrarModalDesdeSession(this.Page, "PacienteMensajeTitulo", "PacienteMensajeDesc", "/Pages/Pacientes/Index");
             }
 
             ddlCobertura.AutoPostBack = true;
@@ -194,7 +204,7 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
             }
         }
 
-       public void CargarDatosPaciente(PacienteEdicionDto dto)
+        public void CargarDatosPaciente(PacienteEdicionDto dto)
         {
             try
             {
@@ -233,6 +243,118 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
             }
         }
 
+        protected void btnGuardar_Click(object sender, EventArgs e)
+        {
+            if (ModoEdicion)
+            {
+                ModificarPaciente();
+            }
+            else
+            {
+                CrearNuevoPaciente();
+            }
+        }
+
+
+        private void ModificarPaciente()
+        {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void CrearNuevoPaciente()
+        {
+            try
+            {
+                ValidarCamposFormulario();
+
+                PacienteCreacionDto pacienteDto = new PacienteCreacionDto()
+                {
+                    Dni = txtDni.Text.Trim(),
+                    FechaNacimiento = DateTime.Parse(txtFechaNacimiento.Text),
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Genero = ddlGenero.SelectedValue,
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Estado = ddlEstado.SelectedValue,
+                    IdCobertura = int.Parse(ddlCobertura.SelectedValue),
+                    IdPlan = string.IsNullOrEmpty(ddlPlan.SelectedValue) ? 0 : int.Parse(ddlPlan.SelectedValue)
+                };
+
+                _servicioPaciente.Crear(pacienteDto);
+
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Paciente creado",
+                    "El paciente se ha creado correctamente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                    "abrirModalResultado"
+                );
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Dato inválido",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al registrar el paciente. " + ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+        }
+
+        private void ValidarCamposFormulario()
+        {
+            // validar superficialmente la estructura de los datos y que no hayan vacíos para los obligatorios
+
+            if (!ValidadorCampos.EsTextoObligatorio(txtNombre.Text))
+                throw new ArgumentException("El nombre es obligatorio");
+
+            if (!ValidadorCampos.EsSoloLetrasYEspacios(txtNombre.Text))
+                throw new ArgumentException("El nombre solo puede contener letras y espacios.");
+
+            if (!ValidadorCampos.EsSoloLetrasYEspacios(txtApellido.Text))
+                throw new ArgumentException("El apellido solo puede contener letras y espacios.");
+
+            if (!ValidadorCampos.EsEnteroPositivo(txtDni.Text))
+                throw new ArgumentException("El DNI debe ser numérico.");
+
+            if (!DateTime.TryParse(txtFechaNacimiento.Text, out DateTime fechaNac)
+                || !ValidadorCampos.EsFechaNacimientoValida(fechaNac))
+                throw new ArgumentException("La fecha de nacimiento no es válida.");
+
+            if (!ValidadorCampos.EsTelefonoValido(txtTelefono.Text))
+                throw new ArgumentException("El teléfono no tiene un formato válido.");
+
+            if (!string.IsNullOrEmpty(txtEmail.Text) && !ValidadorCampos.EsEmailValido(txtEmail.Text))
+                throw new ArgumentException("El email no tiene un formato válido.");
+        }
 
 
     }

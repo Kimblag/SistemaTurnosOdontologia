@@ -20,7 +20,7 @@ namespace SGTO.Datos.Repositorios
 
             datos.LimpiarParametros();
             datos.DefinirConsulta(query);
-            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevoEstado));
+            datos.EstablecerParametros("@Estado", nuevoEstado.ToString()[0]);
             datos.EstablecerParametros("@IdCobertura", idCobertura);
             datos.EjecutarAccion();
         }
@@ -35,7 +35,7 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Descripcion", nuevoPlan.Descripcion);
             datos.EstablecerParametros("@PorcentajeCobertura", nuevoPlan.PorcentajeCobertura);
             datos.EstablecerParametros("@IdCobertura", nuevoPlan.Cobertura.IdCobertura);
-            datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevoPlan.Estado));
+            datos.EstablecerParametros("@Estado", nuevoPlan.Estado.ToString()[0]);
             datos.EjecutarAccion();
         }
 
@@ -54,7 +54,7 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("@Descripcion", nuevoPlan.Descripcion);
                     datos.EstablecerParametros("@PorcentajeCobertura", nuevoPlan.PorcentajeCobertura);
                     datos.EstablecerParametros("@IdCobertura", nuevoPlan.Cobertura.IdCobertura);
-                    datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevoPlan.Estado));
+                    datos.EstablecerParametros("@Estado", nuevoPlan.Estado.ToString()[0]);
                     datos.EjecutarAccion();
                 }
                 catch (Exception)
@@ -81,7 +81,7 @@ namespace SGTO.Datos.Repositorios
                 datos.EstablecerParametros("@Descripcion", nuevoPlan.Descripcion);
                 datos.EstablecerParametros("@PorcentajeCobertura", nuevoPlan.PorcentajeCobertura);
                 datos.EstablecerParametros("@IdCobertura", nuevoPlan.Cobertura.IdCobertura);
-                datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(nuevoPlan.Estado));
+                datos.EstablecerParametros("@Estado", nuevoPlan.Estado.ToString()[0]);
                 datos.EjecutarAccion();
             }
         }
@@ -210,7 +210,7 @@ namespace SGTO.Datos.Repositorios
                         {
                             if (!lector.IsDBNull(lector.GetOrdinal("Estado")))
                             {
-                                EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "Estado");
+                                EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado");
                                 estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
                             }
                         }
@@ -345,7 +345,7 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("@Nombre", plan.Nombre);
                     datos.EstablecerParametros("@Descripcion", plan.Descripcion);
                     datos.EstablecerParametros("@PorcentajeCobertura", plan.PorcentajeCobertura);
-                    datos.EstablecerParametros("@Estado", EnumeracionMapper.ObtenerChar(plan.Estado));
+                    datos.EstablecerParametros("@Estado", plan.Estado.ToString()[0]);
 
                     datos.EjecutarAccion();
                 }

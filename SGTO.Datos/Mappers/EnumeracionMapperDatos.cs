@@ -1,28 +1,16 @@
 ﻿using SGTO.Dominio.Enums;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace SGTO.Datos.Mappers
 {
-    public static class EnumeracionMapper
+    public static class EnumeracionMapperDatos
     {
         public static EstadoEntidad MapearEstadoEntidad(SqlDataReader lector, string nombreColumna)
         {
             // metodo para mapear el estado que viene desde la base de datos en forma 'A' o 'I'
             char valor = lector.GetString(lector.GetOrdinal(nombreColumna))[0];
             return valor == 'A' ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
-        }
-
-        public static EstadoEntidad MapearEstadoEntidad(string estado)
-        {
-            // metodo para mapear el estado desde un DTO cuyo valor es un string: "activo", "inactivo"
-            return estado.ToLower() == "activo" ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
-        }
-
-        public static char ObtenerChar(EstadoEntidad estado)
-        {
-            return estado == EstadoEntidad.Activo ? 'A' : 'I';
         }
 
         public static EstadoTurno MapearEstadoTurno(SqlDataReader lector, string nombreColumna)
@@ -42,15 +30,8 @@ namespace SGTO.Datos.Mappers
                 case 'Z':
                     return EstadoTurno.Cerrado;
                 default:
-                    throw new ArgumentOutOfRangeException(
-                    $"Valor desconocido '{valor}' para EstadoTurno.");
+                    throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para EstadoTurno.");
             }
-
-        }
-
-        public static char ObtenerChar(EstadoTurno estado)
-        {
-            return (char)estado;
         }
 
         public static Genero MapearGenero(SqlDataReader lector, string nombreColumna)
@@ -67,14 +48,8 @@ namespace SGTO.Datos.Mappers
                 case 'N':
                     return Genero.PrefiereNoDecir;
                 default:
-                    throw new ArgumentOutOfRangeException(
-                        $"Valor desconocido '{valor}' para Genero.");
+                    throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para Genero.");
             }
-        }
-
-        public static char ObtenerChar(Genero genero)
-        {
-            return (char)genero;
         }
     }
 }

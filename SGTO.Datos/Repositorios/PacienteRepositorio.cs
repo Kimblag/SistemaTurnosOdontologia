@@ -1,7 +1,6 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
-using SGTO.Dominio.ObjetosValor;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -153,7 +152,7 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("@email", paciente.Email.Valor);
                     datos.EstablecerParametros("@idCobertura", paciente.Cobertura.IdCobertura);
                     datos.EstablecerParametros("@idPlan", (object)paciente.Plan?.IdPlan ?? DBNull.Value);
-                    datos.EstablecerParametros("@estado", EnumeracionMapper.ObtenerChar(paciente.Estado));
+                    datos.EstablecerParametros("@estado", paciente.Estado.ToString()[0]);
 
                     datos.EjecutarAccion();
                 }
@@ -227,7 +226,7 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public bool Existe(int IdPaciente)
+        public bool ExistePorId(int IdPaciente)
         {
             bool resultado = false;
             string query = @"SELECT COUNT(*) 
@@ -238,6 +237,37 @@ namespace SGTO.Datos.Repositorios
                 datos.LimpiarParametros();
                 datos.DefinirConsulta(query);
                 datos.EstablecerParametros("@IdPaciente", IdPaciente);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return resultado;
+        }
+
+        public bool ExistePorDni(string numeroDocumento)
+        {
+            bool resultado = false;
+            string query = @"SELECT COUNT(*) 
+                                 FROM Paciente 
+                            WHERE NumeroDocumento = @NumeroDocumento";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@NumeroDocumento", numeroDocumento);
 
                 try
                 {

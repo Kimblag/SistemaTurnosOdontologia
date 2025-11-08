@@ -21,7 +21,7 @@ namespace SGTO.Datos.Mappers
             string descripcion = lector.IsDBNull(lector.GetOrdinal("DescripcionCobertura"))
                 ? string.Empty
                 : lector.GetString(lector.GetOrdinal("DescripcionCobertura"));
-            EstadoEntidad estado = EnumeracionMapper.MapearEstadoEntidad(lector, "EstadoCobertura");
+            EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "EstadoCobertura");
 
 
             decimal? porcentajeCobertura = null;
