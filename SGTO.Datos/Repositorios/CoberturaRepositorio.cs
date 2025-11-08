@@ -116,6 +116,44 @@ namespace SGTO.Datos.Repositorios
             return cobertura;
         }
 
+        public Cobertura ObtenerPorNombre(string nombreCobertura)
+        {
+            Cobertura cobertura = null;
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT 
+                                    C.IdCobertura,
+                                    C.Nombre AS NombreCobertura,
+                                    C.Descripcion AS DescripcionCobertura,
+                                    C.Estado AS EstadoCobertura,
+                                    CPH.PorcentajeCobertura AS PorcentajeCoberturaVigente
+                                FROM Cobertura C
+                                LEFT JOIN CoberturaPorcentajeHistorial CPH 
+                                    ON CPH.IdCobertura = C.IdCobertura 
+                                    AND CPH.Estado = 'A'
+                                WHERE UPPER(C.Nombre) = @Nombre";
+                datos.EstablecerParametros("@Nombre", nombreCobertura.ToUpper());
+                datos.DefinirConsulta(query);
+
+                using (SqlDataReader lector = datos.EjecutarConsulta())
+                {
+                    try
+                    {
+                        if (lector.Read())
+                        {
+                            cobertura = CoberturaMapper.MapearAEntidad(lector);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            return cobertura;
+        }
+
         public void Modificar(Cobertura cobertura, ConexionDBFactory datos)
         {
             string query = @"UPDATE Cobertura 

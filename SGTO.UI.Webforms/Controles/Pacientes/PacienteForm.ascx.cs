@@ -25,26 +25,14 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            int idPaciente = ExtraerIdPaciente();
-            if (idPaciente != 0)
-            {
-                ModoEdicion = true;
-
-            }
-            else
-            {
-                ddlEstado.Enabled = false;
-                ddlEstado.SelectedValue = "A";
-            }
+            int idPaciente = ValidarModoEdicion();
 
             if (!IsPostBack)
             {
                 CargarCoberturas();
 
                 if (ModoEdicion)
-                {
                     CargarDetallePaciente(idPaciente);
-                }
 
                 ModalHelper.MostrarModalDesdeSession(this.Page, "PacienteMensajeTitulo", "PacienteMensajeDesc", "/Pages/Pacientes/Index");
             }
@@ -66,6 +54,22 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
 
             rvFechaNacimiento.MinimumValue = minimo.ToString("yyyy-MM-dd");
             rvFechaNacimiento.MaximumValue = hoy.ToString("yyyy-MM-dd");
+        }
+
+        private int ValidarModoEdicion()
+        {
+            int idPaciente = ExtraerIdPaciente();
+            if (idPaciente != 0)
+            {
+                ModoEdicion = true;
+                txtDni.Enabled = false;
+            }
+            else
+            {
+                ddlEstado.Enabled = false;
+                ddlEstado.SelectedValue = "A";
+            }
+            return idPaciente;
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
@@ -212,17 +216,15 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
 
                 CargarCoberturas();
 
-                if (dto.IdCobertura.HasValue &&
-                    ddlCobertura.Items.FindByValue(dto.IdCobertura.Value.ToString()) != null)
+                if (dto.IdCobertura != 0 && ddlCobertura.Items.FindByValue(dto.IdCobertura.ToString()) != null)
                 {
-                    ddlCobertura.SelectedValue = dto.IdCobertura.Value.ToString();
-                    CargarPlanesPorCobertura(dto.IdCobertura.Value);
+                    ddlCobertura.SelectedValue = dto.IdCobertura.ToString();
+                    CargarPlanesPorCobertura(dto.IdCobertura);
                 }
 
-                if (dto.IdPlan.HasValue &&
-                    ddlPlan.Items.FindByValue(dto.IdPlan.Value.ToString()) != null)
+                if (dto.IdPlan != 0 && ddlPlan.Items.FindByValue(dto.IdPlan.ToString()) != null)
                 {
-                    ddlPlan.SelectedValue = dto.IdPlan.Value.ToString();
+                    ddlPlan.SelectedValue = dto.IdPlan.ToString();
                 }
 
                 txtNombre.Text = dto.Nombre;
@@ -258,14 +260,63 @@ namespace SGTO.UI.Webforms.Controles.Pacientes
 
         private void ModificarPaciente()
         {
+            int idPaciente = ExtraerIdPaciente();
             try
             {
+                ValidarCamposFormulario();
 
+                PacienteEdicionDto pacienteDto = new PacienteEdicionDto()
+                {
+                    IdPaciente = idPaciente,
+                    Dni = txtDni.Text.Trim(),
+                    FechaNacimiento = DateTime.Parse(txtFechaNacimiento.Text),
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Genero = ddlGenero.SelectedValue,
+                    Telefono = txtTelefono.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    Estado = ddlEstado.SelectedValue,
+                    IdCobertura = int.Parse(ddlCobertura.SelectedValue),
+                    IdPlan = string.IsNullOrEmpty(ddlPlan.SelectedValue) ? 0 : int.Parse(ddlPlan.SelectedValue)
+                };
+
+                _servicioPaciente.Modificar(pacienteDto);
+
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Paciente actualizado",
+                    "El paciente se ha actualizado correctamente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                    "abrirModalResultado"
+                );
             }
-            catch (Exception)
+            catch (ArgumentException ex)
             {
-
-                throw;
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Dato inválido",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al actualizar el paciente. " + ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
             }
         }
 

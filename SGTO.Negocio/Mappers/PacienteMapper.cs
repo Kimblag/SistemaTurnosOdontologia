@@ -44,19 +44,19 @@ namespace SGTO.Negocio.Mappers
             if (entidad == null)
                 return null;
 
-            var dto = new PacienteEdicionDto
+            PacienteEdicionDto dto = new PacienteEdicionDto
             {
                 IdPaciente = entidad.IdPaciente,
                 Nombre = entidad.Nombre,
                 Apellido = entidad.Apellido,
                 Dni = entidad.Dni != null ? entidad.Dni.Numero : string.Empty,
                 FechaNacimiento = entidad.FechaNacimiento,
-                Genero = EnumeracionMapperNegocio.ObtenerChar(entidad.Genero),
+                Genero = EnumeracionMapperNegocio.ObtenerChar(entidad.Genero).ToString(),
                 Telefono = entidad.Telefono != null ? entidad.Telefono.Numero : string.Empty,
                 Email = entidad.Email != null ? entidad.Email.Valor : string.Empty,
-                IdCobertura = entidad.Cobertura != null ? (int?)entidad.Cobertura.IdCobertura : null,
-                IdPlan = entidad.Plan != null ? (int?)entidad.Plan.IdPlan : null,
-                Estado = EnumeracionMapperNegocio.ObtenerChar(entidad.Estado)
+                IdCobertura = entidad.Cobertura != null ? entidad.Cobertura.IdCobertura : 0,
+                IdPlan = entidad.Plan != null ? entidad.Plan.IdPlan : 0,
+                Estado = EnumeracionMapperNegocio.ObtenerChar(entidad.Estado).ToString()
             };
 
             return dto;
