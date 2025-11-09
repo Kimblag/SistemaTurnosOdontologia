@@ -1,6 +1,4 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Negocio.DTOs;
-using SGTO.Negocio.Excepciones;
+﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;

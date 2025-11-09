@@ -1,13 +1,8 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
-using SGTO.Negocio.DTOs;
-using SGTO.Negocio.Excepciones;
+﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;

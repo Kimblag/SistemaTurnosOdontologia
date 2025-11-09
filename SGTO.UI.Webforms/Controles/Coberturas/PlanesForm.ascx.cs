@@ -1,5 +1,4 @@
 ﻿using SGTO.Comun.Validacion;
-using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;

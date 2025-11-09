@@ -16,30 +16,58 @@
                         placeholder="Ingrese el nombre..."
                         CssClass="form-control">
                     </asp:TextBox>
+
+                    <asp:RequiredFieldValidator
+                        ID="rfvNombre"
+                        runat="server"
+                        ControlToValidate="txtNombre"
+                        ErrorMessage="El nombre del rol es obligatorio."
+                        CssClass="text-danger small"
+                        Display="Dynamic" />
+
+                    <asp:RegularExpressionValidator
+                        ID="revNombre"
+                        runat="server"
+                        ControlToValidate="txtNombre"
+                        ValidationExpression="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"
+                        ErrorMessage="El nombre solo puede contener letras y espacios."
+                        CssClass="text-danger small"
+                        Display="Dynamic" />
                 </div>
 
                 <%-- Descripción --%>
                 <div class="col-12">
-                    <label for="txtDescripcion" class="form-label">Descripción</label>
+                    <label for="txtDescripcion" class="form-label fw-semibold">Descripción</label>
                     <asp:TextBox
                         ID="txtDescripcion"
                         runat="server"
                         TextMode="MultiLine"
-                        placeholder="Ingrese la descripción..."
+                        Rows="3"
+                        MaxLength="200"
+                        placeholder="Ingrese una descripción (opcional, mínimo 10 caracteres si se completa)..."
                         CssClass="form-control descripcion-textarea">
                     </asp:TextBox>
+
+                    <asp:RegularExpressionValidator
+                        ID="revDescripcion"
+                        runat="server"
+                        ControlToValidate="txtDescripcion"
+                        ValidationExpression="^.{0,200}$"
+                        ErrorMessage="La descripción no puede superar los 200 caracteres."
+                        CssClass="text-danger small"
+                        Display="Dynamic" />
                 </div>
 
 
                 <%-- Estado --%>
                 <div class="col-12">
-                    <label for="ddlEstado" class="form-label">Estado</label>
+                    <label for="ddlEstado" class="form-label fw-semibold">Estado</label>
                     <asp:DropDownList
                         CssClass="form-select"
                         ID="ddlEstado"
                         runat="server">
-                        <asp:ListItem Selected="True">Activo</asp:ListItem>
-                        <asp:ListItem>Inactivo</asp:ListItem>
+                        <asp:ListItem Selected="True" Value="Activo">Activo</asp:ListItem>
+                        <asp:ListItem Value="Inactivo">Inactivo</asp:ListItem>
                     </asp:DropDownList>
                 </div>
 
@@ -48,6 +76,10 @@
             <%--Permisos del rol--%>
             <div class="row gy-4">
                 <h5>Permisos del Rol</h5>
+                <div class="alert alert-info small mb-3" role="alert">
+                    <i class="bi bi-info-circle"></i>
+                    Si un módulo no tiene ningún permiso seleccionado, el rol no podrá acceder ni visualizarlo en la aplicación.
+                </div>
                 <div class="m-0 border border-1"></div>
 
                 <%--Tabla con tipos de permiso por módulos--%>
@@ -59,34 +91,12 @@
                         <div class="col">Ver</div>
                         <div class="col">Crear</div>
                         <div class="col">Editar</div>
-                        <div class="col">Eliminar</div>
                         <div class="col">Activar</div>
                         <div class="col">Desactivar</div>
                     </div>
 
-                    <div class="row py-2 border-bottom">
-                        <div class="col text-start fw-semibold">Inicio</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioEliminar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkInicioDesactivar" runat="server" />
-                        </div>
-                    </div>
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">
                             Turnos
                         </div>
@@ -100,9 +110,6 @@
                             <asp:CheckBox ID="chkTurnosEditar" runat="server" />
                         </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTurnosEliminar" runat="server" />
-                        </div>
-                        <div class="col">
                             <asp:CheckBox ID="chkTurnosActivar" runat="server" />
                         </div>
                         <div class="col">
@@ -110,7 +117,7 @@
                         </div>
                     </div>
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Pacientes</div>
                         <div class="col">
                             <asp:CheckBox ID="chkPacientesVer" runat="server" />
@@ -122,9 +129,6 @@
                             <asp:CheckBox ID="chkPacientesEditar" runat="server" />
                         </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPacientesEliminar" runat="server" />
-                        </div>
-                        <div class="col">
                             <asp:CheckBox ID="chkPacientesActivar" runat="server" />
                         </div>
                         <div class="col">
@@ -132,198 +136,240 @@
                         </div>
                     </div>
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Médicos</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkMedicosVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkMedicosVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkMedicosCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkMedicosCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkMedicosEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkMedicosEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkMedicosEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkMedicosActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkMedicosActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkMedicosDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Coberturas</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkCoberturasVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkCoberturasVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkCoberturasCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkCoberturasCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkCoberturasEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkCoberturasEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkCoberturasEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkCoberturasActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkCoberturasActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkCoberturasDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Planes</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPlanesVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkPlanesVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPlanesCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkPlanesCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPlanesEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkPlanesEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPlanesEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkPlanesActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkPlanesActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkPlanesDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Especialidades</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkEspecialidadesVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkEspecialidadesCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkEspecialidadesEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkEspecialidadesActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkEspecialidadesDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Tratamientos</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTratamientosVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkTratamientosVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTratamientosCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkTratamientosCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTratamientosEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkTratamientosEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTratamientosEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkTratamientosActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkTratamientosActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkTratamientosDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Reportes</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkReportesVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkReportesVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkReportesCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkReportesCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkReportesEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkReportesEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkReportesEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkReportesActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkReportesActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkReportesDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Configuración</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkConfiguracionVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkConfiguracionCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkConfiguracionEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkConfiguracionActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkConfiguracionDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Usuarios</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkUsuariosVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkUsuariosVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkUsuariosCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkUsuariosCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkUsuariosEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkUsuariosEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkUsuariosEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkUsuariosActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkUsuariosActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkUsuariosDesactivar" runat="server" />
+                        </div>
                     </div>
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Roles</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkRolesVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkRolesVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkRolesCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkRolesCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkRolesEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkRolesEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkRolesEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkRolesActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkRolesActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkRolesDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
-                     <div class="row py-2 border-bottom">
+                    <div class="row py-2 border-bottom">
                         <div class="col fw-bold">Parámetros del Sistema</div>
                         <div class="col">
-                            <asp:CheckBox ID="chkParametrosVer" runat="server" /></div>
+                            <asp:CheckBox ID="chkParametrosSistemaVer" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkParametrosCrear" runat="server" /></div>
+                            <asp:CheckBox ID="chkParametrosSistemaCrear" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkParametrosEditar" runat="server" /></div>
+                            <asp:CheckBox ID="chkParametrosSistemaEditar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkParametrosEliminar" runat="server" /></div>
+                            <asp:CheckBox ID="chkParametrosSistemaActivar" runat="server" />
+                        </div>
                         <div class="col">
-                            <asp:CheckBox ID="chkParametrosActivar" runat="server" /></div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosDesactivar" runat="server" /></div>
+                            <asp:CheckBox ID="chkParametrosSistemaDesactivar" runat="server" />
+                        </div>
                     </div>
 
 
                 </div>
 
             </div>
-        </div>
 
+        </div>
     </div>
+
+    <asp:ValidationSummary
+        ID="ValidationSummaryRol"
+        runat="server"
+        HeaderText="Por favor corrija los siguientes errores:"
+        CssClass="alert alert-danger mt-3"
+        DisplayMode="BulletList" />
 
     <%--botones--%>
     <div class="h-100 w-100 align-content-end">
         <div class="row justify-content-end gx-2 gy-2">
-            <%-- boton cancelar --%>
             <div class="col-6 col-sm-4 col-md-2 d-grid">
-                <asp:Button ID="btnCancelar" runat="server"
+                <asp:Button
+                    ID="btnCancelar"
+                    runat="server"
                     Text="Cancelar"
                     CssClass="btn btn-outline-secondary btn-sm"
-                    OnClick="btnCancelar_Click" />
+                    OnClick="btnCancelar_Click"
+                    CausesValidation="false" />
             </div>
 
-            <%-- boton guardar --%>
             <div class="col-6 col-sm-4 col-md-2 d-grid">
-                <asp:Button ID="btnGuardar" runat="server"
+                <asp:Button
+                    ID="btnGuardar"
+                    runat="server"
                     Text="Guardar"
-                    CssClass="btn btn-primary btn-sm" />
+                    CssClass="btn btn-primary btn-sm"
+                    OnClick="btnGuardar_Click"
+                    CausesValidation="true" />
             </div>
         </div>
     </div>

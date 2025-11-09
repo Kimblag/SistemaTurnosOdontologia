@@ -24,6 +24,24 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
+        /// rfvNombre control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvNombre;
+
+        /// <summary>
+        /// revNombre control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revNombre;
+
+        /// <summary>
         /// txtDescripcion control.
         /// </summary>
         /// <remarks>
@@ -33,6 +51,15 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
+        /// revDescripcion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revDescripcion;
+
+        /// <summary>
         /// ddlEstado control.
         /// </summary>
         /// <remarks>
@@ -40,60 +67,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
-
-        /// <summary>
-        /// chkInicioVer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioVer;
-
-        /// <summary>
-        /// chkInicioCrear control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioCrear;
-
-        /// <summary>
-        /// chkInicioEditar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioEditar;
-
-        /// <summary>
-        /// chkInicioEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioEliminar;
-
-        /// <summary>
-        /// chkInicioActivar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioActivar;
-
-        /// <summary>
-        /// chkInicioDesactivar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkInicioDesactivar;
 
         /// <summary>
         /// chkTurnosVer control.
@@ -121,15 +94,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkTurnosEditar;
-
-        /// <summary>
-        /// chkTurnosEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkTurnosEliminar;
 
         /// <summary>
         /// chkTurnosActivar control.
@@ -177,15 +141,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkPacientesEditar;
 
         /// <summary>
-        /// chkPacientesEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkPacientesEliminar;
-
-        /// <summary>
         /// chkPacientesActivar control.
         /// </summary>
         /// <remarks>
@@ -229,15 +184,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkMedicosEditar;
-
-        /// <summary>
-        /// chkMedicosEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkMedicosEliminar;
 
         /// <summary>
         /// chkMedicosActivar control.
@@ -285,15 +231,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkCoberturasEditar;
 
         /// <summary>
-        /// chkCoberturasEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkCoberturasEliminar;
-
-        /// <summary>
         /// chkCoberturasActivar control.
         /// </summary>
         /// <remarks>
@@ -337,15 +274,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkPlanesEditar;
-
-        /// <summary>
-        /// chkPlanesEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkPlanesEliminar;
 
         /// <summary>
         /// chkPlanesActivar control.
@@ -393,15 +321,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkEspecialidadesEditar;
 
         /// <summary>
-        /// chkEspecialidadesEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkEspecialidadesEliminar;
-
-        /// <summary>
         /// chkEspecialidadesActivar control.
         /// </summary>
         /// <remarks>
@@ -445,15 +364,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkTratamientosEditar;
-
-        /// <summary>
-        /// chkTratamientosEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkTratamientosEliminar;
 
         /// <summary>
         /// chkTratamientosActivar control.
@@ -501,15 +411,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkReportesEditar;
 
         /// <summary>
-        /// chkReportesEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkReportesEliminar;
-
-        /// <summary>
         /// chkReportesActivar control.
         /// </summary>
         /// <remarks>
@@ -553,15 +454,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkConfiguracionEditar;
-
-        /// <summary>
-        /// chkConfiguracionEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkConfiguracionEliminar;
 
         /// <summary>
         /// chkConfiguracionActivar control.
@@ -609,15 +501,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkUsuariosEditar;
 
         /// <summary>
-        /// chkUsuariosEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkUsuariosEliminar;
-
-        /// <summary>
         /// chkUsuariosActivar control.
         /// </summary>
         /// <remarks>
@@ -663,15 +546,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkRolesEditar;
 
         /// <summary>
-        /// chkRolesEliminar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkRolesEliminar;
-
-        /// <summary>
         /// chkRolesActivar control.
         /// </summary>
         /// <remarks>
@@ -690,58 +564,58 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         protected global::System.Web.UI.WebControls.CheckBox chkRolesDesactivar;
 
         /// <summary>
-        /// chkParametrosVer control.
+        /// chkParametrosSistemaVer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosVer;
+        protected global::System.Web.UI.WebControls.CheckBox chkParametrosSistemaVer;
 
         /// <summary>
-        /// chkParametrosCrear control.
+        /// chkParametrosSistemaCrear control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosCrear;
+        protected global::System.Web.UI.WebControls.CheckBox chkParametrosSistemaCrear;
 
         /// <summary>
-        /// chkParametrosEditar control.
+        /// chkParametrosSistemaEditar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosEditar;
+        protected global::System.Web.UI.WebControls.CheckBox chkParametrosSistemaEditar;
 
         /// <summary>
-        /// chkParametrosEliminar control.
+        /// chkParametrosSistemaActivar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosEliminar;
+        protected global::System.Web.UI.WebControls.CheckBox chkParametrosSistemaActivar;
 
         /// <summary>
-        /// chkParametrosActivar control.
+        /// chkParametrosSistemaDesactivar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosActivar;
+        protected global::System.Web.UI.WebControls.CheckBox chkParametrosSistemaDesactivar;
 
         /// <summary>
-        /// chkParametrosDesactivar control.
+        /// ValidationSummaryRol control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkParametrosDesactivar;
+        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummaryRol;
 
         /// <summary>
         /// btnCancelar control.
