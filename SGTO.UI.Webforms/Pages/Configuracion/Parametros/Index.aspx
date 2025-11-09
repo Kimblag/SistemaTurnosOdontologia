@@ -57,6 +57,24 @@
                     </div>
                 </div>
 
+                <div class="row g-3 mb-3 align-items-center">
+                    <div class="col-md-4">
+                        <label for="txtPuertoCorreo" class="form-label fw-semibold">Puerto SMTP</label>
+                    </div>
+                    <div class="col-md-8">
+                        <asp:TextBox ID="txtPuertoCorreo" runat="server" CssClass="form-control" TextMode="Number" />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3 align-items-center">
+                    <div class="col-md-4">
+                        <label for="txtEmailRemitente" class="form-label fw-semibold">Email Remitente</label>
+                    </div>
+                    <div class="col-md-8">
+                        <asp:TextBox ID="txtEmailRemitente" runat="server" CssClass="form-control" />
+                    </div>
+                </div>
+
                 <div class="row g-3 mb-4 align-items-center">
                     <div class="col-md-4">
                         <label for="txtReintentosEmail" class="form-label fw-semibold">Reintentos de Envío de Email</label>
@@ -73,23 +91,66 @@
 
         <%--botones--%>
         <div class="col align-content-end">
-            <div class="row justify-content-end gx-2 gy-2">
-                <%-- boton cancelar --%>
-                <div class="col-6 col-sm-4 col-md-2 d-grid">
+            <div class="row gx-2 gy-2 align-items-center justify-content-between">
+
+                <div class="col-4 col-sm-2 col-md-1 d-grid">
+                    <a href='<%= ResolveUrl("~/Pages/Configuracion/Index.aspx") %>' class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+
+                <div class="col-auto d-flex flex-wrap justify-content-end gap-2">
+
                     <asp:Button ID="btnCancelar" runat="server"
                         Text="Cancelar"
                         CssClass="btn btn-outline-secondary btn-sm"
                         OnClick="btnCancelar_Click" />
-                </div>
 
-                <%-- boton guardar --%>
-                <div class="col-6 col-sm-4 col-md-2 d-grid">
                     <asp:Button ID="btnGuardar" runat="server"
                         Text="Guardar"
-                        CssClass="btn btn-primary btn-sm" />
+                        CssClass="btn btn-primary btn-sm"
+                        OnClick="btnGuardar_Click" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <%-- modal resultado --%>
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultadoDesc"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnModalCerrar" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            // modal resultado
+            window.abrirModalResultado = function (titulo, descripcion) {
+                try {
+                    document.getElementById('modalResultadoTitulo').textContent = titulo || "Resultado";
+                    document.getElementById('modalResultadoDesc').textContent = descripcion || "";
+                    new bootstrap.Modal(document.getElementById('modalResultado')).show();
+                } catch (err) {
+                    console.error("Error al abrir modal de resultado:", err);
+                }
+            };
+        });
+    </script>
 
 </asp:Content>

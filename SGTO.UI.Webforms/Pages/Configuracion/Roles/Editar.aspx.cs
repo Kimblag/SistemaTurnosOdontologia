@@ -17,6 +17,11 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
             }
+
+            if (!IsPostBack)
+            {
+                RolesFormControl.ModoEdicion = true;
+            }
         }
     }
 }

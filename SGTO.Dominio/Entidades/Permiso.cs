@@ -1,9 +1,4 @@
 ﻿using SGTO.Dominio.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
@@ -14,6 +9,10 @@ namespace SGTO.Dominio.Entidades
         public TipoAccion Accion { get; set; }
         public string Descripcion { get; set; } = string.Empty;
 
+        public Permiso()
+        {
+
+        }
 
         public Permiso(Modulo modulo, TipoAccion accion, string descripcion)
         {

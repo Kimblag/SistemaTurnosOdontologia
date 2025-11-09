@@ -21,7 +21,10 @@ namespace SGTO.Dominio.Entidades
         public DateTime FechaAlta { get; set; }
         public DateTime FechaModificacion { get; set; }
 
-
+        public Usuario()
+        {
+            
+        }
         public Usuario(string nombre, string apellido, Email email, string nombreUsuario,
             string passwordHash, Rol rol)
         {

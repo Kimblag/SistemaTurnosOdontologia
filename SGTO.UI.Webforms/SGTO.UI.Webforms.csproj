@@ -118,7 +118,6 @@
     <Content Include="Content\Pages\Dashboard.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
-    <Content Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx" />
     <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
     <Content Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx" />
     <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
@@ -234,13 +233,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx.cs">
-      <DependentUpon>ParametrosForm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx.designer.cs">
-      <DependentUpon>ParametrosForm.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controles\Configuracion\Roles\RolesForm.ascx.cs">
       <DependentUpon>RolesForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

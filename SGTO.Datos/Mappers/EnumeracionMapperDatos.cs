@@ -51,5 +51,19 @@ namespace SGTO.Datos.Mappers
                     throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para Genero.");
             }
         }
+
+
+        public static Modulo MapearModulo(SqlDataReader lector, string nombreColumna)
+        {
+            string valor = lector.GetString(lector.GetOrdinal(nombreColumna));
+            return (Modulo)Enum.Parse(typeof(Modulo), valor, true);
+        }
+
+        public static TipoAccion MapearTipoAccion(SqlDataReader lector, string nombreColumna)
+        {
+            string valor = lector.GetString(lector.GetOrdinal(nombreColumna));
+            return (TipoAccion)Enum.Parse(typeof(TipoAccion), valor, true);
+        }
+
     }
 }

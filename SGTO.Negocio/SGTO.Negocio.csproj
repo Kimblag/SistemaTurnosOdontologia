@@ -48,11 +48,15 @@
     <Compile Include="DTOs\Pacientes\PacienteDetalleDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteEdicionDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteListadoDto.cs" />
-    <Compile Include="DTOs\ParametroDto.cs" />
+    <Compile Include="DTOs\ParametroSistema\ParametroSistemaDto.cs" />
+    <Compile Include="DTOs\Permisos\PermisoAsignadoDto.cs" />
+    <Compile Include="DTOs\Permisos\PermisoDto.cs" />
     <Compile Include="DTOs\PlanDto.cs" />
     <Compile Include="DTOs\ReportePacienteDto.cs" />
     <Compile Include="DTOs\ReporteTurnosDto.cs" />
-    <Compile Include="DTOs\RolDto.cs" />
+    <Compile Include="DTOs\Roles\RolCrearDto.cs" />
+    <Compile Include="DTOs\Roles\RolDetalleDto.cs" />
+    <Compile Include="DTOs\Roles\RolListadoDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoPacienteDto.cs" />
@@ -65,7 +69,9 @@
     <Compile Include="Mappers\EnumeracionMapperNegocio.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />
+    <Compile Include="Mappers\ParametroSistemaMapper.cs" />
     <Compile Include="Mappers\PlanMapper.cs" />
+    <Compile Include="Mappers\RolMapper.cs" />
     <Compile Include="Mappers\TurnoMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Seguridad\PasswordHasher.cs" />

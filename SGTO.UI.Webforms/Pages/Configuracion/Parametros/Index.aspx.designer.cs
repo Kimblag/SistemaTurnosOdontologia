@@ -60,6 +60,24 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
         protected global::System.Web.UI.WebControls.TextBox txtServidorCorreo;
 
         /// <summary>
+        /// txtPuertoCorreo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtPuertoCorreo;
+
+        /// <summary>
+        /// txtEmailRemitente control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmailRemitente;
+
+        /// <summary>
         /// txtReintentosEmail control.
         /// </summary>
         /// <remarks>

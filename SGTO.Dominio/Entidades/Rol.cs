@@ -1,9 +1,5 @@
 ﻿using SGTO.Dominio.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
@@ -14,6 +10,11 @@ namespace SGTO.Dominio.Entidades
         public string Descripcion { get; set; } = string.Empty;
         public List<Permiso> Permisos { get; set; }
         public EstadoEntidad Estado { get; set; }
+
+        public Rol()
+        {
+            
+        }
 
         public Rol(string nombre, string descripcion, List<Permiso> permisos)
         {
