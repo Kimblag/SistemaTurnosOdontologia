@@ -13,32 +13,5 @@ namespace SGTO.UI.Webforms.Pages.Configuracion
 
     public partial class Configuracion
     {
-
-        /// <summary>
-        /// usuariosListadoControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.Usuarios.UsuariosListado usuariosListadoControl;
-
-        /// <summary>
-        /// rolesListadoControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.Roles.RolesListado rolesListadoControl;
-
-        /// <summary>
-        /// ParametrosSistemaForm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.ParametrosSistema.ParametrosSistema ParametrosSistemaForm;
     }
 }

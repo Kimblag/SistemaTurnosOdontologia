@@ -120,9 +120,7 @@
     <Content Include="Content\TemaApp.css" />
     <Content Include="Controles\Configuracion\ParametrosSistema\ParametrosForm.ascx" />
     <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
-    <Content Include="Controles\Configuracion\Roles\RolesListado.ascx" />
     <Content Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx" />
-    <Content Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx" />
     <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
     <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
@@ -143,9 +141,12 @@
     <Content Include="Pages\CoberturasPlanes\NuevaCobertura.aspx" />
     <Content Include="Pages\CoberturasPlanes\NuevoPlan.aspx" />
     <Content Include="Pages\Configuracion\Index.aspx" />
+    <Content Include="Pages\Configuracion\Parametros\Index.aspx" />
     <Content Include="Pages\Configuracion\Roles\Editar.aspx" />
+    <Content Include="Pages\Configuracion\Roles\Index.aspx" />
     <Content Include="Pages\Configuracion\Roles\Nuevo.aspx" />
     <Content Include="Pages\Configuracion\Usuarios\Editar.aspx" />
+    <Content Include="Pages\Configuracion\Usuarios\Index.aspx" />
     <Content Include="Pages\Configuracion\Usuarios\Nuevo.aspx" />
     <Content Include="Pages\Error\Error.aspx" />
     <Content Include="Pages\Error\NotFound.aspx" />
@@ -247,26 +248,12 @@
     <Compile Include="Controles\Configuracion\Roles\RolesForm.ascx.designer.cs">
       <DependentUpon>RolesForm.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controles\Configuracion\Roles\RolesListado.ascx.cs">
-      <DependentUpon>RolesListado.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Configuracion\Roles\RolesListado.ascx.designer.cs">
-      <DependentUpon>RolesListado.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.cs">
       <DependentUpon>UsuariosForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.designer.cs">
       <DependentUpon>UsuariosForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx.cs">
-      <DependentUpon>UsuariosListado.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Configuracion\Usuarios\UsuariosListado.ascx.designer.cs">
-      <DependentUpon>UsuariosListado.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Especialidades\EspecialidadForm.ascx.cs">
       <DependentUpon>EspecialidadForm.ascx</DependentUpon>
@@ -397,12 +384,26 @@
     <Compile Include="Pages\Configuracion\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Configuracion\Parametros\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Parametros\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Configuracion\Roles\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Configuracion\Roles\Editar.aspx.designer.cs">
       <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Configuracion\Roles\Nuevo.aspx.cs">
       <DependentUpon>Nuevo.aspx</DependentUpon>
@@ -417,6 +418,13 @@
     </Compile>
     <Compile Include="Pages\Configuracion\Usuarios\Editar.aspx.designer.cs">
       <DependentUpon>Editar.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Usuarios\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Configuracion\Usuarios\Nuevo.aspx.cs">
       <DependentUpon>Nuevo.aspx</DependentUpon>

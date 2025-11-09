@@ -553,3 +553,31 @@ p, span, button, input, select, label, td, th {
         font-size: 1rem;
         opacity: .5;
     }
+
+
+/* =========================================================
+   estilos de cards de configuración
+   ========================================================= */
+
+.configuracion-page .card-config {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .configuracion-page .card-config:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+.icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.configuracion-page .card-title {
+    font-size: 1.2rem;
+}

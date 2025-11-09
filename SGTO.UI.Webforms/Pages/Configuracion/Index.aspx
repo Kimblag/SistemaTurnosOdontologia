@@ -1,77 +1,73 @@
 ﻿<%@ Page Title="Configuración" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Configuracion" %>
 
-<%--registro de controles--%>
-<%@ Register Src="~/Controles/Configuracion/Usuarios/UsuariosListado.ascx" TagPrefix="uc1" TagName="UsuariosListado" %>
-<%@ Register Src="~/Controles/Configuracion/Roles/RolesListado.ascx" TagPrefix="uc1" TagName="RolesListado" %>
-<%@ Register Src="~/Controles/Configuracion/ParametrosSistema/ParametrosForm.ascx" TagPrefix="uc1" TagName="ParametrosSistemaForm" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <div class="page-generic">
 
-        <%--Tabs de navegación--%>
-        <ul class="nav nav-tabs" id="configuracionTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active"
-                    id="tab-usuarios"
-                    data-bs-toggle="tab"
-                    data-bs-target="#pane-usuarios"
-                    type="button"
-                    role="tab"
-                    aria-controls="pane-usuarios"
-                    aria-selected="true">
-                    Usuarios
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link"
-                    id="tab-roles"
-                    data-bs-toggle="tab"
-                    data-bs-target="#pane-roles"
-                    type="button"
-                    role="tab"
-                    aria-controls="pane-roles"
-                    aria-selected="false">
-                    Roles
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link"
-                    id="tab-parametros"
-                    data-bs-toggle="tab"
-                    data-bs-target="#pane-parametros"
-                    type="button"
-                    role="tab"
-                    aria-controls="pane-parametros"
-                    aria-selected="false">
-                    Parámetros del Sistema
-                </button>
-            </li>
-        </ul>
+        <div class="row g-4">
 
-        <%--Contenido de las pestañas--%>
-        <div class="tab-content" id="configuracionTabsContent">
-            <div class="tab-pane fade show active"
-                id="pane-usuarios"
-                role="tabpanel"
-                aria-labelledby="tab-usuarios">
-                <uc1:UsuariosListado ID="usuariosListadoControl" runat="server" />
+            <!-- Usuarios -->
+            <div class="col-12 col-md-4">
+                <div class="card card-config h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between text-center">
+                        <div>
+                            <div class="icon-wrapper bg-primary bg-opacity-10 text-primary mb-3">
+                                <i class="bi bi-person-gear"></i>
+                            </div>
+                            <h5 class="card-title fw-semibold">Gestión de Usuarios</h5>
+                            <p class="card-text text-muted">
+                                Cree, edite y administre los usuarios del sistema, así como sus accesos.
+                            </p>
+                        </div>
+                        <a href='<%= ResolveUrl("~/Pages/Configuracion/Usuarios/Index.aspx") %>' class="btn btn-outline-primary mt-3">
+                            <i class="bi bi-arrow-right-circle me-1"></i>Ir a Usuarios
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="tab-pane fade"
-                id="pane-roles"
-                role="tabpanel"
-                aria-labelledby="tab-roles">
-                <uc1:RolesListado ID="rolesListadoControl" runat="server" />
+            <!-- Roles -->
+            <div class="col-12 col-md-4">
+                <div class="card card-config h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between text-center">
+                        <div>
+                            <div class="icon-wrapper bg-success bg-opacity-10 text-success mb-3">
+                                <i class="bi bi-shield-lock"></i>
+                            </div>
+                            <h5 class="card-title fw-semibold">Gestión de Roles</h5>
+                            <p class="card-text text-muted">
+                                Defina los roles y asigne permisos a los distintos tipos de usuarios.
+                            </p>
+                        </div>
+                        <a href='<%= ResolveUrl("~/Pages/Configuracion/Roles/Index.aspx") %>' class="btn btn-outline-success mt-3">
+                            <i class="bi bi-arrow-right-circle me-1"></i>Ir a Roles
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="tab-pane fade"
-                id="pane-parametros"
-                role="tabpanel"
-                aria-labelledby="tab-parametros">
-                <uc1:ParametrosSistemaForm ID="ParametrosSistemaForm" runat="server" />
+            <!-- Parámetros del sistema -->
+            <div class="col-12 col-md-4">
+                <div class="card card-config h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between text-center">
+                        <div>
+                            <div class="icon-wrapper bg-warning bg-opacity-10 text-warning mb-3">
+                                <i class="bi bi-gear-fill"></i>
+                            </div>
+                            <h5 class="card-title fw-semibold">Parámetros del Sistema</h5>
+                            <p class="card-text text-muted">
+                                Configure valores globales como duración de turnos o reglas generales.
+                            </p>
+                        </div>
+                        <a href='<%= ResolveUrl("~/Pages/Configuracion/Parametros/Index.aspx") %>' class="btn btn-outline-warning mt-3">
+                            <i class="bi bi-arrow-right-circle me-1"></i>Ir a Parámetros
+                        </a>
+                    </div>
+                </div>
             </div>
+
         </div>
+
 
     </div>
 </asp:Content>

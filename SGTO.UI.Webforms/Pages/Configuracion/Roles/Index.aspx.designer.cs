@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
+namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 {
 
 
-    public partial class RolesListado
+    public partial class Index
     {
 
         /// <summary>

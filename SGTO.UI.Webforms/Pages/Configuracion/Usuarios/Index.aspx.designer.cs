@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Controles.Configuracion.Usuarios
+namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 {
 
 
-    public partial class UsuariosListado
+    public partial class Index
     {
 
         /// <summary>

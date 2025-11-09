@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Controles.Configuracion.ParametrosSistema
+namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
 {
 
 
-    public partial class ParametrosSistema
+    public partial class Index
     {
 
         /// <summary>
