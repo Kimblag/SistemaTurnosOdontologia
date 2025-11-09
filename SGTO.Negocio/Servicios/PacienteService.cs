@@ -125,6 +125,17 @@ namespace SGTO.Negocio.Servicios
             if (pacienteActual == null)
                 throw new ExcepcionReglaNegocio("No se encuentró el paciente indicado");
 
+            bool pasaAInactivo = pacienteActual.Estado == EstadoEntidad.Activo &&
+                     EnumeracionMapperNegocio.MapearEstadoEntidad(pacienteDto.Estado) == EstadoEntidad.Inactivo;
+            if (pasaAInactivo)
+            {
+                // verificar si el paciente tiene turnos activos o pendientes
+                bool tieneTurnosActivos = _repositorioTurno.ExisteTurnoActivoPorPaciente(pacienteDto.IdPaciente);
+
+                if (tieneTurnosActivos)
+                    throw new ExcepcionReglaNegocio("No se puede inactivar el paciente porque tiene turnos activos o pendientes.");
+            }
+
             // validar qu ela cobertura esté activa.
             Cobertura cobertura = _repositorioCobertura.ObtenerPorId(pacienteDto.IdCobertura);
             if (cobertura == null || cobertura.Estado != EstadoEntidad.Activo)
@@ -200,8 +211,29 @@ namespace SGTO.Negocio.Servicios
             {
                 throw;
             }
+        }
 
+        public void DarDeBaja(int idPaciente)
+        {
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(idPaciente);
+            if (paciente == null)
+                throw new ExcepcionReglaNegocio("No se encontró el paciente indicado.");
 
+            if (paciente.Estado == EstadoEntidad.Inactivo)
+                throw new ExcepcionReglaNegocio("El paciente ya está inactivo.");
+
+            bool tieneTurnosActivos = _repositorioTurno.ExisteTurnoActivoPorPaciente(idPaciente);
+            if (tieneTurnosActivos)
+                throw new ExcepcionReglaNegocio("El paciente tiene turnos activos o pendientes. No se puede dar de baja.");
+
+            try
+            {
+                _repositorioPaciente.DarDeBaja(idPaciente);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
 

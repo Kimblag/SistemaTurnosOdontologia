@@ -1,5 +1,6 @@
 ﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Pacientes;
+using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
@@ -264,6 +265,43 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
+            int idPaciente = int.Parse(hdnIdEliminar.Value);
+            try
+            {
+                _servicioPaciente.DarDeBaja(idPaciente);
+
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Paciente dado de baja",
+                    "El paciente fue dado de baja correctamente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                    "abrirModalResultado"
+                );
+                Response.Redirect(Request.RawUrl, false);
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado"
+                );
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al intentar dar de baja el paciente. " + ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado"
+                );
+            }
 
         }
     }

@@ -121,9 +121,11 @@
                             <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdPaciente") %>'>
                         <i class="bi bi-eye"></i>
                             </asp:LinkButton>
-                            <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdPaciente") %>'>
-                        <i class="bi bi-x"></i>
-                            </asp:LinkButton>
+                            <button type="button"
+                                class="btn btn-outline-danger btn-sm me-1"
+                                data-id='<%# Eval("IdPaciente") %>'
+                                onclick="abrirModalConfirmacion('<%# Eval("IdPaciente") %>', 'paciente')">
+                                <i class="bi bi-x"></i>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -192,13 +194,23 @@
                     document.getElementById('<%= hdnIdEliminar.ClientID %>').value = id;
                     document.getElementById('<%= hdnTipoEliminar.ClientID %>').value = tipo;
 
-                    const titulo = tipo === "plan"
-                        ? "Confirmar baja de plan"
-                        : "Confirmar baja de cobertura";
+                    let titulo = "Confirmar acción";
+                    let texto = "¿Está seguro que desea continuar?";
 
-                    const texto = tipo === "plan"
-                        ? "¿Está seguro de que desea dar de baja este plan?"
-                        : "¿Está seguro de que desea dar de baja esta cobertura?";
+                    switch (tipo) {
+                        case "paciente":
+                            titulo = "Confirmar baja de paciente";
+                            texto = "¿Está seguro de que desea dar de baja este paciente?";
+                            break;
+                        case "plan":
+                            titulo = "Confirmar baja de plan";
+                            texto = "¿Está seguro de que desea dar de baja este plan?";
+                            break;
+                        case "cobertura":
+                            titulo = "Confirmar baja de cobertura";
+                            texto = "¿Está seguro de que desea dar de baja esta cobertura?";
+                            break;
+                    }
 
                     document.getElementById('modalConfirmarTitulo').textContent = titulo;
                     document.getElementById('modalConfirmarTexto').textContent = texto;
