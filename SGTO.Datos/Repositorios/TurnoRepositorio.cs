@@ -10,6 +10,39 @@ namespace SGTO.Datos.Repositorios
 {
     public class TurnoRepositorio
     {
+
+        public bool ExisteTurnoActivoPorEspecialidad(int idEspecialidad)
+        {
+            bool resultado = false;
+            string query = @"SELECT COUNT(*)
+                    FROM Turno
+                    WHERE IdEspecialidad = @IdEspecialidad
+                      AND Estado NOT IN ('C', 'Z', 'X')";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@idEspecialidad", idEspecialidad);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return resultado;
+        }
         public bool ExisteTurnoActivoPorCobertura(int idCobertura)
         {
             bool resultado = false;

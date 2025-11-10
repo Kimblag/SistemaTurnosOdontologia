@@ -1,6 +1,7 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -75,7 +76,7 @@ namespace SGTO.Datos.Repositorios
 
         public void Crear(Especialidad especialidad)
         {
-           string query = @"INSERT INTO Especialidad (Nombre, Descripcion, Estado)
+            string query = @"INSERT INTO Especialidad (Nombre, Descripcion, Estado)
                              VALUES (@Nombre, @Descripcion, @Estado)";
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
@@ -93,7 +94,7 @@ namespace SGTO.Datos.Repositorios
 
                     throw;
                 }
-                            
+
             }
 
         }
@@ -101,7 +102,7 @@ namespace SGTO.Datos.Repositorios
 
         public Especialidad ObtenerPorId(int id)
         {
-            Especialidad especialidad = null; 
+            Especialidad especialidad = null;
 
             string query = @"SELECT IdEspecialidad, 
                             Nombre AS NombreEspecialidad, 
@@ -145,6 +146,7 @@ namespace SGTO.Datos.Repositorios
             {
                 try
                 {
+                    datos.LimpiarParametros();
                     datos.DefinirConsulta(query);
                     datos.EstablecerParametros("@Nombre", especialidad.Nombre);
                     datos.EstablecerParametros("@Descripcion", especialidad.Descripcion);
@@ -156,6 +158,54 @@ namespace SGTO.Datos.Repositorios
                 {
                     throw;
                 }
+            }
+        }
+
+        public void DarDeBaja(int idEspecialidad, char estado, ConexionDBFactory datos)
+        {
+            string query = @"UPDATE Especialidad 
+                   SET Estado = @Estado
+                   WHERE IdEspecialidad = @IdEspecialidad";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Estado", estado);                  
+            datos.EstablecerParametros("@IdEspecialidad", idEspecialidad); 
+            datos.EjecutarAccion();
+        }
+
+        public bool EstaDadoDeBaja(int idEspecialidad)
+        {
+            bool estaDadoDeBaja = false;
+            
+            string query = @"SELECT Estado
+                                FROM Especialidad
+                            WHERE IdEspecialidad = @IdEspecialidad";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("IdEspecialidad", idEspecialidad);
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if(lector.Read())
+                        {
+                            if(!lector.IsDBNull(lector.GetOrdinal("Estado")))
+                            {
+                                EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado");
+                                estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
+                            }
+                        }
+                    }
+                    return estaDadoDeBaja;
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }   
             }
         }
 

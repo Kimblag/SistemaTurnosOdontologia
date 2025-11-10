@@ -72,36 +72,41 @@
                     <asp:BoundField DataField="Nombre" HeaderText="Nombre de Especialidad" />
                     <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                     
-                    <asp:TemplateField HeaderText="Estado">
-                        <ItemTemplate>
-                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                <%--columna estado--%>
 
-                    <asp:TemplateField HeaderText="Acciones">
-                        <ItemTemplate>
-                            <asp:LinkButton ID="btnEditar" runat="server"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdEspecialidad") %>'>
-                                <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
+            <asp:TemplateField HeaderText="Estado">
+    <ItemTemplate>
+        <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+    </ItemTemplate>
+</asp:TemplateField>
 
-                            <asp:LinkButton ID="btnDetalle" runat="server"
-                                CssClass="btn btn-outline-primary btn-sm me-1"
-                                CommandName="Ver"
-                                CommandArgument='<%# Eval("IdEspecialidad") %>'>
-                                <i class="bi bi-eye"></i>
-                            </asp:LinkButton>
+<asp:TemplateField HeaderText="Acciones">
+    <ItemTemplate>
+        <asp:LinkButton ID="btnEditar"
+            runat="server"
+            CssClass="btn btn-outline-secondary btn-sm me-1"
+            CommandName="Editar"
+            CommandArgument='<%# Eval("IdEspecialidad") %>'>
+            <i class="bi bi-pencil"></i>
+        </asp:LinkButton>
 
-                            <asp:LinkButton ID="btnEliminar" runat="server"
-                                CssClass="btn btn-outline-danger btn-sm"
-                                CommandName="Eliminar"
-                                CommandArgument='<%# Eval("IdEspecialidad") %>'>
-                                <i class="bi bi-x"></i>
-                            </asp:LinkButton>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+        <asp:LinkButton ID="btnDetalle"
+            runat="server"
+            CssClass="btn btn-outline-primary btn-sm me-1"
+            CommandName="Ver"
+            CommandArgument='<%# Eval("IdEspecialidad") %>'>
+            <i class="bi bi-eye"></i>
+        </asp:LinkButton>
+
+        <button type="button"
+                class="btn btn-outline-danger btn-sm"
+                data-id='<%# Eval("IdEspecialidad") %>'
+                onclick="abrirModalConfirmacion('<%# Eval("IdEspecialidad") %>')">
+            <i class="bi bi-x"></i>
+        </button>
+    </ItemTemplate>
+</asp:TemplateField>
+
                 </Columns>
 
                 <EmptyDataTemplate>
@@ -114,5 +119,85 @@
 
         </div>
     </div>
+
+   
+    <!-- Hidden fields para pasar datos al servidor -->
+<asp:HiddenField ID="hdnIdEliminar" runat="server" />
+<asp:HiddenField ID="hdnTipoEliminar" runat="server" />
+
+<!-- Modal Confirmar -->
+<div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="modalConfirmarTitulo" class="modal-title">Confirmar baja</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modalConfirmarTexto">¿Está seguro de que desea dar de baja esta especialidad?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+        <asp:Button ID="btnConfirmarEliminar"
+                    runat="server"
+                    CssClass="btn btn-danger"
+                    Text="Sí, dar de baja"
+                    UseSubmitBehavior="false"
+                    OnClick="btnConfirmarEliminar_Click" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Resultado  -->
+<div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modalResultadoDescripcion">Operación realizada.</p>
+      </div>
+      <div class="modal-footer">
+        <a id="modalResultadoLink" class="btn btn-primary" href="#" data-bs-dismiss="modal">Aceptar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            window.abrirModalConfirmacion = function (id) {
+                try {
+                    document.getElementById('<%= hdnIdEliminar.ClientID %>').value = id;
+      document.getElementById('<%= hdnTipoEliminar.ClientID %>').value = "especialidad";
+
+            document.getElementById('modalConfirmarTitulo').textContent = "Confirmar baja de especialidad";
+            document.getElementById('modalConfirmarTexto').textContent = "¿Está seguro de que desea dar de baja esta especialidad?";
+
+            new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
+        } catch (err) {
+            console.error("Error al abrir modal de confirmación:", err);
+        }
+    };
+
+    window.abrirModalResultado = function (titulo, descripcion, href) {
+
+        if (titulo) document.getElementById('modalResultadoTitulo').textContent = titulo;
+        if (descripcion) document.getElementById('modalResultadoDescripcion').textContent = descripcion;
+        if (href) document.getElementById('modalResultadoLink').setAttribute('href', href);
+        new bootstrap.Modal(document.getElementById('modalResultado')).show();
+    };
+});
+    </script>
+
+
+
+
+
+
 
 </asp:Content>

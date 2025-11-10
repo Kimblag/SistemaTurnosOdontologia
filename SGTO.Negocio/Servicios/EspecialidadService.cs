@@ -1,14 +1,14 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Repositorios;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace SGTO.Negocio.Servicios
 {
@@ -21,7 +21,7 @@ namespace SGTO.Negocio.Servicios
             _repositorio = new EspecialidadRepositorio();
         }
 
-        
+
         public List<EspecialidadDto> ObtenerTodasDto(string estado = null)
         {
             //  Llama al repositorio (capa de Datos)
@@ -57,19 +57,48 @@ namespace SGTO.Negocio.Servicios
         {
             try
             {
-                // 1. (Opcional pero recomendado: validación de duplicados,
-                //    como la que vimos para "Crear o Reactivar")
-                //    Por ahora lo hacemos simple.
-
-                // 2. Mapea el DTO (que tiene los datos nuevos) a una Entidad
                 Especialidad entidadModificada = EspecialidadMapper.MapearAEntidad(dtoModificado);
 
-                // 3. Llama al repositorio con el método que creamos en el Paso 2.1
                 _repositorio.Modificar(entidadModificada);
             }
             catch (Exception)
             {
                 throw;
+            }
+        }
+        public bool DarDeBaja(int idEspecialidad, TurnoService servicioTurno)
+        {
+            if (servicioTurno.TieneTurnosActivosPorEspecialidad(idEspecialidad))
+            {
+                throw new ExcepcionReglaNegocio("No se puede dar de baja la especialidad porque tiene turnos activos");
+            }
+
+            if (_repositorio.EstaDadoDeBaja(idEspecialidad))
+            {
+   
+            throw new ExcepcionReglaNegocio("La especialidad ya se encuentra dada de baja.");
+            }
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.IniciarTransaccion();
+                    _repositorio.DarDeBaja(idEspecialidad, 'I', datos);
+                    datos.ConfirmarTransaccion();
+                    return true;
+                }
+                catch (ExcepcionReglaNegocio)
+                {
+                    datos.RollbackTransaccion();
+                    throw;
+                }
+                catch (Exception)
+                {
+                    datos.RollbackTransaccion();
+                    throw new Exception("Error al intentar dar de baja la especialidad.");
+                }
+
             }
         }
     }
