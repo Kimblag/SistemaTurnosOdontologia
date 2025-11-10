@@ -19,15 +19,8 @@ INSERT INTO Cobertura (Nombre, Descripcion, Estado) VALUES
 -- Rol
 INSERT INTO Rol (Nombre, Descripcion, Estado) VALUES
 ('Administrador', 'Acceso total al sistema', 'A'),
-('Recepcionista', 'Gestiona turnos y pacientes', 'A'),
-('Médico', 'Acceso a agenda y registro clínico', 'A'),
-('Auditor', 'Visualiza reportes y estadísticas', 'I'),
-('Soporte', 'Mantenimiento técnico y parámetros', 'A'),
-('Asistente', 'Asiste en recepción', 'A'),
-('Supervisor', 'Monitorea turnos y personal médico', 'A'),
-('Contable', 'Acceso a reportes económicos', 'I'),
-('Becario', 'Acceso limitado a datos clínicos', 'A'),
-('Invitado', 'Solo lectura', 'I');
+('Recepcionista', 'Gestión de pacientes y turnos', 'A'),
+('Médico', 'Acceso a agenda y registro clínico', 'A');
 
 
 
@@ -148,35 +141,25 @@ INSERT INTO [Plan] (Nombre, Descripcion, PorcentajeCobertura, IdCobertura, Estad
 
 
 
--- RolPermiso
-
+-- RolPermiso;
 -- Administrador: todos los permisos
 INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 1, IdPermiso FROM Permiso;
 
 -- Recepcionista: TODO sobre Turnos y Pacientes
 INSERT INTO RolPermiso (IdRol, IdPermiso)
-SELECT 2, IdPermiso FROM Permiso WHERE Modulo IN ('Turnos','Pacientes');
+SELECT 2, IdPermiso FROM Permiso
+WHERE Modulo IN ('Turnos','Pacientes');
 
 -- Médico: Turnos(Ver/Editar) + Pacientes(Ver) + Tratamientos(Ver) + Especialidades(Ver)
 INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 3, IdPermiso
 FROM Permiso
-WHERE (Modulo='Turnos' AND Accion IN ('Ver','Editar'))
-   OR (Modulo='Pacientes' AND Accion='Ver')
-   OR (Modulo='Tratamientos' AND Accion='Ver')
-   OR (Modulo='Especialidades' AND Accion='Ver');
+WHERE
+    (Modulo = 'Turnos' AND Accion IN ('Ver','Editar'))
+    OR
+    (Modulo = 'Pacientes' AND Accion = 'Ver');;
 
--- Auditor: Reportes(Ver)
-INSERT INTO RolPermiso (IdRol, IdPermiso)
-SELECT 4, IdPermiso FROM Permiso WHERE Modulo='Reportes' AND Accion='Ver';
-
--- Soporte: Configuración(Ver/Editar) + Parámetros(Ver/Editar)
-INSERT INTO RolPermiso (IdRol, IdPermiso)
-SELECT 5, IdPermiso
-FROM Permiso
-WHERE (Modulo='Configuracion' AND Accion IN ('Ver','Editar'))
-   OR (Modulo='ParametrosSistema' AND Accion IN ('Ver','Editar'));
 
 
 
@@ -199,31 +182,27 @@ INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado)
 INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado)
 VALUES
 ('Ana','García','ana.garcia@sgto.com','agarcia','hash1',1,'A'),
-('Luis','Pérez','luis.perez@sgto.com','lperez','hash2',2,'A'),
-('Sofía','López','sofia.lopez@sgto.com','slopez','hash3',3,'A'),
-('Martín','Ruiz','martin.ruiz@sgto.com','mruiz','hash4',3,'A'),
-('Paula','Mendoza','paula.mendoza@sgto.com','pmendoza','hash5',2,'I'),
-('Esteban','Fernández','esteban.fernandez@sgto.com','efernandez','hash6',1,'A'),
-('Valeria','Díaz','valeria.diaz@sgto.com','vdiaz','hash7',4,'A'),
-('Camila','Rossi','camila.rossi@sgto.com','crossi','hash8',5,'A'),
-('Nicolás','Benítez','nicolas.benitez@sgto.com','nbenitez','hash9',3,'A'),
-('Lucía','Romero','lucia.romero@sgto.com','lromero','hash10',3,'I');
-
+('Esteban','Fernández','esteban.fernandez@sgto.com','efernandez','hash2',1,'A'),
+('Luis','Pérez','luis.perez@sgto.com','lperez','hash3',2,'A'),
+('Paula','Mendoza','paula.mendoza@sgto.com','pmendoza','hash4',2,'I'),
+('Sofía','López','sofia.lopez@sgto.com','slopez','hash5',3,'A'),
+('Martín','Ruiz','martin.ruiz@sgto.com','mruiz','hash6',3,'A'),
+('Nicolás','Benítez','nicolas.benitez@sgto.com','nbenitez','hash7',3,'A'),
+('Lucía','Romero','lucia.romero@sgto.com','lromero','hash8',3,'I'),
+('Camila','Rossi','camila.rossi@sgto.com','crossi','hash9',3,'A'),
+('Carlos','Méndez','carlos.mendez@sgto.com','cmendez','hash10',3,'A');
 
 
 -- Medico
-INSERT INTO Medico (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, Matricula, IdUsuario, Estado)
+INSERT INTO Medico
+(Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, Matricula, IdUsuario, Estado)
 VALUES
-('Martín','Ruiz','30234567','M','1985-04-15','1123456789','martin.ruiz@sgto.com','MP1234',4,'A'),
-('Sofía','López','31234568','F','1988-10-20','1123456790','sofia.lopez@sgto.com','MP1235',3,'A'),
-('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','nicolas.benitez@sgto.com','MP1236',9,'A'),
-('Lucía','Romero','28234570','F','1990-07-18','1123456792','lucia.romero@sgto.com','MP1237',10,'I'),
-('Camila','Rossi','32234571','F','1991-05-12','1123456793','camila.rossi@sgto.com','MP1238',8,'A'),
-('Carlos','Méndez','27234572','M','1982-11-02','1123456794','carlos.mendez@sgto.com','MP1239',6,'A'),
-('Julia','Ferrer','29234573','F','1993-03-23','1123456795','julia.ferrer@sgto.com','MP1240',7,'A'),
-('Sebastián','Arias','28234574','M','1987-12-01','1123456796','sebastian.arias@sgto.com','MP1241',5,'A'),
-('Patricia','Vega','27234575','F','1980-09-09','1123456797','patricia.vega@sgto.com','MP1242',2,'A'),
-('Diego','Luna','29234576','M','1986-01-10','1123456798','diego.luna@sgto.com','MP1243',1,'I');
+('Sofía','López','31234568','F','1988-10-20','1123456790','sofia.lopez@sgto.com','MP1235',5,'A'),
+('Martín','Ruiz','30234567','M','1985-04-15','1123456789','martin.ruiz@sgto.com','MP1234',6,'A'),
+('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','nicolas.benitez@sgto.com','MP1236',7,'A'),
+('Lucía','Romero','28234570','F','1990-07-18','1123456792','lucia.romero@sgto.com','MP1237',8,'I'),
+('Camila','Rossi','32234571','F','1991-05-12','1123456793','camila.rossi@sgto.com','MP1238',9,'A'),
+('Carlos','Méndez','27234572','M','1982-11-02','1123456794','carlos.mendez@sgto.com','MP1239',10,'A')
 
 
 
@@ -252,10 +231,7 @@ INSERT INTO HorarioAtencion (IdMedico, DiaSemana, HoraInicio, HoraFin, Estado) V
 (3,'Jueves','10:00','14:00','A'),
 (4,'Viernes','08:00','12:00','I'),
 (5,'Sábado','09:00','13:00','A'),
-(6,'Lunes','13:00','17:00','A'),
-(7,'Martes','08:00','12:00','A'),
-(8,'Miércoles','09:00','13:00','A'),
-(9,'Viernes','14:00','18:00','I');
+(6,'Lunes','13:00','17:00','A');
 
 
 
@@ -270,10 +246,10 @@ VALUES
 (4,4,9,6,4,6,'2025-10-27 15:00','2025-10-27 16:00','X','No asistió'),
 (5,5,6,5,5,7,'2025-10-27 09:00','2025-10-27 10:00','N','Implante programado'),
 (6,6,7,7,6,8,'2025-10-28 14:00','2025-10-28 15:00','Z','Prótesis realizada'),
-(7,7,5,2,7,9,'2025-10-28 10:00','2025-10-28 11:00','C','Cancelado por clima'),
-(8,8,8,8,8,10,'2025-10-29 09:00','2025-10-29 10:00','Z','Radiografía realizada'),
-(9,9,4,9,9,8,'2025-10-29 11:00','2025-10-29 12:00','N','Selladores'),
-(10,10,3,1,10,NULL,'2025-10-30 10:00','2025-10-30 11:00','N','Limpieza inicial');
+(7,1,5,2,7,9,'2025-10-28 10:00','2025-10-28 11:00','C','Cancelado por clima'),
+(8,2,8,8,8,10,'2025-10-29 09:00','2025-10-29 10:00','Z','Radiografía realizada'),
+(9,3,4,9,9,8,'2025-10-29 11:00','2025-10-29 12:00','N','Selladores'),
+(10,4,3,1,10,NULL,'2025-10-30 10:00','2025-10-30 11:00','N','Limpieza inicial');
 
 
 
@@ -287,10 +263,12 @@ VALUES
 (4,4,4,9,6,'Manchas dentales','Ausencia al turno','2025-10-27'),
 (5,5,5,6,5,'Pérdida pieza 24','Implante programado','2025-10-27'),
 (6,6,6,7,7,'Ausencia 36-37','Prótesis colocada','2025-10-28'),
-(7,7,7,5,2,'Pieza 48 afectada','Extracción reprogramada','2025-10-28'),
-(8,8,8,8,8,'Revisión completa','Sin hallazgos','2025-10-29'),
-(9,9,9,4,9,'Prevención caries','Aplicación de selladores','2025-10-29'),
-(10,10,10,3,1,'Tártaro leve','Se indicó limpieza y control','2025-10-30');
+(7,7,1,5,2,'Pieza 48 afectada','Extracción reprogramada','2025-10-28'),
+(8,8,2,8,8,'Revisión completa','Sin hallazgos','2025-10-29'),
+(9,9,3,4,9,'Prevención caries','Aplicación de selladores','2025-10-29'),
+(10,10,4,3,1,'Tártaro leve','Se indicó limpieza y control','2025-10-30');
+
+
 GO
 
 INSERT INTO PacienteCoberturaHistorial (IdPaciente, IdCobertura, IdPlan, FechaInicio, Estado)
