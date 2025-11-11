@@ -14,25 +14,18 @@ namespace SGTO.Negocio.Servicios
 {
     public class EspecialidadService
     {
+        
         private readonly EspecialidadRepositorio _repositorio;
 
+        
         public EspecialidadService()
         {
             _repositorio = new EspecialidadRepositorio();
         }
 
+        // CRUD
 
-        public List<EspecialidadDto> ObtenerTodasDto(string estado = null)
-        {
-            //  Llama al repositorio (capa de Datos)
-            List<Especialidad> especialidades = _repositorio.Listar(estado);
-
-            //  Mapea la lista de Entidades a DTOs (capa de Negocio)
-            List<EspecialidadDto> dtos = EspecialidadMapper.MapearListaADto(especialidades);
-
-            return dtos;
-        }
-
+        // --- CREATE ---
         public void GuardarNuevaEspecialidad(EspecialidadDto nuevoDto)
         {
             //  Mapea el DTO a Entidad
@@ -41,6 +34,7 @@ namespace SGTO.Negocio.Servicios
             _repositorio.Crear(nuevaEspecialidad);
         }
 
+        // --- READ ---
         public EspecialidadDto ObtenerEspecialidadPorId(int idEspecialidad)
         {
             try
@@ -53,12 +47,36 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+        public List<EspecialidadDto> ObtenerTodasDto(string estado = null)
+        {
+            //  Llama al repositorio (capa de Datos)
+            List<Especialidad> especialidades = _repositorio.Listar(estado);
+
+            //  Mapea la lista de Entidades a DTOs (capa de Negocio)
+            List<EspecialidadDto> dtos = EspecialidadMapper.MapearListaADto(especialidades);
+
+            return dtos;
+        }
+
+        public List<EspecialidadDto> Listar(string estado = null)
+        {
+            try
+            {
+                return EspecialidadMapper.MapearListaADto(_repositorio.Listar(estado));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR: " + ex.Message);
+                throw;
+            }
+        }
+
+        // --- UPDATE ---
         public void ModificarEspecialidad(EspecialidadDto dtoModificado)
         {
             try
             {
                 Especialidad entidadModificada = EspecialidadMapper.MapearAEntidad(dtoModificado);
-
                 _repositorio.Modificar(entidadModificada);
             }
             catch (Exception)
@@ -66,6 +84,8 @@ namespace SGTO.Negocio.Servicios
                 throw;
             }
         }
+
+        // --- DELETE (Lógico) ---
         public bool DarDeBaja(int idEspecialidad, TurnoService servicioTurno)
         {
             if (servicioTurno.TieneTurnosActivosPorEspecialidad(idEspecialidad))
@@ -75,8 +95,7 @@ namespace SGTO.Negocio.Servicios
 
             if (_repositorio.EstaDadoDeBaja(idEspecialidad))
             {
-   
-            throw new ExcepcionReglaNegocio("La especialidad ya se encuentra dada de baja.");
+                throw new ExcepcionReglaNegocio("La especialidad ya se encuentra dada de baja.");
             }
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
@@ -98,9 +117,7 @@ namespace SGTO.Negocio.Servicios
                     datos.RollbackTransaccion();
                     throw new Exception("Error al intentar dar de baja la especialidad.");
                 }
-
             }
         }
     }
-
 }

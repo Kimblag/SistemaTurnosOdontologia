@@ -6,11 +6,11 @@
 
     <div class="page-generic">
 
-        <%-- Filtros --%>
+     <%-- Filtros --%>
         <div class="container-fluid px-0 mb-3">
             <div class="row g-2 align-items-center">
 
-                <%-- Izquierda: buscador + estado --%>
+                <%-- Izquierda: buscador + estado + botones --%>
                 <div class="col-12 col-lg-9 d-flex flex-wrap align-items-center gap-2">
 
                     <%-- Buscador --%>
@@ -33,17 +33,36 @@
                             ID="ddlEstado"
                             runat="server"
                             CssClass="form-select"
-                            Width="170"
-                            AutoPostBack="true">
-                            <asp:ListItem Text="Estado" Value="" />
-                            <asp:ListItem Text="Activo" Value="Activo" />
-                            <asp:ListItem Text="Inactivo" Value="Inactivo" />
+                            Width="170"> 
+                            
+                           
+                            <asp:ListItem Selected="True" Text="Todos" Value="todos" />
+                            <asp:ListItem Text="Activo" Value="activo" />
+                            <asp:ListItem Text="Inactivo" Value="inactivo" />
                         </asp:DropDownList>
+                    </div>
+
+                    <%-- Botones de Filtro --%>
+                    <div class="col-auto">
+                        <asp:Button
+                            ID="btnBuscar"
+                            runat="server"
+                            Text="Aplicar Filtro"
+                            CssClass="btn btn-primary"
+                            OnClick="btnBuscar_Click" />
+                    </div>
+                    <div class="col-auto">
+                        <asp:Button
+                            ID="btnLimpiar"
+                            runat="server"
+                            Text="Limpiar"
+                            CssClass="btn btn-outline-secondary"
+                            OnClick="btnLimpiar_Click" />
                     </div>
 
                 </div>
 
-                <%-- Derecha: botón nueva especialidad --%>
+                <%-- Derecha: botón nueva especialidad  --%>
                 <div class="col-12 col-lg-3 text-lg-end">
                     <asp:Button
                         ID="btnNuevaEspecialidad"
@@ -90,13 +109,13 @@
             <i class="bi bi-pencil"></i>
         </asp:LinkButton>
 
-        <asp:LinkButton ID="btnDetalle"
+       <%--  <asp:LinkButton ID="btnDetalle"
             runat="server"
             CssClass="btn btn-outline-primary btn-sm me-1"
             CommandName="Ver"
             CommandArgument='<%# Eval("IdEspecialidad") %>'>
             <i class="bi bi-eye"></i>
-        </asp:LinkButton>
+        </asp:LinkButton> --%>
 
         <button type="button"
                 class="btn btn-outline-danger btn-sm"

@@ -33,6 +33,24 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
         protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
         /// <summary>
+        /// Control btnBuscar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnBuscar;
+
+        /// <summary>
+        /// Control btnLimpiar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnLimpiar;
+
+        /// <summary>
         /// Control btnNuevaEspecialidad.
         /// </summary>
         /// <remarks>
