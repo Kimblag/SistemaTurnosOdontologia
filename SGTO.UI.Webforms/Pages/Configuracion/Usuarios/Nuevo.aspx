@@ -232,7 +232,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-12 col-md-6">
                     <label for="txtMatricula" class="form-label">Matrícula</label>
-                    <asp:TextBox ID="txtMatricula" runat="server" CssClass="form-control" placeholder="Ej.: MP-12345" />
+                    <asp:TextBox ID="txtMatricula" runat="server" CssClass="form-control" placeholder="Ej.: 12345" />
                     <asp:RequiredFieldValidator ID="rfvMatricula" runat="server"
                         ControlToValidate="txtMatricula"
                         ErrorMessage="La matrícula es obligatoria."

@@ -89,12 +89,12 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Configuracion/Usuarios/Listado.aspx", false);
+            Response.Redirect("~/Pages/Configuracion/Usuarios/Index.aspx", false);
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Configuracion/Usuarios/Listado.aspx", false);
+            Response.Redirect("~/Pages/Configuracion/Usuarios/Index.aspx", false);
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)

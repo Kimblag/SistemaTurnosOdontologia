@@ -13,13 +13,6 @@ namespace SGTO.Negocio.DTOs.Usuarios
         public int IdRol { get; set; }
         public string Estado { get; set; } // A, I
 
-        // si es médico
-        public string Dni { get; set; }
-        public DateTime FechaNacimiento { get; set; }
-        public string Genero { get; set; } // M, F, O, N
-        public string Telefono { get; set; }
-        public string Matricula { get; set; }
-        public int IdEspecialidad { get; set; }
     }
 }
 

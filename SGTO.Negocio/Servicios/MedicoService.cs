@@ -1,7 +1,4 @@
 ﻿using SGTO.Datos.Repositorios;
-using SGTO.Negocio.DTOs;
-using System;
-using System.Collections.Generic;
 
 namespace SGTO.Negocio.Servicios
 {
@@ -16,6 +13,5 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public void Crear(MedicoCrearDto nuevoMedico) { }
     }
 }

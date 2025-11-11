@@ -2,6 +2,7 @@
 using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.DTOs.Medicos;
 using SGTO.Negocio.DTOs.Usuarios;
 using System.Collections.Generic;
 
@@ -31,19 +32,58 @@ namespace SGTO.Negocio.Mappers
             return lista;
         }
 
-        public static UsuarioDetalleDto MapearADetalleDto(Usuario usuario)
+        public static UsuarioDetalleDto MapearADetalleDto(Usuario usuario, Medico medico = null)
         {
-            return new UsuarioDetalleDto
+            UsuarioDetalleDto dto = new UsuarioDetalleDto
             {
                 IdUsuario = usuario.IdUsuario,
                 Nombre = usuario.Nombre,
                 Apellido = usuario.Apellido,
                 Email = usuario.Email.Valor,
                 NombreUsuario = usuario.NombreUsuario,
+                IdRol = usuario.Rol.IdRol,
                 Rol = usuario.Rol.Nombre,
                 Estado = usuario.Estado == EstadoEntidad.Activo ? "Activo" : "Inactivo",
                 FechaAlta = usuario.FechaAlta,
-                FechaModificacion = usuario.FechaModificacion
+                FechaModificacion = usuario.FechaModificacion,
+                Medico = null
+            };
+
+            if (medico != null)
+            {
+                dto.Medico = new MedicoDetalleDto
+                {
+                    IdMedico = medico.IdMedico,
+                    NumeroDocumento = medico.Dni.Numero,
+                    FechaNacimiento = medico.FechaNacimiento,
+                    Genero = EnumeracionMapperNegocio.ObtenerChar(medico.Genero).ToString(),
+                    Telefono = medico.Telefono.Numero,
+                    Email = medico.Email.Valor,
+                    Matricula = medico.Matricula,
+                    IdEspecialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
+                        ? medico.Especialidades[0].IdEspecialidad
+                        : 0,
+                    Especialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
+                        ? medico.Especialidades[0].Nombre
+                        : null,
+                    Estado = medico.Estado.ToString()
+                };
+            }
+
+            return dto;
+        }
+
+        public static UsuarioEdicionDto MapearAEdicionDto(Usuario usuario)
+        {
+            return new UsuarioEdicionDto
+            {
+                IdUsuario = usuario.IdUsuario,
+                Nombre = usuario.Nombre,
+                Apellido = usuario.Apellido,
+                Email = usuario.Email.Valor,
+                NombreUsuario = usuario.NombreUsuario,
+                IdRol = usuario.Rol.IdRol,
+                Estado = usuario.Estado.ToString()
             };
         }
 
@@ -81,6 +121,8 @@ namespace SGTO.Negocio.Mappers
                 Estado = estado
             };
         }
+
+
 
     }
 }

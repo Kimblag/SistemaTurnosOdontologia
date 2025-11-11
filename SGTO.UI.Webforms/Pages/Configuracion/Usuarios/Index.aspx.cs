@@ -204,7 +204,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             int idUsuario = Convert.ToInt32(e.CommandArgument);
             if (e.CommandName == "Editar")
             {
-                Response.Redirect($"~/Pages/Configuracion/Usuarios/Editar?id-usuaio={idUsuario}", false);
+                Response.Redirect($"~/Pages/Configuracion/Usuarios/Editar?id-usuario={idUsuario}", false);
             }
         }
 
