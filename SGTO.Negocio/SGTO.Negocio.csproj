@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="DTOs\CoberturaDto.cs" />
     <Compile Include="DTOs\EspecialidadDto.cs" />
-    <Compile Include="DTOs\MedicoDto.cs" />
+    <Compile Include="DTOs\Medicos\MedicoCrearDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteCreacionDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteDetalleDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteEdicionDto.cs" />
@@ -71,6 +71,7 @@
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\EnumeracionMapperNegocio.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
+    <Compile Include="Mappers\MedicoMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />
     <Compile Include="Mappers\ParametroSistemaMapper.cs" />
     <Compile Include="Mappers\PlanMapper.cs" />

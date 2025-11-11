@@ -204,6 +204,15 @@ VALUES
 ('Camila','Rossi','32234571','F','1991-05-12','1123456793','camila.rossi@sgto.com','MP1238',9,'A'),
 ('Carlos','Méndez','27234572','M','1982-11-02','1123456794','carlos.mendez@sgto.com','MP1239',10,'A')
 
+GO
+UPDATE Medico SET IdEspecialidad = 9 WHERE IdMedico = 1;
+UPDATE Medico SET IdEspecialidad = 1 WHERE IdMedico = 2;
+UPDATE Medico SET IdEspecialidad = 2 WHERE IdMedico = 3;
+UPDATE Medico SET IdEspecialidad = 5 WHERE IdMedico = 4;
+UPDATE Medico SET IdEspecialidad = 6 WHERE IdMedico = 5;
+UPDATE Medico SET IdEspecialidad = 10 WHERE IdMedico = 6;
+GO
+
 
 
 -- Paciente

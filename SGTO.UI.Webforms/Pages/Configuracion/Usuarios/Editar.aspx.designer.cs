@@ -13,14 +13,5 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
     public partial class Editar
     {
-
-        /// <summary>
-        /// UsuariosFormControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Configuracion.Usuarios.UsuariosForm UsuariosFormControl;
     }
 }

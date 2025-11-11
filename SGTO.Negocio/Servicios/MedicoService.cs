@@ -1,12 +1,21 @@
-﻿using System;
+﻿using SGTO.Datos.Repositorios;
+using SGTO.Negocio.DTOs;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Negocio.Servicios
 {
-    internal class MedicoService
+    public class MedicoService
     {
+
+        private readonly MedicoRepositorio _repositorioMedico;
+
+        public MedicoService()
+        {
+            _repositorioMedico = new MedicoRepositorio();
+        }
+
+
+        public void Crear(MedicoCrearDto nuevoMedico) { }
     }
 }

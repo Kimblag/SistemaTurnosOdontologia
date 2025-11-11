@@ -13,5 +13,13 @@ namespace SGTO.Negocio.DTOs.Usuarios
         public string Estado { get; set; }
         public DateTime FechaAlta { get; set; }
         public DateTime FechaModificacion { get; set; }
+
+        // para el médico
+        public string Dni { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
+        public string Genero { get; set; }
+        public string Telefono { get; set; }
+        public string Matricula { get; set; }
+        public string Especialidad { get; set; }
     }
 }

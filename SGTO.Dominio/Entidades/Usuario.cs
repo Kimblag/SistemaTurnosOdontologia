@@ -23,10 +23,10 @@ namespace SGTO.Dominio.Entidades
 
         public Usuario()
         {
-            
         }
-        public Usuario(string nombre, string apellido, Email email, string nombreUsuario,
-            string passwordHash, Rol rol)
+
+        public Usuario(string nombre, string apellido, Email email,
+            string nombreUsuario, string passwordHash, Rol rol)
         {
             Nombre = nombre;
             Apellido = apellido;
@@ -36,22 +36,7 @@ namespace SGTO.Dominio.Entidades
             Rol = rol;
             Estado = EstadoEntidad.Activo;
             FechaAlta = DateTime.Now;
-        }
-        public Usuario(int idUsuario, string nombre, string apellido,
-            Email email, string nombreUsuario,
-            string passwordHash, Rol rol, EstadoEntidad estado,
-            DateTime fechaAlta, DateTime fechaModificacion)
-        {
-            IdUsuario = idUsuario;
-            Nombre = nombre;
-            Apellido = apellido;
-            Email = email;
-            NombreUsuario = nombreUsuario;
-            PasswordHash = passwordHash;
-            Rol = rol;
-            Estado = estado;
-            FechaAlta = fechaAlta;
-            FechaModificacion = fechaModificacion;
+            FechaModificacion = DateTime.Now;
         }
     }
 }

@@ -119,7 +119,6 @@
     <Content Include="Content\Site.css" />
     <Content Include="Content\TemaApp.css" />
     <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
-    <Content Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx" />
     <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
     <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
@@ -239,13 +238,6 @@
     </Compile>
     <Compile Include="Controles\Configuracion\Roles\RolesForm.ascx.designer.cs">
       <DependentUpon>RolesForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.cs">
-      <DependentUpon>UsuariosForm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Configuracion\Usuarios\UsuariosForm.ascx.designer.cs">
-      <DependentUpon>UsuariosForm.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Especialidades\EspecialidadForm.ascx.cs">
       <DependentUpon>EspecialidadForm.ascx</DependentUpon>

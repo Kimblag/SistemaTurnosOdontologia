@@ -270,3 +270,10 @@ CREATE TABLE PlanPorcentajeHistorial (
     CONSTRAINT CHK_PlanPorcentajeHistorial_Estado CHECK (Estado IN ('A','I'))
 );
 GO
+
+ALTER TABLE Medico
+ADD IdEspecialidad INT NULL,
+    CONSTRAINT FK_Medico_Especialidad FOREIGN KEY(IdEspecialidad)
+        REFERENCES Especialidad(IdEspecialidad);
+
+ 

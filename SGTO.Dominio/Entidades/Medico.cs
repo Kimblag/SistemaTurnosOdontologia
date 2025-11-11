@@ -14,51 +14,32 @@ namespace SGTO.Dominio.Entidades
     {
         public int IdMedico { get; set; }
         public string Matricula { get; set; }
-        public List<Especialidad> Especialidades { get; set; }
-        public List<Turno> TurnosAsignados { get; set; }
-        public List<HorarioAtencion> HorariosAtencion { get; set; }
-        public Usuario Usuario { get; set; } // el usuario de la app
+        public List<Especialidad> Especialidades { get; set; } = new List<Especialidad>();
+        public List<Turno> TurnosAsignados { get; set; } = new List<Turno>();
+        public List<HorarioAtencion> HorariosAtencion { get; set; } = new List<HorarioAtencion>();
 
+        public Usuario Usuario { get; set; }
 
         public Medico()
         {
-            
         }
 
-        public Medico(string nombre, string apellido, DocumentoIdentidad dni,
-           DateTime fechaNacimiento, Genero genero, Telefono telefono, Email email,
-           string matricula, List<Especialidad> especialidades, Usuario usuario)
-           : base(nombre, apellido, dni, fechaNacimiento, genero, telefono, email)
-        {
-            Matricula = matricula;
-            Especialidades = especialidades ?? new List<Especialidad>();
-            TurnosAsignados = new List<Turno>();
-            Usuario = usuario;
-        }
-
-        public Medico(int idMedico, string nombre, string apellido, DocumentoIdentidad dni,
-            DateTime fechaNacimiento, Genero genero, Telefono telefono, Email email,
-            string matricula, List<Especialidad> especialidades,
-            List<Turno> turnosAsignados, Usuario usuario)
+        public Medico(
+            string nombre,
+            string apellido,
+            DocumentoIdentidad dni,
+            DateTime fechaNacimiento,
+            Genero genero,
+            Telefono telefono,
+            Email email,
+            string matricula,
+            List<Especialidad> especialidades,
+            Usuario usuario)
             : base(nombre, apellido, dni, fechaNacimiento, genero, telefono, email)
         {
-            IdMedico = idMedico;
             Matricula = matricula;
             Especialidades = especialidades ?? new List<Especialidad>();
-            TurnosAsignados = turnosAsignados ?? new List<Turno>();
             Usuario = usuario;
-        }
-
-
-        public void AgregarEspecialidad(Especialidad especialidad) { }
-        public List<Turno> ObtenerTurnosPorFechas(DateTime fecha)
-        {
-            return new List<Turno>();
-        }
-
-        public bool EstaDisponible(DateTime inicio, DateTime fin)
-        {
-            return true;
         }
     }
 }

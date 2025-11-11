@@ -4,6 +4,7 @@ using SGTO.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace SGTO.Datos.Repositorios
 {
@@ -54,6 +55,94 @@ namespace SGTO.Datos.Repositorios
             }
             return usuarios;
         }
+
+
+        public bool ExisteNombreUsuario(string nombreUsuario)
+        {
+            string query = @"SELECT COUNT(*) FROM Usuario WHERE UPPER(NombreUsuario) = @NombreUsuario";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@NombreUsuario", nombreUsuario.ToUpper());
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                            return lector.GetInt32(0) > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error en UsuarioRepositorio.ExisteNombreUsuario: " + ex.Message);
+                    throw;
+                }
+            }
+            return false;
+        }
+
+        public bool ExisteEmail(string email)
+        {
+            string query = @"SELECT COUNT(*) FROM Usuario WHERE UPPER(Email) = @Email";
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Email", email.ToUpper());
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                            return lector.GetInt32(0) > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error en UsuarioRepositorio.ExisteEmail: " + ex.Message);
+                    throw;
+                }
+            }
+            return false;
+        }
+
+
+        public int Crear(Usuario nuevoUsuario, ConexionDBFactory datos)
+        {
+            string query = @"
+                INSERT INTO Usuario 
+                    (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado, FechaAlta, FechaModificacion)
+                OUTPUT INSERTED.IdUsuario
+                VALUES
+                    (@Nombre, @Apellido, @Email, @NombreUsuario, @PasswordHash, @IdRol, @Estado, @FechaAlta, @FechaModificacion)";
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Nombre", nuevoUsuario.Nombre);
+            datos.EstablecerParametros("@Apellido", nuevoUsuario.Apellido);
+            datos.EstablecerParametros("@Email", nuevoUsuario.Email.Valor);
+            datos.EstablecerParametros("@NombreUsuario", nuevoUsuario.NombreUsuario);
+            datos.EstablecerParametros("@PasswordHash", nuevoUsuario.PasswordHash);
+            datos.EstablecerParametros("@IdRol", nuevoUsuario.Rol.IdRol);
+            datos.EstablecerParametros("@Estado", nuevoUsuario.Estado.ToString()[0]);
+            datos.EstablecerParametros("@FechaAlta", nuevoUsuario.FechaAlta);
+            datos.EstablecerParametros("@FechaModificacion", nuevoUsuario.FechaModificacion);
+
+            try
+            {
+                int id = datos.EjecutarAccionEscalar();
+                return id;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error en UsuarioRepositorio.Crear: " + ex.Message);
+                throw;
+            }
+        }
+
 
     }
 }

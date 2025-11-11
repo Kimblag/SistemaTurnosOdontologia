@@ -25,10 +25,9 @@ namespace SGTO.Negocio.Mappers
 
         public static List<UsuarioListadoDto> MapearListaAListadoDto(List<Usuario> usuarios)
         {
-            List<UsuarioListadoDto> lista = new List<UsuarioListadoDto>();
+            var lista = new List<UsuarioListadoDto>();
             foreach (var usuario in usuarios)
                 lista.Add(MapearAListadoDto(usuario));
-
             return lista;
         }
 
@@ -48,41 +47,39 @@ namespace SGTO.Negocio.Mappers
             };
         }
 
+
         public static Usuario MapearAEntidadDesdeCrear(UsuarioCrearDto dto, Rol rol)
         {
             var email = new Email(dto.Email);
 
-            return new Usuario(
-                nombre: dto.Nombre,
-                apellido: dto.Apellido,
-                email: email,
-                nombreUsuario: dto.NombreUsuario,
-                passwordHash: dto.Password, //OJO!! SIEMPRE HASHEADA la pass!!! 
-                rol: rol
-            );
+            return new Usuario
+            {
+                Nombre = dto.Nombre.Trim(),
+                Apellido = dto.Apellido.Trim(),
+                Email = email,
+                NombreUsuario = dto.NombreUsuario.Trim(),
+                PasswordHash = string.Empty,
+                Rol = rol,
+                Estado = EnumeracionMapperNegocio.MapearEstadoEntidad(dto.Estado)
+            };
         }
 
         public static Usuario MapearAEntidadDesdeEditar(UsuarioEdicionDto dto, Rol rol)
         {
             var email = new Email(dto.Email);
+            var estado = dto.Estado == "Activo" ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
 
-            EstadoEntidad estado = dto.Estado == "Activo"
-                ? EstadoEntidad.Activo
-                : EstadoEntidad.Inactivo;
-
-            Usuario usuario = new Usuario
+            return new Usuario
             {
                 IdUsuario = dto.IdUsuario,
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
+                Nombre = dto.Nombre.Trim(),
+                Apellido = dto.Apellido.Trim(),
                 Email = email,
-                NombreUsuario = dto.NombreUsuario,
-                PasswordHash = dto.Password, // si viene vacío se mantiene el actual
+                NombreUsuario = dto.NombreUsuario.Trim(),
+                PasswordHash = dto.Password,
                 Rol = rol,
                 Estado = estado
             };
-
-            return usuario;
         }
 
     }
