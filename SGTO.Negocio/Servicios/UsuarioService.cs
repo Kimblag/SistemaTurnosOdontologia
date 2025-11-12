@@ -80,7 +80,7 @@ namespace SGTO.Negocio.Servicios
                         Medico entidadMedico = MedicoMapper.MapearDesdeCrearDto(nuevoMedico, idUsuario);
                         int idMedico = _repositorioMedico.Crear(entidadMedico, datos);
 
-                   
+
                         var horarios = new List<HorarioSemanalMedico>();
 
                         foreach (var dto in nuevoMedico.HorariosSemanales)
@@ -99,7 +99,7 @@ namespace SGTO.Negocio.Servicios
 
                         _repositorioHorarioSemanal.Crear(horarios, datos);
                         _repositorioHorarioSemanal.GenerarAgendaParaMedico(idMedico, datos);
-                        
+
                     }
 
                     datos.ConfirmarTransaccion();
