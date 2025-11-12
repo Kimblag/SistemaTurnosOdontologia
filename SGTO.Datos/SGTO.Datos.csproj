@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorios\CoberturaPorcentajeHistorialRepositorio.cs" />
     <Compile Include="Repositorios\CoberturaRepositorio.cs" />
+    <Compile Include="Repositorios\DashboardRepositorio.cs" />
     <Compile Include="Repositorios\EspecialidadRepositorio.cs" />
     <Compile Include="Repositorios\HorarioSemanalRepositorio.cs" />
     <Compile Include="Repositorios\MedicoRepositorio.cs" />

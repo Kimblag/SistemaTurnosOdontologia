@@ -94,6 +94,7 @@
     <Compile Include="Seguridad\ServicioAutenticacion.cs" />
     <Compile Include="Seguridad\ServicioAutorizacion.cs" />
     <Compile Include="Servicios\CoberturaService.cs" />
+    <Compile Include="Servicios\DashboardService.cs" />
     <Compile Include="Servicios\EspecialidadService.cs" />
     <Compile Include="Servicios\Exportacion\GeneradorCsv.cs" />
     <Compile Include="Servicios\Exportacion\GeneradorPdf.cs" />

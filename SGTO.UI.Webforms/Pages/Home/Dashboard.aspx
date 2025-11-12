@@ -2,110 +2,77 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <%--librerias de highcharts--%>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/highcharts-more.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
-    <script src="https://code.highcharts.com/dashboards/dashboards.js"></script>
-    <script src="https://code.highcharts.com/dashboards/modules/layout.js"></script>
-    <link rel="stylesheet" href="https://code.highcharts.com/dashboards/css/dashboards.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <div class="p-4">
-        <%--actividad semanal--%>
-        <div id="dashboard-container" class="w-100"></div>
+    <div class="container py-4">
+
+        <div class="row text-center mb-4">
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Turnos del día</h5>
+                        <h2 class="text-primary"><%= KpiTurnosDia %></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Pacientes atendidos</h5>
+                        <h2 class="text-success"><%= KpiPacientesAtendidos %></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Reprogramados</h5>
+                        <h2 class="text-warning"><%= KpiReprogramados %></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Cancelados</h5>
+                        <h2 class="text-danger"><%= KpiCancelados %></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Actividad semanal</h5>
+                <canvas id="graficoActividad"></canvas>
+            </div>
+        </div>
     </div>
 
-
     <script type="text/javascript">
-
         document.addEventListener("DOMContentLoaded", function () {
-
-            Highcharts.setOptions({
-                chart: { styledMode: true }
-            });
-
-            const board = Dashboards.board('dashboard-container', {
-                components: [
-                    // ==== KPIs (Cards) ====
-                    {
-                        renderTo: 'kpi-turnos-dia',
-                        type: 'KPI',
-                        title: 'Turnos del día',
-                        value: 12,
-                        subtitle: '+20%',
-                        className: 'text-dia'
-
-                    },
-                    {
-                        renderTo: 'kpi-pacientes',
-                        type: 'KPI',
-                        title: 'Pacientes atendidos',
-                        value: 8,
-                        subtitle: '-10%',
-                        className: 'text-pacientes'
-                    },
-                    {
-                        renderTo: 'kpi-reprogramados',
-                        type: 'KPI',
-                        title: 'Reprogramados',
-                        value: 2,
-                        subtitle: '+5%',
-                        className: 'text-reprogramados'
-                    },
-                    {
-                        renderTo: 'kpi-cancelados',
-                        type: 'KPI',
-                        title: 'Cancelados',
-                        value: 1,
-                        subtitle: '-15%',
-                        className: 'text-cancelados'
-                    },
-
-                    // ==== Gráfico de Actividad Semanal ====
-                    {
-                        renderTo: 'grafico-actividad',
-                        type: 'Highcharts',
-                        chartOptions: {
-                            chart: { styledMode: true, type: "column" },
-                            title: { text: 'Actividad semanal' },
-                            xAxis: {
-                                categories: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-                            },
-                            yAxis: {
-                                title: { text: 'Cantidad de turnos' }
-                            },
-                            series: [{
-                                name: 'Turnos',
-                                data: [10, 20, 15, 25, 18, 7],
-                                colorByPoint: true
-                            }]
-                        }
-                    }
-                ],
-
-                // ==== Layout del Dashboard ====
-                gui: {
-                    layouts: [{
-                        id: 'layout-1',
-                        rows: [
-                            {
-                                id: "row-1", // selector id para poder aplicar estilos de css
-                                cells: [
-                                    { id: 'kpi-turnos-dia' },
-                                    { id: 'kpi-pacientes' },
-                                    { id: 'kpi-reprogramados' },
-                                    { id: 'kpi-cancelados' }
-                                ]
-                            },
-                            {
-                                cells: [{ id: 'grafico-actividad' }]
-                            }
+            const ctx = document.getElementById('graficoActividad').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [<%= CategoriasCsv %>],
+                    datasets: [{
+                        label: 'Turnos',
+                        data: [<%= ValoresCsv %>],
+                        backgroundColor: [
+                            '#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997'
                         ]
                     }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
                 }
             });
-
         });
     </script>
+
 </asp:Content>

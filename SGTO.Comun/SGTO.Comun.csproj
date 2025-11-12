@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\ConfiguracionAplicacion.cs" />
+    <Compile Include="DTOs\DashboardActividadSemanalDto.cs" />
+    <Compile Include="DTOs\DashboardResumenDto.cs" />
     <Compile Include="DTOs\ReportePacientesDto.cs" />
     <Compile Include="DTOs\ReportePacientesKpiDto.cs" />
     <Compile Include="Email\EmailConfiguracion.cs" />
