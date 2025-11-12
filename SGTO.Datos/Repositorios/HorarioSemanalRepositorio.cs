@@ -119,6 +119,21 @@ namespace SGTO.Datos.Repositorios
             return lista;
         }
 
+        public void ActualizarAgendaPorCambioDeHorario(int idMedico, ConexionDBFactory datos)
+        {
+            try
+            {
+                datos.LimpiarParametros();
+                datos.DefinirProcedimiento("sp_Actualizar_Agenda_Cambio_Horario");
+                datos.EstablecerParametros("@IdMedico", idMedico);
+                datos.EjecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error al ejecutar sp_ActualizarAgendaPorCambioDeHorario: " + ex.Message);
+                throw;
+            }
+        }
 
 
     }

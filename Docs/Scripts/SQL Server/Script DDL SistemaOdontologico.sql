@@ -160,6 +160,30 @@ CREATE TABLE Paciente (
 
 GO
 
+CREATE TABLE Turno (
+    IdTurno INT PRIMARY KEY IDENTITY(1,1),
+    IdPaciente INT NOT NULL,
+    IdMedico INT NOT NULL,
+    IdEspecialidad INT NOT NULL,
+    IdTratamiento INT NOT NULL,
+    IdCobertura INT NOT NULL,
+    IdPlan INT NULL,
+    FechaInicio DATETIME NOT NULL,
+    FechaFin DATETIME NOT NULL,
+    Estado CHAR(1) NOT NULL,
+    Observaciones NVARCHAR(250) NULL,
+
+    CONSTRAINT FK_Turno_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
+    CONSTRAINT FK_Turno_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
+    CONSTRAINT FK_Turno_Especialidad FOREIGN KEY(IdEspecialidad) REFERENCES Especialidad(IdEspecialidad),
+    CONSTRAINT FK_Turno_Tratamiento FOREIGN KEY(IdTratamiento) REFERENCES Tratamiento(IdTratamiento),
+    CONSTRAINT FK_Turno_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
+    CONSTRAINT FK_Turno_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
+    CONSTRAINT CHK_Turno_Estado CHECK (Estado IN ('N','P','R','X','C','Z'))
+);
+
+
+GO
 
 CREATE TABLE HorarioSemanalMedico (
     IdHorarioSemanal INT IDENTITY(1,1) PRIMARY KEY,
@@ -196,29 +220,6 @@ CREATE TABLE AgendaMedico (
 
 GO
 
-CREATE TABLE Turno (
-    IdTurno INT PRIMARY KEY IDENTITY(1,1),
-    IdPaciente INT NOT NULL,
-    IdMedico INT NOT NULL,
-    IdEspecialidad INT NOT NULL,
-    IdTratamiento INT NOT NULL,
-    IdCobertura INT NOT NULL,
-    IdPlan INT NULL,
-    FechaInicio DATETIME NOT NULL,
-    FechaFin DATETIME NOT NULL,
-    Estado CHAR(1) NOT NULL,
-    Observaciones NVARCHAR(250) NULL,
-
-    CONSTRAINT FK_Turno_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
-    CONSTRAINT FK_Turno_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
-    CONSTRAINT FK_Turno_Especialidad FOREIGN KEY(IdEspecialidad) REFERENCES Especialidad(IdEspecialidad),
-    CONSTRAINT FK_Turno_Tratamiento FOREIGN KEY(IdTratamiento) REFERENCES Tratamiento(IdTratamiento),
-    CONSTRAINT FK_Turno_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
-    CONSTRAINT FK_Turno_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
-    CONSTRAINT CHK_Turno_Estado CHECK (Estado IN ('N','R','X','C','Z'))
-);
-
-GO
 
 CREATE TABLE HistoriaClinicaRegistro(
     IdHistoriaClinicaRegistro INT PRIMARY KEY IDENTITY(1,1),

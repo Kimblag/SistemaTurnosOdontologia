@@ -181,6 +181,9 @@ namespace SGTO.Negocio.Servicios
 
                             _repositorioHorarioSemanal.EliminarPorMedico(medicoActual.IdMedico, datos);
                             _repositorioHorarioSemanal.Crear(horarios, datos);
+                            // actualizar primero lso turnos obsoletos
+                            _repositorioHorarioSemanal.ActualizarAgendaPorCambioDeHorario(medicoActual.IdMedico, datos);
+                            // generar los nuevos
                             _repositorioHorarioSemanal.GenerarAgendaParaMedico(medicoActual.IdMedico, datos);
                         }
 
@@ -188,8 +191,9 @@ namespace SGTO.Negocio.Servicios
 
                     datos.ConfirmarTransaccion();
                 }
-                catch (ExcepcionReglaNegocio)
+                catch (ExcepcionReglaNegocio ex)
                 {
+                    Debug.WriteLine("Error: " + ex.Message);
                     datos.RollbackTransaccion();
                     throw;
                 }
