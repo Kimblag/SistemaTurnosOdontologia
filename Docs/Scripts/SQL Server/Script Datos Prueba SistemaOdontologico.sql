@@ -232,15 +232,29 @@ VALUES
 
 
 
--- HorarioAtencion
-INSERT INTO HorarioAtencion (IdMedico, DiaSemana, HoraInicio, HoraFin, Estado) VALUES
-(1,'Lunes','08:00','12:00','A'),
-(1,'Miércoles','14:00','18:00','A'),
-(2,'Martes','09:00','13:00','A'),
-(3,'Jueves','10:00','14:00','A'),
-(4,'Viernes','08:00','12:00','I'),
-(5,'Sábado','09:00','13:00','A'),
-(6,'Lunes','13:00','17:00','A');
+-- HorarioSemanalMedico
+INSERT INTO HorarioSemanalMedico (IdMedico, DiaSemana, HoraInicio, HoraFin, Estado)
+VALUES
+    -- Médico 1: Lunes 08-12 activo
+    (1, 1, '08:00', '12:00', 'A'),
+    -- Médico 1: Miércoles 14-18 activo
+    (1, 3, '14:00', '18:00', 'A'),
+
+    -- Médico 2: Martes 09-13 activo
+    (2, 2, '09:00', '13:00', 'A'),
+
+    -- Médico 3: Jueves 10-14 activo
+    (3, 4, '10:00', '14:00', 'A'),
+
+    -- Médico 4: Viernes 08-12 **inactivo** (caso de prueba)
+    (4, 5, '08:00', '12:00', 'I'),
+
+    -- Médico 5: Sábado 09-13 activo
+    (5, 6, '09:00', '13:00', 'A'),
+
+    -- Médico 6: Lunes 13-17 activo
+    (6, 1, '13:00', '17:00', 'A');
+GO
 
 
 

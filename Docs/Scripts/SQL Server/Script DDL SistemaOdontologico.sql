@@ -160,18 +160,39 @@ CREATE TABLE Paciente (
 
 GO
 
-CREATE TABLE HorarioAtencion (
-    IdHorarioAtencion INT PRIMARY KEY IDENTITY(1,1),
+
+CREATE TABLE HorarioSemanalMedico (
+    IdHorarioSemanal INT IDENTITY(1,1) PRIMARY KEY,
     IdMedico INT NOT NULL,
-    DiaSemana VARCHAR(15) NOT NULL,
+    DiaSemana TINYINT NOT NULL,          -- 1 = Lunes ... 7 = Domingo
     HoraInicio TIME NOT NULL,
     HoraFin TIME NOT NULL,
     Estado CHAR(1) NOT NULL DEFAULT 'A',
-
-    CONSTRAINT FK_HorarioAtencion_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
-    CONSTRAINT CHK_HorarioAtencion_Estado CHECK (Estado IN ('A','I'))
+    CONSTRAINT FK_HorarioSemanal_Medico
+        FOREIGN KEY (IdMedico) REFERENCES dbo.Medico (IdMedico),
+    CONSTRAINT CHK_HorarioSemanal_Dia CHECK (DiaSemana BETWEEN 1 AND 7),
+    CONSTRAINT CHK_HorarioSemanal_Rango CHECK (HoraInicio < HoraFin),
+    CONSTRAINT CHK_HorarioSemanal_Estado CHECK (Estado IN ('A','I'))
 );
 
+GO
+
+CREATE TABLE AgendaMedico (
+    IdAgendaMedico INT IDENTITY(1,1) PRIMARY KEY,
+    IdMedico INT NOT NULL,
+    Fecha DATE NOT NULL,
+    HoraInicio TIME NOT NULL,
+    HoraFin TIME NOT NULL,
+    Estado CHAR(1) NOT NULL DEFAULT 'L',   -- L=Libre, O=Ocupado, C=Cancelado, I=Inactivo
+    IdTurno INT NULL,
+    Observacion NVARCHAR(200) NULL,
+    CONSTRAINT FK_AgendaMedico_Medico
+        FOREIGN KEY (IdMedico) REFERENCES dbo.Medico (IdMedico),
+    CONSTRAINT FK_AgendaMedico_Turno
+        FOREIGN KEY (IdTurno) REFERENCES dbo.Turno (IdTurno),
+    CONSTRAINT CHK_AgendaMedico_Estado CHECK (Estado IN ('L','O','C','I')),
+    CONSTRAINT CHK_AgendaMedico_Rango CHECK (HoraInicio < HoraFin)
+);
 
 GO
 
