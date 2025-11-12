@@ -13,23 +13,5 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
     public partial class Reportes
     {
-
-        /// <summary>
-        /// reporteTurnosControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Reportes.Turnos.ReporteTurnos reporteTurnosControl;
-
-        /// <summary>
-        /// reportePacientesControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Reportes.Pacientes.ReportePacientes reportePacientesControl;
     }
 }

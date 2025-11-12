@@ -44,6 +44,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
@@ -126,7 +129,6 @@
     <Content Include="Controles\Coberturas\PlanesForm.ascx" />
     <Content Include="Controles\Coberturas\PlanesListado.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
-    <Content Include="Controles\Reportes\Pacientes\ReportePacientes.ascx" />
     <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
     <Content Include="Controles\Tratamientos\TratamientoForm.ascx" />
     <Content Include="Controles\Turnos\TurnoForm.ascx" />
@@ -160,7 +162,12 @@
     <Content Include="Pages\Pacientes\Editar.aspx" />
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Index.aspx" />
+    <Content Include="Pages\Reportes\Coberturas.aspx" />
     <Content Include="Pages\Reportes\Index.aspx" />
+    <Content Include="Pages\Reportes\Medicos.aspx" />
+    <Content Include="Pages\Reportes\Pacientes.aspx" />
+    <Content Include="Pages\Reportes\Tratamientos.aspx" />
+    <Content Include="Pages\Reportes\Turnos.aspx" />
     <Content Include="Pages\Tratamientos\Editar.aspx" />
     <Content Include="Pages\Tratamientos\Index.aspx" />
     <Content Include="Pages\Tratamientos\Nuevo.aspx" />
@@ -287,13 +294,6 @@
     </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.designer.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Reportes\Pacientes\ReportePacientes.ascx.cs">
-      <DependentUpon>ReportePacientes.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Reportes\Pacientes\ReportePacientes.ascx.designer.cs">
-      <DependentUpon>ReportePacientes.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.cs">
       <DependentUpon>ReporteTurnos.ascx</DependentUpon>
@@ -515,12 +515,47 @@
     <Compile Include="Pages\Pacientes\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Reportes\Coberturas.aspx.cs">
+      <DependentUpon>Coberturas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Reportes\Coberturas.aspx.designer.cs">
+      <DependentUpon>Coberturas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Reportes\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Reportes\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Reportes\Medicos.aspx.cs">
+      <DependentUpon>Medicos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Reportes\Medicos.aspx.designer.cs">
+      <DependentUpon>Medicos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Reportes\Pacientes.aspx.cs">
+      <DependentUpon>Pacientes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Reportes\Pacientes.aspx.designer.cs">
+      <DependentUpon>Pacientes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Reportes\Tratamientos.aspx.cs">
+      <DependentUpon>Tratamientos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Reportes\Tratamientos.aspx.designer.cs">
+      <DependentUpon>Tratamientos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Reportes\Turnos.aspx.cs">
+      <DependentUpon>Turnos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Reportes\Turnos.aspx.designer.cs">
+      <DependentUpon>Turnos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Tratamientos\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>

@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.4, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.4\lib\net461\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -89,17 +95,22 @@
     <Compile Include="Seguridad\ServicioAutorizacion.cs" />
     <Compile Include="Servicios\CoberturaService.cs" />
     <Compile Include="Servicios\EspecialidadService.cs" />
+    <Compile Include="Servicios\Exportacion\GeneradorCsv.cs" />
+    <Compile Include="Servicios\Exportacion\GeneradorPdf.cs" />
     <Compile Include="Servicios\HorarioSemanalService.cs" />
     <Compile Include="Servicios\MedicoService.cs" />
     <Compile Include="Servicios\PacienteService.cs" />
     <Compile Include="Servicios\ParametroService.cs" />
     <Compile Include="Servicios\PlanService.cs" />
+    <Compile Include="Servicios\ReporteService.cs" />
     <Compile Include="Servicios\RolService.cs" />
     <Compile Include="Servicios\TratamientoService.cs" />
     <Compile Include="Servicios\TurnoService.cs" />
     <Compile Include="Servicios\UsuarioService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SGTO.Comun\SGTO.Comun.csproj">
       <Project>{720a0e34-483d-4eac-bac2-84b618f4cee8}</Project>
