@@ -91,13 +91,8 @@
 
         <%--botones--%>
         <div class="col align-content-end">
-            <div class="row gx-2 gy-2 align-items-center justify-content-between">
+            <div class="row gx-2 gy-2 align-items-center justify-content-end">
 
-                <div class="col-4 col-sm-2 col-md-1 d-grid">
-                    <a href='<%= ResolveUrl("~/Pages/Configuracion/Index.aspx") %>' class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-left me-1"></i>Volver
-                    </a>
-                </div>
 
                 <div class="col-auto d-flex flex-wrap justify-content-end gap-2">
 

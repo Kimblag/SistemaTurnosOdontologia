@@ -560,17 +560,19 @@ p, span, button, input, select, label, td, th {
    ========================================================= */
 
 .configuracion-page .card-config {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
     .configuracion-page .card-config:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
     }
 
 .icon-wrapper {
-    width: 70px;
-    height: 70px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
@@ -580,4 +582,112 @@ p, span, button, input, select, label, td, th {
 
 .configuracion-page .card-title {
     font-size: 1.2rem;
+}
+
+.bg-soft-primary {
+    background-color: #eef5ff;
+}
+
+.bg-soft-success {
+    background-color: #f0fbf4;
+}
+
+.bg-soft-warning {
+    background-color: #fff8e6;
+}
+
+.card-config:hover .text-primary,
+.card-config:hover .text-success,
+.card-config:hover .text-warning {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   estilos para reportes
+   ========================================================= */
+
+.reportes-page .card-report {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+    .reportes-page .card-report:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+
+.reportes-page .card-title {
+    font-size: 1.2rem;
+}
+
+/* colores suaves adicionales */
+.bg-soft-info {
+    background-color: #e8f8fb;
+}
+
+.bg-soft-danger {
+    background-color: #fff0f0;
+}
+
+/* mantiene el mismo efecto hover que configuración */
+.card-report:hover .text-primary,
+.card-report:hover .text-success,
+.card-report:hover .text-warning,
+.card-report:hover .text-info,
+.card-report:hover .text-danger {
+    text-decoration: underline;
+}
+
+
+
+/* =========================================================
+   estilos para reportes de pacientes
+   ========================================================= */
+
+.pacientes-reporte .filters {
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.pacientes-reporte .kpi-card {
+    transition: all 0.2s ease-in-out;
+}
+
+    .pacientes-reporte .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+/* filtro horizontal con botones al final */
+.pacientes-reporte .filters .filtro {
+    display: flex;
+    flex-direction: column;
+    min-width: 160px;
+}
+
+.pacientes-reporte .filters .form-label {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.pacientes-reporte .filters .form-control,
+.pacientes-reporte .filters .form-select {
+    min-height: 38px;
+}
+
+@media (max-width: 992px) {
+    .pacientes-reporte .filters .d-flex {
+        flex-direction: column;
+    }
+
+        .pacientes-reporte .filters .d-flex > .d-flex {
+            justify-content: stretch;
+            width: 100%;
+        }
+
+        .pacientes-reporte .filters .d-flex.align-items-end.gap-2 {
+            justify-content: flex-start;
+        }
 }

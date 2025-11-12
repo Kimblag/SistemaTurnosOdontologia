@@ -111,7 +111,15 @@
             <section class="layout-main">
 
                 <header class="layout-header d-flex align-items-center justify-content-between">
-                    <h1 id="TituloSeccion" runat="server" class="fs-4 fw-bold">Dashboard</h1>
+                    <div class="d-flex align-items-center gap-3">
+                        <asp:HyperLink ID="btnVolver" runat="server"
+                            NavigateUrl="~/Pages/Configuracion/Index.aspx"
+                            CssClass="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
+                                <i class="bi bi-arrow-left"></i>
+                        </asp:HyperLink>
+                        <h1 id="TituloSeccion" runat="server" class="fs-4 fw-bold mb-0">Dashboard</h1>
+                    </div>
+
                     <div class="text-end">
                         <p id="NombreUsuario" runat="server" class="fw-semibold mb-0">Juan Pérez</p>
                         <p id="RolUsuario" runat="server" class="text-muted small mb-0">Administrador</p>
@@ -134,7 +142,7 @@
     </form>
 
     <asp:PlaceHolder runat="server">
-         <%: Scripts.Render("~/Scripts/bootstrap.js") %>
+        <%: Scripts.Render("~/Scripts/bootstrap.js") %>
     </asp:PlaceHolder>
 </body>
 </html>

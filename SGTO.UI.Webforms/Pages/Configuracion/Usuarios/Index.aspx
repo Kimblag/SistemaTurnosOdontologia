@@ -80,12 +80,12 @@
                           <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
 
-                            <button type="button"
+                            <%--                <button type="button"
                                 class="btn btn-outline-danger btn-sm me-1"
                                 data-id='<%# Eval("IdUsuario") %>'
                                 onclick="abrirModalConfirmacion('<%# Eval("IdUsuario") %>', 'usuario')">
                                 <i class="bi bi-x"></i>
-                            </button>
+                            </button>--%>
                         </ItemTemplate>
                     </asp:TemplateField>
 

@@ -4,15 +4,6 @@
 
     <div class="card shadow-sm p-5 gap-4">
 
-
-        <div class="d-flex justify-content-end">
-            <asp:Button ID="btnVolver" runat="server"
-                Text="Volver"
-                CssClass="btn btn-outline-secondary btn-sm"
-                OnClick="btnVolver_Click" />
-        </div>
-
-
         <asp:Panel ID="panelCamposGenerales" runat="server">
             <div class="row gy-4">
 
