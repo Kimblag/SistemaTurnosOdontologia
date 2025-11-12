@@ -51,9 +51,9 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
                 }
 
                 txtNombreClinica.Text = dto.NombreClinica ?? string.Empty;
-                ddlDuracionTurno.SelectedValue = dto.DuracionTurnoMinutos.ToString();
-                txtHorarioInicio.Text = dto.HoraInicio ?? string.Empty;
-                txtHorarioCierre.Text = dto.HoraCierre ?? string.Empty;
+                //ddlDuracionTurno.SelectedValue = dto.DuracionTurnoMinutos.ToString();
+                //txtHorarioInicio.Text = dto.HoraInicio ?? string.Empty;
+                //txtHorarioCierre.Text = dto.HoraCierre ?? string.Empty;
                 txtServidorCorreo.Text = dto.ServidorCorreo ?? string.Empty;
                 txtPuertoCorreo.Text = dto.PuertoCorreo > 0 ? dto.PuertoCorreo.ToString() : string.Empty;
                 txtEmailRemitente.Text = dto.EmailRemitente ?? string.Empty;
@@ -106,9 +106,10 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
             try
             {
                 string nombreClinica = txtNombreClinica.Text.Trim();
-                string duracionTurnoStr = ddlDuracionTurno.SelectedValue;
-                string horaInicio = txtHorarioInicio.Text;
-                string horaCierre = txtHorarioCierre.Text;
+                string duracionTurnoStr = "60";
+                //string duracionTurnoStr = ddlDuracionTurno.SelectedValue;
+                string horaInicio = "08:00"; 
+                string horaCierre = "18:00";
                 string servidorCorreo = txtServidorCorreo.Text.Trim();
                 string puertoStr = txtPuertoCorreo.Text.Trim();
                 string remitente = txtEmailRemitente.Text.Trim();

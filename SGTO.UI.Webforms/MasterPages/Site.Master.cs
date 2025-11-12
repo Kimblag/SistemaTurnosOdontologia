@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.Negocio.Servicios;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -13,9 +14,16 @@ namespace SGTO.UI.Webforms.MasterPages
 {
     public partial class SiteMaster : MasterPage
     {
+        private readonly ParametroService _servicioParametros = new ParametroService();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             MostrarBotonVolver();
+
+            if (!IsPostBack)
+            {
+                CargarNombreClinica();
+            }
         }
 
         public void EstablecerTituloSeccion(string tituloSeccionActiva)
@@ -140,6 +148,24 @@ namespace SGTO.UI.Webforms.MasterPages
             else
             {
                 btnVolver.NavigateUrl = "~/Pages/Configuracion/Index.aspx";
+            }
+        }
+
+
+        private void CargarNombreClinica()
+        {
+            try
+            {
+                var parametros = _servicioParametros.Obtener();
+                string nombreClinica = parametros?.NombreClinica;
+
+                NombreClinica.InnerText = string.IsNullOrWhiteSpace(nombreClinica)
+                    ? "SGTO"
+                    : nombreClinica.Trim();
+            }
+            catch (Exception)
+            {
+                NombreClinica.InnerText = "Clínica Odontológica";
             }
         }
 

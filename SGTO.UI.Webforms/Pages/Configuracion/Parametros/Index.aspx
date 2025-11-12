@@ -17,7 +17,7 @@
                     </div>
                 </div>
 
-                <div class="row g-3 mb-3 align-items-center">
+              <%--  <div class="row g-3 mb-3 align-items-center">
                     <div class="col-md-4">
                         <label for="ddlDuracionTurno" class="form-label fw-semibold">Duración Estándar del Turno</label>
                     </div>
@@ -28,9 +28,9 @@
                             <asp:ListItem Text="1 hora" Value="60" />
                         </asp:DropDownList>
                     </div>
-                </div>
+                </div>--%>
 
-                <div class="row g-3 mb-3 align-items-center">
+              <%--  <div class="row g-3 mb-3 align-items-center">
                     <div class="col-md-4">
                         <label for="txtHorarioInicio" class="form-label fw-semibold">Horario de Inicio</label>
                     </div>
@@ -46,7 +46,7 @@
                     <div class="col-md-8">
                         <asp:TextBox ID="txtHorarioCierre" runat="server" CssClass="form-control" TextMode="Time" />
                     </div>
-                </div>
+                </div>--%>
 
                 <div class="row g-3 mb-3 align-items-center">
                     <div class="col-md-4">
