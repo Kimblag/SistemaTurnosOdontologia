@@ -49,5 +49,66 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+        public Tratamiento ObtenerPorId(int id)
+        {
+            Tratamiento tratamiento = null;
+
+            string query = @"SELECT T.IdTratamiento, 
+                                    T.Nombre AS NombreTratamiento, 
+                                    T.Descripcion AS DescripcionTratamiento,
+                                    T.CostoBase,
+                                    T.Estado AS EstadoTratamiento,
+                                    E.IdEspecialidad,
+                                    E.Nombre AS NombreEspecialidad,
+                                    E.Descripcion AS DescripcionEspecialidad,
+                                    E.Estado AS EstadoEspecialidad
+                             FROM Tratamiento T
+                             INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                             WHERE T.IdTratamiento = @IdTratamiento";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdTratamiento", id);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            tratamiento = TratamientoMapper.MapearAEntidad(lector,
+                                EspecialidadMapper.MapearAEntidad(lector));
+
+                        }
+                    }
+                    return tratamiento;
+                }
+                catch (Exception) { throw; }
+            }
+        }
+
+        public void Crear(Tratamiento tratamiento)
+        {
+            string query = @"INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, Estado, IdEspecialidad)
+                             VALUES (@Nombre, @Descripcion, @CostoBase, @Estado, @IdEspecialidad)";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", tratamiento.Nombre);
+                    datos.EstablecerParametros("@Descripcion", tratamiento.Descripcion);
+                    datos.EstablecerParametros("@CostoBase", tratamiento.CostoBase);
+                    datos.EstablecerParametros("@Estado", tratamiento.Estado.ToString().Substring(0, 1));
+                    datos.EstablecerParametros("@IdEspecialidad", tratamiento.Especialidad.IdEspecialidad);
+                    datos.EjecutarAccion();
+                }
+                catch (Exception) { throw; }
+            }
+
+        }
+
     }
 }

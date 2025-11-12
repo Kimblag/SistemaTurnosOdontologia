@@ -39,5 +39,25 @@ namespace SGTO.Negocio.Mappers
             return tratamientosDtos;
         }
 
+        public static Tratamiento MapearAEntidad(TratamientoDto tratamientoDto)
+        {
+            EstadoEntidad estado = EnumeracionMapperNegocio.MapearEstadoEntidad(tratamientoDto.Estado);
+
+            Especialidad especialidadAsociada = new Especialidad()
+            {
+                IdEspecialidad = tratamientoDto.IdEspecialidad
+            };
+
+            Tratamiento tratamiento = new Tratamiento(
+              tratamientoDto.IdTratamiento,
+              tratamientoDto.Nombre,
+              tratamientoDto.Descripcion,
+              tratamientoDto.CostoBase,
+              especialidadAsociada,
+              estado                
+            );
+
+            return tratamiento;
+        }
     }
 }

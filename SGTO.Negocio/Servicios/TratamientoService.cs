@@ -1,7 +1,7 @@
-﻿// using SGTO.Datos.Infraestructura; // Ya no se necesita
+﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Repositorios;
 using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums; 
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
@@ -39,6 +39,24 @@ namespace SGTO.Negocio.Servicios
                 Debug.WriteLine("ERROR: " + ex.Message);
                 throw;
             }
+        }
+
+        public TratamientoDto ObtenerTratamientoPorId(int idTratamiento)
+        {
+            try
+            {
+                return TratamientoMapper.MapearADto(_repositorio.ObtenerPorId(idTratamiento));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void GuardarNuevoTratamiento(TratamientoDto nuevoDto)
+        {
+            Tratamiento nuevoTratamiento = TratamientoMapper.MapearAEntidad(nuevoDto);
+            _repositorio.Crear(nuevoTratamiento);
         }
 
     }

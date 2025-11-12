@@ -111,7 +111,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         protected void btnNuevoTratamiento_Click(object sender, EventArgs e)
         {
             
-            // Response.Redirect("~/Pages/Tratamientos/Nuevo", false); 
+             Response.Redirect("~/Pages/Tratamientos/Nuevo", false); 
         }
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
