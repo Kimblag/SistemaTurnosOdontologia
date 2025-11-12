@@ -1,12 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Negocio.Excepciones
 {
-    internal class ExcepcionEntidadNoEncontrada
+    
+    public class ExcepcionEntidadNoEncontrada : Exception
     {
+        public ExcepcionEntidadNoEncontrada()
+        {
+        }
+
+        public ExcepcionEntidadNoEncontrada(string message)
+            : base(message)
+        {
+        }
+
+        public ExcepcionEntidadNoEncontrada(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }

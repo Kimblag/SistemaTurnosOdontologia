@@ -80,6 +80,7 @@
     <Compile Include="Mappers\ParametroSistemaMapper.cs" />
     <Compile Include="Mappers\PlanMapper.cs" />
     <Compile Include="Mappers\RolMapper.cs" />
+    <Compile Include="Mappers\TratamientoMapper.cs" />
     <Compile Include="Mappers\TurnoMapper.cs" />
     <Compile Include="Mappers\UsuarioMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
