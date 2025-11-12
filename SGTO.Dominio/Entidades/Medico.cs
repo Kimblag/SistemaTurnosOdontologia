@@ -12,8 +12,7 @@ namespace SGTO.Dominio.Entidades
         public string Matricula { get; set; }
         public List<Especialidad> Especialidades { get; set; } = new List<Especialidad>();
         public List<Turno> TurnosAsignados { get; set; } = new List<Turno>();
-        public List<HorarioAtencion> HorariosAtencion { get; set; } = new List<HorarioAtencion>();
-
+        public List<HorarioSemanalMedico> HorariosSemanales { get; set; } = new List<HorarioSemanalMedico>();
         public Usuario Usuario { get; set; }
 
         public Medico()

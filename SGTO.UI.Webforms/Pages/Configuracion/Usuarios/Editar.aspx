@@ -111,6 +111,73 @@
                     <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select" />
                 </div>
             </div>
+
+
+            <div class="mt-4">
+    <label class="fw-semibold">Horarios de atención</label>
+    <p class="small text-muted">Seleccione los días y franjas horarias de atención del médico.</p>
+    <asp:Label ID="lblHorarioClinica" runat="server" CssClass="text-muted small d-block mb-2"></asp:Label>
+
+    <div class="table-responsive mb-3">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Día</th>
+                    <th>Atiende</th>
+                    <th>Desde</th>
+                    <th>Hasta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Lunes</td>
+                    <td><asp:CheckBox ID="chkLunes" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioLunes" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinLunes" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Martes</td>
+                    <td><asp:CheckBox ID="chkMartes" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioMartes" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinMartes" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Miércoles</td>
+                    <td><asp:CheckBox ID="chkMiercoles" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioMiercoles" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinMiercoles" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Jueves</td>
+                    <td><asp:CheckBox ID="chkJueves" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioJueves" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinJueves" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Viernes</td>
+                    <td><asp:CheckBox ID="chkViernes" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioViernes" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinViernes" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Sábado</td>
+                    <td><asp:CheckBox ID="chkSabado" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioSabado" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinSabado" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+                <tr>
+                    <td>Domingo</td>
+                    <td><asp:CheckBox ID="chkDomingo" runat="server" /></td>
+                    <td><asp:DropDownList ID="ddlHoraInicioDomingo" runat="server" CssClass="form-select form-select-sm" /></td>
+                    <td><asp:DropDownList ID="ddlHoraFinDomingo" runat="server" CssClass="form-select form-select-sm" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
         </asp:Panel>
 
         <asp:Panel ID="panelAcciones" runat="server" CssClass="mt-5">

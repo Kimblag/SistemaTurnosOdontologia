@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SGTO.Negocio.DTOs.Medicos
 {
@@ -16,5 +17,6 @@ namespace SGTO.Negocio.DTOs.Medicos
         public string Matricula { get; set; }
         public int IdEspecialidad { get; set; }
         public string Estado { get; set; } // A, I
+        public List<HorarioSemanalDto> HorariosSemanales { get; set; }
     }
 }

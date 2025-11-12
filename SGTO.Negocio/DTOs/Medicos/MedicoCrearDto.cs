@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SGTO.Negocio.DTOs.Medicos;
+using System;
+using System.Collections.Generic;
 
 namespace SGTO.Negocio.DTOs
 {
@@ -15,5 +17,7 @@ namespace SGTO.Negocio.DTOs
         public int IdUsuario { get; set; }
         public int IdEspecialidad { get; set; }
         public string Estado { get; set; } = "A"; // por defecto debe ser activo
+        public List<HorarioSemanalDto> HorariosSemanales { get; set; } = new List<HorarioSemanalDto>(); // importante!! para lso horarios de disponibilidad del médico
+
     }
 }

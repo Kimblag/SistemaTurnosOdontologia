@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DTOs\CoberturaDto.cs" />
     <Compile Include="DTOs\EspecialidadDto.cs" />
+    <Compile Include="DTOs\Medicos\HorarioSemanalDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoCrearDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoDetalleDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoEdicionDto.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\EnumeracionMapperNegocio.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
+    <Compile Include="Mappers\HorarioSemanalMapper.cs" />
     <Compile Include="Mappers\MedicoMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />
     <Compile Include="Mappers\ParametroSistemaMapper.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Seguridad\ServicioAutorizacion.cs" />
     <Compile Include="Servicios\CoberturaService.cs" />
     <Compile Include="Servicios\EspecialidadService.cs" />
+    <Compile Include="Servicios\HorarioSemanalService.cs" />
     <Compile Include="Servicios\MedicoService.cs" />
     <Compile Include="Servicios\PacienteService.cs" />
     <Compile Include="Servicios\ParametroService.cs" />

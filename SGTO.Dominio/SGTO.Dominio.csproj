@@ -41,11 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entidades\AgendaMedico.cs" />
     <Compile Include="Entidades\Base\Persona.cs" />
     <Compile Include="Entidades\Cobertura.cs" />
     <Compile Include="Entidades\Especialidad.cs" />
     <Compile Include="Entidades\HistoriaClinicaRegistro.cs" />
-    <Compile Include="Entidades\HorarioAtencion.cs" />
+    <Compile Include="Entidades\HorarioSemanalMedico.cs" />
     <Compile Include="Entidades\Medico.cs" />
     <Compile Include="Entidades\Paciente.cs" />
     <Compile Include="Entidades\ParametroSistema.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Entidades\Tratamiento.cs" />
     <Compile Include="Entidades\Turno.cs" />
     <Compile Include="Entidades\Usuario.cs" />
+    <Compile Include="Enums\EstadoAgendaMedico.cs" />
     <Compile Include="Enums\EstadoEntidad.cs" />
     <Compile Include="Enums\EstadoTurno.cs" />
     <Compile Include="Enums\Genero.cs" />

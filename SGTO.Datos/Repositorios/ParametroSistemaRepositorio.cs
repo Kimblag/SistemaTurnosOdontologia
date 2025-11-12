@@ -59,6 +59,45 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+        public (TimeSpan HoraApertura, TimeSpan HoraCierre) ObtenerHorarioClinica()
+        {
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"
+                        SELECT Nombre, Valor 
+                            FROM ParametroSistema
+                        WHERE Nombre IN ('HoraAperturaClinica', 'HoraCierreClinica')";
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    TimeSpan horaApertura = new TimeSpan(8, 0, 0);
+                    TimeSpan horaCierre = new TimeSpan(18, 0, 0);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            string nombre = lector["Nombre"].ToString();
+                            string valor = lector["Valor"].ToString();
+
+                            if (nombre == "HoraAperturaClinica" && TimeSpan.TryParse(valor, out var apertura))
+                                horaApertura = apertura;
+
+                            if (nombre == "HoraCierreClinica" && TimeSpan.TryParse(valor, out var cierre))
+                                horaCierre = cierre;
+                        }
+                    }
+
+                    return (horaApertura, horaCierre);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+
 
     }
 }

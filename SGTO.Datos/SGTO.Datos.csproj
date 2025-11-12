@@ -62,6 +62,7 @@
     <Compile Include="Repositorios\CoberturaPorcentajeHistorialRepositorio.cs" />
     <Compile Include="Repositorios\CoberturaRepositorio.cs" />
     <Compile Include="Repositorios\EspecialidadRepositorio.cs" />
+    <Compile Include="Repositorios\HorarioSemanalRepositorio.cs" />
     <Compile Include="Repositorios\MedicoRepositorio.cs" />
     <Compile Include="Repositorios\PacienteRepositorio.cs" />
     <Compile Include="Repositorios\ParametroSistemaRepositorio.cs" />

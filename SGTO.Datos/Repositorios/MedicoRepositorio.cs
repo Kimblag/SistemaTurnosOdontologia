@@ -66,15 +66,16 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public void Crear(Medico nuevoMedico, ConexionDBFactory datos)
+        public int Crear(Medico nuevoMedico, ConexionDBFactory datos)
         {
             string query = @"
-                INSERT INTO Medico 
-                    (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, 
-                     Matricula, IdUsuario, IdEspecialidad, Estado, FechaAlta, FechaModificacion)
-                VALUES
-                    (@Nombre, @Apellido, @NumeroDocumento, @Genero, @FechaNacimiento, @Telefono, @Email, 
-                     @Matricula, @IdUsuario, @IdEspecialidad, @Estado, @FechaAlta, @FechaModificacion)";
+                        INSERT INTO Medico 
+                            (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, 
+                                Matricula, IdUsuario, IdEspecialidad, Estado, FechaAlta, FechaModificacion)
+                        OUTPUT INSERTED.IdMedico
+                        VALUES
+                            (@Nombre, @Apellido, @NumeroDocumento, @Genero, @FechaNacimiento, @Telefono, @Email, 
+                                @Matricula, @IdUsuario, @IdEspecialidad, @Estado, @FechaAlta, @FechaModificacion)";
 
             datos.LimpiarParametros();
             datos.DefinirConsulta(query);
@@ -97,7 +98,8 @@ namespace SGTO.Datos.Repositorios
 
             try
             {
-                datos.EjecutarAccion();
+                object resultado = datos.EjecutarAccionEscalar();
+                return Convert.ToInt32(resultado);
             }
             catch (Exception ex)
             {

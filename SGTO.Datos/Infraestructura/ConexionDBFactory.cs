@@ -96,6 +96,13 @@ namespace SGTO.Datos.Infraestructura
             }
         }
 
+        public void DefinirProcedimiento(string nombreProcedimiento)
+        {
+            comando.CommandType = System.Data.CommandType.StoredProcedure;
+            comando.CommandText = nombreProcedimiento;
+        }
+
+
         public void ConfirmarTransaccion()
         {
             try

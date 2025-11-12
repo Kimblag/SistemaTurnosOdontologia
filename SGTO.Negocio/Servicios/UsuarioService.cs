@@ -1,6 +1,7 @@
 ﻿using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Repositorios;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
 using SGTO.Negocio.DTOs.Usuarios;
@@ -16,14 +17,16 @@ namespace SGTO.Negocio.Servicios
     public class UsuarioService
     {
         private readonly UsuarioRepositorio _repositorioUsuario;
-        private readonly RolRepositorio _repositorioRol;
         private readonly MedicoRepositorio _repositorioMedico;
+        private readonly ParametroSistemaRepositorio _repositorioParametrosSistema;
+        private readonly HorarioSemanalRepositorio _repositorioHorarioSemanal;
 
         public UsuarioService()
         {
             _repositorioUsuario = new UsuarioRepositorio();
-            _repositorioRol = new RolRepositorio();
             _repositorioMedico = new MedicoRepositorio();
+            _repositorioParametrosSistema = new ParametroSistemaRepositorio();
+            _repositorioHorarioSemanal = new HorarioSemanalRepositorio();
         }
 
         public List<UsuarioListadoDto> Listar(string estado = null)
@@ -70,8 +73,33 @@ namespace SGTO.Negocio.Servicios
                         if (_repositorioMedico.ExistePorDocumento(nuevoMedico.NumeroDocumento))
                             throw new ExcepcionReglaNegocio($"Ya existe un médico con el DNI '{nuevoMedico.NumeroDocumento}'.");
 
+                        if (nuevoMedico.HorariosSemanales == null || nuevoMedico.HorariosSemanales.Count == 0)
+                            throw new ExcepcionReglaNegocio("No se puede crear un médico sin horarios de atención definidos.");
+
+
                         Medico entidadMedico = MedicoMapper.MapearDesdeCrearDto(nuevoMedico, idUsuario);
-                        _repositorioMedico.Crear(entidadMedico, datos);
+                        int idMedico = _repositorioMedico.Crear(entidadMedico, datos);
+
+                   
+                        var horarios = new List<HorarioSemanalMedico>();
+
+                        foreach (var dto in nuevoMedico.HorariosSemanales)
+                        {
+                            horarios.Add(new HorarioSemanalMedico
+                            {
+                                Medico = new Medico { IdMedico = idMedico },
+                                DiaSemana = dto.DiaSemana,
+                                HoraInicio = dto.HoraInicio,
+                                HoraFin = dto.HoraFin,
+                                Estado = EstadoEntidad.Activo
+                            });
+                        }
+
+                        ValidarHorariosDentroDelRangoClinica(horarios);
+
+                        _repositorioHorarioSemanal.Crear(horarios, datos);
+                        _repositorioHorarioSemanal.GenerarAgendaParaMedico(idMedico, datos);
+                        
                     }
 
                     datos.ConfirmarTransaccion();
@@ -132,6 +160,30 @@ namespace SGTO.Negocio.Servicios
 
                         Medico medicoEditado = MedicoMapper.MapearDesdeEdicionDto(medicoDto);
                         _repositorioMedico.Editar(medicoEditado, datos);
+
+                        if (medicoDto.HorariosSemanales != null && medicoDto.HorariosSemanales.Count > 0)
+                        {
+                            var horarios = new List<HorarioSemanalMedico>();
+
+                            foreach (var dto in medicoDto.HorariosSemanales)
+                            {
+                                horarios.Add(new HorarioSemanalMedico
+                                {
+                                    Medico = new Medico { IdMedico = medicoActual.IdMedico },
+                                    DiaSemana = dto.DiaSemana,
+                                    HoraInicio = dto.HoraInicio,
+                                    HoraFin = dto.HoraFin,
+                                    Estado = EstadoEntidad.Activo
+                                });
+                            }
+
+                            ValidarHorariosDentroDelRangoClinica(horarios);
+
+                            _repositorioHorarioSemanal.EliminarPorMedico(medicoActual.IdMedico, datos);
+                            _repositorioHorarioSemanal.Crear(horarios, datos);
+                            _repositorioHorarioSemanal.GenerarAgendaParaMedico(medicoActual.IdMedico, datos);
+                        }
+
                     }
 
                     datos.ConfirmarTransaccion();
@@ -151,7 +203,8 @@ namespace SGTO.Negocio.Servicios
         }
 
 
-        public UsuarioDetalleDto ObtenerDetalle(int idUsuario) {
+        public UsuarioDetalleDto ObtenerDetalle(int idUsuario)
+        {
             Usuario usuario = _repositorioUsuario.ObtenerPorId(idUsuario);
             if (usuario == null)
                 throw new ExcepcionReglaNegocio("El usuario no existe.");
@@ -163,7 +216,8 @@ namespace SGTO.Negocio.Servicios
             return UsuarioMapper.MapearADetalleDto(usuario, medico);
         }
 
-        public UsuarioDetalleDto ObtenerDetalleMedico(int idMedico) {
+        public UsuarioDetalleDto ObtenerDetalleMedico(int idMedico)
+        {
             Medico medico = _repositorioMedico.ObtenerPorId(idMedico);
             if (medico == null)
                 throw new ExcepcionReglaNegocio("El médico no existe.");
@@ -174,6 +228,30 @@ namespace SGTO.Negocio.Servicios
 
             return UsuarioMapper.MapearADetalleDto(usuario, medico);
         }
+
+        private void ValidarHorariosDentroDelRangoClinica(List<HorarioSemanalMedico> horarios)
+        {
+            var repositorioParametro = new ParametroSistemaRepositorio();
+            var (horaApertura, horaCierre) = repositorioParametro.ObtenerHorarioClinica();
+
+            foreach (var horario in horarios)
+            {
+                if (horario.HoraInicio < horaApertura || horario.HoraFin > horaCierre)
+                {
+                    throw new ExcepcionReglaNegocio(
+                        $"El horario del día {horario.DiaSemana} ({horario.HoraInicio:hh\\:mm}-{horario.HoraFin:hh\\:mm}) " +
+                        $"está fuera del horario permitido de la clínica ({horaApertura:hh\\:mm}-{horaCierre:hh\\:mm})."
+                    );
+                }
+            }
+        }
+
+        public (TimeSpan HoraApertura, TimeSpan HoraCierre) ObtenerHorarioClinica()
+        {
+            return _repositorioParametrosSistema.ObtenerHorarioClinica();
+        }
+
+
 
     }
 }
