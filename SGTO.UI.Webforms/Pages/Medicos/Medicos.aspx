@@ -41,7 +41,7 @@
                         </asp:DropDownList>
                     </div>
 
-                    <%-- Selector del criterio (dependiente del campo) --%>
+                    <%-- Selector del criterio  --%>
                     <div class="col-auto">
                         <asp:DropDownList
                             ID="ddlCriterio"
@@ -58,13 +58,15 @@
                 <%-- Columna derecha: botón nuevo médico  --%>
                 <div class="col-12 col-lg-3 text-lg-end">
                     
+                  
                     <asp:Button
                         ID="btnNuevoMedico" 
                         runat="server"
                         Text="+ Nuevo Médico" 
                         OnClick="btnNuevoMedico_Click" 
-                        CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
-                     
+                        CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0"
+                        Visible="true" /> 
+                        
                 </div>
             </div>
         </div>
@@ -82,26 +84,18 @@
                 CssClass="table gridview mb-0"
                 AllowPaging="True" PageSize="7"> 
                 <Columns>
-                    <asp:BoundField DataField="Nombre" HeaderText="Nombre" />
-                    <asp:BoundField DataField="Apellido" HeaderText="Apellido" />
-                    <asp:TemplateField HeaderText="DNI">
-                        <ItemTemplate>
-                            <%# Eval("Dni.Numero") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    
+                    <asp:BoundField DataField="NombreCompleto" HeaderText="Médico" />
+                    
+                    <asp:BoundField DataField="Dni" HeaderText="DNI" />
 
                     <asp:BoundField DataField="Matricula" HeaderText="Matrícula" /> 
                     
-                    <asp:TemplateField HeaderText="Teléfono">
-                        <ItemTemplate>
-                            <%# Eval("Telefono.Numero") %>   
-                        </ItemTemplate>
-                    </asp:TemplateField>
-                    <asp:TemplateField HeaderText="Email">
-                        <ItemTemplate>
-                            <%# Eval("Email.Valor") %>
-                        </ItemTemplate>
-                    </asp:TemplateField>
+                    <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
+                    
+                    <asp:BoundField DataField="Email" HeaderText="Email" />
+
+                    <asp:BoundField DataField="NombreEspecialidad" HeaderText="Especialidad" />
 
                     <%--columna estado--%>
                     <asp:TemplateField HeaderText="Estado">
@@ -110,10 +104,10 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <%--columna acciones --%>
-                    <asp:TemplateField HeaderText="Acciones">
+                 
+                    <asp:TemplateField HeaderText="Acciones" Visible="true">
                          <ItemTemplate>
-                         
+                        
                             <asp:LinkButton ID="btnEditar"
                                 runat="server"
                                 CssClass="btn btn-outline-secondary btn-sm me-1"
@@ -121,16 +115,14 @@
                                 CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-                          <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
+                           <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-eye"></i>
                             </asp:LinkButton>
 
-  <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdMedico") %>'> 
+                           <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-x"></i>
-
-                            
                             </asp:LinkButton>
-                             
+                            
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

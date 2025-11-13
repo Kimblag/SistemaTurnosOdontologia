@@ -4,6 +4,7 @@ using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
 using System;
 using System.Collections.Generic;
+using System.Linq; 
 
 namespace SGTO.Negocio.Mappers
 {
@@ -96,6 +97,45 @@ namespace SGTO.Negocio.Mappers
                     : 0,
                 Estado = medico.Estado.ToString()
             };
+        }
+
+        public static MedicoListadoDto MapearADto(Medico entidad)
+        {
+            if (entidad == null)
+                return null;
+
+            string nombreCompleto = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(entidad.Apellido) || !string.IsNullOrWhiteSpace(entidad.Nombre))
+            {
+                nombreCompleto = $"{entidad.Apellido}, {entidad.Nombre}".Trim(',', ' ');
+            }
+
+            var dto = new MedicoListadoDto
+            {
+                IdMedico = entidad.IdMedico,
+                NombreCompleto = nombreCompleto,
+                Dni = entidad.Dni != null ? entidad.Dni.Numero : string.Empty,
+                Matricula = entidad.Matricula,
+                Telefono = entidad.Telefono != null ? entidad.Telefono.Numero : string.Empty,
+                Email = entidad.Email != null ? entidad.Email.Valor : string.Empty,
+                Estado = entidad.Estado.ToString(),
+
+
+              
+            };
+
+            return dto;
+        }
+
+        public static List<MedicoListadoDto> MapearAListado(List<Medico> medicos)
+        {
+            List<MedicoListadoDto> medicosDtos = new List<MedicoListadoDto>();
+            foreach (Medico medico in medicos)
+            {
+                medicosDtos.Add(MapearADto(medico));
+            }
+            return medicosDtos;
         }
 
     }

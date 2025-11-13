@@ -123,7 +123,6 @@
     <Content Include="Content\TemaApp.css" />
     <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
     <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
-    <Content Include="Controles\Medicos\MedicoForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasListado.ascx" />
     <Content Include="Controles\Coberturas\PlanesForm.ascx" />
@@ -154,10 +153,8 @@
     <Content Include="Pages\Especialidades\Index.aspx" />
     <Content Include="Pages\Especialidades\Nuevo.aspx" />
     <Content Include="Pages\Home\Dashboard.aspx" />
-    <Content Include="Pages\Medicos\Editar.aspx" />
     <Content Include="Pages\Medicos\Medicos.aspx" />
     <Content Include="Pages\Login\Index.aspx" />
-    <Content Include="Pages\Medicos\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Detalle.aspx" />
     <Content Include="Pages\Pacientes\Editar.aspx" />
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
@@ -252,13 +249,6 @@
     </Compile>
     <Compile Include="Controles\Especialidades\EspecialidadForm.ascx.designer.cs">
       <DependentUpon>EspecialidadForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Medicos\MedicoForm.ascx.cs">
-      <DependentUpon>MedicoForm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Medicos\MedicoForm.ascx.designer.cs">
-      <DependentUpon>MedicoForm.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Coberturas\CoberturasForm.ascx.cs">
       <DependentUpon>CoberturasForm.ascx</DependentUpon>
@@ -466,26 +456,12 @@
     <Compile Include="Pages\Login\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Medicos\Editar.aspx.cs">
-      <DependentUpon>Editar.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Medicos\Editar.aspx.designer.cs">
-      <DependentUpon>Editar.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Pages\Medicos\Medicos.aspx.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Medicos\Medicos.aspx.designer.cs">
       <DependentUpon>Medicos.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Medicos\Nuevo.aspx.cs">
-      <DependentUpon>Nuevo.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\Medicos\Nuevo.aspx.designer.cs">
-      <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Pacientes\Detalle.aspx.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>

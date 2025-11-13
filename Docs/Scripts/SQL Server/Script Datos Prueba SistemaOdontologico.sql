@@ -399,3 +399,6 @@ VALUES
 (10, 65, '2024-03-01', NULL, 'A', 'Último porcentaje previo a inactividad');
 GO
 
+
+
+

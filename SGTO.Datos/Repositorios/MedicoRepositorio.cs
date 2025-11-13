@@ -2,6 +2,7 @@
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 
@@ -291,6 +292,52 @@ namespace SGTO.Datos.Repositorios
                 }
             }
             return null;
+        }
+
+        public List<Medico> Listar(string estado = null)
+        {
+            List<Medico> medicos = new List<Medico>();
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT M.IdMedico,
+                                        M.Nombre,
+                                        M.Apellido,
+                                        M.NumeroDocumento,
+                                        M.Genero,
+                                        M.FechaNacimiento,
+                                        M.Telefono,
+                                        M.Email,
+                                        M.Matricula,
+                                        M.Estado
+                                 FROM Medico M
+                                 {{WHERE}}
+                                 ORDER BY M.Apellido, M.Nombre";
+
+                query = estado != null
+                    ? query.Replace("{{WHERE}}", $" WHERE M.Estado = '{estado[0]}'")
+                    : query.Replace("{{WHERE}}", "");
+
+                datos.DefinirConsulta(query);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Medico medico = MedicoMapper.MapearAEntidad(lector);
+
+                            medicos.Add(medico);
+                        }
+                    }
+                    return medicos;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
     }

@@ -27,5 +27,7 @@ namespace SGTO.Datos.Mappers
 
             return medico;
         }
-    }
+
+    }   
+
 }
