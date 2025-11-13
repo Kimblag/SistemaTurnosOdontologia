@@ -53,10 +53,53 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+        public void ModificarTratamiento(TratamientoDto dto)
+        {
+            Tratamiento tratamiento = TratamientoMapper.MapearAEntidad(dto);
+            _repositorio.Modificar(tratamiento);
+        }
         public void GuardarNuevoTratamiento(TratamientoDto nuevoDto)
         {
             Tratamiento nuevoTratamiento = TratamientoMapper.MapearAEntidad(nuevoDto);
             _repositorio.Crear(nuevoTratamiento);
+        }
+
+        public bool DarDeBaja(int idTratamiento, TurnoService servicioTurno)
+        {
+            if (servicioTurno.TieneTurnosActivosPorTratamiento(idTratamiento))
+            {
+                throw new ExcepcionReglaNegocio("No se puede dar de baja el tratamiento porque tiene turnos activos.");
+            }
+
+            if (_repositorio.EstaDadoDeBaja(idTratamiento))
+            {
+                throw new ExcepcionReglaNegocio("El tratamiento ya se encuentra dado de baja.");
+            }
+
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.IniciarTransaccion();
+                    char estadoInactivo = (char)EstadoEntidad.Inactivo; //
+
+                    _repositorio.DarDeBaja(idTratamiento, estadoInactivo, datos);
+
+                    datos.ConfirmarTransaccion();
+                    return true;
+                }
+                catch (ExcepcionReglaNegocio)
+                {
+                    datos.RollbackTransaccion();
+                    throw; 
+                }
+                catch (Exception)
+                {
+                    datos.RollbackTransaccion();
+                    throw new Exception("Error al intentar dar de baja el tratamiento.");
+                }
+            }
         }
 
     }

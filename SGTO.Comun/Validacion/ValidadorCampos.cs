@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace SGTO.Comun.Validacion
@@ -105,6 +106,18 @@ namespace SGTO.Comun.Validacion
         {
             DateTime hoy = DateTime.Today;
             return fecha <= hoy && fecha >= hoy.AddYears(-120);
+        }
+
+        public static bool EsDecimalValido(string texto, out decimal valor)
+        {
+            valor = 0;
+            if (string.IsNullOrWhiteSpace(texto))
+            {
+                return false;
+            }
+
+            string costoTxt = texto.Trim().Replace(',', '.');
+            return decimal.TryParse(costoTxt, NumberStyles.Any, CultureInfo.InvariantCulture, out valor);
         }
 
     }

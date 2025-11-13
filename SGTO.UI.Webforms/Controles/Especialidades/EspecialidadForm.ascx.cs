@@ -136,24 +136,26 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
 
             try
             {
+                ValidarCampos();
+                
                 EspecialidadDto especialidadDto = EspecialidadMapper.MapearADto(idEspecialidad, nombre, descripcion, estado);
                 _especialidadService.ModificarEspecialidad(especialidadDto);
-                Session["CoberturaMensajeTitulo"] = "Especialidad modificada con éxito.";
-                Session["CoberturaMensajeDesc"] = "La especialidad ha sido actualizada correctamente.";
+                Session["EspecialidadMensajeTitulo"] = "Especialidad modificada con éxito.";
+                Session["EspecialidadMensajeDesc"] = "La especialidad ha sido actualizada correctamente.";
                 Session["ModalTipo"] = "Resultado";
                 Response.Redirect($"~/Pages/Especialidades/Index.aspx", false);
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["CoberturaMensajeTitulo"] = "Operación no permitida";
-                Session["CoberturaMensajeDesc"] = ex.Message;
+                Session["EspecialidadMensajeTitulo"] = "Operación no permitida";
+                Session["EspecialidadMensajeDesc"] = ex.Message;
                 Session["ModalTipo"] = "Resultado";
                 ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
             }
             catch (Exception)
             {
-                Session["CoberturaMensajeTitulo"] = "Error inesperado";
-                Session["CoberturaMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
+                Session["EspecialidadMensajeTitulo"] = "Error inesperado";
+                Session["EspecialidadMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
                 Session["ModalTipo"] = "Resultado";
                 ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
             }
@@ -172,7 +174,7 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
             if (!ValidadorCampos.EsTextoValido(nombre, 3, 50))
                 throw new ExcepcionReglaNegocio("El nombre debe tener entre 3 y 50 caracteres y no puede estar vacío.");
 
-            if (!string.IsNullOrWhiteSpace(descripcion) && !ValidadorCampos.TieneLongitudMinima(descripcion, 10))
+            if (!ValidadorCampos.EsTextoValido(descripcion, 10, 200)) 
                 throw new ExcepcionReglaNegocio("La descripción debe tener al menos 10 caracteres si se completa.");
 
             return true;

@@ -50,5 +50,19 @@ namespace SGTO.Negocio.Servicios
                 throw;
             }
         }
+
+        public bool TieneTurnosActivosPorTratamiento(int idTratamiento)
+        {
+            try
+            {
+                return _turnoRepositorio.ExisteTurnoActivoPorEspecialidad(idTratamiento);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

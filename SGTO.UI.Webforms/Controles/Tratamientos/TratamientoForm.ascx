@@ -78,28 +78,33 @@
             <%-- Especialidad Asociada --%>
             <div class="col-12 col-md-6">
                 <label for="<%= ddlEspecialidad.ClientID %>" class="form-label">Especialidad Asociada</label>
-                
+
                 <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select">
+                    
+                    <asp:ListItem Text="Seleccione una especialidad" Value="0"></asp:ListItem>
                 </asp:DropDownList>
 
                 <asp:RequiredFieldValidator runat="server"
                     ControlToValidate="ddlEspecialidad"
-                    InitialValue="0" 
+                    InitialValue="0"
                     CssClass="text-danger small d-block"
                     Display="Dynamic"
                     ErrorMessage="Seleccioná una especialidad."
                     ValidationGroup="vgTratamiento" />
-                
             </div>
 
-            <%-- Estado --%>
-            <div class="col-12 col-md-6">
-                <label for="<%= ddlEstado.ClientID %>" class="form-label">Estado</label>
-                <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                    <asp:ListItem Value="1" Selected="True">Activo</asp:ListItem>
-                    <asp:ListItem Value="0">Inactivo</asp:ListItem>
-                </asp:DropDownList>
+            <%-- Estado  --%>
+            <div class="col-12 ml-0">
+                <label class="form-label">Estado</label>
+                <div class="form-check p-0">
+                    <asp:CheckBox ID="chkEstado" runat="server"
+                        Text="Activo"
+                        CssClass="d-flex gap-2"
+                        Checked="true"
+                        Enabled="false" />
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -120,33 +125,34 @@
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
                     CssClass="btn btn-primary btn-sm"
-                    OnClientClick="abrirModalConfirmacion('Confirmar guardado','¿Querés guardar el tratamiento?'); return false;"
-                    UseSubmitBehavior="false"
                     OnClick="btnGuardar_Click"
                     ValidationGroup="vgTratamiento" />
             </div>
         </div>
     </div>
+
 </div>
 
+
+<%-- Modal confirmación --%>
 <div class="modal" tabindex="-1" id="modalConfirmacion" aria-labelledby="modalConfirmacion" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 id="modalTitulo" class="modal-title">Confirmación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 id="modalTitulo" class="modal-title">Modal título</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="modalDesc">¿Deseás continuar?</p>
+                <p id="modalDesc">Mensaje confirmación</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="btnModalOk">Guardar</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnModalOk">Ok</button>
             </div>
         </div>
     </div>
 </div>
 
+<%-- Modal resultado --%>
 <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -167,11 +173,15 @@
 <script>
     function abrirModalConfirmacion(titulo, descripcion) {
         try {
-            document.getElementById('modalTitulo').textContent = titulo || 'Confirmación';
-            document.getElementById('modalDesc').textContent = descripcion || '¿Deseás continuar?';
+            document.getElementById('modalTitulo').textContent = titulo || 'Acción completada';
+            document.getElementById('modalDesc').textContent = descripcion || '';
+
             const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
             modal.show();
-        } catch (err) { console.error('Error :', err); }
+
+        } catch (err) {
+            console.error('Error :', err);
+        }
     }
 
     function abrirModalResultado(titulo, descripcion) {
@@ -180,19 +190,8 @@
         new bootstrap.Modal(document.getElementById('modalResultado')).show();
     }
 
-    (function wireOk() {
-        const ok = document.getElementById('btnModalOk');
-        if (!ok) return;
-        ok.addEventListener('click', function () {
-            // Forzar validación del lado cliente
-            if (typeof(Page_ClientValidate) === "function") {
-                if (!Page_ClientValidate('vgTratamiento')) return; // si no valida, no postback
-            }
-            // Cerrar el modal y hacer postback
-            var modalEl = document.getElementById('modalConfirmacion');
-            var instance = bootstrap.Modal.getInstance(modalEl);
-            if (instance) instance.hide();
-            __doPostBack('<%= btnGuardar.UniqueID %>', '');
-        });
-    })();
+    function abrirModalNuevoPlan() {
+        const modal = new bootstrap.Modal(document.getElementById('modalNuevoPlan'));
+        modal.show();
+    }
 </script>

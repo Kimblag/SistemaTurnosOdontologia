@@ -20,7 +20,7 @@ namespace SGTO.Dominio.Entidades
         }
 
         public Tratamiento(string nombre, string descripcion, decimal costoBase,
-            Especialidad especialidad)
+             Especialidad especialidad)
         {
             Nombre = nombre;
             Descripcion = descripcion;
@@ -37,7 +37,7 @@ namespace SGTO.Dominio.Entidades
             Descripcion = descripcion;
             CostoBase = costoBase;
             Especialidad = especialidad;
-            Estado = EstadoEntidad.Activo;
+            Estado = estado;
         }
 
         public bool PerteneceA(Especialidad especialidad)

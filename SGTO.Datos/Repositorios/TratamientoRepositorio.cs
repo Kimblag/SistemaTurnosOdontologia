@@ -110,5 +110,84 @@ namespace SGTO.Datos.Repositorios
 
         }
 
+        public void Modificar(Tratamiento tratamiento)
+        {
+            string query = @"UPDATE Tratamiento 
+                             SET Nombre = @Nombre, 
+                                 Descripcion = @Descripcion, 
+                                 CostoBase = @CostoBase, 
+                                 Estado = @Estado, 
+                                 IdEspecialidad = @IdEspecialidad
+                             WHERE IdTratamiento = @IdTratamiento";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", tratamiento.Nombre);
+                    datos.EstablecerParametros("@Descripcion", tratamiento.Descripcion);
+                    datos.EstablecerParametros("@CostoBase", tratamiento.CostoBase);
+                    datos.EstablecerParametros("@Estado", tratamiento.Estado.ToString().Substring(0, 1));
+                    datos.EstablecerParametros("@IdEspecialidad", tratamiento.Especialidad.IdEspecialidad);
+                    datos.EstablecerParametros("@IdTratamiento", tratamiento.IdTratamiento);
+                    datos.EjecutarAccion();
+                }
+                catch (Exception) { throw; }
+            }
+        }
+
+        public void DarDeBaja(int idTratamiento, char estado, ConexionDBFactory datos)
+        {
+            string query = @"UPDATE Tratamiento 
+                     SET Estado = @Estado
+                     WHERE IdTratamiento = @IdTratamiento";
+            try
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@Estado", estado);
+                datos.EstablecerParametros("@IdTratamiento", idTratamiento);
+                datos.EjecutarAccion();
+            }
+            catch (Exception)
+            {
+                throw; 
+            }
+        }
+        public bool EstaDadoDeBaja(int idTratamiento)
+        {
+            bool estaDadoDeBaja = false;
+
+            string query = @"SELECT Estado
+                     FROM Tratamiento
+                     WHERE IdTratamiento = @IdTratamiento";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdTratamiento", idTratamiento);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            if (!lector.IsDBNull(lector.GetOrdinal("Estado")))
+                            {
+                                EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado");
+                                estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
+                            }
+                        }
+                    }
+                    return estaDadoDeBaja;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
     }
 }

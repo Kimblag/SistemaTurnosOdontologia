@@ -16,13 +16,12 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
     public partial class Tratamientos : System.Web.UI.Page
     {
         private readonly TratamientoService _tratamientoService = new TratamientoService();
-        // private readonly TurnoService _turnoService = new TurnoService(); 
+        private readonly TurnoService _turnoService = new TurnoService();
         private readonly EspecialidadService _especialidadService = new EspecialidadService();
 
         private const string KEY_ESTADO_TRATAMIENTOS = "FiltroEstadoTratamientos";
         private const string KEY_ESPECIALIDAD_TRATAMIENTOS = "FiltroEspecialidadTratamientos";
         private const string KEY_BUSQUEDA_TRATAMIENTOS = "FiltroBusquedaTratamientos";
-
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -90,45 +89,61 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
                 if (lblEstado != null)
                 {
                     string cssClass = "badge ";
-                    cssClass += (tratamientoDto.Estado == "Activo") ? "badge-primary" : "badge-secondary";
+
+                    if (tratamientoDto.Estado == "Activo")
+                    {
+                        cssClass += "badge-primary";
+                    }
+                    else
+                    {
+                        cssClass += "badge-secondary";
+                    }
                     lblEstado.Attributes["class"] = cssClass;
                 }
             }
         }
-
-      
 
         protected void gvTratamientos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int idTratamiento = Convert.ToInt32(e.CommandArgument);
             if (e.CommandName == "Editar")
             {
-                
-                 Response.Redirect($"~/Pages/Tratamientos/Editar?id-tratamiento={idTratamiento}", false); 
+                Response.Redirect($"~/Pages/Tratamientos/Editar?id-tratamiento={idTratamiento}", false);
             }
         }
 
         protected void btnNuevoTratamiento_Click(object sender, EventArgs e)
         {
-            
-             Response.Redirect("~/Pages/Tratamientos/Nuevo", false); 
+            Response.Redirect("~/Pages/Tratamientos/Nuevo", false);
         }
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
-            // int idTratamiento = int.Parse(hdnIdEliminar.Value); 
+            int idTratamiento = int.Parse(hdnIdEliminar.Value);
+
             try
             {
-                
-                // _tratamientoService.DarDeBaja(idTratamiento, _turnoService); 
+                _tratamientoService.DarDeBaja(idTratamiento, _turnoService);
 
-                //simulacion
+                AplicarFiltros();
+
                 MensajeUiHelper.SetearYMostrar(
                     this.Page,
-                    "Acción deshabilitada",
-                    "La baja de tratamientos no está implementada.",
+                    "Baja exitosa",
+                    "El tratamiento ha sido dado de baja correctamente.",
                     "Resultado",
-                    null, // No recargar
+                    null,
+                    "abrirModalResultado"
+                );
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Operación denegada",
+                    ex.Message,
+                    "Resultado",
+                    null,
                     "abrirModalResultado"
                 );
             }
@@ -144,8 +159,6 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
                 );
             }
         }
-
-  
 
         protected void ddlEstado_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -180,9 +193,6 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
 
             AplicarFiltros();
         }
-
-
-     
 
         private void CargarGrilla(List<TratamientoDto> lista)
         {

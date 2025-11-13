@@ -14,7 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         {
             if (Master is SiteMaster master)
             {
-                master.EstablecerOpcionMenuActiva("Medicos");
+                master.EstablecerOpcionMenuActiva("Tratamientos");
                 master.EstablecerTituloSeccion(this.Page.Title);
             }
         }
