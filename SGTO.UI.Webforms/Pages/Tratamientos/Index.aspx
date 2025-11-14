@@ -6,7 +6,7 @@
 
     <div class="page-generic">
 
-    <%-- Filtros --%>
+        <%-- Filtros --%>
         <div class="container-fluid px-0 mb-3">
             <div class="row g-2 align-items-center">
 
@@ -14,7 +14,7 @@
                 <div class="col-12 col-lg-9 d-flex flex-wrap align-items-center gap-2">
 
                     <%-- Buscador --%>
-                    <div class="col-auto flex-grow-1" style="min-width:260px; max-width:400px;">
+                    <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="bi bi-search text-muted"></i>
@@ -24,11 +24,11 @@
                                 runat="server"
                                 CssClass="form-control border-start-0"
                                 placeholder="Buscar tratamientos..."
-                                AutoPostBack="true" 
+                                AutoPostBack="true"
                                 OnTextChanged="txtBuscar_TextChanged" />
                         </div>
                     </div>
-                    
+
                     <%-- Filtro Especialidad --%>
                     <div class="col-auto">
                         <asp:DropDownList
@@ -50,8 +50,8 @@
                             CssClass="form-select"
                             Width="170"
                             AutoPostBack="true"
-                            OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged"> 
-                            
+                            OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+
                             <asp:ListItem Selected="True" Text="Todos" Value="todos" />
                             <asp:ListItem Text="Activo" Value="activo" />
                             <asp:ListItem Text="Inactivo" Value="inactivo" />
@@ -81,11 +81,11 @@
                 <%-- Derecha: botón nuevo tratamiento --%>
                 <div class="col-12 col-lg-3 text-lg-end">
                     <asp:Button
-                        ID="btnNuevoTratamiento" 
+                        ID="btnNuevoTratamiento"
                         runat="server"
-                        Text="+ Nuevo Tratamiento" 
-                        OnClick="btnNuevoTratamiento_Click" 
-                        CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
+                        Text="+ Nuevo Tratamiento"
+                        OnClick="btnNuevoTratamiento_Click"
+                        CssClass="btn btn-sm btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
                 </div>
 
             </div>
@@ -94,28 +94,29 @@
         <%-- Tabla --%>
         <div class="content-wrapper">
 
-            <asp:GridView ID="gvTratamientos" runat="server" 
+            <asp:GridView ID="gvTratamientos" runat="server"
                 AutoGenerateColumns="false"
                 CssClass="table gridview mb-0"
-                DataKeyNames="IdTratamiento" 
+                DataKeyNames="IdTratamiento"
                 AllowPaging="True" PageSize="7"
-                OnRowDataBound="gvTratamientos_RowDataBound" 
-                OnPageIndexChanging="gvTratamientos_PageIndexChanging" 
+                OnRowDataBound="gvTratamientos_RowDataBound"
+                OnPageIndexChanging="gvTratamientos_PageIndexChanging"
                 OnRowCommand="gvTratamientos_RowCommand">
 
                 <Columns>
-                    <asp:BoundField DataField="Nombre" HeaderText="Nombre de Tratamiento" /> 
+                    <asp:BoundField DataField="Nombre" HeaderText="Nombre de Tratamiento" />
                     <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
-                    <asp:BoundField DataField="CostoBase" HeaderText="Costo" DataFormatString="{0:C}" /> 
-                    <asp:BoundField DataField="NombreEspecialidad" HeaderText="Especialidad" /> 
-                    
+                    <asp:BoundField DataField="CostoBase" HeaderText="Costo" DataFormatString="{0:C}" />
+                    <asp:BoundField DataField="NombreEspecialidad" HeaderText="Especialidad" />
+
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                            <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <%-- COLUMNA DE ACCIONES RESTAURADA (VISUALMENTE) --%>
+
+
                     <asp:TemplateField HeaderText="Acciones">
                         <ItemTemplate>
                             <asp:LinkButton ID="btnEditar"
@@ -125,7 +126,7 @@
                                 CommandArgument='<%# Eval("IdTratamiento") %>'> 
                                 <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-                            
+
                             <button type="button"
                                 class="btn btn-outline-danger btn-sm"
                                 data-id='<%# Eval("IdTratamiento") %>'
@@ -147,8 +148,7 @@
 
         </div>
     </div>
-    
-    <%-- MODALES Y HIDDEN FIELDS  (VISUALMENTE) --%>
+
     <asp:HiddenField ID="hdnIdEliminar" runat="server" />
 
     <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
@@ -175,20 +175,20 @@
     </div>
 
     <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-            <p id="modalResultadoDescripcion">Operación realizada.</p>
-          </div>
-          <div class="modal-footer">
-            <a id="modalResultadoLink" class="btn btn-primary" href="#" data-bs-dismiss="modal">Aceptar</a>
-          </div>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalResultadoDescripcion">Operación realizada.</p>
+                </div>
+                <div class="modal-footer">
+                    <a id="modalResultadoLink" class="btn btn-primary" href="#" data-bs-dismiss="modal">Aceptar</a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <%-- Script para el modal --%>

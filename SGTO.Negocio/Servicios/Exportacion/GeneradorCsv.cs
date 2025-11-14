@@ -18,7 +18,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
             // fila de encabezados
             sb.AppendLine("Nombre Completo;DNI;Cobertura;Plan;Total Turnos;Última Atención;Médico Frecuente");
 
-            foreach (var p in lista)
+            foreach (ReportePacientesDto p in lista)
             {
                 string linea = string.Join(";",
                     LimpiarCsv(p.NombreCompleto),

@@ -1,6 +1,7 @@
-﻿<%@ Page Title="Gestión de Turnos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
-    CodeBehind="Index.aspx.cs" 
+﻿<%@ Page Title="Gestión de Turnos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
+    CodeBehind="Index.aspx.cs"
     Inherits="SGTO.UI.Webforms.Pages.Turnos.Index" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
 
@@ -60,7 +61,7 @@
                         ID="btnNuevoTurno"
                         runat="server"
                         Text="+ Nuevo Turno"
-                        OnClick="btnNuevoTurno_Click" 
+                        OnClick="btnNuevoTurno_Click"
                         CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
                 </div>
             </div>
@@ -98,8 +99,7 @@
                     <%--columna estado--%>
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            
-                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                            <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                         </ItemTemplate>
                     </asp:TemplateField>
 
@@ -131,8 +131,8 @@
                 </EmptyDataTemplate>
             </asp:GridView>
 
-        </div> 
+        </div>
 
-    </div> 
+    </div>
 
 </asp:Content>

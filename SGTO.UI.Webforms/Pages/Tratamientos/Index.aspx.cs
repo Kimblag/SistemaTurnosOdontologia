@@ -86,19 +86,16 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
                 var tratamientoDto = (TratamientoDto)e.Row.DataItem;
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
 
-                if (lblEstado != null)
+                if (lblEstado != null && tratamientoDto != null)
                 {
-                    string cssClass = "badge ";
-
-                    if (tratamientoDto.Estado == "Activo")
+                    if (tratamientoDto.Estado.ToLower() == "Activo".ToLower())
                     {
-                        cssClass += "badge-primary";
+                        lblEstado.Attributes["class"] = "badge badge-success";
                     }
                     else
                     {
-                        cssClass += "badge-secondary";
+                        lblEstado.Attributes["class"] = "badge badge-warning";
                     }
-                    lblEstado.Attributes["class"] = cssClass;
                 }
             }
         }

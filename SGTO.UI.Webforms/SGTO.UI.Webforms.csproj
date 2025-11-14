@@ -316,6 +316,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Modelos\Medicos\HorarioSemanalItemUi.cs" />
     <Compile Include="Pages\CoberturasPlanes\EditarCobertura.aspx.cs">
       <DependentUpon>EditarCobertura.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
