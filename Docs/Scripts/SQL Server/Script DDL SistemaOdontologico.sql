@@ -1,9 +1,16 @@
-CREATE DATABASE SistemaOdontologico;
+USE master;
+GO
+-- esto es para que no de error si hay conexiones activas
+ALTER DATABASE SistemaOdontologico SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
 
+DROP DATABASE IF EXISTS SistemaOdontologico;
+GO
+
+CREATE DATABASE SistemaOdontologico;
 GO
 
 USE SistemaOdontologico;
-
 GO
 
 CREATE TABLE Cobertura (
@@ -110,7 +117,9 @@ CREATE TABLE Usuario (
     FechaModificacion DATETIME NULL DEFAULT GETDATE(),
 
     CONSTRAINT FK_Usuario_Rol FOREIGN KEY(IdRol) REFERENCES Rol(IdRol),
-    CONSTRAINT CHK_Usuario_Estado CHECK (Estado IN ('A','I'))
+    CONSTRAINT CHK_Usuario_Estado CHECK (Estado IN ('A','I')),
+    CONSTRAINT UQ_Usuario_Email UNIQUE (Email),
+    CONSTRAINT UQ_Usuario_NombreUsuario UNIQUE (NombreUsuario)
 );
 
 GO
@@ -123,7 +132,6 @@ CREATE TABLE Medico (
     Genero CHAR(1) NOT NULL,
     FechaNacimiento DATE NOT NULL,
     Telefono VARCHAR(30) NOT NULL,
-    Email NVARCHAR(120) NOT NULL,
     Matricula NVARCHAR(50) NOT NULL,
     IdUsuario INT NOT NULL,
     Estado CHAR(1) NOT NULL DEFAULT 'A',
@@ -132,10 +140,23 @@ CREATE TABLE Medico (
 
     CONSTRAINT FK_Medico_Usuario FOREIGN KEY(IdUsuario) REFERENCES Usuario(IdUsuario),
     CONSTRAINT CHK_Medico_Estado CHECK (Estado IN ('A','I')),
-    CONSTRAINT CHK_Medico_Genero CHECK (Genero IN ('M','F','O','N'))
+    CONSTRAINT CHK_Medico_Genero CHECK (Genero IN ('M','F','O','N')),
+    CONSTRAINT UQ_Medico_NumeroDocumento UNIQUE (NumeroDocumento),
+    CONSTRAINT UQ_Medico_Matricula UNIQUE (Matricula)
 );
 
 GO
+
+CREATE TABLE MedicoEspecialidad (
+    IdMedico INT NOT NULL,
+    IdEspecialidad INT NOT NULL,
+    CONSTRAINT PK_MedicoEspecialidad PRIMARY KEY (IdMedico, IdEspecialidad),
+    CONSTRAINT FK_ME_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
+    CONSTRAINT FK_ME_Especialidad FOREIGN KEY(IdEspecialidad) REFERENCES Especialidad(IdEspecialidad)
+);
+
+GO
+
 
 CREATE TABLE Paciente (
     IdPaciente INT PRIMARY KEY IDENTITY(1,1),
@@ -155,7 +176,8 @@ CREATE TABLE Paciente (
     CONSTRAINT FK_Paciente_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
     CONSTRAINT FK_Paciente_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
     CONSTRAINT CHK_Paciente_Estado CHECK (Estado IN ('A','I')),
-    CONSTRAINT CHK_Paciente_Genero CHECK (Genero IN ('M','F','O','N'))
+    CONSTRAINT CHK_Paciente_Genero CHECK (Genero IN ('M','F','O','N')),
+    CONSTRAINT UQ_Paciente_NumeroDocumento UNIQUE (NumeroDocumento)
 );
 
 GO
@@ -197,26 +219,11 @@ CREATE TABLE HorarioSemanalMedico (
     CONSTRAINT CHK_HorarioSemanal_Dia CHECK (DiaSemana BETWEEN 1 AND 7),
     CONSTRAINT CHK_HorarioSemanal_Rango CHECK (HoraInicio < HoraFin),
     CONSTRAINT CHK_HorarioSemanal_Estado CHECK (Estado IN ('A','I'))
-);
 
+);
 GO
 
-CREATE TABLE AgendaMedico (
-    IdAgendaMedico INT IDENTITY(1,1) PRIMARY KEY,
-    IdMedico INT NOT NULL,
-    Fecha DATE NOT NULL,
-    HoraInicio TIME NOT NULL,
-    HoraFin TIME NOT NULL,
-    Estado CHAR(1) NOT NULL DEFAULT 'L',   -- L=Libre, O=Ocupado, C=Cancelado, I=Inactivo
-    IdTurno INT NULL,
-    Observacion NVARCHAR(200) NULL,
-    CONSTRAINT FK_AgendaMedico_Medico
-        FOREIGN KEY (IdMedico) REFERENCES dbo.Medico (IdMedico),
-    CONSTRAINT FK_AgendaMedico_Turno
-        FOREIGN KEY (IdTurno) REFERENCES dbo.Turno (IdTurno),
-    CONSTRAINT CHK_AgendaMedico_Estado CHECK (Estado IN ('L','O','C','I')),
-    CONSTRAINT CHK_AgendaMedico_Rango CHECK (HoraInicio < HoraFin)
-);
+CREATE INDEX IX_Horario_Medico_Dia ON HorarioSemanalMedico(IdMedico, DiaSemana, HoraInicio);
 
 GO
 
@@ -249,19 +256,13 @@ CREATE TABLE PacienteCoberturaHistorial (
     FechaInicio DATE NOT NULL DEFAULT GETDATE(),
     FechaFin DATE NULL,
     MotivoCambio NVARCHAR(200) NULL,
-    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = histórico cerrado
+    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = histï¿½rico cerrado
 
     CONSTRAINT FK_PacienteCoberturaHistorial_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
     CONSTRAINT FK_PacienteCoberturaHistorial_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
     CONSTRAINT FK_PacienteCoberturaHistorial_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
     CONSTRAINT CHK_PacienteCoberturaHistorial_Estado CHECK (Estado IN ('A','I'))
 );
-
-GO
-
-ALTER TABLE Paciente
-ADD CONSTRAINT FK_Paciente_Cobertura_Actual FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
-    CONSTRAINT FK_Paciente_Plan_Actual FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan);
 
 GO
 
@@ -292,10 +293,3 @@ CREATE TABLE PlanPorcentajeHistorial (
     CONSTRAINT CHK_PlanPorcentajeHistorial_Estado CHECK (Estado IN ('A','I'))
 );
 GO
-
-ALTER TABLE Medico
-ADD IdEspecialidad INT NULL,
-    CONSTRAINT FK_Medico_Especialidad FOREIGN KEY(IdEspecialidad)
-        REFERENCES Especialidad(IdEspecialidad);
-
- 

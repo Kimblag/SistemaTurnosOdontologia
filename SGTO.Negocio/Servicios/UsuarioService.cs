@@ -56,7 +56,7 @@ namespace SGTO.Negocio.Servicios
                 {
                     datos.IniciarTransaccion();
 
-                    var rol = new Rol { IdRol = nuevoUsuario.IdRol };
+                    Rol rol = new Rol { IdRol = nuevoUsuario.IdRol };
 
                     Usuario entidadUsuario = UsuarioMapper.MapearAEntidadDesdeCrear(nuevoUsuario, rol);
                     entidadUsuario.PasswordHash = PasswordHasher.Hash(nuevoUsuario.Password);
@@ -80,10 +80,15 @@ namespace SGTO.Negocio.Servicios
                         Medico entidadMedico = MedicoMapper.MapearDesdeCrearDto(nuevoMedico, idUsuario);
                         int idMedico = _repositorioMedico.Crear(entidadMedico, datos);
 
+                        foreach (int idEsp in nuevoMedico.IdEspecialidades)
+                        {
+                            _repositorioMedico.CrearEspecialidadMedico(idMedico, idEsp, datos);
+                        }
 
-                        var horarios = new List<HorarioSemanalMedico>();
 
-                        foreach (var dto in nuevoMedico.HorariosSemanales)
+                        List<HorarioSemanalMedico> horarios = new List<HorarioSemanalMedico>();
+
+                        foreach (HorarioSemanalDto dto in nuevoMedico.HorariosSemanales)
                         {
                             horarios.Add(new HorarioSemanalMedico
                             {
@@ -98,7 +103,6 @@ namespace SGTO.Negocio.Servicios
                         ValidarHorariosDentroDelRangoClinica(horarios);
 
                         _repositorioHorarioSemanal.Crear(horarios, datos);
-                        _repositorioHorarioSemanal.GenerarAgendaParaMedico(idMedico, datos);
 
                     }
 
@@ -121,7 +125,7 @@ namespace SGTO.Negocio.Servicios
 
         public void Editar(UsuarioEdicionDto usuarioDto, MedicoEdicionDto medicoDto = null)
         {
-            var usuarioActual = _repositorioUsuario.ObtenerPorId(usuarioDto.IdUsuario);
+            Usuario usuarioActual = _repositorioUsuario.ObtenerPorId(usuarioDto.IdUsuario);
             if (usuarioActual == null)
                 throw new ExcepcionReglaNegocio("El usuario no existe.");
 
@@ -137,63 +141,77 @@ namespace SGTO.Negocio.Servicios
                 {
                     datos.IniciarTransaccion();
 
-                    var rol = new Rol { IdRol = usuarioDto.IdRol };
+                    Rol rol = new Rol { IdRol = usuarioDto.IdRol };
 
                     Usuario usuarioEditado = UsuarioMapper.MapearAEntidadDesdeEditar(usuarioDto, rol);
+
                     if (!string.IsNullOrWhiteSpace(usuarioDto.Password))
                         usuarioEditado.PasswordHash = PasswordHasher.Hash(usuarioDto.Password);
+
                     usuarioEditado.FechaModificacion = DateTime.Now;
 
                     _repositorioUsuario.Editar(usuarioEditado, datos);
 
-                    if (medicoDto != null)
+                    if (medicoDto == null)
                     {
-                        var medicoActual = _repositorioMedico.ObtenerPorUsuarioId(usuarioDto.IdUsuario);
-                        if (medicoActual == null)
-                            throw new ExcepcionReglaNegocio("El médico asociado no existe.");
+                        datos.ConfirmarTransaccion();
+                        return;
+                    }
 
-                        if (_repositorioMedico.ExistePorMatriculaEnOtro(medicoDto.Matricula, usuarioDto.IdUsuario))
-                            throw new ExcepcionReglaNegocio($"Ya existe un médico con la matrícula '{medicoDto.Matricula}'.");
+                    Medico medicoActual = _repositorioMedico.ObtenerPorUsuarioId(usuarioDto.IdUsuario);
+                    if (medicoActual == null)
+                        throw new ExcepcionReglaNegocio("El médico asociado no existe.");
 
-                        if (_repositorioMedico.ExistePorDocumentoEnOtro(medicoDto.NumeroDocumento, usuarioDto.IdUsuario))
-                            throw new ExcepcionReglaNegocio($"Ya existe un médico con el DNI '{medicoDto.NumeroDocumento}'.");
+                    if (_repositorioMedico.ExistePorMatriculaEnOtro(medicoDto.Matricula, usuarioDto.IdUsuario))
+                        throw new ExcepcionReglaNegocio($"Ya existe un médico con la matrícula '{medicoDto.Matricula}'.");
 
-                        Medico medicoEditado = MedicoMapper.MapearDesdeEdicionDto(medicoDto);
-                        _repositorioMedico.Editar(medicoEditado, datos);
+                    if (_repositorioMedico.ExistePorDocumentoEnOtro(medicoDto.NumeroDocumento, usuarioDto.IdUsuario))
+                        throw new ExcepcionReglaNegocio($"Ya existe un médico con el DNI '{medicoDto.NumeroDocumento}'.");
 
-                        if (medicoDto.HorariosSemanales != null && medicoDto.HorariosSemanales.Count > 0)
+
+                    if (medicoDto.IdEspecialidades == null || medicoDto.IdEspecialidades.Count == 0)
+                        throw new ExcepcionReglaNegocio("El médico debe tener al menos una especialidad.");
+
+
+                    Medico medicoEditado = MedicoMapper.MapearDesdeEdicionDto(medicoDto);
+                    medicoEditado.Usuario = new Usuario { IdUsuario = usuarioDto.IdUsuario };
+                    medicoEditado.FechaModificacion = DateTime.Now;
+
+                    _repositorioMedico.Editar(medicoEditado, datos);
+
+
+                    _repositorioMedico.EliminarEspecialidadesDeMedico(medicoActual.IdMedico, datos);
+
+                    foreach (int idEsp in medicoDto.IdEspecialidades)
+                        _repositorioMedico.CrearEspecialidadMedico(medicoActual.IdMedico, idEsp, datos);
+
+
+                    if (medicoDto.HorariosSemanales != null && medicoDto.HorariosSemanales.Count > 0)
+                    {
+                        List<HorarioSemanalMedico> horarios = new List<HorarioSemanalMedico>();
+
+                        foreach (HorarioSemanalDto dto in medicoDto.HorariosSemanales)
                         {
-                            var horarios = new List<HorarioSemanalMedico>();
-
-                            foreach (var dto in medicoDto.HorariosSemanales)
+                            horarios.Add(new HorarioSemanalMedico
                             {
-                                horarios.Add(new HorarioSemanalMedico
-                                {
-                                    Medico = new Medico { IdMedico = medicoActual.IdMedico },
-                                    DiaSemana = dto.DiaSemana,
-                                    HoraInicio = dto.HoraInicio,
-                                    HoraFin = dto.HoraFin,
-                                    Estado = EstadoEntidad.Activo
-                                });
-                            }
-
-                            ValidarHorariosDentroDelRangoClinica(horarios);
-
-                            _repositorioHorarioSemanal.EliminarPorMedico(medicoActual.IdMedico, datos);
-                            _repositorioHorarioSemanal.Crear(horarios, datos);
-                            // actualizar primero lso turnos obsoletos
-                            _repositorioHorarioSemanal.ActualizarAgendaPorCambioDeHorario(medicoActual.IdMedico, datos);
-                            // generar los nuevos
-                            _repositorioHorarioSemanal.GenerarAgendaParaMedico(medicoActual.IdMedico, datos);
+                                Medico = new Medico { IdMedico = medicoActual.IdMedico },
+                                DiaSemana = dto.DiaSemana,
+                                HoraInicio = dto.HoraInicio,
+                                HoraFin = dto.HoraFin,
+                                Estado = EstadoEntidad.Activo
+                            });
                         }
 
+                        ValidarHorariosDentroDelRangoClinica(horarios);
+
+                        _repositorioHorarioSemanal.EliminarPorMedico(medicoActual.IdMedico, datos);
+                        _repositorioHorarioSemanal.Crear(horarios, datos);
                     }
 
                     datos.ConfirmarTransaccion();
                 }
-                catch (ExcepcionReglaNegocio ex)
+                catch (ExcepcionReglaNegocio)
                 {
-                    Debug.WriteLine("Error: " + ex.Message);
                     datos.RollbackTransaccion();
                     throw;
                 }
@@ -205,6 +223,7 @@ namespace SGTO.Negocio.Servicios
                 }
             }
         }
+
 
 
         public UsuarioDetalleDto ObtenerDetalle(int idUsuario)
@@ -235,10 +254,10 @@ namespace SGTO.Negocio.Servicios
 
         private void ValidarHorariosDentroDelRangoClinica(List<HorarioSemanalMedico> horarios)
         {
-            var repositorioParametro = new ParametroSistemaRepositorio();
+            ParametroSistemaRepositorio repositorioParametro = new ParametroSistemaRepositorio();
             var (horaApertura, horaCierre) = repositorioParametro.ObtenerHorarioClinica();
 
-            foreach (var horario in horarios)
+            foreach (HorarioSemanalMedico horario in horarios)
             {
                 if (horario.HoraInicio < horaApertura || horario.HoraFin > horaCierre)
                 {

@@ -150,13 +150,22 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         protected global::System.Web.UI.WebControls.TextBox txtMatricula;
 
         /// <summary>
-        /// ddlEspecialidad control.
+        /// cblEspecialidades control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEspecialidad;
+        protected global::System.Web.UI.WebControls.CheckBoxList cblEspecialidades;
+
+        /// <summary>
+        /// updDisponibilidad control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel updDisponibilidad;
 
         /// <summary>
         /// lblHorarioClinica control.
@@ -168,193 +177,130 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         protected global::System.Web.UI.WebControls.Label lblHorarioClinica;
 
         /// <summary>
-        /// chkLunes control.
+        /// repLunes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkLunes;
+        protected global::System.Web.UI.WebControls.Repeater repLunes;
 
         /// <summary>
-        /// ddlHoraInicioLunes control.
+        /// btnAgregarLunes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioLunes;
+        protected global::System.Web.UI.WebControls.Button btnAgregarLunes;
 
         /// <summary>
-        /// ddlHoraFinLunes control.
+        /// repMartes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinLunes;
+        protected global::System.Web.UI.WebControls.Repeater repMartes;
 
         /// <summary>
-        /// chkMartes control.
+        /// btnAgregarMartes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkMartes;
+        protected global::System.Web.UI.WebControls.Button btnAgregarMartes;
 
         /// <summary>
-        /// ddlHoraInicioMartes control.
+        /// repMiercoles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioMartes;
+        protected global::System.Web.UI.WebControls.Repeater repMiercoles;
 
         /// <summary>
-        /// ddlHoraFinMartes control.
+        /// btnAgregarMiercoles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinMartes;
+        protected global::System.Web.UI.WebControls.Button btnAgregarMiercoles;
 
         /// <summary>
-        /// chkMiercoles control.
+        /// repJueves control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkMiercoles;
+        protected global::System.Web.UI.WebControls.Repeater repJueves;
 
         /// <summary>
-        /// ddlHoraInicioMiercoles control.
+        /// btnAgregarJueves control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioMiercoles;
+        protected global::System.Web.UI.WebControls.Button btnAgregarJueves;
 
         /// <summary>
-        /// ddlHoraFinMiercoles control.
+        /// repViernes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinMiercoles;
+        protected global::System.Web.UI.WebControls.Repeater repViernes;
 
         /// <summary>
-        /// chkJueves control.
+        /// btnAgregarViernes control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkJueves;
+        protected global::System.Web.UI.WebControls.Button btnAgregarViernes;
 
         /// <summary>
-        /// ddlHoraInicioJueves control.
+        /// repSabado control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioJueves;
+        protected global::System.Web.UI.WebControls.Repeater repSabado;
 
         /// <summary>
-        /// ddlHoraFinJueves control.
+        /// btnAgregarSabado control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinJueves;
+        protected global::System.Web.UI.WebControls.Button btnAgregarSabado;
 
         /// <summary>
-        /// chkViernes control.
+        /// repDomingo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkViernes;
+        protected global::System.Web.UI.WebControls.Repeater repDomingo;
 
         /// <summary>
-        /// ddlHoraInicioViernes control.
+        /// btnAgregarDomingo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioViernes;
-
-        /// <summary>
-        /// ddlHoraFinViernes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinViernes;
-
-        /// <summary>
-        /// chkSabado control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkSabado;
-
-        /// <summary>
-        /// ddlHoraInicioSabado control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioSabado;
-
-        /// <summary>
-        /// ddlHoraFinSabado control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinSabado;
-
-        /// <summary>
-        /// chkDomingo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkDomingo;
-
-        /// <summary>
-        /// ddlHoraInicioDomingo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraInicioDomingo;
-
-        /// <summary>
-        /// ddlHoraFinDomingo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlHoraFinDomingo;
+        protected global::System.Web.UI.WebControls.Button btnAgregarDomingo;
 
         /// <summary>
         /// panelAcciones control.

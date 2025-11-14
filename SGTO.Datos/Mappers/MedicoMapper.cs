@@ -17,7 +17,6 @@ namespace SGTO.Datos.Mappers
                 Genero = EnumeracionMapperDatos.MapearGenero(lector, "Genero"),
                 FechaNacimiento = lector.GetDateTime(lector.GetOrdinal("FechaNacimiento")),
                 Telefono = new Dominio.ObjetosValor.Telefono(lector["Telefono"].ToString()),
-                Email = new Dominio.ObjetosValor.Email(lector["Email"].ToString()),
                 Matricula = lector["Matricula"].ToString(),
                 Estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado"),
             };

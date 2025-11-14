@@ -4,7 +4,6 @@ using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
 using System;
 using System.Collections.Generic;
-using System.Linq; 
 
 namespace SGTO.Negocio.Mappers
 {
@@ -12,9 +11,15 @@ namespace SGTO.Negocio.Mappers
     {
         public static Medico MapearDesdeCrearDto(MedicoCrearDto dto, int idUsuario)
         {
-            var especialidades = new List<Especialidad>();
-            if (dto.IdEspecialidad > 0)
-                especialidades.Add(new Especialidad { IdEspecialidad = dto.IdEspecialidad });
+            List<Especialidad> especialidades = new List<Especialidad>();
+            if (dto.IdEspecialidades.Count > 0)
+            {
+                foreach (int idEspecialidad in dto.IdEspecialidades)
+                {
+                    especialidades.Add(new Especialidad { IdEspecialidad = idEspecialidad });
+
+                }
+            }
 
             return new Medico
             {
@@ -24,7 +29,6 @@ namespace SGTO.Negocio.Mappers
                 FechaNacimiento = dto.FechaNacimiento,
                 Genero = EnumeracionMapperNegocio.MapearGenero(dto.Genero),
                 Telefono = new Telefono(dto.Telefono.Trim()),
-                Email = new Email(dto.Email.Trim()),
                 Matricula = dto.Matricula.Trim(),
                 Especialidades = especialidades,
                 Usuario = new Usuario { IdUsuario = idUsuario },
@@ -36,9 +40,14 @@ namespace SGTO.Negocio.Mappers
 
         public static Medico MapearDesdeEdicionDto(MedicoEdicionDto dto)
         {
-            var especialidades = new List<Especialidad>();
-            if (dto.IdEspecialidad > 0)
-                especialidades.Add(new Especialidad { IdEspecialidad = dto.IdEspecialidad });
+            List<Especialidad> especialidades = new List<Especialidad>();
+            if (dto.IdEspecialidades.Count > 0)
+            {
+                foreach (int idEspecialidad in dto.IdEspecialidades)
+                {
+                    especialidades.Add(new Especialidad { IdEspecialidad = idEspecialidad });
+                }
+            }
 
             return new Medico
             {
@@ -49,7 +58,6 @@ namespace SGTO.Negocio.Mappers
                 FechaNacimiento = dto.FechaNacimiento,
                 Genero = EnumeracionMapperNegocio.MapearGenero(dto.Genero),
                 Telefono = new Telefono(dto.Telefono.Trim()),
-                Email = new Email(dto.Email.Trim()),
                 Matricula = dto.Matricula.Trim(),
                 Especialidades = especialidades,
                 Usuario = new Usuario { IdUsuario = dto.IdUsuario },
@@ -61,6 +69,15 @@ namespace SGTO.Negocio.Mappers
 
         public static MedicoDetalleDto MapearADetalleDto(Medico medico)
         {
+
+            List<int> idEspecialidades = new List<int>();
+            if (medico.Especialidades.Count > 0)
+            {
+                foreach (Especialidad especialidad in medico.Especialidades)
+                {
+                    idEspecialidades.Add(especialidad.IdEspecialidad);
+                }
+            }
             return new MedicoDetalleDto
             {
                 IdMedico = medico.IdMedico,
@@ -68,20 +85,20 @@ namespace SGTO.Negocio.Mappers
                 FechaNacimiento = medico.FechaNacimiento,
                 Genero = medico.Genero.ToString(),
                 Telefono = medico.Telefono.Numero,
-                Email = medico.Email.Valor,
                 Matricula = medico.Matricula,
-                IdEspecialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
-                    ? medico.Especialidades[0].IdEspecialidad
-                    : 0,
-                Especialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
-                    ? medico.Especialidades[0].Nombre
-                    : null,
+                IdEspecialidades = idEspecialidades,
                 Estado = medico.Estado.ToString()
             };
         }
 
         public static MedicoEdicionDto MapearAEdicionDto(Medico medico)
         {
+            List<int> idEspecialidades = new List<int>();
+
+            foreach (Especialidad especialidad in medico.Especialidades)
+            {
+                idEspecialidades.Add(especialidad.IdEspecialidad);
+            }
             return new MedicoEdicionDto
             {
                 IdUsuario = medico.Usuario.IdUsuario,
@@ -90,11 +107,8 @@ namespace SGTO.Negocio.Mappers
                 FechaNacimiento = medico.FechaNacimiento,
                 Genero = medico.Genero.ToString(),
                 Telefono = medico.Telefono.Numero,
-                Email = medico.Email.Valor,
                 Matricula = medico.Matricula,
-                IdEspecialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
-                    ? medico.Especialidades[0].IdEspecialidad
-                    : 0,
+                IdEspecialidades = idEspecialidades,
                 Estado = medico.Estado.ToString()
             };
         }
@@ -104,6 +118,14 @@ namespace SGTO.Negocio.Mappers
             if (entidad == null)
                 return null;
 
+            List<string> nombresEspecialidades = new List<string>();
+
+            if (entidad.Especialidades != null)
+            {
+                foreach (var esp in entidad.Especialidades)
+                    nombresEspecialidades.Add(esp.Nombre);
+            }
+
             string nombreCompleto = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(entidad.Apellido) || !string.IsNullOrWhiteSpace(entidad.Nombre))
@@ -111,18 +133,15 @@ namespace SGTO.Negocio.Mappers
                 nombreCompleto = $"{entidad.Apellido}, {entidad.Nombre}".Trim(',', ' ');
             }
 
-            var dto = new MedicoListadoDto
+            MedicoListadoDto dto = new MedicoListadoDto
             {
                 IdMedico = entidad.IdMedico,
                 NombreCompleto = nombreCompleto,
                 Dni = entidad.Dni != null ? entidad.Dni.Numero : string.Empty,
                 Matricula = entidad.Matricula,
                 Telefono = entidad.Telefono != null ? entidad.Telefono.Numero : string.Empty,
-                Email = entidad.Email != null ? entidad.Email.Valor : string.Empty,
                 Estado = entidad.Estado.ToString(),
-
-
-              
+                NombresEspecialidades = nombresEspecialidades
             };
 
             return dto;

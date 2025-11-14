@@ -98,74 +98,303 @@
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="ddlEspecialidad" class="form-label">Especialidad Principal</label>
-                    <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select" />
+                    <label class="form-label">Especialidades</label>
+
+                    <div class="form-control p-2" style="height: 150px; overflow-y: auto;">
+                        <asp:CheckBoxList
+                            ID="cblEspecialidades"
+                            runat="server"
+                            CssClass="cbl-especialidades"
+                            RepeatLayout="UnorderedList">
+                        </asp:CheckBoxList>
+                    </div>
                 </div>
+
             </div>
 
 
-            <div class="mt-4">
-    <label class="fw-semibold">Horarios de atención</label>
-    <p class="small text-muted">Seleccione los días y franjas horarias de atención del médico.</p>
-    <asp:Label ID="lblHorarioClinica" runat="server" CssClass="text-muted small d-block mb-2"></asp:Label>
+            <hr class="my-4" />
 
-    <div class="table-responsive mb-3">
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Día</th>
-                    <th>Atiende</th>
-                    <th>Desde</th>
-                    <th>Hasta</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Lunes</td>
-                    <td><asp:CheckBox ID="chkLunes" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioLunes" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinLunes" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Martes</td>
-                    <td><asp:CheckBox ID="chkMartes" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioMartes" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinMartes" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Miércoles</td>
-                    <td><asp:CheckBox ID="chkMiercoles" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioMiercoles" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinMiercoles" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Jueves</td>
-                    <td><asp:CheckBox ID="chkJueves" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioJueves" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinJueves" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Viernes</td>
-                    <td><asp:CheckBox ID="chkViernes" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioViernes" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinViernes" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Sábado</td>
-                    <td><asp:CheckBox ID="chkSabado" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioSabado" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinSabado" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-                <tr>
-                    <td>Domingo</td>
-                    <td><asp:CheckBox ID="chkDomingo" runat="server" /></td>
-                    <td><asp:DropDownList ID="ddlHoraInicioDomingo" runat="server" CssClass="form-select form-select-sm" /></td>
-                    <td><asp:DropDownList ID="ddlHoraFinDomingo" runat="server" CssClass="form-select form-select-sm" /></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+            <asp:UpdatePanel ID="updDisponibilidad" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+
+                    <h6 class="fw-semibold mb-3">Disponibilidad Semanal</h6>
+
+                    <p class="text-muted small mb-3">
+                        Seleccionar uno o varios rangos por día dentro del horario de la clínica:
+                    <strong>
+                        <asp:Label ID="lblHorarioClinica" runat="server"></asp:Label></strong>
+                    </p>
+
+
+
+                    <%-- LUNES --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Lunes</h6>
+
+                        <asp:Repeater ID="repLunes" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarLunes" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Lunes"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- MARTES --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Martes</h6>
+
+                        <asp:Repeater ID="repMartes" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarMartes" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Martes"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- MIÉRCOLES --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Miércoles</h6>
+
+                        <asp:Repeater ID="repMiercoles" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarMiercoles" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Miercoles"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- JUEVES --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Jueves</h6>
+
+                        <asp:Repeater ID="repJueves" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarJueves" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Jueves"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- VIERNES --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Viernes</h6>
+
+                        <asp:Repeater ID="repViernes" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarViernes" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Viernes"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- SÁBADO --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Sábado</h6>
+
+                        <asp:Repeater ID="repSabado" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarSabado" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Sabado"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+
+                    <%-- DOMINGO --%>
+                    <div class="mb-4">
+                        <h6 class="fw-semibold">Domingo</h6>
+
+                        <asp:Repeater ID="repDomingo" runat="server"
+                            OnItemDataBound="Rango_ItemDataBound"
+                            OnItemCommand="Rango_ItemCommand">
+
+                            <ItemTemplate>
+                                <div class="input-group input-group-sm mb-2">
+                                    <span class="input-group-text">De:</span>
+                                    <asp:DropDownList ID="ddlInicio" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <span class="input-group-text">a:</span>
+                                    <asp:DropDownList ID="ddlFin" runat="server"
+                                        CssClass="form-select"
+                                        AutoPostBack="true"
+                                        OnSelectedIndexChanged="Horario_SelectedIndexChanged" />
+
+                                    <asp:Button ID="btnEliminar" runat="server"
+                                        Text="X" CssClass="btn btn-danger"
+                                        CommandName="Eliminar"
+                                        CommandArgument="<%# Container.ItemIndex %>" />
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+
+                        <asp:Button ID="btnAgregarDomingo" runat="server"
+                            Text="Agregar rango"
+                            CssClass="btn btn-outline-primary btn-sm mt-2"
+                            CommandArgument="Domingo"
+                            OnClick="AgregarRango_Click" />
+                    </div>
+
+                </ContentTemplate>
+            </asp:UpdatePanel>
 
 
 

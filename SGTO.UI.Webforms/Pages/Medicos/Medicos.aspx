@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Médicos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
-    CodeBehind="Medicos.aspx.cs" 
+﻿<%@ Page Title="Médicos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
+    CodeBehind="Medicos.aspx.cs"
     Inherits="SGTO.UI.Webforms.Pages.Medicos.Medicos" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
@@ -26,7 +26,7 @@
                                 placeholder="Buscar por nombre, DNI o matrícula..." />
                         </div>
                     </div>
-                    
+
                     <%-- Selector del campo a filtrar --%>
                     <div class="col-auto">
                         <asp:DropDownList
@@ -36,7 +36,7 @@
                             Width="170"
                             AutoPostBack="true">
                             <asp:ListItem Text="Filtrar por..." Value="" />
-                            <asp:ListItem Text="Especialidad" Value="Especialidad" /> 
+                            <asp:ListItem Text="Especialidad" Value="Especialidad" />
                             <asp:ListItem Text="Estado" Value="Estado" />
                         </asp:DropDownList>
                     </div>
@@ -55,74 +55,55 @@
 
                 </div>
 
-                <%-- Columna derecha: botón nuevo médico  --%>
-                <div class="col-12 col-lg-3 text-lg-end">
-                    
-                  
-                    <asp:Button
-                        ID="btnNuevoMedico" 
-                        runat="server"
-                        Text="+ Nuevo Médico" 
-                        OnClick="btnNuevoMedico_Click" 
-                        CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0"
-                        Visible="true" /> 
-                        
-                </div>
             </div>
         </div>
 
 
         <%-- Tabla --%>
-        <div class="content-wrapper"> 
+        <div class="content-wrapper">
 
-            <asp:GridView ID="gvMedicos" runat="server" 
+            <asp:GridView ID="gvMedicos" runat="server"
                 AutoGenerateColumns="false"
                 OnRowDataBound="gvMedicos_RowDataBound"
                 OnPageIndexChanging="gvMedicos_PageIndexChanging"
-                OnRowCommand="gvMedicos_RowCommand" 
+                OnRowCommand="gvMedicos_RowCommand"
                 DataKeyNames="IdMedico"
                 CssClass="table gridview mb-0"
-                AllowPaging="True" PageSize="7"> 
+                AllowPaging="True" PageSize="7">
                 <Columns>
-                    
+
                     <asp:BoundField DataField="NombreCompleto" HeaderText="Médico" />
-                    
+
                     <asp:BoundField DataField="Dni" HeaderText="DNI" />
 
-                    <asp:BoundField DataField="Matricula" HeaderText="Matrícula" /> 
-                    
-                    <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
-                    
-                    <asp:BoundField DataField="Email" HeaderText="Email" />
+                    <asp:BoundField DataField="Matricula" HeaderText="Matrícula" />
 
-                    <asp:BoundField DataField="NombreEspecialidad" HeaderText="Especialidad" />
+                    <asp:BoundField DataField="Telefono" HeaderText="Teléfono" />
+
+                    <asp:TemplateField HeaderText="Especialidades">
+                        <ItemTemplate>
+                            <%# string.Join(", ", ((SGTO.Negocio.DTOs.Medicos.MedicoListadoDto)Container.DataItem).NombresEspecialidades) %>
+                        </ItemTemplate>
+                    </asp:TemplateField>
+
 
                     <%--columna estado--%>
                     <asp:TemplateField HeaderText="Estado">
                         <ItemTemplate>
-                            <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                            <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                 
+
                     <asp:TemplateField HeaderText="Acciones" Visible="true">
-                         <ItemTemplate>
-                        
-                            <asp:LinkButton ID="btnEditar"
-                                runat="server"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdMedico") %>'> 
-                                <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
-                           <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
+                        <ItemTemplate>
+
+
+                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
                                 <i class="bi bi-eye"></i>
                             </asp:LinkButton>
 
-                           <asp:LinkButton ID="btnEliminar" runat="server" CssClass="btn btn-outline-danger btn-sm me-1" CommandName="Eliminar" CommandArgument='<%# Eval("IdMedico") %>'> 
-                                <i class="bi bi-x"></i>
-                            </asp:LinkButton>
-                            
+
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

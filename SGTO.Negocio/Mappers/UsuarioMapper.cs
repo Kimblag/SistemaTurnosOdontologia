@@ -51,6 +51,14 @@ namespace SGTO.Negocio.Mappers
 
             if (medico != null)
             {
+                List<int> idEspecialidades = new List<int>();
+                if (medico.Especialidades.Count > 0)
+                {
+                    foreach (Especialidad especialidad in medico.Especialidades)
+                    {
+                        idEspecialidades.Add(especialidad.IdEspecialidad);
+                    }
+                }
                 dto.Medico = new MedicoDetalleDto
                 {
                     IdMedico = medico.IdMedico,
@@ -58,14 +66,8 @@ namespace SGTO.Negocio.Mappers
                     FechaNacimiento = medico.FechaNacimiento,
                     Genero = EnumeracionMapperNegocio.ObtenerChar(medico.Genero).ToString(),
                     Telefono = medico.Telefono.Numero,
-                    Email = medico.Email.Valor,
                     Matricula = medico.Matricula,
-                    IdEspecialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
-                        ? medico.Especialidades[0].IdEspecialidad
-                        : 0,
-                    Especialidad = medico.Especialidades != null && medico.Especialidades.Count > 0
-                        ? medico.Especialidades[0].Nombre
-                        : null,
+                    IdEspecialidades = idEspecialidades,
                     Estado = medico.Estado.ToString()
                 };
             }
@@ -107,7 +109,7 @@ namespace SGTO.Negocio.Mappers
         public static Usuario MapearAEntidadDesdeEditar(UsuarioEdicionDto dto, Rol rol)
         {
             var email = new Email(dto.Email);
-            var estado = dto.Estado == "Activo" ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
+            var estado = dto.Estado[0].ToString().ToUpper() == "A" ? EstadoEntidad.Activo : EstadoEntidad.Inactivo;
 
             return new Usuario
             {

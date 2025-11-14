@@ -71,12 +71,12 @@ namespace SGTO.Datos.Repositorios
         {
             string query = @"
                         INSERT INTO Medico 
-                            (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, 
-                                Matricula, IdUsuario, IdEspecialidad, Estado, FechaAlta, FechaModificacion)
+                            (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, 
+                                Matricula, IdUsuario, Estado, FechaAlta, FechaModificacion)
                         OUTPUT INSERTED.IdMedico
                         VALUES
-                            (@Nombre, @Apellido, @NumeroDocumento, @Genero, @FechaNacimiento, @Telefono, @Email, 
-                                @Matricula, @IdUsuario, @IdEspecialidad, @Estado, @FechaAlta, @FechaModificacion)";
+                            (@Nombre, @Apellido, @NumeroDocumento, @Genero, @FechaNacimiento, @Telefono, 
+                                @Matricula, @IdUsuario, @Estado, @FechaAlta, @FechaModificacion)";
 
             datos.LimpiarParametros();
             datos.DefinirConsulta(query);
@@ -86,13 +86,8 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Genero", nuevoMedico.Genero.ToString()[0]);
             datos.EstablecerParametros("@FechaNacimiento", nuevoMedico.FechaNacimiento);
             datos.EstablecerParametros("@Telefono", nuevoMedico.Telefono.Numero);
-            datos.EstablecerParametros("@Email", nuevoMedico.Email.Valor);
             datos.EstablecerParametros("@Matricula", nuevoMedico.Matricula);
             datos.EstablecerParametros("@IdUsuario", nuevoMedico.Usuario.IdUsuario);
-            datos.EstablecerParametros("@IdEspecialidad",
-                (nuevoMedico.Especialidades != null && nuevoMedico.Especialidades.Count > 0)
-                ? (object)nuevoMedico.Especialidades[0].IdEspecialidad
-                : DBNull.Value);
             datos.EstablecerParametros("@Estado", nuevoMedico.Estado.ToString()[0]);
             datos.EstablecerParametros("@FechaAlta", nuevoMedico.FechaAlta);
             datos.EstablecerParametros("@FechaModificacion", nuevoMedico.FechaModificacion);
@@ -109,16 +104,32 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+
+        public void CrearEspecialidadMedico(int idMedico, int idEspecialidad, ConexionDBFactory datos)
+        {
+            string query = @"
+                        INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad)
+                            VALUES (@IdMedico, @IdEspecialidad)";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@IdMedico", idMedico);
+            datos.EstablecerParametros("@IdEspecialidad", idEspecialidad);
+            datos.EjecutarAccion();
+        }
+
+
         public Medico ObtenerPorUsuarioId(int idUsuario)
         {
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 string query = @"
                                 SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
-                                        M.FechaNacimiento, M.Telefono, M.Email, M.Matricula, 
-                                        M.IdUsuario, M.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
+                                        M.FechaNacimiento, M.Telefono, M.Matricula, 
+                                        M.IdUsuario, ME.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
                                 FROM Medico M
-                                JOIN Especialidad E ON M.IdEspecialidad = E.IdEspecialidad
+                                JOIN MedicoEspecialidad ME ON ME.IdMedico = M.IdMedico
+                                JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
                                 WHERE M.IdUsuario = @IdUsuario";
 
                 datos.DefinirConsulta(query);
@@ -128,18 +139,25 @@ namespace SGTO.Datos.Repositorios
                 {
                     using (SqlDataReader lector = datos.EjecutarConsulta())
                     {
-                        if (lector.Read())
+                        Medico medico = null;
+                        while (lector.Read())
                         {
-                            var medico = MedicoMapper.MapearAEntidad(lector, idUsuario);
+                            if (medico == null)
+                            {
+                                medico = MedicoMapper.MapearAEntidad(lector, idUsuario);
+                                medico.Especialidades = new List<Especialidad>();
+                            }
 
                             if (!lector.IsDBNull(lector.GetOrdinal("IdEspecialidad")))
                             {
-                                int idEsp = lector.GetInt32(lector.GetOrdinal("IdEspecialidad"));
-                                string nombreEspecialidad = lector.GetString(lector.GetOrdinal("NombreEspecialidad"));
-                                medico.Especialidades.Add(new Especialidad { IdEspecialidad = idEsp, Nombre = nombreEspecialidad });
+                                medico.Especialidades.Add(new Especialidad
+                                {
+                                    IdEspecialidad = lector.GetInt32(lector.GetOrdinal("IdEspecialidad")),
+                                    Nombre = lector.GetString(lector.GetOrdinal("NombreEspecialidad"))
+                                });
                             }
-                            return medico;
                         }
+                        return medico;
                     }
                 }
                 catch (Exception ex)
@@ -161,9 +179,7 @@ namespace SGTO.Datos.Repositorios
                     Genero = @Genero,
                     FechaNacimiento = @FechaNacimiento,
                     Telefono = @Telefono,
-                    Email = @Email,
                     Matricula = @Matricula,
-                    IdEspecialidad = @IdEspecialidad,
                     Estado = @Estado,
                     FechaModificacion = @FechaModificacion
                 WHERE IdUsuario = @IdUsuario";
@@ -176,12 +192,7 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Genero", medico.Genero.ToString()[0]);
             datos.EstablecerParametros("@FechaNacimiento", medico.FechaNacimiento);
             datos.EstablecerParametros("@Telefono", medico.Telefono.Numero);
-            datos.EstablecerParametros("@Email", medico.Email.Valor);
             datos.EstablecerParametros("@Matricula", medico.Matricula);
-            datos.EstablecerParametros("@IdEspecialidad",
-                (medico.Especialidades != null && medico.Especialidades.Count > 0)
-                ? (object)medico.Especialidades[0].IdEspecialidad
-                : DBNull.Value);
             datos.EstablecerParametros("@Estado", medico.Estado.ToString()[0]);
             datos.EstablecerParametros("@FechaModificacion", medico.FechaModificacion);
             datos.EstablecerParametros("@IdUsuario", medico.Usuario.IdUsuario);
@@ -258,7 +269,7 @@ namespace SGTO.Datos.Repositorios
             {
                 string query = @"
                             SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
-                                    M.FechaNacimiento, M.Telefono, M.Email, M.Matricula, 
+                                    M.FechaNacimiento, M.Telefono, M.Matricula, 
                                     M.IdUsuario, M.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
                             FROM Medico M
                             JOIN Especialidad E ON M.IdEspecialidad = E.IdEspecialidad
@@ -297,47 +308,73 @@ namespace SGTO.Datos.Repositorios
         public List<Medico> Listar(string estado = null)
         {
             List<Medico> medicos = new List<Medico>();
+            Dictionary<int, Medico> mapa = new Dictionary<int, Medico>();
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
-                string query = @"SELECT M.IdMedico,
-                                        M.Nombre,
-                                        M.Apellido,
-                                        M.NumeroDocumento,
-                                        M.Genero,
-                                        M.FechaNacimiento,
-                                        M.Telefono,
-                                        M.Email,
-                                        M.Matricula,
-                                        M.Estado
-                                 FROM Medico M
-                                 {{WHERE}}
-                                 ORDER BY M.Apellido, M.Nombre";
+                string query = @"
+                            SELECT 
+                                M.IdMedico,
+                                M.Nombre,
+                                M.Apellido,
+                                M.NumeroDocumento,
+                                M.Genero,
+                                M.FechaNacimiento,
+                                M.Telefono,
+                                M.Matricula,
+                                M.Estado,
+                                ME.IdEspecialidad,
+                                E.Nombre AS NombreEspecialidad
+                            FROM Medico M
+                            LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
+                            LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
+                            {{WHERE}}
+                            ORDER BY M.Apellido, M.Nombre;
+                        ";
 
                 query = estado != null
-                    ? query.Replace("{{WHERE}}", $" WHERE M.Estado = '{estado[0]}'")
+                    ? query.Replace("{{WHERE}}", $"WHERE M.Estado = '{estado[0]}'")
                     : query.Replace("{{WHERE}}", "");
 
                 datos.DefinirConsulta(query);
 
-                try
+                using (SqlDataReader lector = datos.EjecutarConsulta())
                 {
-                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    while (lector.Read())
                     {
-                        while (lector.Read())
+                        int idMedico = lector.GetInt32(lector.GetOrdinal("IdMedico"));
+
+                        if (!mapa.ContainsKey(idMedico))
                         {
                             Medico medico = MedicoMapper.MapearAEntidad(lector);
+                            medico.Especialidades = new List<Especialidad>();
+                            mapa.Add(idMedico, medico);
+                        }
 
-                            medicos.Add(medico);
+                        if (!lector.IsDBNull(lector.GetOrdinal("IdEspecialidad")))
+                        {
+                            mapa[idMedico].Especialidades.Add(new Especialidad
+                            {
+                                IdEspecialidad = lector.GetInt32(lector.GetOrdinal("IdEspecialidad")),
+                                Nombre = lector.GetString(lector.GetOrdinal("NombreEspecialidad"))
+                            });
                         }
                     }
-                    return medicos;
-                }
-                catch (Exception)
-                {
-                    throw;
                 }
             }
+
+            return new List<Medico>(mapa.Values);
+        }
+
+
+        public void EliminarEspecialidadesDeMedico(int idMedico, ConexionDBFactory datos)
+        {
+            string query = "DELETE FROM MedicoEspecialidad WHERE IdMedico = @IdMedico";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@IdMedico", idMedico);
+            datos.EjecutarAccion();
         }
 
     }

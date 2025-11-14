@@ -5,7 +5,6 @@ using SGTO.Dominio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace SGTO.Datos.Repositorios
 {
@@ -169,15 +168,15 @@ namespace SGTO.Datos.Repositorios
 
             datos.LimpiarParametros();
             datos.DefinirConsulta(query);
-            datos.EstablecerParametros("@Estado", estado);                  
-            datos.EstablecerParametros("@IdEspecialidad", idEspecialidad); 
+            datos.EstablecerParametros("@Estado", estado);
+            datos.EstablecerParametros("@IdEspecialidad", idEspecialidad);
             datos.EjecutarAccion();
         }
 
         public bool EstaDadoDeBaja(int idEspecialidad)
         {
             bool estaDadoDeBaja = false;
-            
+
             string query = @"SELECT Estado
                                 FROM Especialidad
                             WHERE IdEspecialidad = @IdEspecialidad";
@@ -190,9 +189,9 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("IdEspecialidad", idEspecialidad);
                     using (SqlDataReader lector = datos.EjecutarConsulta())
                     {
-                        if(lector.Read())
+                        if (lector.Read())
                         {
-                            if(!lector.IsDBNull(lector.GetOrdinal("Estado")))
+                            if (!lector.IsDBNull(lector.GetOrdinal("Estado")))
                             {
                                 EstadoEntidad estado = EnumeracionMapperDatos.MapearEstadoEntidad(lector, "Estado");
                                 estaDadoDeBaja = estado == EstadoEntidad.Inactivo;
@@ -205,9 +204,10 @@ namespace SGTO.Datos.Repositorios
                 {
 
                     throw;
-                }   
+                }
             }
         }
+
 
     }
 }

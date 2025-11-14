@@ -5,6 +5,7 @@ using SGTO.Negocio.DTOs.Usuarios;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Modelos.Medicos;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,41 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         private readonly UsuarioService _servicioUsuario = new UsuarioService();
         private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
         private readonly HorarioSemanalService _servicioHorarioSemanal = new HorarioSemanalService();
+
+
+        private Dictionary<string, List<HorarioSemanalItemUi>> HorariosDias
+        {
+            get
+            {
+                if (ViewState["HorariosDias"] == null)
+                {
+                    ViewState["HorariosDias"] = new Dictionary<string, List<HorarioSemanalItemUi>>()
+                    {
+                        { "Lunes", new List<HorarioSemanalItemUi>() },
+                        { "Martes", new List<HorarioSemanalItemUi>() },
+                        { "Miercoles", new List<HorarioSemanalItemUi>() },
+                        { "Jueves", new List<HorarioSemanalItemUi>() },
+                        { "Viernes", new List<HorarioSemanalItemUi>() },
+                        { "Sabado", new List<HorarioSemanalItemUi>() },
+                        { "Domingo", new List<HorarioSemanalItemUi>() }
+                    };
+                }
+                return (Dictionary<string, List<HorarioSemanalItemUi>>)ViewState["HorariosDias"];
+            }
+            set => ViewState["HorariosDias"] = value;
+        }
+
+        private readonly Dictionary<string, string> _mapaDias = new Dictionary<string, string>()
+        {
+            { "repLunes", "Lunes" },
+            { "repMartes", "Martes" },
+            { "repMiercoles", "Miercoles" },
+            { "repJueves",  "Jueves" },
+            { "repViernes", "Viernes" },
+            { "repSabado", "Sabado" },
+            { "repDomingo", "Domingo" }
+        };
+
 
         private int IdUsuario
         {
@@ -52,21 +88,30 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                 if (IdUsuario == 0)
                 {
                     MensajeUiHelper.SetearYMostrar(this.Page,
-                       "Usuario no encontrado",
-                       "No se pudo identificar el usuario a editar.",
-                       "Resultado",
-                       VirtualPathUtility.ToAbsolute("~/Pages/Configuracion/Usuarios/Index.aspx"),
-                       "abrirModalResultado");
+                        "Usuario no encontrado",
+                        "No se pudo identificar el usuario a editar.",
+                        "Resultado",
+                        VirtualPathUtility.ToAbsolute("~/Pages/Configuracion/Usuarios/Index.aspx"),
+                        "abrirModalResultado");
                     return;
                 }
 
                 CargarHorarioClinica();
-
                 CargarEspecialidades();
-
+                BindearTodosLosDias();
                 CargarUsuario();
-
             }
+        }
+
+        private void BindearTodosLosDias()
+        {
+            repLunes.DataSource = HorariosDias["Lunes"]; repLunes.DataBind();
+            repMartes.DataSource = HorariosDias["Martes"]; repMartes.DataBind();
+            repMiercoles.DataSource = HorariosDias["Miercoles"]; repMiercoles.DataBind();
+            repJueves.DataSource = HorariosDias["Jueves"]; repJueves.DataBind();
+            repViernes.DataSource = HorariosDias["Viernes"]; repViernes.DataBind();
+            repSabado.DataSource = HorariosDias["Sabado"]; repSabado.DataBind();
+            repDomingo.DataSource = HorariosDias["Domingo"]; repDomingo.DataBind();
         }
 
         private void CargarUsuario()
@@ -86,25 +131,41 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
                 if (dto.Medico != null)
                 {
-                    MedicoDetalleDto medico = dto.Medico;
                     panelCamposMedico.Visible = true;
+
+                    MedicoDetalleDto medico = dto.Medico;
+
                     txtDni.Text = medico.NumeroDocumento;
                     ddlGenero.SelectedValue = medico.Genero;
                     txtFechaNacimiento.Text = medico.FechaNacimiento.ToString("yyyy-MM-dd");
                     txtTelefono.Text = medico.Telefono;
                     txtMatricula.Text = medico.Matricula;
-                    ddlEspecialidad.SelectedValue = medico.IdEspecialidad > 0 ? medico.IdEspecialidad.ToString() : "";
 
-                    CargarHorariosMedico(dto.Medico.IdMedico);
+                    foreach (ListItem item in cblEspecialidades.Items)
+                    {
+                        foreach (int idEsp in medico.IdEspecialidades)
+                        {
+                            if (item.Value == idEsp.ToString())
+                            {
+                                item.Selected = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    CargarHorariosMedicoEnRepeater(medico.IdMedico);
+
+                    BindearTodosLosDias();
                 }
                 else
                 {
                     panelCamposMedico.Visible = false;
                 }
+
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error al cargar usuario: " + ex.Message);
+                Debug.WriteLine("Error: " + ex.Message);
                 MensajeUiHelper.SetearYMostrar(this.Page,
                     "Error al cargar",
                     "No se pudieron cargar los datos del usuario.",
@@ -114,21 +175,232 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             }
         }
 
+        private void CargarHorariosMedicoEnRepeater(int idMedico)
+        {
+            List<HorarioSemanalDto> horarios = _servicioHorarioSemanal.ObtenerPorMedico(idMedico);
+
+            foreach (HorarioSemanalDto h in horarios)
+            {
+                string dia = ObtenerNombreDia(h.DiaSemana);
+
+                HorariosDias[dia].Add(new HorarioSemanalItemUi(
+                    h.HoraInicio.ToString(@"hh\:mm"),
+                    h.HoraFin.ToString(@"hh\:mm")
+                ));
+            }
+        }
+
+        private string ObtenerNombreDia(int dia)
+        {
+            switch (dia)
+            {
+                case 1: return "Lunes";
+                case 2: return "Martes";
+                case 3: return "Miercoles";
+                case 4: return "Jueves";
+                case 5: return "Viernes";
+                case 6: return "Sabado";
+                case 7: return "Domingo";
+            }
+            return "Lunes";
+        }
+
         private void CargarEspecialidades()
         {
-            ddlEspecialidad.Items.Clear();
-            ddlEspecialidad.Items.Add(new ListItem("Seleccione una especialidad...", ""));
+            cblEspecialidades.Items.Clear();
+
             try
             {
-                List<EspecialidadDto> especialidades = _servicioEspecialidad.ObtenerTodasDto("activas");
+                List<EspecialidadDto> especialidades =
+                    _servicioEspecialidad.ObtenerTodasDto("activas");
+
                 foreach (EspecialidadDto esp in especialidades)
-                    ddlEspecialidad.Items.Add(new ListItem(esp.Nombre, esp.IdEspecialidad.ToString()));
+                    cblEspecialidades.Items.Add(new ListItem(esp.Nombre, esp.IdEspecialidad.ToString()));
+            }
+            catch
+            {
+                cblEspecialidades.Items.Add(new ListItem("Error al cargar especialidades", ""));
+            }
+        }
+
+
+        protected void btnGuardar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ValidarCamposFormulario();
+
+                UsuarioEdicionDto usuarioDto = new UsuarioEdicionDto
+                {
+                    IdUsuario = IdUsuario,
+                    Nombre = txtNombre.Text.Trim(),
+                    Apellido = txtApellido.Text.Trim(),
+                    Email = txtEmail.Text.Trim(),
+                    NombreUsuario = txtNombreUsuario.Text.Trim(),
+                    Password = txtPassword.Text,
+                    IdRol = int.Parse(ddlRol.SelectedValue),
+                    Estado = ddlEstado.SelectedValue
+                };
+
+                MedicoEdicionDto medicoDto = null;
+
+                if (ddlRol.SelectedValue == "3")
+                {
+                    medicoDto = new MedicoEdicionDto
+                    {
+                        IdUsuario = IdUsuario,
+                        Nombre = txtNombre.Text.Trim(),
+                        Apellido = txtApellido.Text.Trim(),
+                        NumeroDocumento = txtDni.Text.Trim(),
+                        Genero = ddlGenero.SelectedValue,
+                        FechaNacimiento = DateTime.Parse(txtFechaNacimiento.Text),
+                        Telefono = txtTelefono.Text.Trim(),
+                        Matricula = txtMatricula.Text.Trim(),
+                        IdEspecialidades = ObtenerEspecialidadesSeleccionadas(),
+                        Estado = ddlEstado.SelectedValue,
+                        HorariosSemanales = ObtenerHorariosDTO()
+                    };
+                }
+
+                _servicioUsuario.Editar(usuarioDto, medicoDto);
+
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Cambios guardados",
+                    "El usuario se actualizó correctamente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Configuracion/Usuarios/Index.aspx"),
+                    "abrirModalResultado");
+
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Dato inválido",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Operación no permitida",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error al cargar especialidades: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al actualizar el usuario. " + ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado");
             }
         }
+
+        private List<int> ObtenerEspecialidadesSeleccionadas()
+        {
+            List<int> lista = new List<int>();
+
+            foreach (ListItem item in cblEspecialidades.Items)
+                if (item.Selected)
+                    lista.Add(int.Parse(item.Value));
+
+            return lista;
+        }
+
+
+        private void CargarHorarioClinica()
+        {
+            try
+            {
+                var (horaApertura, horaCierre) = _servicioUsuario.ObtenerHorarioClinica();
+                lblHorarioClinica.Text = $"{horaApertura:hh\\:mm} a {horaCierre:hh\\:mm}";
+
+                List<string> horas = new List<string>();
+
+                for (TimeSpan h = horaApertura; h <= horaCierre; h = h.Add(TimeSpan.FromHours(1)))
+                    horas.Add(h.ToString(@"hh\:mm"));
+
+                ViewState["HorasClinica"] = horas;
+            }
+            catch
+            {
+                lblHorarioClinica.Text = "No disponible";
+                ViewState["HorasClinica"] = new List<string>();
+            }
+        }
+
+
+        private List<HorarioSemanalDto> ObtenerHorariosDTO()
+        {
+            var listaFinal = new List<HorarioSemanalDto>();
+            int diaContador = 1;
+
+            foreach (var kv in HorariosDias)
+            {
+                var rangosDelDia = new List<HorarioSemanalDto>();
+
+                foreach (var rangoUi in kv.Value)
+                {
+                    if (string.IsNullOrEmpty(rangoUi.Inicio) ||
+                        string.IsNullOrEmpty(rangoUi.Fin))
+                        throw new ArgumentException("Debe completar todos los rangos horarios para el día " + kv.Key + ".");
+
+                    TimeSpan ini, fin;
+
+                    if (!TimeSpan.TryParse(rangoUi.Inicio, out ini) ||
+                        !TimeSpan.TryParse(rangoUi.Fin, out fin))
+                        throw new ArgumentException("Formato de hora inválido para el día " + kv.Key + ".");
+
+                    if (ini >= fin)
+                        throw new ArgumentException("En el día "
+                            + kv.Key + ", la hora de inicio ("
+                            + ini.ToString(@"hh\:mm")
+                            + ") debe ser menor que la hora de fin ("
+                            + fin.ToString(@"hh\:mm") + ").");
+
+                    rangosDelDia.Add(new HorarioSemanalDto
+                    {
+                        DiaSemana = (byte)diaContador,
+                        HoraInicio = ini,
+                        HoraFin = fin,
+                        Estado = "A"
+                    });
+                }
+
+                if (rangosDelDia.Count > 1)
+                {
+                    if (HaySolapamiento(rangosDelDia))
+                        throw new ArgumentException("Existen rangos de horarios solapados para el día " + kv.Key + ".");
+                }
+
+                listaFinal.AddRange(rangosDelDia);
+                diaContador++;
+            }
+
+            return listaFinal;
+        }
+
+        private bool HaySolapamiento(List<HorarioSemanalDto> rangos)
+        {
+            rangos.Sort(CompararHorarios);
+
+            for (int i = 0; i < rangos.Count - 1; i++)
+                if (rangos[i].HoraFin > rangos[i + 1].HoraInicio)
+                    return true;
+
+            return false;
+        }
+
+        private int CompararHorarios(HorarioSemanalDto a, HorarioSemanalDto b)
+        {
+            return a.HoraInicio.CompareTo(b.HoraInicio);
+        }
+
 
         private void ValidarCamposFormulario()
         {
@@ -163,6 +435,128 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             }
         }
 
+
+        protected void AgregarRango_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string dia = btn.CommandArgument; // "Lunes", "Martes", etc.
+
+            if (!HorariosDias.ContainsKey(dia))
+                return;
+
+            HorariosDias[dia].Add(new HorarioSemanalItemUi("", ""));
+
+            string repeaterId = "rep" + dia;
+
+            Repeater repeater = (Repeater)updDisponibilidad.FindControl(repeaterId);
+
+            if (repeater != null)
+            {
+                repeater.DataSource = HorariosDias[dia];
+                repeater.DataBind();
+            }
+            else
+            {
+                BindearTodosLosDias();
+            }
+        }
+
+
+        protected void Rango_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName != "Eliminar")
+                return;
+
+            Repeater rep = (Repeater)source;
+
+            if (!_mapaDias.ContainsKey(rep.ID))
+                return;
+
+            string dia = _mapaDias[rep.ID];
+
+            int index;
+            if (!int.TryParse(e.CommandArgument.ToString(), out index))
+                return;
+
+            if (index >= 0 && index < HorariosDias[dia].Count)
+                HorariosDias[dia].RemoveAt(index);
+
+            rep.DataSource = HorariosDias[dia];
+            rep.DataBind();
+        }
+
+
+        protected void Rango_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType != ListItemType.Item &&
+                e.Item.ItemType != ListItemType.AlternatingItem)
+                return;
+
+            HorarioSemanalItemUi rango = (HorarioSemanalItemUi)e.Item.DataItem;
+
+            DropDownList ddlInicio = (DropDownList)e.Item.FindControl("ddlInicio");
+            DropDownList ddlFin = (DropDownList)e.Item.FindControl("ddlFin");
+
+            List<string> horas = ViewState["HorasClinica"] as List<string>;
+            if (horas == null)
+                horas = new List<string>();
+
+            ddlInicio.Items.Clear();
+            ddlFin.Items.Clear();
+
+            ddlInicio.Items.Add(new ListItem("Seleccione...", ""));
+            ddlFin.Items.Add(new ListItem("Seleccione...", ""));
+
+            foreach (string h in horas)
+            {
+                ddlInicio.Items.Add(new ListItem(h, h));
+                ddlFin.Items.Add(new ListItem(h, h));
+            }
+
+            if (!string.IsNullOrEmpty(rango.Inicio) &&
+                ddlInicio.Items.FindByValue(rango.Inicio) != null)
+            {
+                ddlInicio.SelectedValue = rango.Inicio;
+            }
+
+            if (!string.IsNullOrEmpty(rango.Fin) &&
+                ddlFin.Items.FindByValue(rango.Fin) != null)
+            {
+                ddlFin.SelectedValue = rango.Fin;
+            }
+
+            ddlInicio.AutoPostBack = true;
+            ddlFin.AutoPostBack = true;
+        }
+
+
+        protected void Horario_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddl = (DropDownList)sender;
+            RepeaterItem item = (RepeaterItem)ddl.NamingContainer;
+            Repeater rep = (Repeater)item.Parent;
+
+            if (!_mapaDias.ContainsKey(rep.ID))
+                return;
+
+            string dia = _mapaDias[rep.ID];
+            int index = item.ItemIndex;
+
+            bool esInicio = ddl.ID == "ddlInicio";
+            string valor = ddl.SelectedValue;
+
+            if (!HorariosDias.ContainsKey(dia))
+                return;
+
+            if (index < 0 || index >= HorariosDias[dia].Count)
+                return;
+
+            if (esInicio)
+                HorariosDias[dia][index].Inicio = valor;
+            else
+                HorariosDias[dia][index].Fin = valor;
+        }
+
         protected void btnVolver_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Pages/Configuracion/Usuarios/Index.aspx", false);
@@ -171,247 +565,6 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
             Response.Redirect("~/Pages/Configuracion/Usuarios/Index.aspx", false);
-        }
-
-        protected void btnGuardar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ValidarCamposFormulario();
-
-                UsuarioEdicionDto usuarioDto = new UsuarioEdicionDto
-                {
-                    IdUsuario = IdUsuario,
-                    Nombre = txtNombre.Text.Trim(),
-                    Apellido = txtApellido.Text.Trim(),
-                    Email = txtEmail.Text.Trim(),
-                    NombreUsuario = txtNombreUsuario.Text.Trim(),
-                    Password = txtPassword.Text,
-                    IdRol = int.Parse(ddlRol.SelectedValue),
-                    Estado = ddlEstado.SelectedValue == "A" ? "Activo" : "Inactivo"
-                };
-
-                MedicoEdicionDto medicoDto = null;
-
-                if (ddlRol.SelectedValue == "3") // rol médico
-                {
-                    medicoDto = new MedicoEdicionDto
-                    {
-                        IdUsuario = IdUsuario,
-                        Nombre = txtNombre.Text.Trim(),
-                        Apellido = txtApellido.Text.Trim(),
-                        NumeroDocumento = txtDni.Text.Trim(),
-                        Genero = ddlGenero.SelectedValue,
-                        FechaNacimiento = DateTime.Parse(txtFechaNacimiento.Text),
-                        Telefono = txtTelefono.Text.Trim(),
-                        Email = txtEmail.Text.Trim(),
-                        Matricula = txtMatricula.Text.Trim(),
-                        IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
-                        Estado = ddlEstado.SelectedValue
-                    };
-
-                    medicoDto.HorariosSemanales = ObtenerHorariosDesdeFormulario();
-
-                }
-
-                _servicioUsuario.Editar(usuarioDto, medicoDto);
-
-                MensajeUiHelper.SetearYMostrar(this.Page,
-                    "Cambios guardados",
-                    "El usuario se actualizó correctamente.",
-                    "Resultado",
-                    VirtualPathUtility.ToAbsolute("~/Pages/Configuracion/Usuarios/Index.aspx"),
-                    "abrirModalResultado");
-            }
-            catch (ArgumentException ex)
-            {
-                MensajeUiHelper.SetearYMostrar(this.Page,
-                    "Dato inválido",
-                    ex.Message,
-                    "Resultado",
-                    null,
-                    "abrirModalResultado");
-            }
-            catch (ExcepcionReglaNegocio ex)
-            {
-                MensajeUiHelper.SetearYMostrar(this.Page,
-                    "Operación no permitida",
-                    ex.Message,
-                    "Resultado",
-                    null,
-                    "abrirModalResultado");
-            }
-            catch (Exception ex)
-            {
-                MensajeUiHelper.SetearYMostrar(this.Page,
-                    "Error inesperado",
-                    "Ocurrió un error al actualizar el usuario. " + ex.Message,
-                    "Resultado",
-                    null,
-                    "abrirModalResultado");
-            }
-        }
-
-
-        private void CargarHorarioClinica()
-        {
-            try
-            {
-                var (horaApertura, horaCierre) = _servicioUsuario.ObtenerHorarioClinica();
-                lblHorarioClinica.Text = $"{horaApertura:hh\\:mm} a {horaCierre:hh\\:mm}";
-
-                List<string> horas = new List<string>();
-                for (TimeSpan h = horaApertura; h <= horaCierre; h = h.Add(TimeSpan.FromHours(1)))
-                {
-                    horas.Add(h.ToString(@"hh\:mm"));
-                }
-
-                DropDownList[] listas = new[]
-                {
-                    ddlHoraInicioLunes, ddlHoraFinLunes,
-                    ddlHoraInicioMartes, ddlHoraFinMartes,
-                    ddlHoraInicioMiercoles, ddlHoraFinMiercoles,
-                    ddlHoraInicioJueves, ddlHoraFinJueves,
-                    ddlHoraInicioViernes, ddlHoraFinViernes,
-                    ddlHoraInicioSabado, ddlHoraFinSabado,
-                    ddlHoraInicioDomingo, ddlHoraFinDomingo
-                };
-
-                foreach (DropDownList ddl in listas)
-                {
-                    ddl.Items.Clear();
-                    ddl.Items.Add(new ListItem("Seleccione...", ""));
-                    foreach (string hora in horas)
-                        ddl.Items.Add(new ListItem(hora, hora));
-                }
-            }
-            catch
-            {
-                lblHorarioClinica.Text = "No disponible";
-            }
-        }
-
-        private void CargarHorariosMedico(int idMedico)
-        {
-            try
-            {
-                List<HorarioSemanalDto> horarios = _servicioHorarioSemanal.ObtenerPorMedico(idMedico);
-
-                foreach (HorarioSemanalDto h in horarios)
-                {
-                    Debug.WriteLine($"Dia {h.DiaSemana} - HoraInicio Type: {h.HoraInicio.GetType().FullName}, Valor: {h.HoraInicio}");
-                    Debug.WriteLine($"Dia {h.DiaSemana} - HoraFin Type: {h.HoraFin.GetType().FullName}, Valor: {h.HoraFin}");
-
-
-                    string horaInicio = string.Format("{0:D2}:{1:D2}", h.HoraInicio.Hours, h.HoraInicio.Minutes);
-                    string horaFin = string.Format("{0:D2}:{1:D2}", h.HoraFin.Hours, h.HoraFin.Minutes);
-
-
-                    switch (h.DiaSemana)
-                    {
-                        case 1:
-                            chkLunes.Checked = true;
-                            if (ddlHoraInicioLunes.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioLunes.SelectedValue = horaInicio;
-                            if (ddlHoraFinLunes.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinLunes.SelectedValue = horaFin;
-                            break;
-
-                        case 2:
-                            chkMartes.Checked = true;
-                            if (ddlHoraInicioMartes.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioMartes.SelectedValue = horaInicio;
-                            if (ddlHoraFinMartes.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinMartes.SelectedValue = horaFin;
-                            break;
-
-                        case 3:
-                            chkMiercoles.Checked = true;
-                            if (ddlHoraInicioMiercoles.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioMiercoles.SelectedValue = horaInicio;
-                            if (ddlHoraFinMiercoles.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinMiercoles.SelectedValue = horaFin;
-                            break;
-
-                        case 4:
-                            chkJueves.Checked = true;
-                            if (ddlHoraInicioJueves.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioJueves.SelectedValue = horaInicio;
-                            if (ddlHoraFinJueves.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinJueves.SelectedValue = horaFin;
-                            break;
-
-                        case 5:
-                            chkViernes.Checked = true;
-                            if (ddlHoraInicioViernes.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioViernes.SelectedValue = horaInicio;
-                            if (ddlHoraFinViernes.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinViernes.SelectedValue = horaFin;
-                            break;
-
-                        case 6:
-                            chkSabado.Checked = true;
-                            if (ddlHoraInicioSabado.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioSabado.SelectedValue = horaInicio;
-                            if (ddlHoraFinSabado.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinSabado.SelectedValue = horaFin;
-                            break;
-
-                        case 7:
-                            chkDomingo.Checked = true;
-                            if (ddlHoraInicioDomingo.Items.FindByValue(horaInicio) != null)
-                                ddlHoraInicioDomingo.SelectedValue = horaInicio;
-                            if (ddlHoraFinDomingo.Items.FindByValue(horaFin) != null)
-                                ddlHoraFinDomingo.SelectedValue = horaFin;
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error al cargar horarios del médico: " + ex.Message);
-                throw;
-            }
-        }
-
-
-
-        private List<HorarioSemanalDto> ObtenerHorariosDesdeFormulario()
-        {
-            List<HorarioSemanalDto> lista = new List<HorarioSemanalDto>();
-
-            void AgregarSiActivo(CheckBox chk, DropDownList ddlInicio, DropDownList ddlFin, byte dia)
-            {
-                if (chk.Checked)
-                {
-                    if (TimeSpan.TryParse(ddlInicio.SelectedValue, out TimeSpan inicio) &&
-                        TimeSpan.TryParse(ddlFin.SelectedValue, out TimeSpan fin) &&
-                        inicio < fin)
-                    {
-                        lista.Add(new HorarioSemanalDto
-                        {
-                            DiaSemana = dia,
-                            HoraInicio = inicio,
-                            HoraFin = fin,
-                            Estado = "A"
-                        });
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Debe seleccionar un rango horario válido para los días seleccionados.");
-                    }
-                }
-            }
-
-            AgregarSiActivo(chkLunes, ddlHoraInicioLunes, ddlHoraFinLunes, 1);
-            AgregarSiActivo(chkMartes, ddlHoraInicioMartes, ddlHoraFinMartes, 2);
-            AgregarSiActivo(chkMiercoles, ddlHoraInicioMiercoles, ddlHoraFinMiercoles, 3);
-            AgregarSiActivo(chkJueves, ddlHoraInicioJueves, ddlHoraFinJueves, 4);
-            AgregarSiActivo(chkViernes, ddlHoraInicioViernes, ddlHoraFinViernes, 5);
-            AgregarSiActivo(chkSabado, ddlHoraInicioSabado, ddlHoraFinSabado, 6);
-            AgregarSiActivo(chkDomingo, ddlHoraInicioDomingo, ddlHoraFinDomingo, 7);
-
-            return lista;
         }
 
 

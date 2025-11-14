@@ -195,24 +195,16 @@ VALUES
 
 -- Medico
 INSERT INTO Medico
-(Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Email, Matricula, IdUsuario, Estado)
+(Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Matricula, IdUsuario, Estado)
 VALUES
-('Sofía','López','31234568','F','1988-10-20','1123456790','sofia.lopez@sgto.com','MP1235',5,'A'),
-('Martín','Ruiz','30234567','M','1985-04-15','1123456789','martin.ruiz@sgto.com','MP1234',6,'A'),
-('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','nicolas.benitez@sgto.com','MP1236',7,'A'),
-('Lucía','Romero','28234570','F','1990-07-18','1123456792','lucia.romero@sgto.com','MP1237',8,'I'),
-('Camila','Rossi','32234571','F','1991-05-12','1123456793','camila.rossi@sgto.com','MP1238',9,'A'),
-('Carlos','Méndez','27234572','M','1982-11-02','1123456794','carlos.mendez@sgto.com','MP1239',10,'A')
+('Sofía','López','31234568','F','1988-10-20','1123456790','121235',5,'A'),
+('Martín','Ruiz','30234567','M','1985-04-15','1123456789','121234',6,'A'),
+('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','121236',7,'A'),
+('Lucía','Romero','28234570','F','1990-07-18','1123456792','121237',8,'I'),
+('Camila','Rossi','32234571','F','1991-05-12','1123456793','121238',9,'A'),
+('Carlos','Méndez','27234572','M','1982-11-02','1123456794','121239',10,'A')
 
 GO
-UPDATE Medico SET IdEspecialidad = 9 WHERE IdMedico = 1;
-UPDATE Medico SET IdEspecialidad = 1 WHERE IdMedico = 2;
-UPDATE Medico SET IdEspecialidad = 2 WHERE IdMedico = 3;
-UPDATE Medico SET IdEspecialidad = 5 WHERE IdMedico = 4;
-UPDATE Medico SET IdEspecialidad = 6 WHERE IdMedico = 5;
-UPDATE Medico SET IdEspecialidad = 10 WHERE IdMedico = 6;
-GO
-
 
 
 -- Paciente
@@ -221,7 +213,7 @@ INSERT INTO Paciente
 VALUES
 ('Andrés','Suárez','40111222','M','1992-05-15','1150012233','andres.suarez@correo.com',1,NULL,'A'),       
 ('Belén','Gómez','42111223','F','1994-09-20','1150012234','belen.gomez@correo.com',2,2,'A'),               
-('Carlos','Vega','43111224','M','1987-03-11','1150012235','carlos.vega@correo.com',3,3,'A'),               
+('Carlos','Vega','43111224','M','1987-03-11','1150012235','carlos.vega@correo.com',3,4,'A'),               
 ('Diana','Pérez','44111225','F','1990-08-02','1150012236','diana.perez@correo.com',4,6,'I'),              
 ('Elena','Rodríguez','45111226','F','1989-10-12','1150012237','elena.rodriguez@correo.com',5,7,'A'),      
 ('Francisco','Luna','46111227','M','1985-11-22','1150012238','francisco.luna@correo.com',6,8,'A'),         
@@ -399,6 +391,30 @@ VALUES
 (10, 65, '2024-03-01', NULL, 'A', 'Último porcentaje previo a inactividad');
 GO
 
+-- Médico 1: Sofía López - Estética Dental + General
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(1, 9),  -- Estética Dental
+(1, 10); -- Odontología General
 
+-- Médico 2: Martín Ruiz - Ortodoncia + Endodoncia
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(2, 1),  -- Ortodoncia
+(2, 2);  -- Endodoncia
 
+-- Médico 3: Nicolás Benítez - Endodoncia + Cirugía Bucal
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(3, 2),  -- Endodoncia
+(3, 5);  -- Cirugía Bucal
 
+-- Médico 4: Lucía Romero - SOLO 1 (inactiva)
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(4, 5);  -- Cirugía Bucal
+
+-- Médico 5: Camila Rossi - Implantología + Estética Dental
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(5, 6),  -- Implantología
+(5, 9);  -- Estética Dental
+
+-- Médico 6: Carlos Méndez - SOLO 1 (General)
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(6, 10);  -- Odontología General
