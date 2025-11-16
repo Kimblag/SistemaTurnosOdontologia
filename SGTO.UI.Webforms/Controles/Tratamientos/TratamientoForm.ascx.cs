@@ -5,6 +5,7 @@ using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.UI;
@@ -14,21 +15,16 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
 {
     public partial class TratamientoForm : UserControl
     {
-        private readonly TratamientoService _tratamientoService;
-        private readonly EspecialidadService _especialidadService;
+        private readonly TratamientoService _servicioTratamiento = new TratamientoService();
+        private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
 
         public bool ModoEdicion { get; set; } = false;
 
-        public TratamientoForm()
-        {
-            _tratamientoService = new TratamientoService();
-            _especialidadService = new EspecialidadService();
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            int idTratamiento = ExtraerIdTratamiento();
-            if (idTratamiento != 0)
+            int id = ExtraerIdTratamiento();
+
+            if (id != 0)
             {
                 ModoEdicion = true;
                 chkEstado.Enabled = true;
@@ -40,7 +36,7 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
 
                 if (ModoEdicion)
                 {
-                    CargarDatosTratamiento(idTratamiento);
+                    CargarDatosTratamiento(id);
                 }
                 else
                 {
@@ -48,6 +44,14 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
                     chkEstado.Checked = true;
                     chkEstado.Enabled = false;
                 }
+
+                ModalHelper.MostrarModalDesdeSession(
+                    this.Page,
+                    "TratamientoMensajeTitulo",
+                    "TratamientoMensajeDesc",
+                    "/Pages/Tratamientos/Index",
+                    "abrirModalResultado"
+                );
             }
         }
 
@@ -55,7 +59,7 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
         {
             try
             {
-                TratamientoDto dto = _tratamientoService.ObtenerTratamientoPorId(id);
+                TratamientoDto dto = _servicioTratamiento.ObtenerTratamientoPorId(id);
                 if (dto == null)
                 {
                     Response.Redirect("~/Pages/Tratamientos/Index.aspx", false);
@@ -67,16 +71,21 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
                 txtDescripcion.Text = dto.Descripcion;
                 txtCostoBase.Text = dto.CostoBase.ToString(CultureInfo.InvariantCulture);
 
-                chkEstado.Checked = (dto.Estado.ToLower() == "activo");
+                chkEstado.Checked = dto.Estado.Equals("activo", StringComparison.OrdinalIgnoreCase);
 
                 if (ddlEspecialidad.Items.FindByValue(dto.IdEspecialidad.ToString()) != null)
-                {
                     ddlEspecialidad.SelectedValue = dto.IdEspecialidad.ToString();
-                }
             }
-            catch (Exception)
+            catch
             {
-                Response.Redirect("~/Pages/Tratamientos/Index.aspx", false);
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error inesperado",
+                    "Ocurrió un error al cargar el tratamiento.",
+                    "Resultado",
+                    null,
+                    "abrirModalResultado"
+                );
             }
         }
 
@@ -84,14 +93,46 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
         {
             try
             {
-                var especialidades = _especialidadService.Listar(null);
+                List<EspecialidadDto> especialidades;
+
+                if (ModoEdicion)
+                {
+                    // Igual que en coberturas/planes: en edición se permiten inactivas
+                    especialidades = _servicioEspecialidad.Listar(null); // todas
+                }
+                else
+                {
+                    // En creación solo mostrar activas
+                    especialidades = _servicioEspecialidad.Listar("activas");
+                }
+
+                if (especialidades == null || especialidades.Count == 0)
+                {
+                    ddlEspecialidad.Items.Clear();
+                    ddlEspecialidad.Items.Add(new ListItem("No hay especialidades disponibles", "0"));
+                    ddlEspecialidad.Enabled = false;
+                    return;
+                }
+
                 ddlEspecialidad.DataSource = especialidades;
                 ddlEspecialidad.DataTextField = "Nombre";
                 ddlEspecialidad.DataValueField = "IdEspecialidad";
                 ddlEspecialidad.DataBind();
-                ddlEspecialidad.Items.Insert(0, new ListItem("-- Seleccione Especialidad --", "0"));
+
+                ddlEspecialidad.Items.Insert(0, new ListItem("Seleccione una especialidad", "0"));
+
+                if (ModoEdicion)
+                {
+                    var id = ExtraerIdTratamiento();
+                    var dto = _servicioTratamiento.ObtenerTratamientoPorId(id);
+
+                    if (_servicioEspecialidad.EstaInactiva(dto.IdEspecialidad))
+                    {
+                        DeshabilitarFormularioPorEspecialidadInactiva();
+                    }
+                }
             }
-            catch (Exception)
+            catch
             {
                 ddlEspecialidad.Items.Clear();
                 ddlEspecialidad.Items.Add(new ListItem("[Error al cargar especialidades]", "0"));
@@ -99,22 +140,26 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
             }
         }
 
+
         private decimal ValidarCampos()
         {
             if (!ValidadorCampos.EsTextoValido(txtNombre.Text, 3, 100))
-                throw new ExcepcionReglaNegocio("El nombre del tratamiento es obligatorio y debe tener entre 3 y 100 caracteres.");
+                throw new ArgumentException("El nombre del tratamiento es obligatorio y debe tener entre 3 y 100 caracteres.");
 
-            if (!ValidadorCampos.EsTextoValido(txtDescripcion.Text, 10, 200))
-                throw new ExcepcionReglaNegocio("La descripción debe tener al menos 10 caracteres si se completa.");
+            if (!string.IsNullOrWhiteSpace(txtDescripcion.Text))
+            {
+                if (!ValidadorCampos.TieneLongitudMinima(txtDescripcion.Text, 10))
+                    throw new ArgumentException("La descripción debe tener al menos 10 caracteres si se completa.");
+            }
 
             if (!ValidadorCampos.EsDecimalValido(txtCostoBase.Text, out decimal costo))
-                throw new ExcepcionReglaNegocio("El costo base es obligatorio y debe ser un número válido.");
+                throw new ArgumentException("El costo base es obligatorio y debe ser un número válido.");
 
             if (costo <= 0)
-                throw new ExcepcionReglaNegocio("El costo base debe ser un número mayor a cero.");
+                throw new ArgumentException("El costo base debe ser un número mayor a cero.");
 
             if (ddlEspecialidad.SelectedValue == "0" || string.IsNullOrEmpty(ddlEspecialidad.SelectedValue))
-                throw new ExcepcionReglaNegocio("Debe seleccionar una especialidad.");
+                throw new ArgumentException("Debe seleccionar una especialidad.");
 
             return costo;
         }
@@ -133,28 +178,32 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
                     IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
                     Estado = chkEstado.Checked ? "Activo" : "Inactivo"
                 };
-                _tratamientoService.GuardarNuevoTratamiento(dto);
-                Session["TratamientoMensajeTitulo"] = "Tratamiento creado";
-                Session["TratamientoMensajeDesc"] = $"El tratamiento \"{dto.Nombre}\" se creó correctamente.";
-                ModalHelper.MostrarModalDesdeSession(
+                _servicioTratamiento.GuardarNuevoTratamiento(dto);
+                MensajeUiHelper.SetearYMostrar(
                     this.Page,
-                    "TratamientoMensajeTitulo",
-                    "TratamientoMensajeDesc",
+                    "Tratamiento creado",
+                    $"El tratamiento \"{dto.Nombre}\" se creó correctamente.",
+                    "Resultado",
                     VirtualPathUtility.ToAbsolute("~/Pages/Tratamientos/Index"),
                     "abrirModalResultado"
                 );
             }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                   "Dato inválido",
+                   ex.Message,
+                   "Resultado",
+                   null,
+                   "abrirModalResultado");
+            }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["TratamientoMensajeTitulo"] = "Operación no permitida";
-                Session["TratamientoMensajeDesc"] = ex.Message;
-                ModalHelper.MostrarModalDesdeSession(this.Page, "TratamientoMensajeTitulo", "TratamientoMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Operación no permitida", ex.Message, "Resultado", null, "abrirModalResultado");
             }
             catch (Exception ex)
             {
-                Session["TratamientoMensajeTitulo"] = "Error inesperado";
-                Session["TratamientoMensajeDesc"] = "Ocurrió un error al crear el tratamiento. " + ex.Message;
-                ModalHelper.MostrarModalDesdeSession(this.Page, "TratamientoMensajeTitulo", "TratamientoMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error inesperado", "Ocurrió un error. " + ex.Message, "Resultado", null, "abrirModalResultado");
             }
         }
 
@@ -173,23 +222,34 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
                     IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
                     Estado = chkEstado.Checked ? "Activo" : "Inactivo"
                 };
-                _tratamientoService.ModificarTratamiento(dto);
-                Session["TratamientoMensajeTitulo"] = "Tratamiento modificado";
-                Session["TratamientoMensajeDesc"] = $"El tratamiento \"{dto.Nombre}\" se actualizó correctamente.";
-                Session["ModalTipo"] = "Resultado";
-                Response.Redirect("~/Pages/Tratamientos/Index.aspx", false);
+                _servicioTratamiento.ModificarTratamiento(dto);
+                MensajeUiHelper.SetearYMostrar(
+                     this.Page,
+                     "Tratamiento modificado",
+                     $"El tratamiento \"{dto.Nombre}\" se actualizó correctamente.",
+                     "Resultado",
+                     VirtualPathUtility.ToAbsolute("~/Pages/Tratamientos/Index"),
+                     "abrirModalResultado"
+                 );
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Dato inválido",
+                    ex.Message,
+                    "Resultado",
+                    null,
+                    "abrirModalResultado"
+                );
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["TratamientoMensajeTitulo"] = "Operación no permitida";
-                Session["TratamientoMensajeDesc"] = ex.Message;
-                ModalHelper.MostrarModalDesdeSession(this.Page, "TratamientoMensajeTitulo", "TratamientoMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Operación no permitida", ex.Message, "Resultado", null, "abrirModalResultado");
             }
             catch (Exception ex)
             {
-                Session["TratamientoMensajeTitulo"] = "Error inesperado";
-                Session["TratamientoMensajeDesc"] = "Ocurrió un error al modificar el tratamiento. " + ex.Message;
-                ModalHelper.MostrarModalDesdeSession(this.Page, "TratamientoMensajeTitulo", "TratamientoMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error inesperado", "Ocurrió un error. " + ex.Message, "Resultado", null, "abrirModalResultado");
             }
         }
 
@@ -219,5 +279,17 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
         {
             Response.Redirect("~/Pages/Tratamientos/Index.aspx", false);
         }
+
+        private void DeshabilitarFormularioPorEspecialidadInactiva()
+        {
+            txtNombre.Enabled = false;
+            txtDescripcion.Enabled = false;
+            txtCostoBase.Enabled = false;
+            ddlEspecialidad.Enabled = false;
+            chkEstado.Enabled = false;
+            btnGuardar.Enabled = false;
+        }
+
+
     }
 }

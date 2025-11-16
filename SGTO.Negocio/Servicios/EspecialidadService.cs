@@ -119,5 +119,12 @@ namespace SGTO.Negocio.Servicios
                 }
             }
         }
+
+        public bool EstaInactiva(int IdEspecialidad)
+        {
+           Especialidad especialidad = _repositorio.ObtenerPorId(IdEspecialidad);
+
+            return especialidad.Estado == EstadoEntidad.Inactivo;
+        }
     }
 }

@@ -24,7 +24,6 @@
                                 runat="server"
                                 CssClass="form-control border-start-0"
                                 placeholder="Buscar tratamientos..."
-                                AutoPostBack="true"
                                 OnTextChanged="txtBuscar_TextChanged" />
                         </div>
                     </div>
@@ -35,8 +34,7 @@
                             ID="ddlEspecialidad"
                             runat="server"
                             CssClass="form-select"
-                            Width="200"
-                            AutoPostBack="true"
+                            Width="260"
                             OnSelectedIndexChanged="ddlEspecialidad_SelectedIndexChanged">
                             <asp:ListItem Selected="True" Text="Todas las especialidades" Value="0" />
                         </asp:DropDownList>
@@ -49,7 +47,6 @@
                             runat="server"
                             CssClass="form-select"
                             Width="170"
-                            AutoPostBack="true"
                             OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
 
                             <asp:ListItem Selected="True" Text="Todos" Value="todos" />
