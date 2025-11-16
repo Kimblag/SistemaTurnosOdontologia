@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -26,7 +27,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                 RestaurarFiltrosDesdeSession();
 
-                CargarPlanes();
+                AplicarFiltros();
             }
         }
 
@@ -107,7 +108,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 ddlCoberturas.DataValueField = "IdCobertura";
                 ddlCoberturas.DataBind();
 
-                ddlCoberturas.Items.Insert(0, new ListItem("Todas", "todos"));
+                ddlCoberturas.Items.Insert(0, new ListItem("Todas las coberturas", "todos"));
             }
             catch (Exception ex)
             {
@@ -158,10 +159,11 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             var textoSesion = Session[KEY_TEXTO_PLANES] as string;
             if (!string.IsNullOrEmpty(textoSesion))
             {
+                string texto = ValidadorCampos.NormalizarTexto(textoSesion);
                 lista = lista.FindAll(dto =>
-                    (dto.Nombre != null && dto.Nombre.ToLower().Contains(textoSesion)) ||
-                    (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoSesion)) ||
-                    (dto.NombreCobertura != null && dto.NombreCobertura.ToLower().Contains(textoSesion))
+                    (ValidadorCampos.NormalizarTexto(dto.Nombre) != null && ValidadorCampos.NormalizarTexto(dto.Nombre).Contains(texto)) ||
+                    (ValidadorCampos.NormalizarTexto(dto.Descripcion) != null && ValidadorCampos.NormalizarTexto(dto.Descripcion).Contains(texto)) ||
+                    (ValidadorCampos.NormalizarTexto(dto.NombreCobertura) != null && ValidadorCampos.NormalizarTexto(dto.NombreCobertura).Contains(texto))
                 );
             }
 

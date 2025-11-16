@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs.Roles;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs.Roles;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
@@ -29,7 +30,6 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
             if (!IsPostBack)
             {
-
                 txtBuscarRol.Text = Session[KEY_ROL_BUSQUEDA] as string ?? string.Empty;
                 string estado = Session[KEY_ROL_ESTADO] as string;
                 if (!string.IsNullOrEmpty(estado) && ddlEstado.Items.FindByValue(estado) != null)
@@ -41,13 +41,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
             }
         }
 
-        private void CargarRoles(string estado = null, string filtroNombre = null)
+        private void CargarRoles(string estado = null)
         {
             List<RolListadoDto> lista = new List<RolListadoDto>();
 
             try
             {
-                lista = _servicioRol.Listar(estado, filtroNombre);
+                lista = _servicioRol.Listar();
                 gvRoles.DataSource = lista;
                 gvRoles.DataBind();
             }
@@ -77,7 +77,47 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
             string estadoFiltro = estadoSeleccionado != "todos" ? estadoSeleccionado : null;
 
-            CargarRoles(estadoFiltro, textoBusqueda);
+            List<RolListadoDto> lista = new List<RolListadoDto>();
+            try
+            {
+                lista = _servicioRol.Listar(estadoFiltro);
+            }
+            catch (Exception ex)
+            {
+                gvRoles.DataSource = lista;
+                gvRoles.DataBind();
+                MensajeUiHelper.SetearYMostrar(
+                   this.Page, "Error al cargar roles",
+                   "Ocurrió un error inesperado. " + ex.Message, "Resultado",
+                   null, "abrirModalResultado"
+               );
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(textoBusqueda))
+            {
+                string textoNormalizado = ValidadorCampos.NormalizarTexto(textoBusqueda);
+                List<RolListadoDto> filtrada = new List<RolListadoDto>();
+
+                foreach (var rol in lista)
+                {
+                    string nombreNormalizado = ValidadorCampos.NormalizarTexto(rol.Nombre);
+                    string descNormalizada = ValidadorCampos.NormalizarTexto(rol.Descripcion);
+
+                    bool coincide =
+                        (!string.IsNullOrEmpty(nombreNormalizado) && nombreNormalizado.Contains(textoNormalizado)) ||
+                        (!string.IsNullOrEmpty(descNormalizada) && descNormalizada.Contains(textoNormalizado));
+
+                    if (coincide)
+                    {
+                        filtrada.Add(rol);
+                    }
+                }
+                lista = filtrada;
+            }
+
+            gvRoles.DataSource = lista;
+            gvRoles.DataBind();
         }
 
         protected void btnNuevoRol_Click(object sender, EventArgs e)

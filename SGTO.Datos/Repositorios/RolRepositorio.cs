@@ -13,7 +13,7 @@ namespace SGTO.Datos.Repositorios
     public class RolRepositorio
     {
 
-        public List<Rol> Listar(string estado = null, string nombre = null)
+        public List<Rol> Listar(string estado = null)
         {
             List<Rol> roles = new List<Rol>();
 
@@ -39,15 +39,6 @@ namespace SGTO.Datos.Repositorios
                     where = " WHERE UPPER(R.Estado) = UPPER(@Estado)";
                 }
 
-                if (!string.IsNullOrEmpty(nombre))
-                {
-                    if (where.Trim().StartsWith("WHERE"))
-                        where += " AND UPPER(R.Nombre) LIKE @Nombre";
-                    else
-                        where = " WHERE UPPER(R.Nombre) LIKE @Nombre";
-                }
-
-
                 query = query.Replace("{{WHERE}}", where);
 
 
@@ -55,8 +46,6 @@ namespace SGTO.Datos.Repositorios
 
                 if (estado != null)
                     datos.EstablecerParametros("@Estado", estado[0]);
-                if (!string.IsNullOrEmpty(nombre))
-                    datos.EstablecerParametros("@Nombre", "%" + nombre.ToUpper() + "%");
 
                 using (SqlDataReader lector = datos.EjecutarConsulta())
                 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SGTO.Comun.Validacion
@@ -23,7 +24,26 @@ namespace SGTO.Comun.Validacion
 
         public static string NormalizarTexto(string texto)
         {
-            return texto?.Trim().ToUpper();
+            if (string.IsNullOrEmpty(texto))
+            {
+                return "";
+            }
+
+            string textoMinusculas = texto.ToLower();
+
+            string textoNormalizado = textoMinusculas.Normalize(NormalizationForm.FormD);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < textoNormalizado.Length; i++)
+            {
+                char c = textoNormalizado[i];
+                if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString();
         }
 
         public static string CapitalizarTexto(string texto)

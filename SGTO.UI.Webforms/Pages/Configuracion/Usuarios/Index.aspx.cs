@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Roles;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
@@ -7,8 +8,6 @@ using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -37,12 +36,10 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             {
                 CargarRolesDropDown();
 
-                // verificar si hay filtros
                 RestaurarFiltrosDesdeSession();
 
-                CargarUsuarios();
+                AplicarFiltros();
             }
-
         }
 
 
@@ -58,7 +55,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                 ddlRol.DataValueField = "IdRol";
                 ddlRol.DataBind();
 
-                ddlRol.Items.Insert(0, new ListItem("Todos", "todos"));
+                ddlRol.Items.Insert(0, new ListItem("Todos los roles", "todos"));
             }
             catch (Exception ex)
             {
@@ -146,10 +143,12 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             var textoSession = Session[KEY_USUARIO_BUSQUEDA] as string;
             if (!string.IsNullOrEmpty(textoSession))
             {
+                string textoNormalizado = ValidadorCampos.NormalizarTexto(textoSession);
+
                 lista = lista.FindAll(dto =>
-                (dto.NombreCompleto != null && dto.NombreCompleto.ToLower().Contains(textoSession)) ||
-                (dto.NombreUsuario != null && dto.NombreUsuario.ToLower().Contains(textoSession)) ||
-                (dto.Email != null && dto.Email.ToLower().Contains(textoSession))
+                    (ValidadorCampos.NormalizarTexto(dto.NombreCompleto).Contains(textoNormalizado)) ||
+                    (ValidadorCampos.NormalizarTexto(dto.NombreUsuario).Contains(textoNormalizado)) ||
+                    (ValidadorCampos.NormalizarTexto(dto.Email).Contains(textoNormalizado))
                 );
             }
 
@@ -208,46 +207,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             }
         }
 
-        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
-        {
-            int idUsuario = int.Parse(hdnIdEliminar.Value);
-            try
-            {
-                //_servicioUsuario.DarDeBaja(idUsuario);
 
-                MensajeUiHelper.SetearYMostrar(
-                   this.Page,
-                   "Usuario dado de baja",
-                   "El usuario fue dado de baja correctamente.",
-                   "Resultado",
-                   VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
-                   "abrirModalResultado"
-               );
-                Response.Redirect(Request.RawUrl, false);
-            }
-            catch (ExcepcionReglaNegocio ex)
-            {
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page,
-                    "Operación no permitida",
-                    ex.Message,
-                    "Resultado",
-                    null,
-                    "abrirModalResultado"
-                );
-            }
-            catch (Exception ex)
-            {
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page,
-                    "Error inesperado",
-                    "Ocurrió un error al intentar dar de baja el paciente. " + ex.Message,
-                    "Resultado",
-                    null,
-                    "abrirModalResultado"
-                );
-            }
-        }
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {

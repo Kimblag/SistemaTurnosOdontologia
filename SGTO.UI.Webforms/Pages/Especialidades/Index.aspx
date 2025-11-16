@@ -33,10 +33,8 @@
                             ID="ddlEstado"
                             runat="server"
                             CssClass="form-select"
-                            Width="170">
-
-
-                            <asp:ListItem Selected="True" Text="Todos" Value="todos" />
+                            Width="190">
+                            <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
                             <asp:ListItem Text="Activo" Value="activo" />
                             <asp:ListItem Text="Inactivo" Value="inactivo" />
                         </asp:DropDownList>
@@ -69,7 +67,7 @@
                         runat="server"
                         Text="+ Nueva Especialidad"
                         OnClick="btnNuevaEspecialidad_Click"
-                        CssClass="btn btn-primary fw-semibold px-3 py-2 d-flex d-lg-inline-flex align-items-center gap-1 mx-auto mx-lg-0" />
+                        CssClass="btn btn-primary btn-sm me-1" />
                 </div>
 
             </div>

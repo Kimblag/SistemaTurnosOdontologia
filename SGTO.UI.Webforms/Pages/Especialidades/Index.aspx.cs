@@ -1,4 +1,5 @@
-﻿using SGTO.Dominio.Enums;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
@@ -184,10 +185,11 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             {
                 List<EspecialidadDto> listaFiltrada = new List<EspecialidadDto>();
 
+                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
                 foreach (EspecialidadDto dto in lista)
                 {
-                    if ((dto.Nombre != null && dto.Nombre.ToLower().Contains(textoBusqueda))
-                         || (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoBusqueda)))
+                    if ((dto.Nombre != null && ValidadorCampos.NormalizarTexto(dto.Nombre).Contains(texto))
+                         || (dto.Descripcion != null && ValidadorCampos.NormalizarTexto(dto.Descripcion).Contains(texto)))
                     {
                         listaFiltrada.Add(dto);
                     }

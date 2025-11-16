@@ -1,6 +1,5 @@
 ﻿using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
-using System;
 
 namespace SGTO.Dominio.Entidades
 {
@@ -10,7 +9,6 @@ namespace SGTO.Dominio.Entidades
         public Paciente Paciente { get; set; }
         public Medico Medico { get; set; }
         public Especialidad Especialidad { get; set; }
-        public Tratamiento Tratamiento { get; set; }
         public HorarioTurno Horario { get; set; }
         public Cobertura Cobertura { get; set; }
         public Plan Plan { get; set; }
@@ -22,12 +20,11 @@ namespace SGTO.Dominio.Entidades
             
         }
 
-        public Turno(Paciente paciente, Medico medico, Especialidad especialidad, Tratamiento tratamiento, HorarioTurno horario)
+        public Turno(Paciente paciente, Medico medico, Especialidad especialidad, HorarioTurno horario)
         {
             Paciente = paciente;
             Medico = medico;
             Especialidad = especialidad;
-            Tratamiento = tratamiento;
             Horario = horario;
 
             Estado = EstadoTurno.Nuevo;

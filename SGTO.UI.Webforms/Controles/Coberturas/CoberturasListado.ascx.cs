@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -132,12 +133,13 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
+                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
                 List<CoberturaDto> listaFiltrada = new List<CoberturaDto>();
 
                 foreach (CoberturaDto dto in lista)
                 {
-                    if ((dto.Nombre != null && dto.Nombre.ToLower().Contains(textoBusqueda))
-                       || (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoBusqueda)))
+                    if ((dto.Nombre != null && ValidadorCampos.NormalizarTexto(dto.Nombre).Contains(texto))
+                       || (dto.Descripcion != null && ValidadorCampos.NormalizarTexto(dto.Descripcion).Contains(texto)))
                     {
                         listaFiltrada.Add(dto);
                     }

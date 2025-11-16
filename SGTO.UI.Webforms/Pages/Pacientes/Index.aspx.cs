@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
@@ -135,15 +136,15 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
-                string texto = textoBusqueda.ToLower();
+                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
                 List<PacienteListadoDto> filtrada = new List<PacienteListadoDto>();
 
                 foreach (var p in lista)
                 {
                     bool coincide =
-                        (!string.IsNullOrEmpty(p.NombreCompleto) && p.NombreCompleto.ToLower().Contains(texto)) ||
-                        (!string.IsNullOrEmpty(p.Dni) && p.Dni.ToLower().Contains(texto)) ||
-                        (!string.IsNullOrEmpty(p.Email) && p.Email.ToLower().Contains(texto));
+                        (!string.IsNullOrEmpty(p.NombreCompleto) && ValidadorCampos.NormalizarTexto(p.NombreCompleto).Contains(texto)) ||
+                        (!string.IsNullOrEmpty(p.Dni) && ValidadorCampos.NormalizarTexto(p.Dni).Contains(texto)) ||
+                        (!string.IsNullOrEmpty(p.Email) && ValidadorCampos.NormalizarTexto(p.Email).Contains(texto));
 
                     if (coincide)
                         filtrada.Add(p);
@@ -224,6 +225,10 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             else if (e.CommandName == "Ver")
             {
                 Response.Redirect($"~/Pages/Pacientes/Detalle?id-paciente={idPaciente}", false);
+            }
+            else if (e.CommandName == "Agendar")
+            {
+                Response.Redirect($"~/Pages/Turnos/Nuevo?id-paciente={idPaciente}", false);
             }
         }
 

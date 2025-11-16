@@ -28,8 +28,9 @@
                             ID="ddlEstado"
                             runat="server"
                             CssClass="form-select"
-                            Width="170">
-                            <asp:ListItem Text="Todos" Value="todos" Selected="True" />
+                            AutoPostBack="true"
+                            Width="200">
+                            <asp:ListItem Text="Todos los estados" Value="todos" Selected="True" />
                             <asp:ListItem Text="Activo" Value="activo" />
                             <asp:ListItem Text="Inactivo" Value="inactivo" />
                         </asp:DropDownList>

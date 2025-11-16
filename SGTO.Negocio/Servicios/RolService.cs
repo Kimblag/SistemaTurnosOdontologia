@@ -22,9 +22,9 @@ namespace SGTO.Negocio.Servicios
             _permisoRepositorio = new PermisoRepositorio();
         }
 
-        public List<RolListadoDto> Listar(string estado = null, string nombre = null)
+        public List<RolListadoDto> Listar(string estado = null)
         {
-            List<Rol> roles = _repositorioRol.Listar(estado, nombre);
+            List<Rol> roles = _repositorioRol.Listar(estado);
             List<RolListadoDto> dtos = new List<RolListadoDto>();
             foreach (Rol rol in roles)
             {

@@ -333,6 +333,27 @@ p, span, button, input, select, label, td, th {
     color: var(--color-primary);
 }
 
+.badge-info {
+    background: #DCF5F5;
+    color: #0A4D4A;
+}
+
+.badge-pending {
+    background: #FFEFD6;
+    color: #B45309;
+}
+
+.badge-dark {
+    background: #E9E5F0;
+    color: #4B3F72;
+}
+
+.badge-completed {
+    background: #E6F4EA;
+    color: #1B4D3E;
+}
+
+
 
 /* ------------------------------------------------------------
    tabs de navegación
@@ -724,3 +745,46 @@ ul.cbl-especialidades {
             display: inline-block;
             margin-bottom: 0;
         }
+
+
+
+/* =========================================================
+   estilos para filtros de turnos
+   ========================================================= */
+
+.filtros-turnos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+
+    .filtros-turnos .filtro-item {
+        flex: 0 0 auto;
+    }
+
+
+    .filtros-turnos .filtro-busqueda {
+        flex: 1 1 280px;
+        min-width: 260px;
+        max-width: 400px;
+    }
+
+
+    .filtros-turnos select {
+        min-width: 180px;
+    }
+
+
+    .filtros-turnos .btn {
+        white-space: nowrap;
+    }
+
+
+@media (max-width: 768px) {
+    .filtros-turnos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

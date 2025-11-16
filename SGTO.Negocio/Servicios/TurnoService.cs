@@ -1,4 +1,6 @@
 ﻿using SGTO.Datos.Repositorios;
+using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
 
@@ -42,11 +44,10 @@ namespace SGTO.Negocio.Servicios
             try
             {
                 return _turnoRepositorio.ExisteTurnoActivoPorEspecialidad(idEspecialidad);
-                   
+
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -60,9 +61,22 @@ namespace SGTO.Negocio.Servicios
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
+
+
+        public List<TurnoListadoDto> Listar()
+        {
+            try
+            {
+                return TurnoMapper.MapearListaTurnoListadoDto(_turnoRepositorio.Listar());
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

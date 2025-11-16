@@ -6,11 +6,23 @@
     <%--Filtros--%>
     <div class="d-flex gap-2 align-items-center my-3 mb-3 justify-content-between">
 
-        <div class="d-flex gap-2 align-items-center w-50">
-            <asp:TextBox ID="txtBuscarCobertura" runat="server" CssClass="form-control" placeholder="Buscar cobertura..."></asp:TextBox>
+        <div class="d-flex gap-2 align-items-center w-75">
+            <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <asp:TextBox
+                        ID="txtBuscarCobertura"
+                        runat="server"
+                        CssClass="form-control border-start-0"
+                        placeholder="Buscar cobertura..." />
+                </div>
+            </div>
 
-            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
-                <asp:ListItem Selected="True" Text="Todos" Value="todos" />
+
+            <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="300" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+                <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
                 <asp:ListItem Text="Activo" Value="activo" />
                 <asp:ListItem Text="Inactivo" Value="inactivo" />
             </asp:DropDownList>

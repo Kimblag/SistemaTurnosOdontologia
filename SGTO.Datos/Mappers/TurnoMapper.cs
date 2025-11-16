@@ -1,4 +1,5 @@
 ﻿using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
 using System;
 using System.Collections.Generic;
@@ -32,11 +33,6 @@ namespace SGTO.Datos.Mappers
                     IdEspecialidad = lector.GetInt32(lector.GetOrdinal("IdEspecialidad")),
                     Nombre = lector.GetString(lector.GetOrdinal("NombreEspecialidad"))
                 },
-                Tratamiento = new Tratamiento()
-                {
-                    IdTratamiento = lector.GetInt32(lector.GetOrdinal("IdTratamiento")),
-                    Nombre = lector.GetString(lector.GetOrdinal("NombreTratamiento"))
-                }
             };
             return turno;
         }
@@ -70,6 +66,74 @@ namespace SGTO.Datos.Mappers
 
             return turno;
         }
+
+
+        public static Turno MapearAEntidadListado(SqlDataReader lector)
+        {
+            int idTurno = lector.GetInt32(lector.GetOrdinal("IdTurno"));
+            DateTime fechaInicio = lector.GetDateTime(lector.GetOrdinal("FechaInicio"));
+            DateTime fechaFin = lector.GetDateTime(lector.GetOrdinal("FechaFin"));
+            EstadoTurno estado = EnumeracionMapperDatos.MapearEstadoTurno(lector, "EstadoTurno");
+
+            string observaciones = lector.IsDBNull(lector.GetOrdinal("Observaciones"))
+                ? null
+                : lector.GetString(lector.GetOrdinal("Observaciones"));
+
+            Paciente paciente = new Paciente()
+            {
+                IdPaciente = lector.GetInt32(lector.GetOrdinal("IdPaciente")),
+                Nombre = lector.GetString(lector.GetOrdinal("NombrePaciente")),
+                Apellido = lector.GetString(lector.GetOrdinal("ApellidoPaciente"))
+            };
+
+            Medico medico = new Medico()
+            {
+                IdMedico = lector.GetInt32(lector.GetOrdinal("IdMedico")),
+                Nombre = lector.GetString(lector.GetOrdinal("NombreMedico")),
+                Apellido = lector.GetString(lector.GetOrdinal("ApellidoMedico"))
+            };
+
+            Especialidad especialidad = new Especialidad()
+            {
+                IdEspecialidad = lector.GetInt32(lector.GetOrdinal("IdEspecialidad")),
+                Nombre = lector.GetString(lector.GetOrdinal("NombreEspecialidad"))
+            };
+
+            Cobertura cobertura = new Cobertura()
+            {
+                IdCobertura = lector.GetInt32(lector.GetOrdinal("IdCobertura")),
+                Nombre = lector.GetString(lector.GetOrdinal("NombreCobertura"))
+            };
+
+            Plan plan = null;
+            int idPlan = lector.GetOrdinal("IdPlan");
+            if (!lector.IsDBNull(idPlan))
+            {
+                plan = new Plan()
+                {
+                    IdPlan = lector.GetInt32(idPlan),
+                    Nombre = lector.GetString(lector.GetOrdinal("NombrePlan"))
+                };
+            }
+
+            HorarioTurno horario = new HorarioTurno(fechaInicio, fechaFin, validar: false);
+
+            var turno = new Turno()
+            {
+                IdTurno = idTurno,
+                Paciente = paciente,
+                Medico = medico,
+                Especialidad = especialidad,
+                Cobertura = cobertura,
+                Plan = plan,
+                Horario = horario,
+                Estado = estado,
+                Observaciones = observaciones
+            };
+
+            return turno;
+        }
+
 
     }
 }

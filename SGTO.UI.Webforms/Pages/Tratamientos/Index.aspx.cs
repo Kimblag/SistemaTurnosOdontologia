@@ -1,11 +1,11 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Comun.Validacion;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -201,13 +201,16 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         {
             string estadoSeleccionado = ddlEstado.SelectedValue;
             string idEspecialidad = ddlEspecialidad.SelectedValue;
-            string textoBusqueda = txtBuscar.Text.ToLower().Trim();
+            string textoBusqueda = txtBuscar.Text.Trim();
 
-            Session[KEY_ESTADO_TRATAMIENTOS] = estadoSeleccionado;
-            Session[KEY_ESPECIALIDAD_TRATAMIENTOS] = idEspecialidad;
-            Session[KEY_BUSQUEDA_TRATAMIENTOS] = textoBusqueda;
+            Session[KEY_ESTADO_TRATAMIENTOS] = (estadoSeleccionado == "todos") ? null : estadoSeleccionado;
+            Session[KEY_ESPECIALIDAD_TRATAMIENTOS] = (idEspecialidad == "0") ? null : idEspecialidad;
+            Session[KEY_BUSQUEDA_TRATAMIENTOS] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
 
-            string filtroEstado = (estadoSeleccionado == "todos") ? null : estadoSeleccionado;
+            string filtroEstado = Session[KEY_ESTADO_TRATAMIENTOS] as string;
+            string filtroEspecialidad = Session[KEY_ESPECIALIDAD_TRATAMIENTOS] as string;
+            string filtroTexto = Session[KEY_BUSQUEDA_TRATAMIENTOS] as string;
+
             List<TratamientoDto> lista;
             try
             {
@@ -221,22 +224,42 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             }
 
             int especialidadIdFiltro = 0;
-            int.TryParse(idEspecialidad, out especialidadIdFiltro);
+            int.TryParse(filtroEspecialidad, out especialidadIdFiltro);
 
             if (especialidadIdFiltro > 0)
             {
-                lista = lista.Where(t => t.IdEspecialidad == especialidadIdFiltro).ToList();
+                List<TratamientoDto> filtradaEspecialidad = new List<TratamientoDto>();
+                foreach (TratamientoDto t in lista)
+                {
+                    if (t.IdEspecialidad == especialidadIdFiltro)
+                    {
+                        filtradaEspecialidad.Add(t);
+                    }
+                }
+                lista = filtradaEspecialidad;
             }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
+            if (!string.IsNullOrEmpty(filtroTexto))
             {
-                lista = lista.Where(dto =>
-                    (dto.Nombre != null && dto.Nombre.ToLower().Contains(textoBusqueda)) ||
-                    (dto.Descripcion != null && dto.Descripcion.ToLower().Contains(textoBusqueda))
-                ).ToList();
-            }
+                string textoNormalizado = ValidadorCampos.NormalizarTexto(filtroTexto);
+                List<TratamientoDto> filtradaTexto = new List<TratamientoDto>();
 
+                foreach (TratamientoDto t in lista)
+                {
+                    string nombreNorm = ValidadorCampos.NormalizarTexto(t.Nombre);
+                    string descNorm = ValidadorCampos.NormalizarTexto(t.Descripcion);
+
+                    if ((!string.IsNullOrEmpty(nombreNorm) && nombreNorm.Contains(textoNormalizado)) ||
+                        (!string.IsNullOrEmpty(descNorm) && descNorm.Contains(textoNormalizado)))
+                    {
+                        filtradaTexto.Add(t);
+                    }
+                }
+                lista = filtradaTexto;
+            }
             CargarGrilla(lista);
         }
+
+
     }
 }

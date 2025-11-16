@@ -190,9 +190,67 @@ namespace SGTO.Datos.Repositorios
                 {
                     throw;
                 }
-
             }
+        }
 
+
+        public List<Turno> Listar()
+        {
+            List<Turno> turnos = new List<Turno>();
+
+            string query = @"
+                SELECT 
+                    T.IdTurno,
+                    T.FechaInicio,
+                    T.FechaFin,
+                    T.Estado AS EstadoTurno,
+                    T.Observaciones,
+
+                    P.IdPaciente,
+                    P.Nombre AS NombrePaciente,
+                    P.Apellido AS ApellidoPaciente,
+
+                    M.IdMedico,
+                    M.Nombre AS NombreMedico,
+                    M.Apellido AS ApellidoMedico,
+
+                    E.IdEspecialidad,
+                    E.Nombre AS NombreEspecialidad,
+
+                    C.IdCobertura,
+                    C.Nombre AS NombreCobertura,
+
+                    PL.IdPlan,
+                    PL.Nombre AS NombrePlan
+
+                FROM Turno T
+                    INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
+                    INNER JOIN Medico M ON T.IdMedico = M.IdMedico
+                    INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                    INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                    LEFT JOIN [Plan] PL ON T.IdPlan = PL.IdPlan
+                ORDER BY T.FechaInicio DESC";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Turno turno = TurnoMapper.MapearAEntidadListado(lector);
+                            turnos.Add(turno);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return turnos;
         }
 
 

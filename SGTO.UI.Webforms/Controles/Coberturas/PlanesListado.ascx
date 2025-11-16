@@ -6,18 +6,34 @@
     <%--Filtros--%>
     <div class="d-flex gap-2 align-items-center my-3 mb-3 justify-content-between">
 
-        <div class="d-flex gap-2 align-items-center w-50">
-            <asp:TextBox ID="txtBuscarPlanes" runat="server" CssClass="form-control" placeholder="Buscar Planes..."></asp:TextBox>
+        <div class="d-flex gap-2 align-items-center w-75">
+            <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <asp:TextBox
+                        ID="txtBuscarPlanes"
+                        runat="server"
+                        CssClass="form-control border-start-0"
+                        placeholder="Buscar planes..." />
+                </div>
+            </div>
+
 
             <asp:DropDownList ID="ddlCoberturas" runat="server"
+                AutoPostBack="true"
+                Width="400"
                 CssClass="form-select"
                 OnSelectedIndexChanged="ddlCoberturas_SelectedIndexChanged">
             </asp:DropDownList>
 
             <asp:DropDownList ID="ddlEstado" runat="server"
+                AutoPostBack="true"
                 CssClass="form-select"
+                Width="370"
                 OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
-                <asp:ListItem Text="Todos" Value="todos" />
+                <asp:ListItem Text="Todos los estados" Value="todos" />
                 <asp:ListItem Text="Activo" Value="activo" />
                 <asp:ListItem Text="Inactivo" Value="inactivo" />
             </asp:DropDownList>

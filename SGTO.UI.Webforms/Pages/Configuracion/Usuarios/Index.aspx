@@ -8,15 +8,29 @@
         <div class="d-flex gap-2 align-items-center my-3 mb-3 justify-content-between">
 
             <div class="d-flex gap-2 align-items-center w-75">
-                <asp:TextBox ID="txtBuscarUsuario" runat="server" CssClass="form-control" placeholder="Buscar usuario..."></asp:TextBox>
 
-                <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select">
+                <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <asp:TextBox
+                            ID="txtBuscarUsuario"
+                            runat="server"
+                            CssClass="form-control border-start-0"
+                            placeholder="Buscar usuario..." />
+                    </div>
+                </div>
+
+
+                <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" AutoPostBack="true">
                 </asp:DropDownList>
 
                 <asp:DropDownList ID="ddlEstado" runat="server"
+                    AutoPostBack="true"
                     CssClass="form-select"
                     OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
-                    <asp:ListItem Text="Todos" Value="todos" />
+                    <asp:ListItem Text="Todos los estados" Value="todos" />
                     <asp:ListItem Text="Activo" Value="activo" />
                     <asp:ListItem Text="Inactivo" Value="inactivo" />
                 </asp:DropDownList>
@@ -104,29 +118,7 @@
 
 
     </div>
-    <%--modal de confirmación--%>
-    <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 id="modalConfirmarTitulo" class="modal-title">Confirmar acción</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="modalConfirmarTexto"></p>
-                </div>
-                <div class="modal-footer">
-                    <asp:HiddenField ID="hdnIdEliminar" runat="server" />
-                    <asp:HiddenField ID="hdnTipoEliminar" runat="server" />
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <asp:Button ID="btnConfirmarEliminar" runat="server"
-                        CssClass="btn btn-danger"
-                        Text="Confirmar"
-                        OnClick="btnConfirmarEliminar_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <%-- modal resultado --%>
     <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
@@ -150,24 +142,6 @@
     <script>
 
         document.addEventListener("DOMContentLoaded", () => {
-            // modal de confirmación    
-            window.abrirModalConfirmacion = function (id, tipo) {
-                try {
-                    document.getElementById('<%= hdnIdEliminar.ClientID %>').value = id;
-                    document.getElementById('<%= hdnTipoEliminar.ClientID %>').value = tipo;
-
-                    const titulo = "Confirmar baja de plan";
-                    const texto = "¿Está seguro de que desea dar de baja este usuario?";
-
-                    document.getElementById('modalConfirmarTitulo').textContent = titulo;
-                    document.getElementById('modalConfirmarTexto').textContent = texto;
-
-                    new bootstrap.Modal(document.getElementById('modalConfirmar')).show();
-                } catch (err) {
-                    console.error("Error al abrir modal de confirmación:", err);
-                }
-            };
-
 
             // modal resultado
             window.abrirModalResultado = function (titulo, descripcion) {

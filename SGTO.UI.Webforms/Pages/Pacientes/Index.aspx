@@ -115,17 +115,34 @@
                                 runat="server"
                                 CssClass="btn btn-outline-secondary btn-sm me-1"
                                 CommandName="Editar"
-                                CommandArgument='<%# Eval("IdPaciente") %>'>
+                                CommandArgument='<%# Eval("IdPaciente") %>'
+                                ToolTip="Editar paciente">
                         <i class="bi bi-pencil"></i>
                             </asp:LinkButton>
-                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdPaciente") %>'>
+                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm"
+                                CommandName="Ver"
+                                CommandArgument='<%# Eval("IdPaciente") %>'
+                                ToolTip="Ver detalles del paciente">
                         <i class="bi bi-eye"></i>
                             </asp:LinkButton>
+
+                            <asp:LinkButton ID="btnAgendarTurno"
+                                runat="server"
+                                CssClass="btn btn-outline-success btn-sm me-1"
+                                CommandName="Agendar"
+                                CommandArgument='<%# Eval("IdPaciente") %>'
+                                ToolTip="Agendar Turno">
+                                    <i class="bi bi-calendar-plus"></i>
+                                </asp:LinkButton>
+
                             <button type="button"
                                 class="btn btn-outline-danger btn-sm me-1"
                                 data-id='<%# Eval("IdPaciente") %>'
-                                onclick="abrirModalConfirmacion('<%# Eval("IdPaciente") %>', 'paciente')">
+                                onclick="abrirModalConfirmacion('<%# Eval("IdPaciente") %>', 'paciente')"
+                                title="Dar de baja">
                                 <i class="bi bi-x"></i>
+                            </button>
+
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

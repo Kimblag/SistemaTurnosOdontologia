@@ -68,7 +68,7 @@
     <Compile Include="DTOs\Roles\RolDetalleDto.cs" />
     <Compile Include="DTOs\Roles\RolListadoDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />
-    <Compile Include="DTOs\Turnos\TurnoDto.cs" />
+    <Compile Include="DTOs\Turnos\TurnoListadoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoPacienteDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioCrearDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioDetalleDto.cs" />
