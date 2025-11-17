@@ -1,4 +1,6 @@
 ﻿using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
+using SGTO.Dominio.ObjetosValor;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Turnos;
 using System.Collections.Generic;
@@ -71,6 +73,29 @@ namespace SGTO.Negocio.Mappers
             return lista;
         }
 
+        public static Turno MapearACreacion(TurnoCreacionDto dto)
+        {
+            if (dto == null)
+                return null;
+
+            return new Turno
+            {
+                Paciente = new Paciente { IdPaciente = dto.IdPaciente },
+                Medico = new Medico { IdMedico = dto.IdMedico },
+                Especialidad = new Especialidad { IdEspecialidad = dto.IdEspecialidad },
+
+                Cobertura = new Cobertura { IdCobertura = dto.IdCobertura },
+                Plan = dto.IdPlan != 0
+                    ? new Plan { IdPlan = dto.IdPlan }
+                    : null,
+
+                Horario = new HorarioTurno(dto.FechaInicio, dto.FechaFin, validar: true),
+
+                Estado = (EstadoTurno)dto.Estado,
+
+                Observaciones = dto.Observaciones
+            };
+        }
 
     }
 }

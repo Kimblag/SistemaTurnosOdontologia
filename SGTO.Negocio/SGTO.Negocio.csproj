@@ -68,14 +68,14 @@
     <Compile Include="DTOs\Roles\RolDetalleDto.cs" />
     <Compile Include="DTOs\Roles\RolListadoDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />
+    <Compile Include="DTOs\Turnos\TurnoCreacionDto.cs" />
+    <Compile Include="DTOs\Turnos\TurnoEdicionDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoListadoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoPacienteDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioCrearDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioDetalleDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioEdicionDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioListadoDto.cs" />
-    <Compile Include="Excepciones\ExcepcionEntidadNoEncontrada.cs" />
-    <Compile Include="Excepciones\ExcepcionOeracionInvalida.cs" />
     <Compile Include="Excepciones\ExcepcionReglaNegocio.cs" />
     <Compile Include="Excepciones\ExcepcionUsuarioNoAutorizado.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />

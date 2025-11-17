@@ -43,7 +43,7 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
- 
+
         public void EliminarPorMedico(int idMedico, ConexionDBFactory datos)
         {
             try
@@ -198,7 +198,6 @@ namespace SGTO.Datos.Repositorios
                 throw;
             }
         }
-
 
 
     }

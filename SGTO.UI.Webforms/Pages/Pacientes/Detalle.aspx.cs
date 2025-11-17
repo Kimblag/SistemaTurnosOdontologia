@@ -1,18 +1,19 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Pacientes;
+using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace SGTO.UI.Webforms.Pages.Pacientes
@@ -141,8 +142,55 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             }
         }
 
-        protected void gvTurnosPaciente_RowCommand(object sender, GridViewCommandEventArgs e) { }
+        protected void gvTurnosPaciente_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+        }
 
+        protected void gvTurnosPaciente_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                TurnoPacienteDto turnoDto = (TurnoPacienteDto)e.Row.DataItem;
 
+                var divEstadoTurno = (HtmlGenericControl)e.Row.FindControl("divEstadoTurno");
+
+                if (divEstadoTurno != null && turnoDto != null)
+                {
+                    string estadoTurno = turnoDto.Estado.ToLower();
+
+                    switch (estadoTurno)
+                    {
+                        case "nuevo":
+                            divEstadoTurno.InnerText = "Nuevo";
+                            divEstadoTurno.Attributes["class"] = "badge badge-primary";
+                            break;
+                        case "cancelado":
+                            divEstadoTurno.InnerText = "Cancelado";
+                            divEstadoTurno.Attributes["class"] = "badge badge-danger";
+                            break;
+                        case "pendientereprogramacion":
+                            divEstadoTurno.InnerText = "Pendiente Reprogramación";
+                            divEstadoTurno.Attributes["class"] = "badge badge-pending";
+                            break;
+                        case "reprogramado":
+                            divEstadoTurno.InnerText = "Reprogramado";
+                            divEstadoTurno.Attributes["class"] = "badge badge-info";
+                            break;
+                        case "noasistio":
+                            divEstadoTurno.InnerText = "No asistió";
+                            divEstadoTurno.Attributes["class"] = "badge badge-dark";
+                            break;
+                        case "cerrado":
+                            divEstadoTurno.InnerText = "Cerrado";
+                            divEstadoTurno.Attributes["class"] = "badge badge-completed";
+                            break;
+                        default:
+                            divEstadoTurno.InnerText = "Indefinido";
+                            divEstadoTurno.Attributes["class"] = "badge badge-secondary";
+                            break;
+                    }
+                }
+            }
+        }
     }
 }

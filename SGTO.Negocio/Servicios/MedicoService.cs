@@ -32,5 +32,18 @@ namespace SGTO.Negocio.Servicios
                 throw;
             }
         }
+
+        public List<MedicoListadoDto> ListarPorEspecialidad(int idEspecialidad)
+        {
+            try
+            {
+                return MedicoMapper.MapearAListado(_repositorioMedico.ListarPorEspecialidad(idEspecialidad));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

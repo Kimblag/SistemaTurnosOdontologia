@@ -166,7 +166,6 @@ namespace SGTO.Datos.Repositorios
                     throw;
                 }
             }
-            return null;
         }
 
         public void Editar(Medico medico, ConexionDBFactory datos)
@@ -375,6 +374,45 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@IdMedico", idMedico);
             datos.EjecutarAccion();
+        }
+
+
+        public List<Medico> ListarPorEspecialidad(int idEspecialidad)
+        {
+            List<Medico> medicos = new List<Medico>();
+            string query = @"
+                    SELECT M.IdMedico,
+                           M.Apellido,
+                           M.Nombre,
+                           M.Matricula,
+                           M.Estado
+                        FROM Medico M
+                        INNER JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
+                        INNER JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
+                    WHERE M.Estado = 'A' AND E.IdEspecialidad = @IdEspecialidad";
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdEspecialidad", idEspecialidad);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Medico medico = MedicoMapper.MapearAEntidad(lector);
+                            medicos.Add(medico);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return medicos;
         }
 
     }

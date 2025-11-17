@@ -159,13 +159,10 @@ namespace SGTO.Datos.Repositorios
                                 M.Nombre AS NombreMedico,
                                 M.Apellido AS ApellidoMedico,
                                 E.IdEspecialidad,
-                                E.Nombre AS NombreEspecialidad,
-                                TR.IdTratamiento,
-                                TR.Nombre AS NombreTratamiento
+                                E.Nombre AS NombreEspecialidad
                             FROM Turno T
                                 INNER JOIN Medico M ON T.IdMedico = M.IdMedico
                                 INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
-                                INNER JOIN Tratamiento TR ON T.IdTratamiento = TR.IdTratamiento
                             WHERE T.IdPaciente = @IdPaciente
                             ORDER BY T.FechaInicio DESC";
 
@@ -251,6 +248,119 @@ namespace SGTO.Datos.Repositorios
                 }
             }
             return turnos;
+        }
+
+
+        public List<Turno> ObtenerTurnosPorMedicoEnRango(int idMedico, DateTime desde, DateTime hasta)
+        {
+            List<Turno> turnosMedico = new List<Turno>();
+            string query = @"
+                            SELECT 
+                                IdTurno,
+                                IdPaciente,
+                                IdMedico,
+                                IdEspecialidad,
+                                FechaInicio,
+                                FechaFin,
+                                Estado,
+                                Observaciones
+                            FROM Turno
+                            WHERE IdMedico = @IdMedico
+                              AND FechaInicio >= @Desde
+                              AND FechaInicio < @Hasta
+                              AND Estado NOT IN ('C', 'X', 'Z')";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdMedico", idMedico);
+                datos.EstablecerParametros("@Desde", desde);
+                datos.EstablecerParametros("@Hasta", hasta);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Turno turno = TurnoMapper.MapearAEntidadBasico(lector);
+                            turnosMedico.Add(turno);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return turnosMedico;
+            }
+        }
+
+
+        public int Crear(Turno turno)
+        {
+            string query = @"
+                    INSERT INTO Turno (
+                        IdPaciente,
+                        IdMedico,
+                        IdEspecialidad,
+                        IdCobertura,
+                        IdPlan,
+                        FechaInicio,
+                        FechaFin,
+                        Estado,
+                        Observaciones
+                    )
+                    VALUES (
+                        @IdPaciente,
+                        @IdMedico,
+                        @IdEspecialidad,
+                        @IdCobertura,
+                        @IdPlan,
+                        @FechaInicio,
+                        @FechaFin,
+                        @Estado,
+                        @Observaciones
+                    );
+
+                    SELECT SCOPE_IDENTITY();
+                ";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+
+                datos.EstablecerParametros("@IdPaciente", turno.Paciente.IdPaciente);
+                datos.EstablecerParametros("@IdMedico", turno.Medico.IdMedico);
+                datos.EstablecerParametros("@IdEspecialidad", turno.Especialidad.IdEspecialidad);
+                datos.EstablecerParametros("@IdCobertura", turno.Cobertura.IdCobertura);
+
+                if (turno.Plan != null)
+                    datos.EstablecerParametros("@IdPlan", turno.Plan.IdPlan);
+                else
+                    datos.EstablecerParametros("@IdPlan", DBNull.Value);
+
+                datos.EstablecerParametros("@FechaInicio", turno.Horario.Inicio);
+                datos.EstablecerParametros("@FechaFin", turno.Horario.Fin);
+                datos.EstablecerParametros("@Estado", turno.Estado.ToString()[0]);
+
+                if (string.IsNullOrWhiteSpace(turno.Observaciones))
+                    datos.EstablecerParametros("@Observaciones", DBNull.Value);
+                else
+                    datos.EstablecerParametros("@Observaciones", turno.Observaciones);
+
+                try
+                {
+                    int resultado = datos.EjecutarAccionEscalar();
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
 

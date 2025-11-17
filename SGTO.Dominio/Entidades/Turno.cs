@@ -51,5 +51,8 @@ namespace SGTO.Dominio.Entidades
         {
             return new HistoriaClinicaRegistro();
         }
+
+
+
     }
 }

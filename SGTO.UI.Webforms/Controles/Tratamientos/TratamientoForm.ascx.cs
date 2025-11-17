@@ -253,7 +253,7 @@ namespace SGTO.UI.Webforms.Controles.Tratamientos
             }
         }
 
-        public int ExtraerIdTratamiento()
+        private int ExtraerIdTratamiento()
         {
             string idString = Request.QueryString["id-tratamiento"] ?? string.Empty;
             if (!string.IsNullOrEmpty(idString) && int.TryParse(idString, out int id))

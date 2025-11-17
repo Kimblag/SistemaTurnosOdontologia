@@ -71,6 +71,7 @@
                         CssClass="table gridview mb-0"
                         AllowPaging="True" PageSize="5"
                         OnPageIndexChanging="gvTurnosPaciente_PageIndexChanging"
+                        OnRowDataBound="gvTurnosPaciente_RowDataBound"
                         OnRowCommand="gvTurnosPaciente_RowCommand">
 
                         <Columns>
@@ -81,7 +82,9 @@
 
                             <asp:TemplateField HeaderText="Estado">
                                 <ItemTemplate>
-                                    <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                                    <div id="divEstadoTurno" runat="server" class="badge">
+                                        <%# Eval("Estado") %>
+                                    </div>
                                 </ItemTemplate>
                             </asp:TemplateField>
 
