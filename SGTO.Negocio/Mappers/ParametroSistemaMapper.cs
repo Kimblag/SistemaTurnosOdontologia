@@ -22,14 +22,17 @@ namespace SGTO.Negocio.Mappers
                     dto.HoraCierre = parametro.Valor;
                 else if (parametro.Nombre == "SMTP_Server")
                     dto.ServidorCorreo = parametro.Valor;
+                else if (parametro.Nombre == "UsuarioCorreo")
+                    dto.UsuarioCorreo = parametro.Valor;
                 else if (parametro.Nombre == "SMTP_Port")
                     dto.PuertoCorreo = int.TryParse(parametro.Valor, out int port) ? port : 587;
                 else if (parametro.Nombre == "Email_From")
                     dto.EmailRemitente = parametro.Valor;
                 else if (parametro.Nombre == "ReintentosEmail")
-                    dto.ReintentosEmail = int.TryParse(parametro.Valor, out int retry) ? retry : 3;
+                    dto.ReintentosEmail = int.TryParse(parametro.Valor, out int reintentos) ? reintentos : 3;
                 else if (parametro.Nombre == "Moneda")
                     dto.Moneda = parametro.Valor;
+
             }
 
             return dto;

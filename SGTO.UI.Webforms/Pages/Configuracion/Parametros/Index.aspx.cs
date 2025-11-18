@@ -51,9 +51,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
                 }
 
                 txtNombreClinica.Text = dto.NombreClinica ?? string.Empty;
-                //ddlDuracionTurno.SelectedValue = dto.DuracionTurnoMinutos.ToString();
-                //txtHorarioInicio.Text = dto.HoraInicio ?? string.Empty;
-                //txtHorarioCierre.Text = dto.HoraCierre ?? string.Empty;
+                txtUsuarioCorreo.Text = dto.UsuarioCorreo ?? string.Empty;
                 txtServidorCorreo.Text = dto.ServidorCorreo ?? string.Empty;
                 txtPuertoCorreo.Text = dto.PuertoCorreo > 0 ? dto.PuertoCorreo.ToString() : string.Empty;
                 txtEmailRemitente.Text = dto.EmailRemitente ?? string.Empty;

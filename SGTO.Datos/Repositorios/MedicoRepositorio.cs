@@ -269,10 +269,11 @@ namespace SGTO.Datos.Repositorios
                 string query = @"
                             SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
                                     M.FechaNacimiento, M.Telefono, M.Matricula, 
-                                    M.IdUsuario, M.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
+                                    M.IdUsuario, E.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
                             FROM Medico M
-                            JOIN Especialidad E ON M.IdEspecialidad = E.IdEspecialidad
-                            WHERE M.IdMedico @IdMedico";
+                            LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
+                            LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
+                            WHERE M.IdMedico = @IdMedico";
 
                 datos.DefinirConsulta(query);
                 datos.EstablecerParametros("@IdMedico", idMedico);
@@ -281,18 +282,25 @@ namespace SGTO.Datos.Repositorios
                 {
                     using (SqlDataReader lector = datos.EjecutarConsulta())
                     {
-                        if (lector.Read())
+                        Medico medico = null;
+                        while (lector.Read())
                         {
-                            var medico = MedicoMapper.MapearAEntidad(lector);
+                            if (medico == null)
+                            {
+                                medico = MedicoMapper.MapearAEntidad(lector, idMedico);
+                                medico.Especialidades = new List<Especialidad>();
+                            }
 
                             if (!lector.IsDBNull(lector.GetOrdinal("IdEspecialidad")))
                             {
-                                int idEsp = lector.GetInt32(lector.GetOrdinal("IdEspecialidad"));
-                                string nombreEspecialidad = lector.GetString(lector.GetOrdinal("NombreEspecialidad"));
-                                medico.Especialidades.Add(new Especialidad { IdEspecialidad = idEsp, Nombre = nombreEspecialidad });
+                                medico.Especialidades.Add(new Especialidad
+                                {
+                                    IdEspecialidad = lector.GetInt32(lector.GetOrdinal("IdEspecialidad")),
+                                    Nombre = lector.GetString(lector.GetOrdinal("NombreEspecialidad"))
+                                });
                             }
-                            return medico;
                         }
+                        return medico;
                     }
                 }
                 catch (Exception ex)
@@ -301,7 +309,6 @@ namespace SGTO.Datos.Repositorios
                     throw;
                 }
             }
-            return null;
         }
 
         public List<Medico> Listar(string estado = null)

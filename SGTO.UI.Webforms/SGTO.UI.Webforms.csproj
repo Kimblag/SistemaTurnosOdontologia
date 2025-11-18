@@ -172,6 +172,9 @@
     <Content Include="Pages\Turnos\Editar.aspx" />
     <Content Include="Pages\Turnos\Index.aspx" />
     <Content Include="Pages\Turnos\Nuevo.aspx" />
+    <Content Include="Plantillas\Email\ConfirmacionTurno.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />

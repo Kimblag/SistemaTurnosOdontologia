@@ -1,4 +1,5 @@
-﻿using SGTO.Negocio.DTOs;
+﻿using SGTO.Dominio.Entidades;
+using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
 using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.DTOs.Turnos;
@@ -7,6 +8,7 @@ using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -33,13 +35,13 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             if (!IsPostBack)
             {
                 int idPaciente = ExtraerIdPaciente();
+                int idTurno = ExtraerIdTurno();
 
-                if (idPaciente == 0)
+                if (idPaciente == 0 && idTurno == 0)
                 {
                     Response.Redirect("~/Pages/Pacientes/Index", false);
                     return;
                 }
-                int idTurno = ExtraerIdTurno();
 
                 ModoEdicion = idTurno != 0;
 
@@ -367,7 +369,9 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                     Observaciones = txtObservaciones.Text?.Trim()
                 };
 
-                int idTurno = _servicioTurno.Crear(dto);
+                string rutaPlantilla = Server.MapPath("~/Plantillas/Email/ConfirmacionTurno.html");
+                int idTurno = _servicioTurno.Crear(dto, rutaPlantilla);
+
 
                 MensajeUiHelper.SetearYMostrar(
                    this.Page,
@@ -387,5 +391,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 MensajeUiHelper.SetearYMostrar(this.Page, "Dato inválido", ex.Message, "Resultado", null, "abrirModalResultado");
             }
         }
+
+
     }
 }

@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<body style="margin:0; padding:0; background-color:#f4f7f6; font-family:Arial, sans-serif;">
+
+    <div style="max-width:600px; margin:30px auto; background:#ffffff; border-radius:6px;
+                box-shadow:0 2px 6px rgba(0,0,0,0.08); border-top:4px solid #007bff; padding:25px;">
+
+        <!-- Encabezado -->
+        <h1 style="font-size:22px; color:#333; margin:0 0 20px 0; border-bottom:1px solid #eee; padding-bottom:12px;">
+            <span style="color:#007bff; font-weight:bold;">{{NombreClinica}}</span>
+        </h1>
+
+        <!-- Saludo -->
+        <p style="color:#555; font-size:15px;">
+            Hola <strong>{{Paciente}}</strong>,
+        </p>
+
+        <!-- Confirmación -->
+        <div style="background:#d4edda; color:#155724; padding:12px; margin:20px 0; border-radius:4px;
+                    border:1px solid #c3e6cb; text-align:center; font-weight:bold;">
+            ✔ Turno confirmado
+        </div>
+
+        <!-- Texto explicativo -->
+        <p style="color:#555; margin-bottom:20px; font-size:15px;">
+            Su turno ha sido confirmado con éxito. A continuación encontrará los detalles:
+        </p>
+
+        <!-- Datos del turno -->
+        <table cellspacing="0" cellpadding="0" width="100%" style="margin-bottom:25px; font-size:15px;">
+            <tr>
+                <td style="padding:6px 0; color:#777;">Médico:</td>
+                <td style="padding:6px 0; color:#333;"><strong>{{Medico}}</strong></td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0; color:#777;">Especialidad:</td>
+                <td style="padding:6px 0; color:#333;">{{Especialidad}}</td>
+            </tr>
+            <tr>
+                <td style="padding:6px 0; color:#777;">Fecha y hora:</td>
+                <td style="padding:6px 0; color:#007bff; font-weight:bold;">{{Fecha}} – {{Hora}}</td>
+            </tr>
+            <tr>
+                <td style="padding:15px 0 0 0; color:#777; vertical-align:top;">Observaciones:</td>
+                <td style="padding:15px 0 0 0; color:#333; vertical-align:top;">{{Observaciones}}</td>
+            </tr>
+        </table>
+
+        <!-- Botón agregar a calendario (LINK A COMPLETAR) -->
+        <div style="text-align:center; margin-bottom:30px;">
+            <a href="{{LinkAgregarACalendario}}"
+               style="background:#28a745; color:white; padding:12px 22px; font-size:15px;
+                      border-radius:5px; text-decoration:none; display:inline-block;">
+                Agregar a mi calendario
+            </a>
+        </div>
+
+        <!-- Footer -->
+        <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
+        <p style="font-size:12px; color:#999; text-align:center; margin:0;">
+            Este es un mensaje automático de {{NombreClinica}}. Por favor no responder.
+        </p>
+    </div>
+</body>
+</html>

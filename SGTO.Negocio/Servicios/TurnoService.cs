@@ -5,8 +5,11 @@ using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
+using SGTO.Negocio.Servicios.EmailServices;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 
 namespace SGTO.Negocio.Servicios
@@ -19,6 +22,7 @@ namespace SGTO.Negocio.Servicios
         private readonly HorarioSemanalRepositorio _repositorioHorario;
         private readonly CoberturaRepositorio _repositorioCobertura;
         private readonly PlanRepositorio _repositorioPlan;
+        private readonly MedicoRepositorio _repositorioMedico;
 
 
         public TurnoService()
@@ -29,6 +33,7 @@ namespace SGTO.Negocio.Servicios
             _repositorioHorario = new HorarioSemanalRepositorio();
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
+            _repositorioMedico = new MedicoRepositorio();
         }
 
         public bool TieneTurnosActivosPorCobertura(int idCobertura)
@@ -104,7 +109,7 @@ namespace SGTO.Negocio.Servicios
                 if (horarios.Count == 0)
                     return fechasDisponibles;
 
-                DateTime desde = DateTime.Today;
+                DateTime desde = DateTime.Today.AddDays(1);
                 DateTime hasta = DateTime.Today.AddDays(semanas * 7);
 
                 // se debe recorrer cada día que se encientra dentro del rango
@@ -197,25 +202,71 @@ namespace SGTO.Negocio.Servicios
 
 
 
-        public int Crear(TurnoCreacionDto dto)
+        public int Crear(TurnoCreacionDto dto, string rutaPlantillaEmail)
         {
-            ValidarReglasNegocioAgendaTurno(dto);
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
+            Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
+            Medico medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
+            ValidarReglasNegocioAgendaTurno(dto, paciente, especialidad);
             Turno turno = TurnoMapper.MapearACreacion(dto);
+            int idTurno;
             try
             {
-                return _repositorioTurno.Crear(turno);
+                idTurno = _repositorioTurno.Crear(turno);
+
             }
             catch (Exception)
             {
                 throw;
             }
+
+            try
+            {
+                EmailService emailService = new EmailService();
+
+                string htmlBase = CargarPlantillaDesdeArchivo(rutaPlantillaEmail);
+
+                string htmlFinal = emailService.GenerarHtmlConfirmacion(
+                    htmlBase,
+                    paciente,
+                    medico,
+                    especialidad,
+                    dto.FechaInicio,
+                    dto.Observaciones
+                );
+
+                emailService.Enviar(
+                    paciente.Email.Valor,
+                    "Confirmación de turno",
+                    htmlFinal
+                );
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error: " + ex.Message);
+            }
+            return idTurno;
         }
 
+        private string CargarPlantillaDesdeArchivo(string ruta)
+        {
+            try
+            {
+                using (var lector = new StreamReader(ruta))
+                {
+                    return lector.ReadToEnd();
+                }
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
 
-        private void ValidarReglasNegocioAgendaTurno(TurnoCreacionDto dto)
+        private void ValidarReglasNegocioAgendaTurno(TurnoCreacionDto dto, Paciente paciente, Especialidad especialidad)
         {
             // validar que el paciente exista
-            Paciente paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
+
             if (paciente == null)
                 throw new ExcepcionReglaNegocio("El paciente no existe.");
 
@@ -246,7 +297,7 @@ namespace SGTO.Negocio.Servicios
             }
 
             //validar que la especialidad esté activa.
-            Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
+
             if (especialidad.Estado.ToString().ToLower()[0] != 'a')
                 throw new ExcepcionReglaNegocio("La especialidad está inactiva.");
 

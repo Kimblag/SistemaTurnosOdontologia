@@ -17,37 +17,6 @@
                     </div>
                 </div>
 
-              <%--  <div class="row g-3 mb-3 align-items-center">
-                    <div class="col-md-4">
-                        <label for="ddlDuracionTurno" class="form-label fw-semibold">Duración Estándar del Turno</label>
-                    </div>
-                    <div class="col-md-8">
-                        <asp:DropDownList ID="ddlDuracionTurno" runat="server" CssClass="form-select">
-                            <asp:ListItem Text="30 minutos" Value="30" />
-                            <asp:ListItem Text="45 minutos" Value="45" />
-                            <asp:ListItem Text="1 hora" Value="60" />
-                        </asp:DropDownList>
-                    </div>
-                </div>--%>
-
-              <%--  <div class="row g-3 mb-3 align-items-center">
-                    <div class="col-md-4">
-                        <label for="txtHorarioInicio" class="form-label fw-semibold">Horario de Inicio</label>
-                    </div>
-                    <div class="col-md-8">
-                        <asp:TextBox ID="txtHorarioInicio" runat="server" CssClass="form-control" TextMode="Time" />
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-3 align-items-center">
-                    <div class="col-md-4">
-                        <label for="txtHorarioCierre" class="form-label fw-semibold">Horario de Cierre</label>
-                    </div>
-                    <div class="col-md-8">
-                        <asp:TextBox ID="txtHorarioCierre" runat="server" CssClass="form-control" TextMode="Time" />
-                    </div>
-                </div>--%>
-
                 <div class="row g-3 mb-3 align-items-center">
                     <div class="col-md-4">
                         <label for="txtServidorCorreo" class="form-label fw-semibold">Servidor SMTP</label>
@@ -63,6 +32,15 @@
                     </div>
                     <div class="col-md-8">
                         <asp:TextBox ID="txtPuertoCorreo" runat="server" CssClass="form-control" TextMode="Number" />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3 align-items-center">
+                    <div class="col-md-4">
+                        <label for="txtUsuarioCorreo" class="form-label fw-semibold">Usuario SMTP</label>
+                    </div>
+                    <div class="col-md-8">
+                        <asp:TextBox ID="txtUsuarioCorreo" runat="server" CssClass="form-control" />
                     </div>
                 </div>
 

@@ -11,6 +11,7 @@
         public string EmailRemitente { get; set; }
         public int ReintentosEmail { get; set; }
         public string Moneda { get; set; }
+        public string UsuarioCorreo { get; set; }
 
     }
 }

@@ -97,7 +97,37 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+        public string ObtenerValor(string nombre)
+        {
+            string valor = null;
 
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                string query = @"SELECT Valor 
+                         FROM ParametroSistema
+                         WHERE Nombre = @Nombre";
+
+                try
+                {
+                    datos.LimpiarParametros();
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Nombre", nombre);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            valor = lector.GetString(0);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return valor;
+        }
 
     }
 }
