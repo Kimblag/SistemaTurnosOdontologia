@@ -1,0 +1,84 @@
+﻿using System;
+using System.Web.UI;
+using SGTO.Negocio.Servicios;
+using SGTO.Negocio.DTOs.Medicos;
+
+namespace SGTO.UI.Webforms.Pages.Medicos
+{
+    public partial class Detalle : Page
+    {
+        private readonly MedicoService _medicoService = new MedicoService();
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                CargarDatos();
+            }
+        }
+
+        private void CargarDatos()
+        {
+            string idStr = Request.QueryString["id"];
+            if (int.TryParse(idStr, out int id))
+            {
+                try
+                {
+                    var medico = _medicoService.ObtenerDetalle(id);
+
+                    if (medico != null)
+                    {
+                        lblNombre.Text = medico.NombreCompleto;
+                        lblDni.Text = medico.NumeroDocumento;
+                        lblNacimiento.Text = medico.FechaNacimiento.ToShortDateString();
+                        lblGenero.Text = medico.Genero;
+                        lblEmail.Text = medico.Email;
+                        lblTelefono.Text = medico.Telefono;
+
+                        bool activo = medico.Estado == "Activo" || medico.Estado == "A";
+                        lblEstado.Text = activo ? "ACTIVO" : "INACTIVO";
+                        lblEstado.CssClass = activo ? "badge bg-success" : "badge bg-danger";
+
+                        lblMatricula.Text = medico.Matricula;
+                        lblUsuario.Text = medico.NombreUsuario;
+
+                        if (medico.FechaIncorporacion == DateTime.MinValue)
+                        {
+                            lblFechaAlta.Text = "-";
+                        }
+                        else
+                        {
+                            lblFechaAlta.Text = medico.FechaIncorporacion.ToShortDateString();
+                        }
+                        lblEspecialidades.Text = (medico.Especialidades != null && medico.Especialidades.Count > 0)
+                            ? string.Join(", ", medico.Especialidades)
+                            : "Sin especialidades";
+
+                        lblCoberturas.Text = (medico.CoberturasAceptadas != null && medico.CoberturasAceptadas.Count > 0)
+                            ? string.Join(", ", medico.CoberturasAceptadas)
+                            : "Sin registros de atención";
+
+                        lblTotalPacientes.Text = medico.CantidadPacientesAtendidos.ToString();
+
+                        gvHistorial.DataSource = medico.HistorialTurnos;
+                        gvHistorial.DataBind();
+
+                        lnkEditar.NavigateUrl = $"~/Pages/Medicos/Editar.aspx?id={id}";
+                    }
+                    else
+                    {
+                        Response.Redirect("~/Pages/Medicos/Medicos.aspx");
+                    }
+                }
+                catch (Exception)
+                {
+                    Response.Redirect("~/Pages/Error/Error.aspx");
+                }
+            }
+            else
+            {
+                Response.Redirect("~/Pages/Medicos/Medicos.aspx");
+            }
+        }
+    }
+}

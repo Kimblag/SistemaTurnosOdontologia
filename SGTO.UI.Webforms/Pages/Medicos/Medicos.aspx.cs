@@ -49,16 +49,12 @@ namespace SGTO.UI.Webforms.Pages.Medicos
         protected void gvMedicos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
 
-            if (e.CommandName == "Editar")
+            if (e.CommandName == "Ver")
             {
-                // int idMedico = Convert.ToInt32(e.CommandArgument);
-                // Response.Redirect($"~/Pages/Medicos/Editar?id-medico={idMedico}", false);
+                int idMedico = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"~/Pages/Medicos/Detalle.aspx?id={idMedico}", false);
             }
-            else if (e.CommandName == "Ver")
-            {
-                // int idMedico = Convert.ToInt32(e.CommandArgument);
-                // Response.Redirect($"~/Pages/Medicos/Detalle?id-medico={idMedico}", false);
-            }
+         
         }
 
 

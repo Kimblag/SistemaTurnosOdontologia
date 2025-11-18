@@ -4,6 +4,7 @@ using SGTO.Dominio.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using SGTO.Comun.DTOs;
 
 
 namespace SGTO.Datos.Repositorios
@@ -362,7 +363,48 @@ namespace SGTO.Datos.Repositorios
                 }
             }
         }
+        public List<TurnoHistorialDto> ObtenerHistorialPorMedico(int idMedico)
+        {
+            var lista = new List<TurnoHistorialDto>();
 
+            string query = @"
+                SELECT 
+                    T.FechaInicio,
+                    P.Nombre + ' ' + P.Apellido AS PacienteNombre,
+                    TR.Nombre AS TratamientoNombre,
+                    C.Nombre AS CoberturaNombre,
+                    T.Estado
+                FROM Turno T
+                INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
+                INNER JOIN Tratamiento TR ON T.IdTratamiento = TR.IdTratamiento
+                INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                WHERE T.IdMedico = @IdMedico
+                ORDER BY T.FechaInicio DESC";
 
+            using (var datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdMedico", idMedico);
+
+                using (var lector = datos.EjecutarConsulta())
+                {
+                    while (lector.Read())
+                    {
+                        var fechaInicio = lector.GetDateTime(lector.GetOrdinal("FechaInicio"));
+
+                        lista.Add(new TurnoHistorialDto
+                        {
+                            Fecha = fechaInicio.ToShortDateString(),
+                            Hora = fechaInicio.ToString("HH:mm"),
+                            Paciente = lector.GetString(lector.GetOrdinal("PacienteNombre")),
+                            Tratamiento = lector.GetString(lector.GetOrdinal("TratamientoNombre")),
+                            Cobertura = lector.GetString(lector.GetOrdinal("CoberturaNombre")),
+                            Estado = lector.GetString(lector.GetOrdinal("Estado"))
+                        });
+                    }
+                }
+            }
+            return lista;
+        }
     }
 }

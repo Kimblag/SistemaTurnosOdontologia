@@ -264,16 +264,20 @@ namespace SGTO.Datos.Repositorios
 
         public Medico ObtenerPorId(int idMedico)
         {
+            Medico medico = null;
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 string query = @"
-                            SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
-                                    M.FechaNacimiento, M.Telefono, M.Matricula, 
-                                    M.IdUsuario, E.IdEspecialidad, E.Nombre AS NombreEspecialidad, M.Estado, M.FechaAlta, M.FechaModificacion
-                            FROM Medico M
-                            LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
-                            LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
-                            WHERE M.IdMedico = @IdMedico";
+            SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
+                   M.FechaNacimiento, M.Telefono, M.Matricula, 
+                   M.IdUsuario, M.Estado, M.FechaAlta, M.FechaModificacion,
+                   U.NombreUsuario, U.Email, 
+                   ME.IdEspecialidad, E.Nombre AS NombreEspecialidad
+            FROM Medico M
+            INNER JOIN Usuario U ON M.IdUsuario = U.IdUsuario
+            LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
+            LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
+            WHERE M.IdMedico = @IdMedico";
 
                 datos.DefinirConsulta(query);
                 datos.EstablecerParametros("@IdMedico", idMedico);
@@ -282,12 +286,30 @@ namespace SGTO.Datos.Repositorios
                 {
                     using (SqlDataReader lector = datos.EjecutarConsulta())
                     {
-                        Medico medico = null;
                         while (lector.Read())
                         {
                             if (medico == null)
                             {
-                                medico = MedicoMapper.MapearAEntidad(lector, idMedico);
+                                medico = MedicoMapper.MapearAEntidad(lector);
+
+                                if (HasColumn(lector, "FechaAlta") && !lector.IsDBNull(lector.GetOrdinal("FechaAlta")))
+                                {
+                                    medico.FechaAlta = lector.GetDateTime(lector.GetOrdinal("FechaAlta"));
+                                }
+
+                                if (!lector.IsDBNull(lector.GetOrdinal("IdUsuario")))
+                                {
+                                    string emailStr = lector.GetString(lector.GetOrdinal("Email"));
+                                    medico.Email = new Dominio.ObjetosValor.Email(emailStr);
+
+                                    medico.Usuario = new Usuario
+                                    {
+                                        IdUsuario = lector.GetInt32(lector.GetOrdinal("IdUsuario")),
+                                        NombreUsuario = lector.GetString(lector.GetOrdinal("NombreUsuario")),
+                                        Email = medico.Email
+                                    };
+                                }
+
                                 medico.Especialidades = new List<Especialidad>();
                             }
 
@@ -300,16 +322,29 @@ namespace SGTO.Datos.Repositorios
                                 });
                             }
                         }
-                        return medico;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("Error en MedicoRepositorio.ObtenerPorUsuarioId: " + ex.Message);
+                    Debug.WriteLine("Error en MedicoRepositorio.ObtenerPorId: " + ex.Message);
                     throw;
                 }
             }
+            return medico;
         }
+
+        // Helper para validar columna
+        private bool HasColumn(SqlDataReader dr, string columnName)
+        {
+            for (int i = 0; i < dr.FieldCount; i++)
+            {
+                if (dr.GetName(i).Equals(columnName, StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
+
+
 
         public List<Medico> Listar(string estado = null)
         {
