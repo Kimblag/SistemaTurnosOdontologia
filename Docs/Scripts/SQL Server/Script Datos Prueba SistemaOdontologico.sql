@@ -116,13 +116,12 @@ INSERT INTO ParametroSistema (Nombre, Valor, Descripcion) VALUES
 ('DuracionTurnoMinutos', '60', 'Duración predeterminada de turno'),
 ('HoraInicioJornada', '08:00', 'Inicio jornada'),
 ('HoraFinJornada', '18:00', 'Fin jornada'),
-('SMTP_Server', 'smtp.gmail.com', 'Servidor de correo'),
+('SMTP_Server', 'smtp-relay.brevo.com', 'Servidor de correo'),
 ('SMTP_Port', '587', 'Puerto SMTP'),
 ('Email_From', 'no-reply@sgto.com', 'Correo remitente'),
-('Moneda', 'ARS', 'Moneda local'),
-('DiasAnticipacionTurno', '30', 'Días de anticipación máximos'),
-('MaxTurnosPorDia', '20', 'Máximo de turnos/día'),
-('NombreClinica', 'Clínica SGTO', 'Nombre visible del sistema');
+('NombreClinica', 'Clínica SGTO', 'Nombre visible del sistema'),
+('UsuarioCorreo', '97ee2a002@smtp-brevo.com', 'Nombre usuario SMTP del sistema'),
+('ReintentosEmail', '3', 'Cantidad de intentos para reenviar un email');
 
 
 
@@ -253,18 +252,18 @@ GO
 
 -- Turno
 INSERT INTO Turno
-(IdPaciente, IdMedico, IdEspecialidad, IdTratamiento, IdCobertura, IdPlan, FechaInicio, FechaFin, Estado, Observaciones)
+(IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan, FechaInicio, FechaFin, Estado, Observaciones)
 VALUES
-(1,1,10,10,1,NULL,'2025-10-25 09:00','2025-10-25 10:00','N','Control general'),
-(2,2,1,4,2,2,'2025-10-26 10:00','2025-10-26 11:00','R','Reprogramado por médico'),
-(3,3,2,3,3,3,'2025-10-26 11:00','2025-10-26 12:00','C','Cancelado por paciente'),
-(4,4,9,6,4,6,'2025-10-27 15:00','2025-10-27 16:00','X','No asistió'),
-(5,5,6,5,5,7,'2025-10-27 09:00','2025-10-27 10:00','N','Implante programado'),
-(6,6,7,7,6,8,'2025-10-28 14:00','2025-10-28 15:00','Z','Prótesis realizada'),
-(7,1,5,2,7,9,'2025-10-28 10:00','2025-10-28 11:00','C','Cancelado por clima'),
-(8,2,8,8,8,10,'2025-10-29 09:00','2025-10-29 10:00','Z','Radiografía realizada'),
-(9,3,4,9,9,8,'2025-10-29 11:00','2025-10-29 12:00','N','Selladores'),
-(10,4,3,1,10,NULL,'2025-10-30 10:00','2025-10-30 11:00','N','Limpieza inicial');
+(1,1,10,1,NULL,'2025-10-25 09:00','2025-10-25 10:00','N','Control general'),
+(2,2,1,2,2,'2025-10-26 10:00','2025-10-26 11:00','R','Reprogramado por médico'),
+(3,3,2,3,3,'2025-10-26 11:00','2025-10-26 12:00','C','Cancelado por paciente'),
+(4,4,9,4,6,'2025-10-27 15:00','2025-10-27 16:00','X','No asistió'),
+(5,5,6,5,7,'2025-10-27 09:00','2025-10-27 10:00','N','Implante programado'),
+(6,6,7,6,8,'2025-10-28 14:00','2025-10-28 15:00','Z','Prótesis realizada'),
+(7,1,5,7,9,'2025-10-28 10:00','2025-10-28 11:00','C','Cancelado por clima'),
+(8,2,8,8,10,'2025-10-29 09:00','2025-10-29 10:00','Z','Radiografía realizada'),
+(9,3,4,9,8,'2025-10-29 11:00','2025-10-29 12:00','N','Selladores'),
+(10,4,1,10,NULL,'2025-10-30 10:00','2025-10-30 11:00','N','Limpieza inicial');
 
 
 
