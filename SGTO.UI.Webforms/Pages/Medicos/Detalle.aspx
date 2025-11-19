@@ -8,9 +8,7 @@
                 <asp:HyperLink ID="lnkVolver" runat="server" NavigateUrl="~/Pages/Medicos/Medicos.aspx" CssClass="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-left"></i> Volver
                 </asp:HyperLink>
-                <asp:HyperLink ID="lnkEditar" runat="server" CssClass="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Editar
-                </asp:HyperLink>
+                
             </div>
         </div>
 

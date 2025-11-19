@@ -50,37 +50,16 @@ namespace SGTO.Negocio.Servicios
         {
             try
             {
-                // Obtener datos del Medico 
                 var medicoEntidad = _repositorioMedico.ObtenerPorId(id);
                 if (medicoEntidad == null) return null;
 
-                // Obtener historial de turnos
-                var turnoRepo = new TurnoRepositorio(); // Instancia directa o inyección
+                var turnoRepo = new TurnoRepositorio();
                 var historial = turnoRepo.ObtenerHistorialPorMedico(id);
+                var dto = MedicoMapper.MapearADetalleDto(medicoEntidad);
 
-                var dto = new MedicoDetalleDto
-                {
-                    IdMedico = medicoEntidad.IdMedico,
-                    NombreCompleto = $"{medicoEntidad.Nombre} {medicoEntidad.Apellido}",
-                    NumeroDocumento = medicoEntidad.Dni != null ? medicoEntidad.Dni.Numero : "-",
-                    FechaNacimiento = medicoEntidad.FechaNacimiento,
-                    Telefono = medicoEntidad.Telefono != null ? medicoEntidad.Telefono.Numero : "-",
-                    Email = medicoEntidad.Email != null ? medicoEntidad.Email.Valor : "-",
-                    Estado = medicoEntidad.Estado.ToString(),
-
-
-                    // Info Profesional
-                    Matricula = medicoEntidad.Matricula,
-                    FechaIncorporacion = medicoEntidad.FechaAlta,
-                    Especialidades = medicoEntidad.Especialidades.Select(e => e.Nombre).ToList(),
-
-                    // Lógica de Negocio: Calculamos estadísticas basadas en el historial
-                    CantidadPacientesAtendidos = historial.Select(x => x.Paciente).Distinct().Count(),
-                    CoberturasAceptadas = historial.Select(x => x.Cobertura).Distinct().ToList(),
-
-                    // Lista para la grilla
-                    HistorialTurnos = historial
-                };
+                dto.CantidadPacientesAtendidos = historial.Select(x => x.Paciente).Distinct().Count();
+                dto.CoberturasAceptadas = historial.Select(x => x.Cobertura).Distinct().ToList();
+                dto.HistorialTurnos = historial;
 
                 return dto;
             }

@@ -63,7 +63,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                         gvHistorial.DataSource = medico.HistorialTurnos;
                         gvHistorial.DataBind();
 
-                        lnkEditar.NavigateUrl = $"~/Pages/Medicos/Editar.aspx?id={id}";
+                        
                     }
                     else
                     {

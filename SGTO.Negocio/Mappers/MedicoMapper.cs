@@ -68,13 +68,12 @@ namespace SGTO.Negocio.Mappers
         }
 
 
-      
+
 
         public static MedicoDetalleDto MapearADetalleDto(Medico medico)
         {
             List<int> ids = new List<int>();
             List<string> nombres = new List<string>();
-
             if (medico.Especialidades != null)
             {
                 foreach (var esp in medico.Especialidades)
@@ -84,26 +83,36 @@ namespace SGTO.Negocio.Mappers
                 }
             }
 
-            //  Lógica para mostrar Género completo ---
-            string generoTexto = medico.Genero.ToString();
-            if (generoTexto == "M") generoTexto = "Masculino";
-            else if (generoTexto == "F") generoTexto = "Femenino";
-            else if (generoTexto == "O") generoTexto = "Otro";
-            else if (generoTexto == "N") generoTexto = "No Binario";
-            // ---------------------------------------------------------
+            string generoTexto = string.Empty;
+            switch (medico.Genero)
+            {
+                case SGTO.Dominio.Enums.Genero.Masculino:
+                    generoTexto = "Masculino";
+                    break;
+                case SGTO.Dominio.Enums.Genero.Femenino:
+                    generoTexto = "Femenino";
+                    break;
+                case SGTO.Dominio.Enums.Genero.Otro:
+                    generoTexto = "Otro";
+                    break;
+                case SGTO.Dominio.Enums.Genero.PrefiereNoDecir: 
+                    generoTexto = "Prefiere no decir";
+                    break;
+                default:
+                    generoTexto = medico.Genero.ToString();
+                    break;
+            }
 
             return new MedicoDetalleDto
             {
                 IdMedico = medico.IdMedico,
                 NombreCompleto = $"{medico.Nombre} {medico.Apellido}".Trim(),
                 NumeroDocumento = medico.Dni != null ? medico.Dni.Numero : string.Empty,
-
                 FechaNacimiento = medico.FechaNacimiento,
                 Telefono = medico.Telefono != null ? medico.Telefono.Numero : string.Empty,
                 Email = medico.Email != null ? medico.Email.Valor : "Sin email",
                 Estado = medico.Estado.ToString(),
 
-                // Asignamos el texto corregido
                 Genero = generoTexto,
 
                 Matricula = medico.Matricula,
@@ -112,12 +121,12 @@ namespace SGTO.Negocio.Mappers
 
                 IdEspecialidades = ids,
                 Especialidades = nombres,
+
                 CoberturasAceptadas = new List<string>(),
                 CantidadPacientesAtendidos = 0,
-                HistorialTurnos = new List<TurnoHistorialDto>()
+                HistorialTurnos = new List<SGTO.Comun.DTOs.TurnoHistorialDto>()
             };
         }
-
         public static MedicoEdicionDto MapearAEdicionDto(Medico medico)
         {
             List<int> idEspecialidades = new List<int>();
