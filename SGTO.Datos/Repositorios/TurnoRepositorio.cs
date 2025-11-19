@@ -392,6 +392,20 @@ namespace SGTO.Datos.Repositorios
                     {
                         var fechaInicio = lector.GetDateTime(lector.GetOrdinal("FechaInicio"));
 
+                        string estadoCodigo = lector.GetString(lector.GetOrdinal("Estado"));
+                        string estadoTexto = string.Empty;
+
+                        switch (estadoCodigo)
+                        {
+                            case "N": estadoTexto = "Nuevo"; break;
+                            case "P": estadoTexto = "Pendiente"; break;
+                            case "R": estadoTexto = "Reprogramado"; break;
+                            case "X": estadoTexto = "Ausente"; break; 
+                            case "C": estadoTexto = "Cancelado"; break;
+                            case "Z": estadoTexto = "Cerrado"; break; 
+                            default: estadoTexto = estadoCodigo; break;
+                        }
+
                         lista.Add(new TurnoHistorialDto
                         {
                             Fecha = fechaInicio.ToShortDateString(),
@@ -399,7 +413,8 @@ namespace SGTO.Datos.Repositorios
                             Paciente = lector.GetString(lector.GetOrdinal("PacienteNombre")),
                             Tratamiento = lector.GetString(lector.GetOrdinal("TratamientoNombre")),
                             Cobertura = lector.GetString(lector.GetOrdinal("CoberturaNombre")),
-                            Estado = lector.GetString(lector.GetOrdinal("Estado"))
+
+                            Estado = estadoTexto
                         });
                     }
                 }
