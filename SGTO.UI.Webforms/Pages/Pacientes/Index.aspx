@@ -109,11 +109,13 @@
                     </asp:TemplateField>
 
                     <%--columna acciones--%>
-                    <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-start">
+                    <asp:TemplateField HeaderText="Acciones" 
+                        ItemStyle-Width="240px" 
+                        ItemStyle-CssClass="text-start"
+                        >
                         <ItemTemplate>
 
                             <div class="d-flex justify-content-end gap-2">
-
 
                                 <asp:LinkButton ID="btnAgendarTurno"
                                     runat="server"
