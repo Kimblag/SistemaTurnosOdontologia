@@ -1,14 +1,8 @@
-﻿using SGTO.Comun.Validacion;
-using SGTO.Datos.Repositorios;
-using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
-using SGTO.Dominio.ObjetosValor;
+﻿using SGTO.Datos.Repositorios;
 using SGTO.Negocio.DTOs.Medicos;
-using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SGTO.Negocio.Servicios
 {
@@ -16,10 +10,13 @@ namespace SGTO.Negocio.Servicios
     {
 
         private readonly MedicoRepositorio _repositorioMedico;
+        private readonly TurnoRepositorio _repositorioTurno;
+
 
         public MedicoService()
         {
             _repositorioMedico = new MedicoRepositorio();
+            _repositorioTurno = new TurnoRepositorio();
         }
 
         public List<MedicoListadoDto> Listar(string estado = null)
@@ -53,12 +50,30 @@ namespace SGTO.Negocio.Servicios
                 var medicoEntidad = _repositorioMedico.ObtenerPorId(id);
                 if (medicoEntidad == null) return null;
 
-                var turnoRepo = new TurnoRepositorio();
-                var historial = turnoRepo.ObtenerHistorialPorMedico(id);
+                var historial = _repositorioTurno.ObtenerHistorialPorMedico(id);
+
                 var dto = MedicoMapper.MapearADetalleDto(medicoEntidad);
 
-                dto.CantidadPacientesAtendidos = historial.Select(x => x.Paciente).Distinct().Count();
-                dto.CoberturasAceptadas = historial.Select(x => x.Cobertura).Distinct().ToList();
+                List<string> pacientesUnicos = new List<string>();
+                foreach (var turno in historial)
+                {
+                    if (!pacientesUnicos.Contains(turno.Paciente))
+                    {
+                        pacientesUnicos.Add(turno.Paciente);
+                    }
+                }
+                dto.CantidadPacientesAtendidos = pacientesUnicos.Count;
+
+                List<string> coberturasUnicas = new List<string>();
+                foreach (var turno in historial)
+                {
+                    if (!coberturasUnicas.Contains(turno.Cobertura))
+                    {
+                        coberturasUnicas.Add(turno.Cobertura);
+                    }
+                }
+                dto.CoberturasAceptadas = coberturasUnicas;
+
                 dto.HistorialTurnos = historial;
 
                 return dto;

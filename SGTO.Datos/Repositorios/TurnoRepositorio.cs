@@ -368,18 +368,18 @@ namespace SGTO.Datos.Repositorios
             var lista = new List<TurnoHistorialDto>();
 
             string query = @"
-                SELECT 
-                    T.FechaInicio,
-                    P.Nombre + ' ' + P.Apellido AS PacienteNombre,
-                    TR.Nombre AS TratamientoNombre,
-                    C.Nombre AS CoberturaNombre,
-                    T.Estado
-                FROM Turno T
-                INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
-                INNER JOIN Tratamiento TR ON T.IdTratamiento = TR.IdTratamiento
-                INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
-                WHERE T.IdMedico = @IdMedico
-                ORDER BY T.FechaInicio DESC";
+                    SELECT 
+                        T.FechaInicio,
+                        P.Nombre + ' ' + P.Apellido AS PacienteNombre,
+                        E.Nombre AS TratamientoNombre, 
+                        C.Nombre AS CoberturaNombre,
+                        T.Estado
+                    FROM Turno T
+                        INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
+                        INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                        INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                    WHERE T.IdMedico = @IdMedico
+                    ORDER BY T.FechaInicio DESC";
 
             using (var datos = new ConexionDBFactory())
             {
@@ -400,9 +400,9 @@ namespace SGTO.Datos.Repositorios
                             case "N": estadoTexto = "Nuevo"; break;
                             case "P": estadoTexto = "Pendiente"; break;
                             case "R": estadoTexto = "Reprogramado"; break;
-                            case "X": estadoTexto = "Ausente"; break; 
+                            case "X": estadoTexto = "Ausente"; break;
                             case "C": estadoTexto = "Cancelado"; break;
-                            case "Z": estadoTexto = "Cerrado"; break; 
+                            case "Z": estadoTexto = "Cerrado"; break;
                             default: estadoTexto = estadoCodigo; break;
                         }
 
