@@ -29,6 +29,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             {
                 master.EstablecerOpcionMenuActiva("Reportes");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Consulte estadísticas operativas y exporte información histórica del sistema.");
             }
 
             if (!IsPostBack)

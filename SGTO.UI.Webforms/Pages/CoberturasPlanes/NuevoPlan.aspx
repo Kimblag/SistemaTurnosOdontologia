@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Nuevo Plan" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="NuevoPlan.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.NuevoPlan" %>
+﻿<%@ Page Title="Gestión de Plan" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="NuevoPlan.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.NuevoPlan" %>
 
 <%--registrar el user control--%>
 <%@ Register Src="~/Controles/Coberturas/PlanesForm.ascx" TagPrefix="uc1" TagName="PlanesForm" %>

@@ -1,7 +1,5 @@
 ﻿using SGTO.UI.Webforms.MasterPages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             {
                 master.EstablecerOpcionMenuActiva("turnos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Seleccione la especialidad, médico y horario disponible para el paciente seleccionado.");
             }
         }
     }

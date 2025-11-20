@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
             {
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Defina la entidad prestadora de salud.");
             }
             CoberturasFormControl.ModoEdicion = false;
         }

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Tratamientos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Nomenclador de Tratamientos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
     CodeBehind="Index.aspx.cs"
     Inherits="SGTO.UI.Webforms.Pages.Tratamientos.Tratamientos" %>
 
@@ -10,10 +10,8 @@
         <div class="container-fluid px-0 mb-3">
             <div class="row g-2 align-items-center">
 
-                <%-- Izquierda: buscador + filtros --%>
                 <div class="col-12 col-lg-9 d-flex flex-wrap align-items-center gap-2">
 
-                    <%-- Buscador --%>
                     <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0">
@@ -28,7 +26,6 @@
                         </div>
                     </div>
 
-                    <%-- Filtro Especialidad --%>
                     <div class="col-auto">
                         <asp:DropDownList
                             ID="ddlEspecialidad"
@@ -40,7 +37,6 @@
                         </asp:DropDownList>
                     </div>
 
-                    <%-- Filtro por Estado --%>
                     <div class="col-auto">
                         <asp:DropDownList
                             ID="ddlEstado"
@@ -55,7 +51,7 @@
                         </asp:DropDownList>
                     </div>
 
-                    <%-- BOTONES DE FILTRO  --%>
+
                     <div class="col-auto">
                         <asp:Button
                             ID="btnBuscar"
@@ -75,7 +71,7 @@
 
                 </div>
 
-                <%-- Derecha: botón nuevo tratamiento --%>
+
                 <div class="col-12 col-lg-3 text-lg-end">
                     <asp:Button
                         ID="btnNuevoTratamiento"
@@ -114,22 +110,31 @@
 
 
 
-                    <asp:TemplateField HeaderText="Acciones">
+                    <asp:TemplateField HeaderText="Acciones"
+                        ItemStyle-Width="240px"
+                        ItemStyle-CssClass="text-start">
                         <ItemTemplate>
-                            <asp:LinkButton ID="btnEditar"
-                                runat="server"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdTratamiento") %>'> 
-                                <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
 
-                            <button type="button"
-                                class="btn btn-outline-danger btn-sm"
-                                data-id='<%# Eval("IdTratamiento") %>'
-                                onclick="abrirModalConfirmacion('<%# Eval("IdTratamiento") %>')">
-                                <i class="bi bi-x"></i>
-                            </button>
+                            <div class="btn-group btn-group-sm" role="group">
+
+                                <asp:LinkButton ID="btnEditar"
+                                    runat="server"
+                                    CssClass="btn btn-outline-secondary"
+                                    CommandName="Editar"
+                                    ToolTip="Editar Datos"
+                                    CommandArgument='<%# Eval("IdTratamiento") %>'> 
+                                <i class="bi bi-pencil"></i>
+                                </asp:LinkButton>
+
+                                <button type="button"
+                                    class="btn btn-outline-danger"
+                                    title="Dar de baja"
+                                    data-id='<%# Eval("IdTratamiento") %>'
+                                    onclick="abrirModalConfirmacion('<%# Eval("IdTratamiento") %>')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+
+                            </div>
                         </ItemTemplate>
                     </asp:TemplateField>
 

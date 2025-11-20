@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Modifique la información de contacto o actualice la cobertura médica vigente.");
             }
 
             if (!IsPostBack)

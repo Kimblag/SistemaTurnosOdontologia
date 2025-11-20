@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Agregar Nuevo Tratamiento" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" 
+﻿<%@ Page Title="Administrar Tratamiento" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" 
     Inherits="SGTO.UI.Webforms.Pages.Tratamientos.Nuevo" %>
 
 <%--registrar el user control--%>

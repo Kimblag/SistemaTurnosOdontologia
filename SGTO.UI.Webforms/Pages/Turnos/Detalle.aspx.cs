@@ -3,7 +3,6 @@ using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
-using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -21,6 +20,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             {
                 master.EstablecerOpcionMenuActiva("turnos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Visualización completa de la información administrativa y el registro clínico asociado.");
             }
 
             int idTurno = ExtraerIdTurno();

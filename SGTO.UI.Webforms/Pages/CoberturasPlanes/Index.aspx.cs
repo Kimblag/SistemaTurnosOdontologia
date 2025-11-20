@@ -21,6 +21,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
             {
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Administración de Obras Sociales, Prepagas y sus respectivos planes de cobertura.");
             }
             ModalHelper.MostrarModalDesdeSession(this, "ModalTitulo", "ModalDesc");
         }

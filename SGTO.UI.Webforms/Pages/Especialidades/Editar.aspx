@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Editar Especialidad" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
+﻿<%@ Page Title="Gestión de Especialidad" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
     CodeBehind="Editar.aspx.cs" 
     Inherits="SGTO.UI.Webforms.Pages.Especialidades.Editar" %> 
 

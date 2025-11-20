@@ -83,23 +83,27 @@
 
 
                 <%--columna acciones--%>
-                <asp:TemplateField HeaderText="Acciones">
+                <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-start">
                     <ItemTemplate>
-                        <asp:LinkButton ID="btnEditar"
-                            runat="server"
-                            ToolTip="Editar"
-                            CssClass="btn btn-outline-secondary btn-sm me-1"
-                            CommandName="Editar"
-                            CommandArgument='<%# Eval("IdPlan") %>'>
-                             <i class="bi bi-pencil"></i>
-                        </asp:LinkButton>
 
-                        <button type="button"
-                            class="btn btn-outline-danger btn-sm me-1"
-                            data-id='<%# Eval("IdPlan") %>'
-                            onclick="abrirModalConfirmacion('<%# Eval("IdPlan") %>', 'plan')">
-                            <i class="bi bi-x"></i>
-                        </button>
+                        <div class="btn-group btn-group-sm" role="group">
+
+                            <asp:LinkButton ID="btnEditar"
+                                runat="server"
+                                ToolTip="Editar Datos"
+                                CssClass="btn btn-outline-secondary"
+                                CommandName="Editar"
+                                CommandArgument='<%# Eval("IdPlan") %>'>
+                             <i class="bi bi-pencil"></i>
+                            </asp:LinkButton>
+
+                            <button type="button"
+                                class="btn btn-outline-danger"
+                                data-id='<%# Eval("IdPlan") %>'
+                                onclick="abrirModalConfirmacion('<%# Eval("IdPlan") %>', 'plan')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </ItemTemplate>
                 </asp:TemplateField>
 

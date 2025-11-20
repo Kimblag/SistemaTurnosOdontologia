@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Agregar Nueva Especialidad" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
+﻿<%@ Page Title="Gestión de Especialidad" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
 CodeBehind="Nuevo.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Especialidades.Nuevo" %>
 
 <%--registrar el user control--%>

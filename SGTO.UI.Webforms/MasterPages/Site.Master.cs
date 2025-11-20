@@ -30,6 +30,11 @@ namespace SGTO.UI.Webforms.MasterPages
             TituloSeccion.InnerText = tituloSeccionActiva;
         }
 
+        public void EstablecerSubtituloSeccion(string subtituloSeccionActiva)
+        {
+            SubtituloSeccion.InnerText = subtituloSeccionActiva;
+        }
+
         private string ObtenerClasesDefaultMenu()
         {
             return "d-flex align-items-center gap-3 px-4 py-2 rounded text-body fw-medium text-decoration-none hover-bg";

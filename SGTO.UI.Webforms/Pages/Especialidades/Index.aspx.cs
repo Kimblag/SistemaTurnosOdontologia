@@ -1,5 +1,4 @@
 ﻿using SGTO.Comun.Validacion;
-using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
@@ -26,6 +25,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             {
                 master.EstablecerOpcionMenuActiva("Especialidades");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Catálogo de las áreas de práctica odontológica habilitadas.");
             }
             if (!IsPostBack)
             {

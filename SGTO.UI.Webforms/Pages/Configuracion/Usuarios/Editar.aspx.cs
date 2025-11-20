@@ -81,6 +81,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Modifique los datos de acceso, el estado de la cuenta o actualice el perfil médico asociado.");
             }
 
             if (!IsPostBack)

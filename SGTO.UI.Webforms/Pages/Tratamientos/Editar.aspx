@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Editar Tratamiento" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
+﻿<%@ Page Title="Administrar Tratamiento" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" 
     CodeBehind="Editar.aspx.cs" 
     Inherits="SGTO.UI.Webforms.Pages.Tratamientos.Editar" %> 
 

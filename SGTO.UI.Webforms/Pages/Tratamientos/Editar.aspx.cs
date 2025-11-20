@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             {
                 master.EstablecerOpcionMenuActiva("Medicos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Configure la información de la prestación y su arancel correspondiente.");
             }
         }
     }

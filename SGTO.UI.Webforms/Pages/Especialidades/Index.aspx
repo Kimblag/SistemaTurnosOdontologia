@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Especialidades" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
+﻿<%@ Page Title="Especialidades Clínicas" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true"
     CodeBehind="Index.aspx.cs"
     Inherits="SGTO.UI.Webforms.Pages.Especialidades.Especialidades" %>
 
@@ -97,30 +97,31 @@
                         </ItemTemplate>
                     </asp:TemplateField>
 
-                    <asp:TemplateField HeaderText="Acciones">
+                    <asp:TemplateField HeaderText="Acciones"
+                        ItemStyle-Width="240px"
+                        ItemStyle-CssClass="text-start">
+
                         <ItemTemplate>
-                            <asp:LinkButton ID="btnEditar"
-                                runat="server"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdEspecialidad") %>'>
-            <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
+                            <div class="btn-group btn-group-sm" role="group">
 
-                            <%--  <asp:LinkButton ID="btnDetalle"
-            runat="server"
-            CssClass="btn btn-outline-primary btn-sm me-1"
-            CommandName="Ver"
-            CommandArgument='<%# Eval("IdEspecialidad") %>'>
-            <i class="bi bi-eye"></i>
-        </asp:LinkButton> --%>
+                                <asp:LinkButton ID="btnEditar"
+                                    runat="server"
+                                    CssClass="btn btn-outline-secondary"
+                                    ToolTip="Editar Datos"
+                                    CommandName="Editar"
+                                    CommandArgument='<%# Eval("IdEspecialidad") %>'>
+                                    <i class="bi bi-pencil"></i>
+                                </asp:LinkButton>
 
-                            <button type="button"
-                                class="btn btn-outline-danger btn-sm"
-                                data-id='<%# Eval("IdEspecialidad") %>'
-                                onclick="abrirModalConfirmacion('<%# Eval("IdEspecialidad") %>')">
-                                <i class="bi bi-x"></i>
-                            </button>
+
+                                <button type="button"
+                                    class="btn btn-outline-danger"
+                                    title="Dar de baja"
+                                    data-id='<%# Eval("IdEspecialidad") %>'
+                                    onclick="abrirModalConfirmacion('<%# Eval("IdEspecialidad") %>')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </ItemTemplate>
                     </asp:TemplateField>
 

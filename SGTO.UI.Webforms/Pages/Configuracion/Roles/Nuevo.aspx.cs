@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Cree un nuevo perfil de seguridad y seleccione los permisos habilitados.");
             }
         }
     }

@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body class="app-theme">
-    <form runat="server" maintainScrollPositionOnPostBack="true">
+    <form runat="server" maintainscrollpositiononpostback="true">
         <asp:ScriptManager runat="server">
             <Scripts>
                 <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
@@ -76,7 +76,7 @@
                     <a id="MenuPacientes" runat="server" href="~/Pages/Pacientes/Index.aspx" class="menu-item">
                         <i class="bi bi-person-vcard fs-5"></i><span>Pacientes</span>
                     </a>
-                    <a id="MenuMedicos" runat="server" href="~/Pages/Medicos/Medicos.aspx" class="menu-item">
+                    <a id="MenuMedicos" runat="server" href="~/Pages/Medicos/Index.aspx" class="menu-item">
                         <i class="bi bi-person-badge fs-5"></i><span>Médicos</span>
                     </a>
                     <a id="MenuCoberturas" runat="server" href="~/Pages/CoberturasPlanes/Index.aspx" class="menu-item">
@@ -110,19 +110,35 @@
             <%--contenido principal--%>
             <section class="layout-main">
 
-                <header class="layout-header d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-3">
-                        <asp:HyperLink ID="btnVolver" runat="server"
-                            NavigateUrl="~/Pages/Configuracion/Index.aspx"
-                            CssClass="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2">
-                                <i class="bi bi-arrow-left"></i>
-                        </asp:HyperLink>
-                        <h1 id="TituloSeccion" runat="server" class="fs-4 fw-bold mb-0">Dashboard</h1>
-                    </div>
+                <header class="layout-header border-bottom bg-white py-3 mb-4">
+                    <div class="container-fluid d-flex align-items-center justify-content-between">
 
-                    <div class="text-end">
-                        <p id="NombreUsuario" runat="server" class="fw-semibold mb-0">Juan Pérez</p>
-                        <p id="RolUsuario" runat="server" class="text-muted small mb-0">Administrador</p>
+                        <div class="d-flex align-items-center gap-3">
+
+                            <asp:HyperLink ID="btnVolver" runat="server"
+                                NavigateUrl="~/Pages/Configuracion/Index.aspx"
+                                CssClass="btn btn-light border shadow-sm d-flex align-items-center justify-content-center rounded-circle"
+                                Style="width: 38px; height: 38px; padding: 0;">
+                                <i class="bi bi-arrow-left text-secondary"></i>
+                            </asp:HyperLink>
+
+                            <div class="d-flex flex-column">
+                                <h1 id="TituloSeccion" runat="server" class="h4 fw-bold mb-0 text-dark">Inicio
+                                </h1>
+                                <p id="SubtituloSeccion" runat="server" class="mb-0 text-muted small">
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="text-end border-start ps-3">
+                            <p id="NombreUsuario" runat="server" class="fw-semibold mb-0 text-dark small">
+                                Juan Pérez
+                            </p>
+                            <p id="RolUsuario" runat="server" class="text-muted mb-0" style="font-size: 0.75rem;">
+                                Administrador
+                            </p>
+                        </div>
+
                     </div>
                 </header>
 

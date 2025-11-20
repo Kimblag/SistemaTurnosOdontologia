@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Panel de administración de seguridad y parámetros globales.");
             }
         }
     }

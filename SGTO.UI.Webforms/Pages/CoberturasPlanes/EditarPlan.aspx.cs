@@ -15,6 +15,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
             {
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Administre los datos del plan y el nivel de cobertura que ofrece a los afiliados.");
             }
             if (!IsPostBack)
             {

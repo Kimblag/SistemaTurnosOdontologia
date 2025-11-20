@@ -1,11 +1,11 @@
-﻿<%@ Page Title="Detalle de Médico" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Detalle.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Medicos.Detalle" %>
+﻿<%@ Page Title="Perfil Profesional" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Detalle.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Medicos.Detalle" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">Ficha del Médico</h1>
             <div>
-                <asp:HyperLink ID="lnkVolver" runat="server" NavigateUrl="~/Pages/Medicos/Medicos.aspx" CssClass="btn btn-outline-secondary me-2">
+                <asp:HyperLink ID="lnkVolver" runat="server" NavigateUrl="~/Pages/Medicos/Index.aspx" CssClass="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-left"></i> Volver
                 </asp:HyperLink>
                 

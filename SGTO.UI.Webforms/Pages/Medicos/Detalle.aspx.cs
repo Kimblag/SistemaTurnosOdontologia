@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SGTO.Negocio.Servicios;
+using SGTO.UI.Webforms.MasterPages;
+using System;
 using System.Web.UI;
-using SGTO.Negocio.Servicios;
-using SGTO.Negocio.DTOs.Medicos;
 
 namespace SGTO.UI.Webforms.Pages.Medicos
 {
@@ -11,6 +11,12 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Medicos");
+                master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Información de matrícula, especialidades habilitadas y grilla horaria semanal.");
+            }
             if (!IsPostBack)
             {
                 CargarDatos();
@@ -63,11 +69,11 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                         gvHistorial.DataSource = medico.HistorialTurnos;
                         gvHistorial.DataBind();
 
-                        
+
                     }
                     else
                     {
-                        Response.Redirect("~/Pages/Medicos/Medicos.aspx");
+                        Response.Redirect("~/Pages/Medicos/Index.aspx");
                     }
                 }
                 catch (Exception)
@@ -77,7 +83,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             }
             else
             {
-                Response.Redirect("~/Pages/Medicos/Medicos.aspx");
+                Response.Redirect("~/Pages/Medicos/Index.aspx");
             }
         }
     }

@@ -27,6 +27,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Gestione el padrón de pacientes, consulte historias clínicas o asigne nuevos turnos.");
             }
             if (!IsPostBack)
             {
@@ -195,15 +196,35 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
 
-                if (lblEstado != null && pacienteDto != null)
+                var btnAgendar = (LinkButton)e.Row.FindControl("btnAgendarTurno");
+
+                if (pacienteDto != null)
                 {
-                    if (pacienteDto.Estado.ToString().ToLower() == "activo")
+                    bool esActivo = string.Equals(pacienteDto.Estado.ToString(), "Activo", StringComparison.OrdinalIgnoreCase)
+                                 || string.Equals(pacienteDto.Estado.ToString(), "A", StringComparison.OrdinalIgnoreCase);
+
+                    if (lblEstado != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-success";
+                        if (esActivo)
+                        {
+                            lblEstado.Attributes["class"] = "badge badge-success";
+                            lblEstado.InnerText = "Activo";
+                        }
+                        else
+                        {
+                            lblEstado.Attributes["class"] = "badge badge-warning";
+                            lblEstado.InnerText = "Inactivo";
+                        }
                     }
-                    else
+
+                    if (btnAgendar != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-warning";
+                        if (!esActivo)
+                        {
+                            btnAgendar.Enabled = false;
+                            btnAgendar.CssClass += " disabled border-0 opacity-50";
+                            btnAgendar.ToolTip = "No se puede agendar a un paciente inactivo";
+                        }
                     }
                 }
             }

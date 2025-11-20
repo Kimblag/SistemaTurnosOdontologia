@@ -22,6 +22,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             {
                 master.EstablecerOpcionMenuActiva("Medicos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Consulte la nómina de profesionales, sus especialidades y días de atención.");
             }
             if (!IsPostBack) CargarMedicos();
         }

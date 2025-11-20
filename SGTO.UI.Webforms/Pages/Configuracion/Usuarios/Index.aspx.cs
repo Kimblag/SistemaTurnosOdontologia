@@ -30,6 +30,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Administre el acceso del personal y los perfiles profesionales.");
             }
 
             if (!IsPostBack)

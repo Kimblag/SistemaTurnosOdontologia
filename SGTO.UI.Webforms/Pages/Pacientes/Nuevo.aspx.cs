@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Complete la ficha de admisión con los datos personales y de cobertura inicial.");
             }
         }
     }

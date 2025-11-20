@@ -26,6 +26,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Vista consolidada de datos filiatorios, historial de atenciones y agenda futura.");
             }
             if (!IsPostBack)
             {

@@ -26,6 +26,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Configure los niveles de autorización y permisos por grupo.");
             }
 
             if (!IsPostBack)

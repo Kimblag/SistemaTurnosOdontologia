@@ -31,6 +31,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             {
                 master.EstablecerOpcionMenuActiva("turnos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Administre la agenda médica. Para agendar nuevos turnos, inicie desde el módulo de Pacientes.");
             }
             if (!IsPostBack)
             {

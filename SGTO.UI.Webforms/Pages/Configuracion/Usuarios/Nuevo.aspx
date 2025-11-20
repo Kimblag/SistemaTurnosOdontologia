@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Configuración - Nuevo Usuario" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Usuarios.Nuevo" MaintainScrollPositionOnPostback="true" %>
+﻿<%@ Page Title="Alta de Usuario" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Nuevo.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Configuracion.Usuarios.Nuevo" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 

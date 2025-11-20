@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Actualice el nombre del rol o ajuste los permisos asignados al grupo.");
             }
 
             if (!IsPostBack)

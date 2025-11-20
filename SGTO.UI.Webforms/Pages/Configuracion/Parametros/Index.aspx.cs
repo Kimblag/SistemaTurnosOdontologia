@@ -21,6 +21,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
             {
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Defina las variables institucionales y técnicas de la aplicación.");
             }
 
             if (!IsPostBack)

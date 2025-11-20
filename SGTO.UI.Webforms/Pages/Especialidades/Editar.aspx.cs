@@ -16,6 +16,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             {
                 master.EstablecerOpcionMenuActiva("Especialidades");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Defina el nombre y descripción del área profesional.");
             }
         }
     }

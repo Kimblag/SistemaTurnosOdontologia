@@ -75,38 +75,45 @@
 
 
                 <%--columna acciones--%>
-                <asp:TemplateField HeaderText="Acciones">
+                <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-end">
                     <ItemTemplate>
 
-                        <%-- se cargan la lista de nombres en el atrbuto data para poder acceder a los planes actuales
-                        sin necesidad de recargar porque la fila seleccionada ya tiene los datos en el DTO
-                        --%>
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary btn-sm me-1"
-                            data-nombre='<%# Eval("Nombre") %>'
-                            data-descripcion='<%# Eval("Descripcion") %>'
-                            data-planes='<%# string.Join("||", ((SGTO.Negocio.DTOs.CoberturaDto)Container.DataItem).NombrePlanes ?? new List<string>()) %>'
-                            onclick="abrirModalPlanes(this)">
-                            <i class="bi bi-link me-1"></i>Ver Planes
-                        </button>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button
+                                type="button"
+                                class="btn btn-success btn-sm shadow-sm d-flex align-items-center"
+                                data-nombre='<%# Eval("Nombre") %>'
+                                data-descripcion='<%# Eval("Descripcion") %>'
+                                data-planes='<%# string.Join("||", ((SGTO.Negocio.DTOs.CoberturaDto)Container.DataItem).NombrePlanes ?? new List<string>()) %>'
+                                onclick="abrirModalPlanes(this)">
+                                <i class="bi bi-link me-1"></i>Ver Planes
+                            </button>
 
-                        <asp:LinkButton ID="btnEditar"
-                            runat="server"
-                            ToolTip="Editar"
-                            CssClass="btn btn-outline-secondary btn-sm me-1"
-                            CommandName="Editar"
-                            CommandArgument='<%# Eval("IdCobertura") %>'>
+                            <div class="btn-group btn-group-sm" role="group">
+
+                                <%-- se cargan la lista de nombres en el atrbuto data para poder acceder a los planes actuales
+                                sin necesidad de recargar porque la fila seleccionada ya tiene los datos en el DTO
+                                --%>
+
+                                <asp:LinkButton ID="btnEditar"
+                                    runat="server"
+                                    CssClass="btn btn-outline-secondary"
+                                    CommandName="Editar"
+                                    ToolTip="Editar Datos"
+                                    CommandArgument='<%# Eval("IdCobertura") %>'>
                              <i class="bi bi-pencil"></i>
-                        </asp:LinkButton>
+                                </asp:LinkButton>
 
-                        <button type="button"
-                            class="btn btn-outline-danger btn-sm me-1"
-                            data-id='<%# Eval("IdCobertura") %>'
-                            onclick="abrirModalConfirmacion('<%# Eval("IdCobertura") %>', 'cobertura')">
-                            <i class="bi bi-x"></i>
-                        </button>
-                        </button>
+                                <button type="button"
+                                    class="btn btn-outline-danger"
+                                    data-id='<%# Eval("IdCobertura") %>'
+                                    title="Dar de baja"
+                                    onclick="abrirModalConfirmacion('<%# Eval("IdCobertura") %>', 'cobertura')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+
+                        </div>
                     </ItemTemplate>
                 </asp:TemplateField>
 

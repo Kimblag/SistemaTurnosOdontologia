@@ -1,3 +1,3 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Medicos.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Reportes.Medicos" %>
+﻿<%@ Page Title="Reporte de Médicos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Medicos.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Reportes.Medicos" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 </asp:Content>

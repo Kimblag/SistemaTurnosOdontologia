@@ -29,6 +29,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             {
                 master.EstablecerOpcionMenuActiva("Tratamientos");
                 master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerSubtituloSeccion("Catálogo de prestaciones odontológicas y costos base por especialidad.");
             }
             if (!IsPostBack)
             {

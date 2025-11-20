@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Pacientes" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Pacientes.Pacientes" %>
+﻿<%@ Page Title="Directorio de Pacientes" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Pacientes.Pacientes" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
@@ -109,39 +109,49 @@
                     </asp:TemplateField>
 
                     <%--columna acciones--%>
-                    <asp:TemplateField HeaderText="Acciones">
+                    <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-start">
                         <ItemTemplate>
-                            <asp:LinkButton ID="btnEditar"
-                                runat="server"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdPaciente") %>'
-                                ToolTip="Editar paciente">
-                        <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
-                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm"
-                                CommandName="Ver"
-                                CommandArgument='<%# Eval("IdPaciente") %>'
-                                ToolTip="Ver detalles del paciente">
-                        <i class="bi bi-eye"></i>
-                            </asp:LinkButton>
 
-                            <asp:LinkButton ID="btnAgendarTurno"
-                                runat="server"
-                                CssClass="btn btn-outline-success btn-sm me-1"
-                                CommandName="Agendar"
-                                CommandArgument='<%# Eval("IdPaciente") %>'
-                                ToolTip="Agendar Turno">
-                                    <i class="bi bi-calendar-plus"></i>
+                            <div class="d-flex justify-content-end gap-2">
+
+
+                                <asp:LinkButton ID="btnAgendarTurno"
+                                    runat="server"
+                                    CssClass="btn btn-success btn-sm shadow-sm d-flex align-items-center"
+                                    CommandName="Agendar"
+                                    CommandArgument='<%# Eval("IdPaciente") %>'
+                                    ToolTip="Agendar Turno">
+                                    <i class="bi bi-calendar-plus me-1"></i> Agendar
                                 </asp:LinkButton>
 
-                            <button type="button"
-                                class="btn btn-outline-danger btn-sm me-1"
-                                data-id='<%# Eval("IdPaciente") %>'
-                                onclick="abrirModalConfirmacion('<%# Eval("IdPaciente") %>', 'paciente')"
-                                title="Dar de baja">
-                                <i class="bi bi-x"></i>
-                            </button>
+                                <div class="btn-group btn-group-sm" role="group">
+
+                                    <asp:LinkButton ID="btnDetalle" runat="server"
+                                        CssClass="btn btn-outline-primary"
+                                        CommandName="Ver"
+                                        CommandArgument='<%# Eval("IdPaciente") %>'
+                                        ToolTip="Ver Legajo">
+                                        <i class="bi bi-eye"></i>
+                                    </asp:LinkButton>
+
+                                    <asp:LinkButton ID="btnEditar"
+                                        runat="server"
+                                        CssClass="btn btn-outline-secondary"
+                                        CommandName="Editar"
+                                        CommandArgument='<%# Eval("IdPaciente") %>'
+                                        ToolTip="Editar Datos">
+                                        <i class="bi bi-pencil"></i>
+                                    </asp:LinkButton>
+
+                                    <button type="button"
+                                        class="btn btn-outline-danger"
+                                        onclick="abrirModalConfirmacion('<%# Eval("IdPaciente") %>', 'paciente')"
+                                        title="Dar de baja">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+
+                            </div>
 
                         </ItemTemplate>
                     </asp:TemplateField>
