@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Controles.Coberturas
+namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
 {
 
 
-    public partial class CoberturasListado
+    public partial class Index
     {
 
         /// <summary>
@@ -67,5 +67,32 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvCoberturas;
+
+        /// <summary>
+        /// hdnIdEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdEliminar;
+
+        /// <summary>
+        /// hdnTipoEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTipoEliminar;
+
+        /// <summary>
+        /// btnConfirmarEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarEliminar;
     }
 }

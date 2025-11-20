@@ -43,7 +43,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 }
                 panelPlanes.Visible = !ModoEdicion;
 
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", "/Pages/CoberturasPlanes/Index");
+                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", "/Pages/CoberturasPlanes/Coberturas/Index");
             }
         }
 
@@ -94,7 +94,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect($"~/Pages/CoberturasPlanes/Index", false);
+            Response.Redirect($"~/Pages/CoberturasPlanes/Coberturas/Index", false);
         }
 
 
@@ -160,7 +160,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                "Cobertura modificada",
                    "La cobertura fue modificada correctamente.",
                 "Resultado",
-                VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Coberturas/Index"),
                 "abrirModalResultado"
             );
 
@@ -210,7 +210,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                    "Cobertura creada",
                    "La cobertura se ha creado correctamente.",
                    "Resultado",
-                   VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                   VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Coberturas/Index"),
                    "abrirModalResultado"
                );
             }

@@ -1,58 +1,54 @@
 ﻿<%@ Page Title="Coberturas y Planes" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.CoberturasPlanes.CoberturasPlanes" %>
 
-<%--registro de controles--%>
-<%@ Register Src="~/Controles/Coberturas/CoberturasListado.ascx" TagPrefix="uc1" TagName="CoberturasListado" %>
-<%@ Register Src="~/Controles/Coberturas/PlanesListado.ascx" TagPrefix="uc1" TagName="PlanesListado" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div class="page-generic">
+    <div class="page-generic justify-content-center">
 
-        <%--Tabs de navegación--%>
-        <ul class="nav nav-tabs" id="coberturasPlanesTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active"
-                    id="tab-coberturas"
-                    data-bs-toggle="tab"
-                    data-bs-target="#pane-coberturas"
-                    type="button"
-                    role="tab"
-                    aria-controls="pane-coberturas"
-                    aria-selected="true">
-                    Coberturas
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link"
-                    id="tab-planes"
-                    data-bs-toggle="tab"
-                    data-bs-target="#pane-planes"
-                    type="button"
-                    role="tab"
-                    aria-controls="pane-planes"
-                    aria-selected="false">
-                    Planes
-                </button>
-            </li>
-        </ul>
+        <div class="row g-4">
 
-        <%--Contenido de las pestañas--%>
-        <div class="tab-content" id="coberturasPlanesTabsContent">
-            <div class="tab-pane fade show active"
-                id="pane-coberturas"
-                role="tabpanel"
-                aria-labelledby="tab-coberturas">
-                <uc1:CoberturasListado ID="CoberturasListadoControl" runat="server" />
+            <div class="col-12 col-md-6">
+                <a href='<%= ResolveUrl("~/Pages/CoberturasPlanes/Coberturas/Index.aspx") %>'
+                    class="card card-config bg-soft-primary shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
+                    <div class="card-body text-center d-flex flex-column justify-content-between p-5">
+                        <div>
+                            <div class="icon-wrapper bg-primary bg-opacity-10 text-primary mb-4 mx-auto rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;">
+                                <i class="bi-shield-plus fs-1"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-3">Coberturas</h3>
+                            <p class="card-text text-muted fs-6">
+                                Administre las Obras Sociales y Prepagas habilitadas en la clínica.
+                            </p>
+                        </div>
+                        <div class="mt-4 fw-semibold text-primary">
+                            Gestionar Coberturas <i class="bi bi-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </a>
             </div>
 
-            <div class="tab-pane fade"
-                id="pane-planes"
-                role="tabpanel"
-                aria-labelledby="tab-planes">
-                <uc1:PlanesListado ID="PlanesListadoControl" runat="server" />
+            <div class="col-12 col-md-6">
+                <a href='<%= ResolveUrl("~/Pages/CoberturasPlanes/Planes/Index.aspx") %>'
+                    class="card card-config bg-soft-success shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
+                    <div class="card-body text-center d-flex flex-column justify-content-between p-5">
+                        <div>
+                            <div class="icon-wrapper bg-success bg-opacity-10 text-success mb-4 mx-auto rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;">
+                                <i class="bi bi-card-checklist fs-1"></i>
+                            </div>
+                            <h3 class="card-title fw-bold mb-3">Planes</h3>
+                            <p class="card-text text-muted fs-6">
+                                Configure los planes y porcentajes de cobertura asociados a cada entidad.
+                            </p>
+                        </div>
+                        <div class="mt-4 fw-semibold text-success">
+                            Gestionar Planes <i class="bi bi-arrow-right ms-2"></i>
+                        </div>
+                    </div>
+                </a>
             </div>
+
         </div>
-
     </div>
 
     <%--modal de confirmación--%>

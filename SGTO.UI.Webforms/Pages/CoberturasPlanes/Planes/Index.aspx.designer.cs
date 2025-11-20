@@ -7,11 +7,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Controles.Coberturas
+namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
 {
 
 
-    public partial class PlanesListado
+    public partial class Index
     {
 
         /// <summary>
@@ -24,22 +24,22 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         protected global::System.Web.UI.WebControls.TextBox txtBuscarPlanes;
 
         /// <summary>
-        /// ddlCoberturas control.
+        /// ddlCampo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCoberturas;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCampo;
 
         /// <summary>
-        /// ddlEstado control.
+        /// ddlCriterio control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCriterio;
 
         /// <summary>
         /// btnBuscar control.
@@ -76,5 +76,32 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvPlanes;
+
+        /// <summary>
+        /// hdnIdEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdEliminar;
+
+        /// <summary>
+        /// hdnTipoEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnTipoEliminar;
+
+        /// <summary>
+        /// btnConfirmarEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnConfirmarEliminar;
     }
 }

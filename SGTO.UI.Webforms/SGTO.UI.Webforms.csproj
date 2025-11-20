@@ -124,9 +124,7 @@
     <Content Include="Controles\Configuracion\Roles\RolesForm.ascx" />
     <Content Include="Controles\Especialidades\EspecialidadForm.ascx" />
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
-    <Content Include="Controles\Coberturas\CoberturasListado.ascx" />
     <Content Include="Controles\Coberturas\PlanesForm.ascx" />
-    <Content Include="Controles\Coberturas\PlanesListado.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
     <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
     <Content Include="Controles\Tratamientos\TratamientoForm.ascx" />
@@ -134,11 +132,13 @@
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="Pages\CoberturasPlanes\Coberturas\Index.aspx" />
     <Content Include="Pages\CoberturasPlanes\EditarCobertura.aspx" />
     <Content Include="Pages\CoberturasPlanes\EditarPlan.aspx" />
     <Content Include="Pages\CoberturasPlanes\Index.aspx" />
     <Content Include="Pages\CoberturasPlanes\NuevaCobertura.aspx" />
     <Content Include="Pages\CoberturasPlanes\NuevoPlan.aspx" />
+    <Content Include="Pages\CoberturasPlanes\Planes\Index.aspx" />
     <Content Include="Pages\Configuracion\Index.aspx" />
     <Content Include="Pages\Configuracion\Parametros\Index.aspx" />
     <Content Include="Pages\Configuracion\Roles\Editar.aspx" />
@@ -263,26 +263,12 @@
     <Compile Include="Controles\Coberturas\CoberturasForm.ascx.designer.cs">
       <DependentUpon>CoberturasForm.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Controles\Coberturas\CoberturasListado.ascx.cs">
-      <DependentUpon>CoberturasListado.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Coberturas\CoberturasListado.ascx.designer.cs">
-      <DependentUpon>CoberturasListado.ascx</DependentUpon>
-    </Compile>
     <Compile Include="Controles\Coberturas\PlanesForm.ascx.cs">
       <DependentUpon>PlanesForm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Controles\Coberturas\PlanesForm.ascx.designer.cs">
       <DependentUpon>PlanesForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Coberturas\PlanesListado.ascx.cs">
-      <DependentUpon>PlanesListado.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Coberturas\PlanesListado.ascx.designer.cs">
-      <DependentUpon>PlanesListado.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
@@ -323,6 +309,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Modelos\Medicos\HorarioSemanalItemUi.cs" />
+    <Compile Include="Pages\CoberturasPlanes\Coberturas\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\Coberturas\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Pages\CoberturasPlanes\EditarCobertura.aspx.cs">
       <DependentUpon>EditarCobertura.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -357,6 +350,13 @@
     </Compile>
     <Compile Include="Pages\CoberturasPlanes\NuevoPlan.aspx.designer.cs">
       <DependentUpon>NuevoPlan.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\Planes\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\CoberturasPlanes\Planes\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Configuracion\Index.aspx.cs">
       <DependentUpon>Index.aspx</DependentUpon>

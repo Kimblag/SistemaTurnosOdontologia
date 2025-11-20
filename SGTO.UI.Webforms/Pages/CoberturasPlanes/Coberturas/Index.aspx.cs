@@ -1,23 +1,33 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
+using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
-namespace SGTO.UI.Webforms.Controles.Coberturas
+namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
 {
-    public partial class CoberturasListado : System.Web.UI.UserControl
+    public partial class Index : System.Web.UI.Page
     {
 
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
         private const string KEY_ESTADO_COBERTURAS = "FiltroEstadoCoberturas";
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("Coberturas");
+                master.EstablecerTituloSeccion("Gestión de Coberturas");
+                master.EstablecerSubtituloSeccion("Defina las entidades prestadoras de salud y visualice sus planes asociados.");
+            }
             if (!IsPostBack)
             {
                 string estadoFiltroGuardado = Session[KEY_ESTADO_COBERTURAS] as string;
@@ -170,6 +180,40 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             gvCoberturas.DataBind();
         }
 
+        protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
+        {
+            string tipo = hdnTipoEliminar.Value;
+            int id = Convert.ToInt32(hdnIdEliminar.Value);
 
+            try
+            {
+                TurnoService servicioTurno = new TurnoService();
+                if (tipo == "cobertura")
+                {
+                    CoberturaService servicioCobertura = new CoberturaService();
+                    servicioCobertura.DarDeBaja(id, servicioTurno);
+
+                    MensajeUiHelper.SetearMensaje("Cobertura dada de baja", "La cobertura y sus planes fueron dados de baja correctamente.");
+                }
+                else if (tipo == "plan")
+                {
+
+                    PlanService servicioPlan = new PlanService();
+                    servicioPlan.DarDeBaja(id, servicioTurno);
+
+                    MensajeUiHelper.SetearMensaje("Plan dado de baja", "El plan fue dado de baja correctamente.");
+                }
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearMensaje("Operación no permitida", ex.Message);
+            }
+            catch (Exception)
+            {
+                MensajeUiHelper.SetearMensaje("Error inesperado", "Ocurrió un error al intentar dar de baja el registro.");
+            }
+
+            Response.Redirect(Request.RawUrl, false);
+        }
     }
 }

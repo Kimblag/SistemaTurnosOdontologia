@@ -15,24 +15,6 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
     {
 
         /// <summary>
-        /// CoberturasListadoControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Coberturas.CoberturasListado CoberturasListadoControl;
-
-        /// <summary>
-        /// PlanesListadoControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SGTO.UI.Webforms.Controles.Coberturas.PlanesListado PlanesListadoControl;
-
-        /// <summary>
         /// hdnIdEliminar control.
         /// </summary>
         /// <remarks>

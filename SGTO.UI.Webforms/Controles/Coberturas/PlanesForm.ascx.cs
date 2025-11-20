@@ -7,6 +7,7 @@ using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -36,13 +37,13 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 }
 
                 CargarCoberturasDropdown();
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", "/Pages/CoberturasPlanes/Index");
+                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", "/Pages/CoberturasPlanes/Planes/Index");
             }
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
-            Response.Redirect($"~/Pages/CoberturasPlanes/Index", false);
+            Response.Redirect($"~/Pages/CoberturasPlanes/Planes/Index", false);
         }
 
         private void CargarDetallePlan(int idPlan)
@@ -53,11 +54,10 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 ddlCobertura.SelectedValue = planDto.IdCobertura.ToString();
                 txtNombrePlan.Text = planDto.Nombre;
                 txtDescripcionPlan.Text = planDto.Descripcion;
-                txtPorcentajeCobertura.Text = planDto.PorcentajeCobertura.ToString();
+                txtPorcentajeCobertura.Text = planDto.PorcentajeCobertura.ToString("0.##", CultureInfo.InvariantCulture);
                 chkActivo.Checked = planDto.Estado.ToLower() == "activo";
 
-                CoberturaService coberturaService = new CoberturaService();
-                if (coberturaService.EstaInactiva(planDto.IdCobertura))
+                if (_servicioCobertura.EstaInactiva(planDto.IdCobertura))
                 {
                     DeshabilitarFormularioPorCoberturaInactiva();
                 }
@@ -151,7 +151,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                      "Plan creado",
                      "El plan se ha creado correctamente.",
                      "Resultado",
-                     VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                     VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Planes/Index"),
                      "abrirModalResultado"
                  );
             }
@@ -212,7 +212,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                   "Plan modificado",
                   "El plan fue modificado correctamente.",
                   "Resultado",
-                   VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Index"),
+                   VirtualPathUtility.ToAbsolute("~/Pages/CoberturasPlanes/Planes/Index"),
                    "abrirModalResultado");
             }
             catch (ArgumentException ex)
