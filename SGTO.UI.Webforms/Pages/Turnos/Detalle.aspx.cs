@@ -1,6 +1,9 @@
-﻿using System;
+﻿using SGTO.Negocio.DTOs.Turnos;
+using SGTO.Negocio.Servicios;
+using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Utils;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -9,9 +12,110 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 {
     public partial class Detalle : System.Web.UI.Page
     {
+
+        private readonly TurnoService _servicioTurno = new TurnoService();
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Master is SiteMaster master)
+            {
+                master.EstablecerOpcionMenuActiva("turnos");
+                master.EstablecerTituloSeccion(this.Page.Title);
+            }
 
+            int idTurno = ExtraerIdTurno();
+            if (idTurno == 0)
+            {
+                Response.Redirect("~/Pages/Turnos/Index", false);
+                return;
+            }
+
+            if (!IsPostBack)
+                CargarDetalleTurno(idTurno);
+
+
+            ModalHelper.MostrarModalDesdeSession(
+                   this.Page,
+                   "TurnoMensajeTitulo",
+                   "TurnoMensajeDesc",
+                   "/Pages/Turnos/Index",
+                   "abrirModalResultado");
+        }
+
+        private int ExtraerIdTurno()
+        {
+            string qs = Request.QueryString["id-turno"];
+            return int.TryParse(qs, out int id) ? id : 0;
+        }
+
+
+        private void CargarDetalleTurno(int idTurno)
+        {
+            try
+            {
+                TurnoDetalleDto turno = _servicioTurno.ObtenerDetallePorId(idTurno);
+
+                if (turno == null)
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error", "El turno solicitado no existe.", "Error", "/Pages/Turnos/Index", "abrirModalResultado");
+                    return;
+                }
+
+                lblNombrePaciente.Text = turno.NombrePaciente;
+                lblNombreMedico.Text = turno.NombreMedico;
+                lblFechaHora.Text = string.Format("{0:dd/MM/yyyy HH:mm} - {1:HH:mm}", turno.FechaInicio, turno.FechaFin);
+
+                lblEspecialidad.Text = turno.Especialidad;
+                if (!string.IsNullOrEmpty(turno.Plan) && turno.Plan != "-")
+                {
+                    lblCoberturaPlan.Text = turno.Cobertura + " / " + turno.Plan;
+                }
+                else
+                {
+                    lblCoberturaPlan.Text = turno.Cobertura;
+                }
+                litObservaciones.Text = string.IsNullOrEmpty(turno.Observaciones)
+                                        ? "<em>Sin observaciones registradas.</em>"
+                                        : turno.Observaciones;
+
+                lblEstado.Text = turno.Estado;
+                lblEstado.CssClass = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(turno.Estado);
+
+                if (!string.IsNullOrEmpty(turno.TratamientoAplicado) || !string.IsNullOrEmpty(turno.Diagnostico))
+                {
+                    phDetalleClinico.Visible = true;
+                    litTratamiento.Text = turno.TratamientoAplicado;
+                    litDiagnostico.Text = turno.Diagnostico;
+
+                    litObservacionesClinicas.Text = string.IsNullOrEmpty(turno.ObservacionesClinicas)
+                                                    ? "Sin observaciones médicas adicionales."
+                                                    : turno.ObservacionesClinicas;
+                }
+                else
+                {
+                    phDetalleClinico.Visible = false;
+                }
+
+                bool esEditable = TurnoUiHelper.EsEditable(turno.Estado);
+                btnEditar.Visible = esEditable;
+
+                // guardar el id en view state por si el usuario hace clic en editar
+                ViewState["IdTurnoActual"] = idTurno;
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Dato inválido", ex.Message, "Resultado", null, "abrirModalResultado");
+            }
+        }
+
+        protected void btnEditar_Click(object sender, EventArgs e)
+        {
+            if (ViewState["IdTurnoActual"] != null)
+            {
+                int id = (int)ViewState["IdTurnoActual"];
+
+                Response.Redirect("~/Pages/Turnos/Editar.aspx?id-turno=" + id, false);
+            }
         }
     }
 }

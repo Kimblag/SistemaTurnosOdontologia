@@ -1,5 +1,6 @@
 ﻿using SGTO.Dominio.Enums;
 using System;
+using System.Collections.Generic;
 
 
 namespace SGTO.Negocio.Mappers
@@ -65,6 +66,46 @@ namespace SGTO.Negocio.Mappers
         public static char ObtenerChar(Genero genero)
         {
             return (char)genero;
+        }
+
+
+        public static string ObtenerNombreEstadoTurno(char estado)
+        {
+            Dictionary<char, string> nombresEstadosTurno = new Dictionary<char, string>
+            {
+                { 'N', "Nuevo" },
+                { 'R', "Reprogramado" },
+                { 'C', "Cancelado" },
+                { 'X', "No asistió" },
+                { 'Z', "Cerrado" }
+            };
+            return nombresEstadosTurno.ContainsKey(estado) ? nombresEstadosTurno[estado] : estado.ToString();
+        }
+
+        public static char ObtenerChar(EstadoTurno estado)
+        {
+            switch (estado)
+            {
+                case EstadoTurno.Nuevo: return 'N';
+                case EstadoTurno.Reprogramado: return 'R';
+                case EstadoTurno.Cancelado: return 'C';
+                case EstadoTurno.NoAsistio: return 'X';
+                case EstadoTurno.Cerrado: return 'Z';
+                default: throw new ArgumentOutOfRangeException($"Estado de turno desconocido: {estado}");
+            }
+        }
+
+        public static EstadoTurno MapearEstadoTurno(char estado)
+        {
+            switch (estado)
+            {
+                case 'N': return EstadoTurno.Nuevo;
+                case 'R': return EstadoTurno.Reprogramado;
+                case 'C': return EstadoTurno.Cancelado;
+                case 'X': return EstadoTurno.NoAsistio;
+                case 'Z': return EstadoTurno.Cerrado;
+                default: throw new ArgumentOutOfRangeException($"Char desconocido para EstadoTurno: {estado}");
+            }
         }
 
     }

@@ -15,6 +15,69 @@ namespace SGTO.UI.Webforms.Controles.Turnos
     {
 
         /// <summary>
+        /// hdnIdTurno control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdTurno;
+
+        /// <summary>
+        /// hdnFechaInicioOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnFechaInicioOriginal;
+
+        /// <summary>
+        /// hdnIdMedicoOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdMedicoOriginal;
+
+        /// <summary>
+        /// hdnIdEspecialidadOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdEspecialidadOriginal;
+
+        /// <summary>
+        /// hdnIdCoberturaOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdCoberturaOriginal;
+
+        /// <summary>
+        /// hdnIdPlanOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdPlanOriginal;
+
+        /// <summary>
+        /// hdnEstadoOriginal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnEstadoOriginal;
+
+        /// <summary>
         /// alertPacienteInactivo control.
         /// </summary>
         /// <remarks>

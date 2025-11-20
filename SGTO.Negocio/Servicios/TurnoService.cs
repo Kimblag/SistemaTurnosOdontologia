@@ -23,6 +23,7 @@ namespace SGTO.Negocio.Servicios
         private readonly CoberturaRepositorio _repositorioCobertura;
         private readonly PlanRepositorio _repositorioPlan;
         private readonly MedicoRepositorio _repositorioMedico;
+        private readonly HistoriaClinicaRepositorio _repositorioHistoria;
 
 
         public TurnoService()
@@ -34,6 +35,7 @@ namespace SGTO.Negocio.Servicios
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
             _repositorioMedico = new MedicoRepositorio();
+            _repositorioHistoria = new HistoriaClinicaRepositorio();
         }
 
         public bool TieneTurnosActivosPorCobertura(int idCobertura)
@@ -187,19 +189,57 @@ namespace SGTO.Negocio.Servicios
 
         public TurnoEdicionDto ObtenerPorId(int idTurno)
         {
-            TurnoEdicionDto turno = new TurnoEdicionDto();
             try
             {
+                Turno entidad = _repositorioTurno.ObtenerPorId(idTurno);
 
-                return turno;
+                if (entidad == null)
+                    throw new ExcepcionReglaNegocio("El turno no existe.");
+
+                return TurnoMapper.MapearAEdicionDto(entidad);
             }
-            catch (Exception)
+            catch
             {
-
                 throw;
             }
         }
 
+
+        public TurnoDetalleDto ObtenerDetallePorId(int idTurno)
+        {
+            Turno entidad = _repositorioTurno.ObtenerPorId(idTurno);
+
+            if (entidad == null)
+                throw new ExcepcionReglaNegocio("El turno no existe.");
+
+            TurnoDetalleDto dto = TurnoMapper.MapearADetalleDto(entidad);
+
+            if (entidad.Estado == EstadoTurno.Cerrado)
+            {
+                try
+                {
+                    HistoriaClinicaRegistro historia = _repositorioHistoria.ObtenerPorIdTurno(idTurno);
+
+                    if (historia != null)
+                    {
+                        dto.Diagnostico = historia.Diagnostico;
+
+                        dto.ObservacionesClinicas = historia.Observaciones;
+
+                        if (historia.TratamientoAplicado != null)
+                        {
+                            dto.TratamientoAplicado = historia.TratamientoAplicado.Nombre;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return dto;
+        }
 
 
         public int Crear(TurnoCreacionDto dto, string rutaPlantillaEmail)
@@ -346,6 +386,179 @@ namespace SGTO.Negocio.Servicios
                 );
         }
 
+
+
+        public void Editar(TurnoEdicionDto dto, int idUsuarioModificacion = 0)
+        {
+            Turno turnoExistente = null;
+            try
+            {
+                turnoExistente = _repositorioTurno.ObtenerPorId(dto.IdTurno);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            if (turnoExistente == null)
+                throw new ExcepcionReglaNegocio("El turno no existe.");
+
+
+            ValidarPaciente(dto.IdPaciente);
+            ValidarEspecialidad(dto.IdEspecialidad);
+            ValidarMedico(dto.IdMedico, dto.IdEspecialidad);
+            ValidarCoberturaYPlan(dto.IdCobertura, dto.IdPlan, dto.IdPaciente);
+
+            ValidarFechaYHora(dto.FechaInicio, dto.FechaFin);
+            ValidarDisponibilidadMedico(dto.IdMedico, dto.FechaInicio, dto.FechaFin, dto.IdTurno);
+            ValidarTurnosPacienteMismoDia(dto.IdPaciente, dto.IdEspecialidad, dto.FechaInicio, dto.IdTurno);
+
+
+            // Detectar cambio de fecha/hora para turno nuevo
+            if (turnoExistente.Estado == EstadoTurno.Nuevo &&
+                (turnoExistente.Horario.Inicio != dto.FechaInicio || turnoExistente.Horario.Fin != dto.FechaFin))
+            {
+                dto.Estado = 'R';
+            }
+            ValidarCambioDeEstado(turnoExistente, dto.Estado, dto.FechaInicio, dto.FechaFin);
+
+            TurnoMapper.MapearEdicion(turnoExistente, dto);
+            _repositorioTurno.Actualizar(turnoExistente, idUsuarioModificacion);
+        }
+
+        private void ValidarPaciente(int idPaciente)
+        {
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(idPaciente);
+            if (paciente == null)
+                throw new ExcepcionReglaNegocio("El paciente no existe.");
+            if (paciente.Estado.ToString().ToLower()[0] != 'a')
+                throw new ExcepcionReglaNegocio("El paciente está inactivo.");
+        }
+
+        private void ValidarEspecialidad(int idEspecialidad)
+        {
+            Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(idEspecialidad);
+            if (especialidad == null)
+                throw new ExcepcionReglaNegocio("La especialidad no existe.");
+            if (especialidad.Estado.ToString().ToLower()[0] != 'a')
+                throw new ExcepcionReglaNegocio("La especialidad está inactiva.");
+        }
+
+        private void ValidarMedico(int idMedico, int idEspecialidad)
+        {
+            Medico medico = _repositorioMedico.ObtenerPorId(idMedico);
+            if (medico == null)
+                throw new ExcepcionReglaNegocio("El médico no existe.");
+            if (medico.Especialidades.Count > 0)
+            {
+                Especialidad especialidad = medico.Especialidades.Find(e => e.IdEspecialidad == idEspecialidad);
+                if (especialidad == null)
+                    throw new ExcepcionReglaNegocio("El médico no pertenece a la especialidad seleccionada.");
+            }
+        }
+
+        private void ValidarCoberturaYPlan(int idCobertura, int idPlan, int idPaciente)
+        {
+            Cobertura cobertura = _repositorioCobertura.ObtenerPorId(idCobertura);
+            if (cobertura == null || cobertura.Estado.ToString().ToLower()[0] != 'a')
+                throw new ExcepcionReglaNegocio("La cobertura seleccionada está inactiva.");
+
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(idPaciente);
+            if (idCobertura != paciente.Cobertura.IdCobertura)
+                throw new ExcepcionReglaNegocio("La cobertura no coincide con la del paciente.");
+
+            if (idPlan != 0)
+            {
+                Plan plan = _repositorioPlan.ObtenerPorId(idPlan);
+                if (plan == null || plan.Estado.ToString().ToLower()[0] != 'a')
+                    throw new ExcepcionReglaNegocio("El plan seleccionado está inactivo.");
+                if (plan.Cobertura.IdCobertura != idCobertura)
+                    throw new ExcepcionReglaNegocio("El plan no coincide con la cobertura seleccionada.");
+            }
+        }
+
+        private void ValidarFechaYHora(DateTime inicio, DateTime fin)
+        {
+            if (fin <= inicio)
+                throw new ExcepcionReglaNegocio("La fecha de fin debe ser posterior al inicio.");
+        }
+
+        private void ValidarDisponibilidadMedico(int idMedico, DateTime inicio, DateTime fin, int idTurno)
+        {
+            List<HorarioSemanalMedico> horarios = _repositorioHorario.ObtenerPorMedico(idMedico);
+            byte dia = (byte)((int)inicio.DayOfWeek == 0 ? 7 : (int)inicio.DayOfWeek);
+            HorarioSemanalMedico horario = horarios.Find(h => h.DiaSemana == dia);
+            if (horario == null)
+                throw new ExcepcionReglaNegocio("El médico no atiende ese día.");
+            if (inicio.TimeOfDay < horario.HoraInicio || fin.TimeOfDay > horario.HoraFin)
+                throw new ExcepcionReglaNegocio("El turno está fuera del horario del médico.");
+
+            List<Turno> turnos = _repositorioTurno.ObtenerTurnosPorMedicoEnRango(idMedico, inicio.Date, inicio.Date.AddDays(1));
+            bool ocupado = turnos.Exists(t => t.IdTurno != idTurno && (inicio < t.Horario.Fin && fin > t.Horario.Inicio));
+            if (ocupado)
+                throw new ExcepcionReglaNegocio("El horario seleccionado ya está ocupado por otro turno.");
+        }
+
+        private void ValidarTurnosPacienteMismoDia(int idPaciente, int idEspecialidad, DateTime fecha, int idTurno)
+        {
+            List<Turno> turnosPaciente = _repositorioTurno.ObtenerTurnosPorMedicoEnRango(
+                idPaciente, fecha.Date, fecha.Date.AddDays(1)
+            );
+            bool yaTieneTurno = turnosPaciente.Exists(t => t.IdTurno != idTurno &&
+                t.Especialidad.IdEspecialidad == idEspecialidad &&
+                t.Estado != EstadoTurno.Cancelado && t.Estado != EstadoTurno.Cerrado
+            );
+            if (yaTieneTurno)
+                throw new ExcepcionReglaNegocio("El paciente ya tiene un turno para este día y especialidad.");
+        }
+
+        private void ValidarCambioDeEstado(Turno turnoExistente, char estadoNuevo, DateTime nuevaFechaInicio, DateTime nuevaFechaFin)
+        {
+            char actual = (char)turnoExistente.Estado;
+
+            if (actual == 'X')
+                throw new ExcepcionReglaNegocio("Un turno que no asistió no puede ser modificado.");
+
+
+            Dictionary<char, char[]> transicionesPermitidas = new Dictionary<char, char[]> {
+                { 'N', new [] { 'R', 'C', 'N' } }, // nueuevo solo puede ir a reprogramado o cancelado o mantenerse en nuevo
+                { 'R', new [] { 'R', 'C', 'X' } }, // un reprogramado puede volver a reprogramarse, cancelarse o no asistió
+                { 'X', new char[0] } // no asisitió simplemente no se puede cambiar a nada más
+            };
+
+            bool estadoExisteEnDiccionario = transicionesPermitidas.ContainsKey(actual);
+
+            if (!estadoExisteEnDiccionario || Array.IndexOf(transicionesPermitidas[actual], estadoNuevo) == -1)
+            {
+                string nombreActual = EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(actual);
+                string nombreNuevo = EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(estadoNuevo);
+
+                throw new ExcepcionReglaNegocio(string.Format("Un turno en estado {0} no puede cambiar a {1}.", nombreActual, nombreNuevo));
+            }
+
+
+            // validar que se haya cambiado fecha/hora si se marca reprogramado
+            if (estadoNuevo == 'R')
+            {
+                bool mismaFecha = turnoExistente.Horario.Inicio.Date == nuevaFechaInicio.Date;
+                bool mismaHora = turnoExistente.Horario.Inicio.TimeOfDay == nuevaFechaInicio.TimeOfDay &&
+                                 turnoExistente.Horario.Fin.TimeOfDay == nuevaFechaFin.TimeOfDay;
+
+                if (mismaFecha && mismaHora)
+                    throw new ExcepcionReglaNegocio("No se puede marcar como reprogramado sin cambiar la fecha/hora del turno.");
+            }
+
+            // validar reprogramado y no asistió según fecha/hora
+            if (actual == 'R' && estadoNuevo == 'X')
+            {
+                DateTime ahora = DateTime.Now;
+                if (ahora < turnoExistente.Horario.Fin)
+                    throw new ExcepcionReglaNegocio("No se puede marcar como 'No asistió' antes de que el turno haya finalizado.");
+            }
+
+            // un turno no se permite cerrar manualmente
+            if (estadoNuevo == 'Z')
+                throw new ExcepcionReglaNegocio("El turno no puede ser cerrado manualmente. Solo el médico puede cerrarlo al generar la historia clínica.");
+        }
 
     }
 }

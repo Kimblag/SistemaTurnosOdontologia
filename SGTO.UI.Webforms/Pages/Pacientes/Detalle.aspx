@@ -59,26 +59,94 @@
             </div>
 
             <hr />
-            <%--historial de turnos del paciente--%>
-            <div>
-                <div class="row mb-3">
-                    <h2 class="fs-4">Historial de Turnos</h2>
-                </div>
 
-                <div class="row">
-                    <asp:GridView
-                        ID="gvTurnosPaciente" runat="server" AutoGenerateColumns="False"
-                        CssClass="table gridview mb-0"
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="fs-5 fw-bold text-dark m-0">
+                        <i class="bi bi-clipboard-pulse me-2 text-danger"></i>Historia Clínica (Atenciones)
+                    </h4>
+
+                    <asp:LinkButton ID="btnExportarHistoria" runat="server"
+                        CssClass="btn btn-outline-danger btn-sm fw-bold"
+                        OnClick="btnExportarHistoria_Click"
+                        ToolTip="Descargar historial completo en PDF">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>Descargar PDF
+                    </asp:LinkButton>
+                </div>
+                <div class="card-body p-0">
+                    <asp:GridView ID="gvHistoriaClinica" runat="server" AutoGenerateColumns="False"
+                        CssClass="table table-hover align-middle mb-0" GridLines="None"
                         AllowPaging="True" PageSize="5"
+                        OnPageIndexChanging="gvHistoriaClinica_PageIndexChanging">
+
+                        <HeaderStyle CssClass="table-light text-secondary small text-uppercase" />
+
+                        <Columns>
+                            <%-- Fecha --%>
+                            <asp:BoundField DataField="Fecha" HeaderText="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
+
+                            <%-- Tratamiento --%>
+                            <asp:TemplateField HeaderText="Tratamiento">
+                                <ItemTemplate>
+                                    <span class="fw-bold text-dark"><%# Eval("Tratamiento") %></span>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+                            <%-- Diagnóstico --%>
+                            <asp:BoundField DataField="Diagnostico" HeaderText="Diagnóstico" />
+
+                            <asp:TemplateField HeaderText="Profesional">
+                                <ItemTemplate>
+                                    <div class="d-flex flex-column">
+                                        <span class="fw-medium"><%# Eval("Profesional") %></span>
+                                        <small class="text-muted"><%# Eval("Especialidad") %></small>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+
+
+                            <asp:TemplateField HeaderText="" ItemStyle-CssClass="text-end">
+                                <ItemTemplate>
+                                    <a href='<%# ResolveUrl("~/Pages/Turnos/Detalle.aspx?id-turno=" + Eval("IdTurno")) %>'
+                                        class="btn btn-sm btn-outline-primary" title="Ver detalle del turno">
+                                        <i class="bi bi-eye me-1"></i>Ver Turno
+                                    </a>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+
+                        <EmptyDataTemplate>
+                            <div class="text-center p-5 text-muted">
+                                <i class="bi bi-journal-medical fs-1 d-block mb-2"></i>
+                                <p class="mb-0">Este paciente no posee registros clínicos de atenciones finalizadas.</p>
+                            </div>
+                        </EmptyDataTemplate>
+                    </asp:GridView>
+                </div>
+            </div>
+
+            <hr />
+            <%--historial de turnos del paciente--%>
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h4 class="fs-5 fw-bold text-secondary m-0">
+                        <i class="bi bi-calendar-week me-2"></i>Historial de Turnos (Agenda)
+                </h4>
+                </div>
+                <div class="card-body p-0">
+                    <asp:GridView ID="gvTurnosPaciente" runat="server" AutoGenerateColumns="False"
+                        CssClass="table table-hover align-middle mb-0" GridLines="None"
+                        AllowPaging="True" PageSize="10"
                         OnPageIndexChanging="gvTurnosPaciente_PageIndexChanging"
-                        OnRowDataBound="gvTurnosPaciente_RowDataBound"
-                        OnRowCommand="gvTurnosPaciente_RowCommand">
+                        OnRowDataBound="gvTurnosPaciente_RowDataBound">
+
+                        <HeaderStyle CssClass="table-light text-secondary small text-uppercase" />
 
                         <Columns>
                             <asp:BoundField DataField="Fecha" HeaderText="Fecha" />
                             <asp:BoundField DataField="Hora" HeaderText="Hora" />
                             <asp:BoundField DataField="Medico" HeaderText="Médico" />
-                            <asp:BoundField DataField="Observaciones" HeaderText="Observaciones" />
+                            <asp:BoundField DataField="Observaciones" HeaderText="Obs. Administrativas" />
 
                             <asp:TemplateField HeaderText="Estado">
                                 <ItemTemplate>
@@ -86,28 +154,27 @@
                                         <%# Eval("Estado") %>
                                     </div>
                                 </ItemTemplate>
+
                             </asp:TemplateField>
 
-                            <asp:TemplateField HeaderText="Acciones">
+                            <asp:TemplateField HeaderText="" ItemStyle-CssClass="text-end">
                                 <ItemTemplate>
                                     <a href='<%# ResolveUrl("~/Pages/Turnos/Detalle.aspx?id-turno=" + Eval("IdTurnoPaciente")) %>'
-                                        class="btn btn-sm btn-outline-primary">Ver detalle
+                                        class="btn btn-sm btn-outline-primary" title="Ver detalle del turno">
+                                        <i class="bi bi-eye me-1"></i>Ver Turno
                                     </a>
                                 </ItemTemplate>
                             </asp:TemplateField>
-
                         </Columns>
+
                         <EmptyDataTemplate>
-                            <div class="empty-state">
-                                <i class="bi bi-calendar-x"></i>
-                                No hay turnos para mostrar.
+                            <div class="text-center p-5 text-muted">
+                                <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                                <p>No hay turnos registrados en la agenda.</p>
                             </div>
                         </EmptyDataTemplate>
                     </asp:GridView>
-
                 </div>
-
-
             </div>
 
         </div>

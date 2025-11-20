@@ -136,7 +136,6 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             if (campo == "estado")
             {
                 ddlCriterio.Items.Add(new ListItem("Nuevo", "Nuevo"));
-                ddlCriterio.Items.Add(new ListItem("Pendiente Reprogramación", "PendienteReprogramacion"));
                 ddlCriterio.Items.Add(new ListItem("Reprogramado", "Reprogramado"));
                 ddlCriterio.Items.Add(new ListItem("No asistió", "NoAsistio"));
                 ddlCriterio.Items.Add(new ListItem("Cancelado", "Cancelado"));
@@ -279,42 +278,19 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 TurnoListadoDto turnoDto = (TurnoListadoDto)e.Row.DataItem;
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+
+                string estadoTurno = turnoDto.Estado.ToLower();
 
                 if (lblEstado != null && turnoDto != null)
                 {
-                    string estadoTurno = turnoDto.Estado.ToLower();
+                    lblEstado.Attributes["class"] = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(estadoTurno);
+                    lblEstado.InnerText = TurnoUiHelper.ObtenerTextoEstado(estadoTurno);
+                }
 
-                    switch (estadoTurno)
-                    {
-                        case "nuevo":
-                            lblEstado.InnerText = "Nuevo";
-                            lblEstado.Attributes["class"] = "badge badge-primary";
-                            break;
-                        case "cancelado":
-                            lblEstado.InnerText = "Cancelado";
-                            lblEstado.Attributes["class"] = "badge badge-danger";
-                            break;
-                        case "pendientereprogramacion":
-                            lblEstado.InnerText = "Pendiente Reprogramación";
-                            lblEstado.Attributes["class"] = "badge badge-pending";
-                            break;
-                        case "reprogramado":
-                            lblEstado.InnerText = "Reprogramado";
-                            lblEstado.Attributes["class"] = "badge badge-info";
-                            break;
-                        case "noasistio":
-                            lblEstado.InnerText = "No asistió";
-                            lblEstado.Attributes["class"] = "badge badge-dark";
-                            break;
-                        case "cerrado":
-                            lblEstado.InnerText = "Cerrado";
-                            lblEstado.Attributes["class"] = "badge badge-completed";
-                            break;
-                        default:
-                            lblEstado.InnerText = "Indefinido";
-                            lblEstado.Attributes["class"] = "badge badge-secondary";
-                            break;
-                    }
+                if (btnEditar != null && turnoDto != null)
+                {
+                    btnEditar.Visible = TurnoUiHelper.EsEditable(estadoTurno);
                 }
             }
         }

@@ -78,5 +78,18 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+
+        public string ObtenerValor(string nombreParametro)
+        {
+            try
+            {
+                return _repositorioParametroSistema.ObtenerValor(nombreParametro);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

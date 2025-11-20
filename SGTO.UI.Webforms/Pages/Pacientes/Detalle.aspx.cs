@@ -1,11 +1,8 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
-using SGTO.Dominio.ObjetosValor;
-using SGTO.Negocio.DTOs;
-using SGTO.Negocio.DTOs.Pacientes;
+﻿using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Servicios;
+using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -21,6 +18,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
     public partial class Detalle : System.Web.UI.Page
     {
         private readonly PacienteService _servicioPaciente = new PacienteService();
+        private readonly ParametroService _servicioParametro = new ParametroService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -44,7 +42,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                     );
                     return;
                 }
-                CargarDetallePaciente(idPaciente);
+                CargarTodo(idPaciente);
                 ModalHelper.MostrarModalDesdeSession(this.Page, "PacienteMensajeTitulo", "PacienteMensajeDesc", "/Pages/Pacientes/Index");
             }
         }
@@ -55,7 +53,8 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             return int.TryParse(idStr, out int id) ? id : 0;
         }
 
-        private void CargarDetallePaciente(int idPaciente)
+
+        private void CargarTodo(int idPaciente)
         {
             try
             {
@@ -68,41 +67,28 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                         "Paciente no encontrado",
                         "No se encontró el paciente solicitado.",
                         "Resultado",
-                        VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
+                        VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index.aspx"),
                         "abrirModalResultado"
                     );
                     return;
                 }
 
-                CargarDatosPaciente(dto);
+                CargarDatosPersonalesYAgenda(dto);
+
+                CargarHistoriaClinica(idPaciente);
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page,
-                    "Operación no permitida",
-                    ex.Message,
-                    "Resultado",
-                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
-                    "abrirModalResultado"
-                );
+                MensajeUiHelper.SetearYMostrar(this.Page, "Atención", ex.Message, "Resultado", VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index.aspx"), "abrirModalResultado");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error al cargar detalle de paciente: " + ex.Message);
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page,
-                    "Error inesperado",
-                    "Ocurrió un error al intentar cargar el detalle del paciente.",
-                    "Resultado",
-                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
-                    "abrirModalResultado"
-                );
+                Debug.WriteLine("Error al cargar detalle: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error inesperado", "Ocurrió un error al cargar los datos.", "Resultado", VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index.aspx"), "abrirModalResultado");
             }
         }
 
-
-        private void CargarDatosPaciente(PacienteDetalleDto dto)
+        private void CargarDatosPersonalesYAgenda(PacienteDetalleDto dto)
         {
             lblNombreCompleto.Text = dto.NombreCompleto;
             lblDni.Text = dto.Dni;
@@ -120,13 +106,27 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             gvTurnosPaciente.DataBind();
         }
 
+        private void CargarHistoriaClinica(int idPaciente)
+        {
+            try
+            {
+                List<HistoriaClinicaResumenDto> historia = _servicioPaciente.ObtenerHistoriaClinica(idPaciente);
+
+                gvHistoriaClinica.DataSource = historia;
+                gvHistoriaClinica.DataBind();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error cargando historia clínica: " + ex.Message);
+            }
+        }
+
         protected void gvTurnosPaciente_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             try
             {
                 gvTurnosPaciente.PageIndex = e.NewPageIndex;
-                int idPaciente = ExtraerIdPaciente();
-                CargarDetallePaciente(idPaciente);
+                CargarTodo(ExtraerIdPaciente());
             }
             catch (Exception ex)
             {
@@ -156,41 +156,57 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
                 if (divEstadoTurno != null && turnoDto != null)
                 {
-                    string estadoTurno = turnoDto.Estado.ToLower();
-
-                    switch (estadoTurno)
-                    {
-                        case "nuevo":
-                            divEstadoTurno.InnerText = "Nuevo";
-                            divEstadoTurno.Attributes["class"] = "badge badge-primary";
-                            break;
-                        case "cancelado":
-                            divEstadoTurno.InnerText = "Cancelado";
-                            divEstadoTurno.Attributes["class"] = "badge badge-danger";
-                            break;
-                        case "pendientereprogramacion":
-                            divEstadoTurno.InnerText = "Pendiente Reprogramación";
-                            divEstadoTurno.Attributes["class"] = "badge badge-pending";
-                            break;
-                        case "reprogramado":
-                            divEstadoTurno.InnerText = "Reprogramado";
-                            divEstadoTurno.Attributes["class"] = "badge badge-info";
-                            break;
-                        case "noasistio":
-                            divEstadoTurno.InnerText = "No asistió";
-                            divEstadoTurno.Attributes["class"] = "badge badge-dark";
-                            break;
-                        case "cerrado":
-                            divEstadoTurno.InnerText = "Cerrado";
-                            divEstadoTurno.Attributes["class"] = "badge badge-completed";
-                            break;
-                        default:
-                            divEstadoTurno.InnerText = "Indefinido";
-                            divEstadoTurno.Attributes["class"] = "badge badge-secondary";
-                            break;
-                    }
+                    divEstadoTurno.InnerText = TurnoUiHelper.ObtenerTextoEstado(turnoDto.Estado);
+                    divEstadoTurno.Attributes["class"] = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(turnoDto.Estado);
                 }
             }
         }
+
+        protected void gvHistoriaClinica_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvHistoriaClinica.PageIndex = e.NewPageIndex;
+            CargarHistoriaClinica(ExtraerIdPaciente());
+        }
+
+
+        protected void btnExportarHistoria_Click(object sender, EventArgs e)
+        {
+            int idPaciente = ExtraerIdPaciente();
+            if (idPaciente == 0) return;
+
+            try
+            {
+                var pacienteDto = _servicioPaciente.ObtenerDetalle(idPaciente);
+                var historial = _servicioPaciente.ObtenerHistoriaClinica(idPaciente);
+
+                if (historial == null || historial.Count == 0)
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Sin datos", "El paciente no tiene historia clínica para exportar.", "Cerrar", null, "abrirModalResultado");
+                    return;
+                }
+                string nombreClinica = _servicioParametro.ObtenerValor("NombreClinica");
+
+                byte[] pdfBytes = GeneradorPdf.GenerarHistoriaClinicaPdf(pacienteDto, historial, nombreClinica);
+
+                Response.Clear();
+                Response.ContentType = "application/pdf";
+                string fileName = string.Format("HistoriaClinica_{0}.pdf", pacienteDto.Dni.Trim());
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                Response.Buffer = true;
+                Response.BinaryWrite(pdfBytes);
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                // agrego esto porque estaba dando error por la excepción del redirect
+                if (!(ex is System.Threading.ThreadAbortException))
+                {
+                    Debug.WriteLine("Error generando PDF: " + ex.Message);
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo generar el reporte PDF.", "Cerrar", null, "abrirModalResultado");
+                }
+            }
+        }
+
+
     }
 }

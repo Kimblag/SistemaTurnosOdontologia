@@ -3,6 +3,7 @@ using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Turnos;
+using System;
 using System.Collections.Generic;
 
 
@@ -96,6 +97,85 @@ namespace SGTO.Negocio.Mappers
                 Observaciones = dto.Observaciones
             };
         }
+
+
+        public static TurnoEdicionDto MapearAEdicionDto(Turno turno)
+        {
+            if (turno == null) return null;
+
+            TurnoEdicionDto dto = new TurnoEdicionDto();
+
+            dto.IdTurno = turno.IdTurno;
+            dto.FechaInicio = turno.Horario.Inicio;
+            dto.FechaFin = turno.Horario.Fin;
+            dto.Estado = turno.Estado.ToString()[0];
+
+            dto.IdPaciente = turno.Paciente.IdPaciente;
+            dto.NombreCompletoPaciente = $"{turno.Paciente.Apellido}, {turno.Paciente.Nombre}";
+
+            dto.IdEspecialidad = turno.Especialidad.IdEspecialidad;
+
+            dto.IdMedico = turno.Medico.IdMedico;
+
+            dto.IdCobertura = turno.Cobertura.IdCobertura;
+
+            if (turno.Plan != null)
+                dto.IdPlan = turno.Plan.IdPlan;
+
+            dto.Observaciones = turno.Observaciones;
+            return dto;
+        }
+
+
+        public static void MapearEdicion(Turno turno, TurnoEdicionDto dto)
+        {
+            if (turno == null || dto == null)
+                return;
+
+            turno.Paciente = new Paciente { IdPaciente = dto.IdPaciente };
+            turno.Medico = new Medico { IdMedico = dto.IdMedico };
+            turno.Especialidad = new Especialidad { IdEspecialidad = dto.IdEspecialidad };
+            turno.Cobertura = new Cobertura { IdCobertura = dto.IdCobertura };
+            turno.Plan = dto.IdPlan != 0 ? new Plan { IdPlan = dto.IdPlan } : null;
+            turno.Horario = new HorarioTurno(dto.FechaInicio, dto.FechaFin, validar: true);
+            turno.Estado = (EstadoTurno)dto.Estado; // ojo con esto, si dto.Estado sigue siendo char hay que convertir
+            turno.Observaciones = dto.Observaciones;
+        }
+
+
+
+        public static TurnoDetalleDto MapearADetalleDto(Turno turno)
+        {
+            if (turno == null) return null;
+
+            return new TurnoDetalleDto
+            {
+                IdTurno = turno.IdTurno,
+
+                IdPaciente = turno.Paciente?.IdPaciente ?? 0,
+                NombrePaciente = $"{turno.Paciente.Apellido}, {turno.Paciente.Nombre}",
+
+                IdMedico = turno.Medico?.IdMedico ?? 0,
+                NombreMedico = $"{turno.Medico.Apellido}, {turno.Medico.Nombre}",
+
+                IdEspecialidad = turno.Especialidad?.IdEspecialidad ?? 0,
+                Especialidad = turno.Especialidad.Nombre,
+
+                Estado = EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(EnumeracionMapperNegocio.ObtenerChar(turno.Estado)),
+
+                FechaInicio = turno.Horario.Inicio,
+                FechaFin = turno.Horario.Fin,
+
+                IdCobertura = turno.Cobertura.IdCobertura,
+                Cobertura = turno.Cobertura.Nombre,
+
+                IdPlan = (turno.Plan != null && turno.Plan.IdPlan != 0) ? turno.Plan.IdPlan : 0,
+                Plan = turno.Plan?.Nombre ?? "-",
+
+                Observaciones = turno.Observaciones ?? "-"
+            };
+        }
+
 
     }
 }

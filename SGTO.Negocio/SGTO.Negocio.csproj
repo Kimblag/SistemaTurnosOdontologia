@@ -54,6 +54,7 @@
     <Compile Include="DTOs\Medicos\MedicoDetalleDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoEdicionDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoListadoDto.cs" />
+    <Compile Include="DTOs\Pacientes\HistoriaClinicaResumenDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteCreacionDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteDetalleDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteEdicionDto.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="DTOs\Roles\RolListadoDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoCreacionDto.cs" />
+    <Compile Include="DTOs\Turnos\TurnoDetalleDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoEdicionDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoListadoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoPacienteDto.cs" />

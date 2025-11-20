@@ -17,6 +17,7 @@ namespace SGTO.Negocio.Servicios
         private readonly PlanRepositorio _repositorioPlan;
         private readonly CoberturaRepositorio _repositorioCobertura;
         private readonly TurnoRepositorio _repositorioTurno;
+        private readonly HistoriaClinicaRepositorio _repositorioHistoriaClinica;
 
         public PacienteService()
         {
@@ -24,6 +25,7 @@ namespace SGTO.Negocio.Servicios
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
             _repositorioTurno = new TurnoRepositorio();
+            _repositorioHistoriaClinica = new HistoriaClinicaRepositorio();
         }
 
 
@@ -234,6 +236,33 @@ namespace SGTO.Negocio.Servicios
             {
                 throw;
             }
+        }
+
+
+        public List<HistoriaClinicaResumenDto> ObtenerHistoriaClinica(int idPaciente)
+        {
+            List<HistoriaClinicaRegistro> entidades = _repositorioHistoriaClinica.ObtenerHistorialPorPaciente(idPaciente);
+
+            List<HistoriaClinicaResumenDto> dtos = new List<HistoriaClinicaResumenDto>();
+
+            foreach (var item in entidades)
+            {
+                dtos.Add(new HistoriaClinicaResumenDto
+                {
+                    IdTurno = item.TurnoOrigen?.IdTurno ?? 0,
+
+                    Fecha = item.FechaAtencion,
+                    Diagnostico = item.Diagnostico,
+
+                    Tratamiento = item.TratamientoAplicado?.Nombre ?? "Sin datos",
+
+                    Profesional = item.Medico?.Apellido ?? "Sin datos",
+
+                    Especialidad = item.Especialidad?.Nombre ?? "Sin datos"
+                });
+            }
+
+            return dtos;
         }
 
 

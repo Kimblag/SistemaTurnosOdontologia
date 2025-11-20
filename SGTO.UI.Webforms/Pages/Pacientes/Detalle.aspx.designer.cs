@@ -96,6 +96,24 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
         protected global::System.Web.UI.WebControls.Label lblEstado;
 
         /// <summary>
+        /// btnExportarHistoria control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnExportarHistoria;
+
+        /// <summary>
+        /// gvHistoriaClinica control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvHistoriaClinica;
+
+        /// <summary>
         /// gvTurnosPaciente control.
         /// </summary>
         /// <remarks>

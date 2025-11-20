@@ -1,6 +1,14 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="TurnoForm.ascx.cs" Inherits="SGTO.UI.Webforms.Controles.Turnos.TurnoForm" %>
 
 <div class="card shadow-sm p-5 gap-2 justify-content-between">
+    <asp:HiddenField ID="hdnIdTurno" runat="server" Value="0" />
+    <asp:HiddenField ID="hdnFechaInicioOriginal" runat="server" />
+    <asp:HiddenField ID="hdnIdMedicoOriginal" runat="server" />
+    <asp:HiddenField ID="hdnIdEspecialidadOriginal" runat="server" />
+    <asp:HiddenField ID="hdnIdCoberturaOriginal" runat="server" />
+    <asp:HiddenField ID="hdnIdPlanOriginal" runat="server" />
+    <asp:HiddenField ID="hdnEstadoOriginal" runat="server" />
+
     <div id="alertPacienteInactivo" runat="server" class="alert alert-warning py-1 px-2 d-none"></div>
     <div>
 
@@ -108,8 +116,7 @@
                 <asp:Button ID="btnGuardar" runat="server"
                     Text="Guardar"
                     CssClass="btn btn-primary btn-sm"
-                    OnClick="btnGuardar_Click"
-                    />
+                    OnClick="btnGuardar_Click" />
             </div>
 
         </div>

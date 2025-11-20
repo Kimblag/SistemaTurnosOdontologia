@@ -32,39 +32,29 @@ namespace SGTO.UI.Webforms.Controles.Turnos
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            int idPaciente = ExtraerIdPaciente();
+            int idTurno = ExtraerIdTurno();
+
+            ModoEdicion = idTurno != 0;
+
+            hdnIdTurno.Value = idTurno.ToString();
+
+            if (idPaciente == 0 && idTurno == 0)
+            {
+                Response.Redirect("~/Pages/Pacientes/Index", false);
+                return;
+            }
+
             if (!IsPostBack)
             {
-                int idPaciente = ExtraerIdPaciente();
-                int idTurno = ExtraerIdTurno();
+                if (idPaciente != 0)
+                    CargarPaciente(idPaciente);
 
-                if (idPaciente == 0 && idTurno == 0)
-                {
-                    Response.Redirect("~/Pages/Pacientes/Index", false);
-                    return;
-                }
-
-                ModoEdicion = idTurno != 0;
-
-                PacienteEdicionDto paciente = _servicioPaciente.ObtenerPorId(idPaciente);
-
-                CargarPacienteTextbox(paciente);
-                CargarEspecialidadesDropdown();
-                CargarEstadosTurno();
-                PreCargarCoberturaYPlan(paciente);
-
-                if (!ModoEdicion)
-                {
-                    ddlEstadoTurno.SelectedValue = "N";
-                    ddlEstadoTurno.Enabled = false;
-                }
-                else
+                if (idTurno != 0)
                 {
                     ddlEstadoTurno.Enabled = true;
-                    CargarEstadoTurnoExistente(idTurno);
+                    CargarTurnoExistente(idTurno);
                 }
-
-                if (paciente.Estado.ToLower()[0] == 'i')
-                    BloquearControlesPorPacienteInactivo();
 
                 ModalHelper.MostrarModalDesdeSession(
                    this.Page,
@@ -73,6 +63,24 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                    "/Pages/Turnos/Index",
                    "abrirModalResultado");
             }
+        }
+
+        private void CargarPaciente(int idPaciente)
+        {
+            // consultamos los datos del paciente para precargarlos en el textbox.
+            PacienteEdicionDto paciente = _servicioPaciente.ObtenerPorId(idPaciente);
+            CargarPacienteTextbox(paciente);
+            CargarEspecialidadesDropdown();
+            CargarEstadosTurno();
+            PreCargarCoberturaYPlan(paciente.IdCobertura, paciente.IdPlan);
+
+            // el estado turno inicia como nuevo y no puede cambiarse si se está creando
+            ddlEstadoTurno.SelectedValue = "N";
+            ddlEstadoTurno.Enabled = false;
+
+            // si el paciente está inactivo, no podemos agendar turnos.
+            if (paciente.Estado.ToLower()[0] == 'i')
+                BloquearControlesPorPacienteInactivo();
         }
 
         private int ExtraerIdPaciente()
@@ -103,11 +111,9 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             ddlEstadoTurno.Items.Clear();
 
             ddlEstadoTurno.Items.Add(new ListItem("Nuevo", "N"));
-            ddlEstadoTurno.Items.Add(new ListItem("Pendiente Reprogramación", "P"));
             ddlEstadoTurno.Items.Add(new ListItem("Reprogramado", "R"));
             ddlEstadoTurno.Items.Add(new ListItem("No asistió", "X"));
             ddlEstadoTurno.Items.Add(new ListItem("Cancelado", "C"));
-            ddlEstadoTurno.Items.Add(new ListItem("Cerrado", "Z"));
         }
 
 
@@ -115,6 +121,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
         {
             try
             {
+                ddlMedico.Items.Clear();
                 List<MedicoListadoDto> medicosDto = _servicioMedico.ListarPorEspecialidad(idEspecialidad);
                 ddlMedico.Items.Add(new ListItem("Seleccione un médico", ""));
 
@@ -149,7 +156,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             catch
             {
                 ddlEspecialidad.Items.Clear();
-                ddlEspecialidad.Items.Add(new ListItem("[Error al cargar especialidades]", "0"));
+                ddlEspecialidad.Items.Add(new ListItem("Error al cargar especialidades", "0"));
                 ddlEspecialidad.Enabled = false;
             }
         }
@@ -177,7 +184,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
         }
 
 
-        private void CargarHorasDisponibles(int idMedico, DateTime fecha)
+        private void CargarHorasDisponibles(int idMedico, DateTime fecha, TimeSpan? horaTurnoActual = null)
         {
             List<TimeSpan> horas = _servicioTurno.ObtenerSlotsDisponibles(idMedico, fecha);
 
@@ -195,71 +202,168 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             foreach (TimeSpan h in horas)
                 ddlHora.Items.Add(new ListItem(h.ToString(@"hh\:mm"), h.ToString()));
 
-            ddlHora.Enabled = true;
+
+            if (horaTurnoActual.HasValue)
+            {
+                bool existe = false;
+                foreach (ListItem item in ddlHora.Items)
+                {
+                    if (item.Value == horaTurnoActual.Value.ToString())
+                    {
+                        existe = true;
+                        break;
+                    }
+                }
+
+                if (!existe)
+                    ddlHora.Items.Insert(1, new ListItem(horaTurnoActual.Value.ToString(@"hh\:mm"), horaTurnoActual.Value.ToString()));
+
+                // seleccionar la hora actual
+                foreach (ListItem item in ddlHora.Items)
+                {
+                    if (item.Value == horaTurnoActual.Value.ToString())
+                    {
+                        item.Selected = true;
+                        break;
+                    }
+                }
+            }
+
+            ddlHora.Enabled = horas.Count > 0 || horaTurnoActual.HasValue;
         }
 
 
-        private void PreCargarCoberturaYPlan(PacienteEdicionDto paciente)
+        private void PreCargarCoberturaYPlan(int idCobertura, int idPlan = 0)
         {
             ddlCobertura.Items.Clear();
             ddlCobertura.Items.Add(new ListItem("Seleccione una cobertura", ""));
 
             List<CoberturaDto> coberturas = _servicioCobertura.Listar("activas");
 
+            CoberturaDto coberturaSeleccionada = null;
+
             foreach (CoberturaDto c in coberturas)
+            {
                 ddlCobertura.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
+                if (c.IdCobertura == idCobertura)
+                    coberturaSeleccionada = c;
+            }
 
-            ddlCobertura.SelectedValue = paciente.IdCobertura.ToString();
+            ddlCobertura.SelectedValue = idCobertura.ToString();
 
-            CoberturaDto cobertura = _servicioCobertura.ObtenerPorId(paciente.IdCobertura);
-
-            if (cobertura == null || cobertura.Estado.ToLower()[0] != 'a')
+            if (coberturaSeleccionada == null || coberturaSeleccionada.Estado.ToLower()[0] != 'a')
             {
                 alertCobertura.Attributes["class"] = "alert alert-warning py-1 px-2";
                 alertCobertura.InnerText = "La cobertura del paciente está inactiva.";
             }
 
-
+            // Planes
             ddlPlan.Items.Clear();
             ddlPlan.Items.Add(new ListItem("Seleccione un plan", ""));
 
-            List<PlanDto> planes = _servicioPlan.ListarPorCobertura(paciente.IdCobertura);
+            List<PlanDto> planes = _servicioPlan.ListarPorCobertura(idCobertura);
+            PlanDto planSeleccionado = null;
 
-            foreach (PlanDto p in planes)
-                ddlPlan.Items.Add(new ListItem(p.Nombre, p.IdPlan.ToString()));
-
-            if (paciente.IdPlan != 0)
+            if (planes.Count > 0)
             {
-                PlanDto plan = _servicioPlan.ObtenerPorId(paciente.IdPlan);
-
-                if (plan == null || plan.Estado.ToLower()[0] != 'a')
+                foreach (PlanDto p in planes)
                 {
-                    alertCobertura.Attributes["class"] = "alert alert-warning py-1 px-2";
-                    alertCobertura.InnerText = "El plan del paciente está inactivo.";
+                    ddlPlan.Items.Add(new ListItem(p.Nombre, p.IdPlan.ToString()));
+                    if (p.IdPlan == idPlan)
+                        planSeleccionado = p;
                 }
-                else if (plan.IdCobertura != paciente.IdCobertura)
+            }
+            else
+            {
+                // no hay planes para esta cobertura
+                ddlPlan.Enabled = false;
+            }
+
+            if (idPlan != 0 && planSeleccionado != null)
+            {
+                if (planSeleccionado.Estado.ToLower()[0] != 'a')
+                {
+                    alertPlan.Attributes["class"] = "alert alert-warning py-1 px-2";
+                    alertPlan.InnerText = "El plan del paciente está inactivo.";
+                }
+                else if (planSeleccionado.IdCobertura != idCobertura)
                 {
                     alertPlan.Attributes["class"] = "alert alert-warning py-1 px-2";
                     alertPlan.InnerText = "El plan no coincide con su cobertura.";
                 }
 
-                ddlPlan.SelectedValue = paciente.IdPlan.ToString();
+                ddlPlan.SelectedValue = idPlan.ToString();
             }
         }
 
 
-        private void CargarEstadoTurnoExistente(int idTurno)
+        private void CargarTurnoExistente(int idTurno)
         {
-            TurnoEdicionDto turno = _servicioTurno.ObtenerPorId(idTurno);
 
-            if (turno != null)
-                ddlEstadoTurno.SelectedValue = turno.Estado[0].ToString();
+            try
+            {
+                TurnoEdicionDto turno = _servicioTurno.ObtenerPorId(idTurno);
+                if (turno == null)
+                    throw new Exception("No se encontró el turno.");
+
+                // guardamos los valores originales en los hidden fields, de manera que podamos detectar cambios
+                hdnIdTurno.Value = turno.IdTurno.ToString();
+                hdnIdPaciente.Value = turno.IdPaciente.ToString();
+
+                hdnFechaInicioOriginal.Value = turno.FechaInicio.ToString("yyyy-MM-dd HH:mm");
+                hdnIdMedicoOriginal.Value = turno.IdMedico.ToString();
+                hdnIdEspecialidadOriginal.Value = turno.IdEspecialidad.ToString();
+                hdnIdCoberturaOriginal.Value = turno.IdCobertura.ToString();
+                hdnIdPlanOriginal.Value = turno.IdPlan.ToString();
+                hdnEstadoOriginal.Value = turno.Estado.ToString();
+
+                // pre cargar el paciente
+                txtPaciente.Text = turno.NombreCompletoPaciente;
+
+                // cargar los dropdowns en orden, ya que estos están en cascada
+
+                CargarEspecialidadesDropdown();
+                ddlEspecialidad.SelectedValue = turno.IdEspecialidad.ToString();
+
+                CargarMedicoDropdown(turno.IdEspecialidad);
+                ddlMedico.SelectedValue = turno.IdMedico.ToString();
+
+                CargarFechasDisponiblesDropdown(turno.IdMedico);
+
+                string fechaFormato = turno.FechaInicio.ToString("yyyy-MM-dd");
+                if (ddlFecha.Items.FindByValue(fechaFormato) != null)
+                    ddlFecha.SelectedValue = fechaFormato;
+
+                CargarHorasDisponibles(turno.IdMedico, turno.FechaInicio, turno.FechaInicio.TimeOfDay);
+
+                PreCargarCoberturaYPlan(turno.IdCobertura, turno.IdPlan);
+
+                CargarEstadosTurno();
+                ddlEstadoTurno.SelectedValue = turno.Estado.ToString();
+                ddlEstadoTurno.Enabled = true;
+
+                txtObservaciones.Text = turno.Observaciones;
+
+
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Dato inválido", ex.Message, "Resultado", null, "abrirModalResultado");
+            }
+
         }
 
 
         protected void btnCancelarTurno_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/Pages/Pacientes/Index", false);
+            if (ModoEdicion)
+            {
+                Response.Redirect("~/Pages/Turnos/Index", false);
+            }
+            else
+            {
+                Response.Redirect("~/Pages/Pacientes/Index", false);
+            }
         }
 
         protected void ddlEspecialidad_SelectedIndexChanged(object sender, EventArgs e)
@@ -342,45 +446,87 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             alertPacienteInactivo.InnerText = "El paciente se encuentra inactivo, no es posible agendar un turno.";
         }
 
+        private void CrearTurno()
+        {
+
+            TurnoCreacionDto dto = new TurnoCreacionDto
+            {
+                IdPaciente = int.Parse(Request.QueryString["id-paciente"]),
+
+                IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
+                IdMedico = int.Parse(ddlMedico.SelectedValue),
+                IdCobertura = int.Parse(ddlCobertura.SelectedValue),
+
+                IdPlan = string.IsNullOrEmpty(ddlPlan.SelectedValue)
+                           ? 0
+                           : int.Parse(ddlPlan.SelectedValue),
+
+                Estado = ddlEstadoTurno.SelectedValue.ToUpper()[0],
+
+                //fecha y hora seleccionada
+                FechaInicio = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}"),
+
+                FechaFin = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}")
+                           .AddHours(DURACION_TURNO),
+
+                Observaciones = txtObservaciones.Text?.Trim()
+            };
+
+            string rutaPlantilla = Server.MapPath("~/Plantillas/Email/ConfirmacionTurno.html");
+            int idTurno = _servicioTurno.Crear(dto, rutaPlantilla);
+
+
+            MensajeUiHelper.SetearYMostrar(
+               this.Page,
+               "Turno agendado",
+               $"El turno se ha agendado correctamente.",
+               "Resultado",
+               VirtualPathUtility.ToAbsolute($"~/Pages/Turnos/Detalle?id-turno={idTurno}"),
+               "abrirModalResultado"
+           );
+        }
+
+        private void EditarTurno()
+        {
+
+            TurnoEdicionDto dto = new TurnoEdicionDto
+            {
+                IdTurno = int.Parse(hdnIdTurno.Value),
+                IdPaciente = int.Parse(hdnIdPaciente.Value),
+                IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
+                IdMedico = int.Parse(ddlMedico.SelectedValue),
+                IdCobertura = int.Parse(ddlCobertura.SelectedValue),
+                IdPlan = string.IsNullOrEmpty(ddlPlan.SelectedValue) ? 0 : int.Parse(ddlPlan.SelectedValue),
+                Estado = ddlEstadoTurno.SelectedValue.ToUpper()[0],
+                FechaInicio = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}"),
+                FechaFin = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}").AddHours(DURACION_TURNO),
+                Observaciones = txtObservaciones.Text?.Trim()
+            };
+
+            _servicioTurno.Editar(dto);
+
+            MensajeUiHelper.SetearYMostrar(
+                this.Page,
+                "Turno modificado",
+                $"El turno se ha modificado correctamente.",
+                "Resultado",
+                VirtualPathUtility.ToAbsolute($"~/Pages/Turnos/Detalle?id-turno={dto.IdTurno}"),
+                "abrirModalResultado"
+            );
+        }
+
+
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                TurnoCreacionDto dto = new TurnoCreacionDto
-                {
-                    IdPaciente = int.Parse(Request.QueryString["id-paciente"]),
 
-                    IdEspecialidad = int.Parse(ddlEspecialidad.SelectedValue),
-                    IdMedico = int.Parse(ddlMedico.SelectedValue),
-                    IdCobertura = int.Parse(ddlCobertura.SelectedValue),
-
-                    IdPlan = string.IsNullOrEmpty(ddlPlan.SelectedValue)
-                        ? 0
-                        : int.Parse(ddlPlan.SelectedValue),
-
-                    Estado = ddlEstadoTurno.SelectedValue.ToUpper()[0],
-
-                    //fecha y hora seleccionada
-                    FechaInicio = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}"),
-
-                    FechaFin = DateTime.Parse($"{ddlFecha.SelectedValue} {ddlHora.SelectedItem.Text}")
-                        .AddHours(DURACION_TURNO),
-
-                    Observaciones = txtObservaciones.Text?.Trim()
-                };
-
-                string rutaPlantilla = Server.MapPath("~/Plantillas/Email/ConfirmacionTurno.html");
-                int idTurno = _servicioTurno.Crear(dto, rutaPlantilla);
+                if (ModoEdicion)
+                    EditarTurno();
+                else
+                    CrearTurno();
 
 
-                MensajeUiHelper.SetearYMostrar(
-                   this.Page,
-                   "Turno agendado",
-                   $"El turno se ha agendado correctamente.",
-                   "Resultado",
-                   VirtualPathUtility.ToAbsolute($"~/Pages/Turnos/Detalle?id-turno={idTurno}"),
-                   "abrirModalResultado"
-               );
             }
             catch (ExcepcionReglaNegocio ex)
             {

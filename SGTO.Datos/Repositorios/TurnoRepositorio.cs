@@ -421,5 +421,115 @@ namespace SGTO.Datos.Repositorios
             }
             return lista;
         }
+
+
+        public Turno ObtenerPorId(int idTurno)
+        {
+            string query = @"
+                   SELECT T.IdTurno,
+                           T.Estado AS EstadoTurno,
+                           T.FechaInicio,
+                           T.FechaFin,
+                           PAC.IdPaciente,
+                           PAC.Nombre AS NombrePaciente,
+                           PAC.Apellido AS ApellidoPaciente,
+                           PAC.NumeroDocumento,
+                           M.IdMedico,
+                           M.Nombre AS NombreMedico,
+                           M.Apellido AS ApellidoMedico,
+                           E.IdEspecialidad,
+                           E.Nombre AS NombreEspecialidad,
+                           C.IdCobertura,
+                           C.Nombre AS NombreCobertura,
+                           PL.IdPlan,
+                           PL.Nombre AS NombrePlan
+                        FROM Turno T
+                        INNER JOIN Paciente PAC ON PAC.IdPaciente = T.IdPaciente
+                        INNER JOIN Medico M ON M.IdMedico = T.IdMedico
+                        INNER JOIN Especialidad E ON E.IdEspecialidad = T.IdEspecialidad
+                        INNER JOIN Cobertura C ON C.IdCobertura = T.IdCobertura
+                        LEFT JOIN [Plan] PL ON PL.IdCobertura = C.IdCobertura
+                    WHERE T.IdTurno = @IdTurno";
+
+            Turno turno = null;
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdTurno", idTurno);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            turno = TurnoMapper.MapearAEntidadCompleto(lector);
+                        }
+                    }
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return turno;
+        }
+
+
+        public void Actualizar(Turno turno, int idUsuarioModificacion = 0)
+        {
+            if (turno == null) throw new ArgumentNullException(nameof(turno));
+
+            string query = @"
+                        UPDATE Turno
+                        SET
+                            IdPaciente = @IdPaciente,
+                            IdMedico = @IdMedico,
+                            IdEspecialidad = @IdEspecialidad,
+                            IdCobertura = @IdCobertura,
+                            IdPlan = @IdPlan,
+                            FechaInicio = @FechaInicio,
+                            FechaFin = @FechaFin,
+                            Estado = @Estado,
+                            Observaciones = @Observaciones,
+                            IdUsuarioModificacion = @IdUsuarioModificacion,
+                            FechaModificacion = GETDATE()
+                        WHERE IdTurno = @IdTurno";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+
+                datos.EstablecerParametros("@IdTurno", turno.IdTurno);
+                datos.EstablecerParametros("@IdPaciente", turno.Paciente.IdPaciente);
+                datos.EstablecerParametros("@IdMedico", turno.Medico.IdMedico);
+                datos.EstablecerParametros("@IdEspecialidad", turno.Especialidad.IdEspecialidad);
+                datos.EstablecerParametros("@IdCobertura", turno.Cobertura.IdCobertura);
+                datos.EstablecerParametros("@IdPlan", (object)turno.Plan?.IdPlan ?? DBNull.Value);
+                datos.EstablecerParametros("@FechaInicio", turno.Horario.Inicio);
+                datos.EstablecerParametros("@FechaFin", turno.Horario.Fin);
+                datos.EstablecerParametros("@Estado", turno.Estado.ToString()[0]);
+                datos.EstablecerParametros("@Observaciones", (object)turno.Observaciones ?? DBNull.Value);
+                if (idUsuarioModificacion != 0)
+                    datos.EstablecerParametros("@IdUsuarioModificacion", idUsuarioModificacion);
+                else
+                    datos.EstablecerParametros("@IdUsuarioModificacion", DBNull.Value);
+
+
+                try
+                {
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

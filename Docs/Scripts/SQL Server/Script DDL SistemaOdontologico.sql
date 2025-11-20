@@ -193,13 +193,16 @@ CREATE TABLE Turno (
     FechaFin DATETIME NOT NULL,
     Estado CHAR(1) NOT NULL,
     Observaciones NVARCHAR(250) NULL,
+    IdUsuarioModificacion INT NULL,
+    FechaModificacion DATETIME NULL
 
     CONSTRAINT FK_Turno_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
     CONSTRAINT FK_Turno_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
     CONSTRAINT FK_Turno_Especialidad FOREIGN KEY(IdEspecialidad) REFERENCES Especialidad(IdEspecialidad),
     CONSTRAINT FK_Turno_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
     CONSTRAINT FK_Turno_Plan FOREIGN KEY(IdPlan) REFERENCES [Plan](IdPlan),
-    CONSTRAINT CHK_Turno_Estado CHECK (Estado IN ('N','P','R','X','C','Z'))
+    CONSTRAINT CHK_Turno_Estado CHECK (Estado IN ('N','P','R','X','C','Z')),
+    CONSTRAINT FK_Turno_UsuarioModificacion FOREIGN KEY (IdUsuarioModificacion) REFERENCES Usuario(IdUsuario)
 );
 
 

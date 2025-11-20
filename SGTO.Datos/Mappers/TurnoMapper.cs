@@ -1,12 +1,8 @@
 ﻿using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Datos.Mappers
 {

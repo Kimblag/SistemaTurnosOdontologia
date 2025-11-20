@@ -49,6 +49,7 @@
     <Compile Include="Mappers\ConfiguracionMapper.cs" />
     <Compile Include="Mappers\EnumeracionMapperDatos.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />
+    <Compile Include="Mappers\HistoriaClinicaMapper.cs" />
     <Compile Include="Mappers\MedicoMapper.cs" />
     <Compile Include="Mappers\PacienteMapper.cs" />
     <Compile Include="Mappers\ParametroSistemaMapper.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Repositorios\CoberturaRepositorio.cs" />
     <Compile Include="Repositorios\DashboardRepositorio.cs" />
     <Compile Include="Repositorios\EspecialidadRepositorio.cs" />
+    <Compile Include="Repositorios\HistoriaClinicaRepositorio.cs" />
     <Compile Include="Repositorios\HorarioSemanalRepositorio.cs" />
     <Compile Include="Repositorios\MedicoRepositorio.cs" />
     <Compile Include="Repositorios\PacienteRepositorio.cs" />

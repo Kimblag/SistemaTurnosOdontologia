@@ -14,22 +14,13 @@ INSERT INTO Cobertura (Nombre, Descripcion, Estado) VALUES
 ('IOMA', 'Cobertura estatal para empleados públicos', 'A'),
 ('OSPE', 'Cobertura de estaciones de servicio', 'A');
 
-
-
 -- Rol
 INSERT INTO Rol (Nombre, Descripcion, Estado) VALUES
 ('Administrador', 'Acceso total al sistema', 'A'),
 ('Recepcionista', 'Gestión de pacientes y turnos', 'A'),
 ('Médico', 'Acceso a agenda y registro clínico', 'A');
 
-
-
 -- Permiso
-   --Módulos con 6 acciones: Turnos, Pacientes, Medicos, Coberturas,
-   --                        Planes, Especialidades, Tratamientos, Reportes, Usuarios
-   --Módulos con 4 acciones: Roles (Ver/Crear/Editar/Eliminar)
-   --Módulos con 2 acciones: Configuracion (Ver/Editar),
-   --  ParametrosSistema (Ver/Editar)
 INSERT INTO Permiso (Modulo, Accion, Descripcion) VALUES
 ('Turnos','Ver','Ver listado de turnos'),
 ('Turnos','Crear','Registrar nuevos turnos'),
@@ -94,8 +85,6 @@ INSERT INTO Permiso (Modulo, Accion, Descripcion) VALUES
 ('ParametrosSistema','Ver','Ver parámetros'),
 ('ParametrosSistema','Editar','Editar parámetros');
 
-
-
 -- Especialidad
 INSERT INTO Especialidad (Nombre, Descripcion, Estado) VALUES
 ('Ortodoncia', 'Corrección dental', 'A'),
@@ -109,8 +98,6 @@ INSERT INTO Especialidad (Nombre, Descripcion, Estado) VALUES
 ('Estética Dental', 'Tratamientos estéticos', 'A'),
 ('General', 'Odontología general', 'A');
 
-
-
 -- ParametroSistema
 INSERT INTO ParametroSistema (Nombre, Valor, Descripcion) VALUES
 ('DuracionTurnoMinutos', '60', 'Duración predeterminada de turno'),
@@ -122,8 +109,6 @@ INSERT INTO ParametroSistema (Nombre, Valor, Descripcion) VALUES
 ('NombreClinica', 'Clínica SGTO', 'Nombre visible del sistema'),
 ('UsuarioCorreo', '97ee2a002@smtp-brevo.com', 'Nombre usuario SMTP del sistema'),
 ('ReintentosEmail', '3', 'Cantidad de intentos para reenviar un email');
-
-
 
 -- Plan
 INSERT INTO [Plan] (Nombre, Descripcion, PorcentajeCobertura, IdCobertura, Estado) VALUES
@@ -138,9 +123,7 @@ INSERT INTO [Plan] (Nombre, Descripcion, PorcentajeCobertura, IdCobertura, Estad
 ('Omint O30', 'Preventivo', 70, 7, 'A'),
 ('Sancor S40', 'Básico Sancor', 65, 8, 'I');
 
-
-
--- RolPermiso;
+-- RolPermiso
 -- Administrador: todos los permisos
 INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 1, IdPermiso FROM Permiso;
@@ -157,10 +140,7 @@ FROM Permiso
 WHERE
     (Modulo = 'Turnos' AND Accion IN ('Ver','Editar'))
     OR
-    (Modulo = 'Pacientes' AND Accion = 'Ver');;
-
-
-
+    (Modulo = 'Pacientes' AND Accion = 'Ver');
 
 -- Tratamiento
 INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado) VALUES
@@ -174,8 +154,6 @@ INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado)
 ('Radiografía Panorámica', 'Estudio diagnóstico', 4000, 8, 'A'),
 ('Selladores', 'Prevención caries', 6000, 4, 'A'),
 ('Control General', 'Consulta básica', 3500, 10, 'A');
-
-
 
 -- Usuario
 INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado)
@@ -191,7 +169,6 @@ VALUES
 ('Camila','Rossi','camila.rossi@sgto.com','crossi','hash9',3,'A'),
 ('Carlos','Méndez','carlos.mendez@sgto.com','cmendez','hash10',3,'A');
 
-
 -- Medico
 INSERT INTO Medico
 (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Matricula, IdUsuario, Estado)
@@ -201,10 +178,41 @@ VALUES
 ('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','121236',7,'A'),
 ('Lucía','Romero','28234570','F','1990-07-18','1123456792','121237',8,'I'),
 ('Camila','Rossi','32234571','F','1991-05-12','1123456793','121238',9,'A'),
-('Carlos','Méndez','27234572','M','1982-11-02','1123456794','121239',10,'A')
+('Carlos','Méndez','27234572','M','1982-11-02','1123456794','121239',10,'A');
 
 GO
 
+-- MedicoEspecialidad
+-- Médico 1: Sofía López - Estética Dental + General
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(1, 9),  -- Estética Dental
+(1, 10); -- Odontología General
+
+-- Médico 2: Martín Ruiz - Ortodoncia + Endodoncia
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(2, 1),  -- Ortodoncia
+(2, 2);  -- Endodoncia
+
+-- Médico 3: Nicolás Benítez - Endodoncia + Cirugía Bucal
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(3, 2),  -- Endodoncia
+(3, 5);  -- Cirugía Bucal
+
+-- Médico 4: Lucía Romero - Cirugía Bucal (inactiva)
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(4, 5);  -- Cirugía Bucal
+
+-- Médico 5: Camila Rossi - Implantología + Estética Dental
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(5, 6),  -- Implantología
+(5, 9);  -- Estética Dental
+
+-- Médico 6: Carlos Méndez - General + Prótesis
+INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
+(6, 10), -- Odontología General
+(6, 7);  -- Prótesis (AGREGADO para que coincida con los turnos)
+
+GO
 
 -- Paciente
 INSERT INTO Paciente
@@ -221,137 +229,180 @@ VALUES
 ('Isabel','Núñez','49111230','F','1996-04-21','1150012241','isabel.nunez@correo.com',9,8,'A'),           
 ('Jorge','Santos','50111231','M','1980-01-05','1150012242','jorge.santos@correo.com',10,NULL,'I');
 
-
-
 -- HorarioSemanalMedico
 INSERT INTO HorarioSemanalMedico (IdMedico, DiaSemana, HoraInicio, HoraFin, Estado)
 VALUES
-    -- Médico 1: Lunes 08-12 activo
-    (1, 1, '08:00', '12:00', 'A'),
-    -- Médico 1: Miércoles 14-18 activo
-    (1, 3, '14:00', '18:00', 'A'),
-
-    -- Médico 2: Martes 09-13 activo
-    (2, 2, '09:00', '13:00', 'A'),
-
-    -- Médico 3: Jueves 10-14 activo
-    (3, 4, '10:00', '14:00', 'A'),
-
-    -- Médico 4: Viernes 08-12 **inactivo** (caso de prueba)
-    (4, 5, '08:00', '12:00', 'I'),
-
-    -- Médico 5: Sábado 09-13 activo
-    (5, 6, '09:00', '13:00', 'A'),
-
-    -- Médico 6: Lunes 13-17 activo
-    (6, 1, '13:00', '17:00', 'A');
+    (1, 1, '08:00', '12:00', 'A'), -- Lunes
+    (1, 3, '14:00', '18:00', 'A'), -- Miércoles
+    (2, 2, '09:00', '13:00', 'A'), -- Martes
+    (3, 4, '10:00', '14:00', 'A'), -- Jueves
+    (4, 5, '08:00', '12:00', 'I'), -- Viernes (inactivo)
+    (5, 6, '09:00', '13:00', 'A'), -- Sábado
+    (6, 1, '13:00', '17:00', 'A'); -- Lunes
 GO
 
+-- TURNOS CON FECHAS DINÁMICAS Y COHERENTES PARA QUE NO DE ERROR AL PROBAR TURNOS
+-- Se calculan fechas desde HOY en adelante, respetando:
+-- - Día de la semana del horario del médico
+-- - Especialidades correctas del médico
+-- - Estados coherentes (N, R, C, X, Z)
 
+DECLARE @Hoy DATETIME = CAST(GETDATE() AS DATE);
 
+-- Turno 1: Paciente 1, Médico 1, Lunes
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    1, 1, 10, 1, NULL,
+    DATEADD(DAY, (1 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7, @Hoy) + CAST('09:00' AS DATETIME),
+    DATEADD(DAY, (1 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7, @Hoy) + CAST('10:00' AS DATETIME),
+    'N', 'Control general'
+);
 
--- Turno
-INSERT INTO Turno
-(IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan, FechaInicio, FechaFin, Estado, Observaciones)
-VALUES
-(1,1,10,1,NULL,'2025-10-25 09:00','2025-10-25 10:00','N','Control general'),
-(2,2,1,2,2,'2025-10-26 10:00','2025-10-26 11:00','R','Reprogramado por médico'),
-(3,3,2,3,3,'2025-10-26 11:00','2025-10-26 12:00','C','Cancelado por paciente'),
-(4,4,9,4,6,'2025-10-27 15:00','2025-10-27 16:00','X','No asistió'),
-(5,5,6,5,7,'2025-10-27 09:00','2025-10-27 10:00','N','Implante programado'),
-(6,6,7,6,8,'2025-10-28 14:00','2025-10-28 15:00','Z','Prótesis realizada'),
-(7,1,5,7,9,'2025-10-28 10:00','2025-10-28 11:00','C','Cancelado por clima'),
-(8,2,8,8,10,'2025-10-29 09:00','2025-10-29 10:00','Z','Radiografía realizada'),
-(9,3,4,9,8,'2025-10-29 11:00','2025-10-29 12:00','N','Selladores'),
-(10,4,1,10,NULL,'2025-10-30 10:00','2025-10-30 11:00','N','Limpieza inicial');
+-- Turno 2: Paciente 2, Médico 2, Martes +1 semana
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    2, 2, 1, 2, 2,
+    DATEADD(DAY, (2 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('10:00' AS DATETIME),
+    DATEADD(DAY, (2 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('11:00' AS DATETIME),
+    'R', 'Reprogramado por médico'
+);
 
+-- Turno 3: Paciente 3, Médico 3, Jueves pasado (hace 7 días)
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    3, 3, 2, 3, 4,
+    DATEADD(DAY, -7, @Hoy) + CAST('11:00' AS DATETIME),
+    DATEADD(DAY, -7, @Hoy) + CAST('12:00' AS DATETIME),
+    'C', 'Cancelado por paciente'
+);
 
+-- Turno 4: Paciente 4, Médico 4, Viernes pasado
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    4, 4, 5, 4, 6,
+    DATEADD(DAY, -5, @Hoy) + CAST('09:00' AS DATETIME),
+    DATEADD(DAY, -5, @Hoy) + CAST('10:00' AS DATETIME),
+    'X', 'No asistió'
+);
 
--- HistoriaClinicaRegistro
+-- Turno 5: Paciente 5, Médico 5, Sábado +1 semana
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    5, 5, 6, 5, 7,
+    DATEADD(DAY, (6 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('09:00' AS DATETIME),
+    DATEADD(DAY, (6 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('10:00' AS DATETIME),
+    'N', 'Implante programado'
+);
+
+-- Turno 6: Paciente 6, Médico 6, Lunes hace 2 semanas
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    6, 6, 7, 6, 8,
+    DATEADD(DAY, -14, @Hoy) + CAST('14:00' AS DATETIME),
+    DATEADD(DAY, -14, @Hoy) + CAST('15:00' AS DATETIME),
+    'Z', 'Prótesis realizada'
+);
+
+-- Turno 7: Paciente 7, Médico 1, Miércoles esta semana
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    7, 1, 9, 7, 9,
+    DATEADD(DAY, (3 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7, @Hoy) + CAST('14:00' AS DATETIME),
+    DATEADD(DAY, (3 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7, @Hoy) + CAST('15:00' AS DATETIME),
+    'C', 'Cancelado por clima'
+);
+
+-- Turno 8: Paciente 8, Médico 2, Martes pasado
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    8, 2, 2, 8, 10,
+    DATEADD(DAY, -10, @Hoy) + CAST('09:00' AS DATETIME),
+    DATEADD(DAY, -10, @Hoy) + CAST('10:00' AS DATETIME),
+    'Z', 'Endodoncia realizada'
+);
+
+-- Turno 9: Paciente 9, Médico 5, Sábado +2 semanas
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    9, 5, 9, 9, 8,
+    DATEADD(DAY, (6 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 14, @Hoy) + CAST('11:00' AS DATETIME),
+    DATEADD(DAY, (6 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 14, @Hoy) + CAST('12:00' AS DATETIME),
+    'N', 'Blanqueamiento'
+);
+
+-- Turno 10: Paciente 10, Médico 6, Lunes +1 semana
+INSERT INTO Turno (IdPaciente, IdMedico, IdEspecialidad, IdCobertura, IdPlan,
+    FechaInicio, FechaFin, Estado, Observaciones)
+VALUES (
+    10, 6, 10, 10, NULL,
+    DATEADD(DAY, (1 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('13:00' AS DATETIME),
+    DATEADD(DAY, (1 - CASE DATEPART(WEEKDAY, @Hoy) WHEN 1 THEN 7 ELSE DATEPART(WEEKDAY, @Hoy)-1 END + 7) % 7 + 7, @Hoy) + CAST('14:00' AS DATETIME),
+    'C', 'Cancelado por paciente'
+);
+
+GO
+
+-- HISTORIA CLÍNICA (SOLO PARA TURNOS CERRADOS)
 INSERT INTO HistoriaClinicaRegistro
 (IdTurno, IdPaciente, IdMedico, IdEspecialidad, IdTratamiento, Diagnostico, Observaciones, FechaAtencion)
 VALUES
-(1,1,1,10,10,'Buen estado general','Control cada 6 meses','2025-10-25'),
-(2,2,2,1,4,'Mordida cruzada','Reprogramado; ajuste plan','2025-10-26'),
-(3,3,3,2,3,'Infección tratada','Revisión en 10 días','2025-10-26'),
-(4,4,4,9,6,'Manchas dentales','Ausencia al turno','2025-10-27'),
-(5,5,5,6,5,'Pérdida pieza 24','Implante programado','2025-10-27'),
-(6,6,6,7,7,'Ausencia 36-37','Prótesis colocada','2025-10-28'),
-(7,7,1,5,2,'Pieza 48 afectada','Extracción reprogramada','2025-10-28'),
-(8,8,2,8,8,'Revisión completa','Sin hallazgos','2025-10-29'),
-(9,9,3,4,9,'Prevención caries','Aplicación de selladores','2025-10-29'),
-(10,10,4,3,1,'Tártaro leve','Se indicó limpieza y control','2025-10-30');
+-- Turno 6: Prótesis realizada (CERRADO)
+(6, 6, 6, 7, 7, 'Ausencia 36-37', 'Prótesis colocada', DATEADD(DAY, -14, CAST(GETDATE() AS DATE))),
 
+-- Turno 8: Endodoncia realizada (CERRADO)
+(8, 8, 2, 2, 3, 'Infección tratada', 'Revisión en 10 días', DATEADD(DAY, -10, CAST(GETDATE() AS DATE)));
 
 GO
 
+-- PacienteCoberturaHistorial (Estado actual)
 INSERT INTO PacienteCoberturaHistorial (IdPaciente, IdCobertura, IdPlan, FechaInicio, Estado)
 SELECT IdPaciente, IdCobertura, IdPlan, FechaAlta, 'A'
 FROM Paciente;
 
 GO
 
--- Casos para testear:
---  - Pacientes con 1 historial actual (común)
---  - Pacientes con 2+ historiales (cambio de plan o cobertura)
---  - Pacientes inactivos (historial inactivo)
---  - Coberturas y planes coherentes con tus inserts actuales
-
+-- Casos históricos de cambio de cobertura
 INSERT INTO PacienteCoberturaHistorial (IdPaciente, IdCobertura, IdPlan, FechaInicio, FechaFin, Estado, MotivoCambio)
 VALUES
--- 1. Andrés Suárez – pasó de OSDE 210 a Particular
 (1, 2, 2, '2024-01-01', '2025-02-01', 'I', 'Cambio de cobertura a Particular'),
 (1, 1, NULL, '2025-02-02', NULL, 'A', 'Paciente ahora sin cobertura'),
-
--- 2. Belén Gómez – sigue con OSDE 210 (actual)
 (2, 2, 2, '2024-05-01', NULL, 'A', 'Cobertura activa sin cambios'),
-
--- 3. Carlos Vega – Swiss Medical: cambió de plan SM30 → SM50
 (3, 3, 3, '2024-03-15', '2025-03-15', 'I', 'Actualización a plan superior'),
 (3, 3, 4, '2025-03-16', NULL, 'A', 'Upgrade a Swiss Medical SM50'),
-
--- 4. Diana Pérez – Galeno (inactiva)
 (4, 4, 6, '2024-01-01', NULL, 'I', 'Cobertura y paciente inactivos'),
-
--- 5. Elena Rodríguez – Medicus Plus (sin cambios)
 (5, 5, 7, '2024-08-01', NULL, 'A', 'Afiliación estable'),
-
--- 6. Francisco Luna – Federada: tuvo interrupción y reactivación
 (6, 6, 8, '2023-12-01', '2024-12-31', 'I', 'Baja temporal de cobertura'),
 (6, 6, 8, '2025-01-01', NULL, 'A', 'Reactivación de cobertura Federada'),
-
--- 7. Gabriela Fernández – Omint (sin cambios)
 (7, 7, 9, '2024-04-01', NULL, 'A', 'Cobertura estable'),
-
--- 8. Hernán Molina – Sancor (todo inactivo)
 (8, 8, 10, '2024-01-01', NULL, 'I', 'Cobertura dada de baja'),
-
--- 9. Isabel Núñez – IOMA: tuvo Federada previamente
 (9, 6, 8, '2023-09-01', '2024-11-30', 'I', 'Cambio de cobertura a IOMA'),
 (9, 9, 8, '2024-12-01', NULL, 'A', 'Cobertura actual IOMA'),
-
--- 10. Jorge Santos – OSPE (paciente inactivo)
 (10, 10, NULL, '2023-10-01', NULL, 'I', 'Paciente dado de baja');
 GO
 
-
+-- CoberturaPorcentajeHistorial
 INSERT INTO CoberturaPorcentajeHistorial
     (IdCobertura, PorcentajeCobertura, FechaInicio, FechaFin, Estado, MotivoCambio)
 VALUES
+    -- IOMA (IdCobertura = 9)
     (9, 45, '2023-01-01', '2024-11-30', 'I', 'Convenio provincial 2023'),
-    (9, 40, '2024-12-01', NULL, 'A', 'Nuevo convenio estatal 2024');
-
--- OSPE (IdCobertura = 10):
---   2023 cubría 50%
---   2024 sube un poco a 55%
-INSERT INTO CoberturaPorcentajeHistorial
-    (IdCobertura, PorcentajeCobertura, FechaInicio, FechaFin, Estado, MotivoCambio)
-VALUES
+    (9, 40, '2024-12-01', NULL, 'A', 'Nuevo convenio estatal 2024'),
+    
+    -- OSPE (IdCobertura = 10)
     (10, 50, '2023-01-01', '2024-06-30', 'I', 'Valor inicial de cobertura'),
     (10, 55, '2024-07-01', NULL, 'A', 'Ajuste por nuevos aranceles');
 GO
 
-
+-- PlanPorcentajeHistorial
 INSERT INTO PlanPorcentajeHistorial (IdPlan, PorcentajeCobertura, FechaInicio, FechaFin, Estado, MotivoCambio)
 VALUES
 -- 1. Particular
@@ -389,31 +440,3 @@ VALUES
 (10, 70, '2023-01-01', '2024-02-29', 'I', 'Reducción 2024'),
 (10, 65, '2024-03-01', NULL, 'A', 'Último porcentaje previo a inactividad');
 GO
-
--- Médico 1: Sofía López - Estética Dental + General
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(1, 9),  -- Estética Dental
-(1, 10); -- Odontología General
-
--- Médico 2: Martín Ruiz - Ortodoncia + Endodoncia
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(2, 1),  -- Ortodoncia
-(2, 2);  -- Endodoncia
-
--- Médico 3: Nicolás Benítez - Endodoncia + Cirugía Bucal
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(3, 2),  -- Endodoncia
-(3, 5);  -- Cirugía Bucal
-
--- Médico 4: Lucía Romero - SOLO 1 (inactiva)
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(4, 5);  -- Cirugía Bucal
-
--- Médico 5: Camila Rossi - Implantología + Estética Dental
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(5, 6),  -- Implantología
-(5, 9);  -- Estética Dental
-
--- Médico 6: Carlos Méndez - SOLO 1 (General)
-INSERT INTO MedicoEspecialidad (IdMedico, IdEspecialidad) VALUES
-(6, 10);  -- Odontología General
