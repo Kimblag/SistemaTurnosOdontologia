@@ -205,10 +205,12 @@ namespace SGTO.Datos.Repositorios
                     T.Observaciones,
 
                     P.IdPaciente,
+                    P.NumeroDocumento AS NumeroDocumentoPaciente,
                     P.Nombre AS NombrePaciente,
                     P.Apellido AS ApellidoPaciente,
 
                     M.IdMedico,
+                    M.Matricula,
                     M.Nombre AS NombreMedico,
                     M.Apellido AS ApellidoMedico,
 
@@ -227,7 +229,7 @@ namespace SGTO.Datos.Repositorios
                     INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
                     INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
                     LEFT JOIN [Plan] PL ON T.IdPlan = PL.IdPlan
-                ORDER BY T.FechaInicio DESC";
+                ORDER BY T.FechaInicio ASC";
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
@@ -430,6 +432,7 @@ namespace SGTO.Datos.Repositorios
                            T.Estado AS EstadoTurno,
                            T.FechaInicio,
                            T.FechaFin,
+                           T.Observaciones,
                            PAC.IdPaciente,
                            PAC.Nombre AS NombrePaciente,
                            PAC.Apellido AS ApellidoPaciente,

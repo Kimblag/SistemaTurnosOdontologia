@@ -78,40 +78,40 @@ namespace SGTO.UI.Webforms.Pages.Turnos
         protected global::System.Web.UI.WebControls.PlaceHolder phDetalleClinico;
 
         /// <summary>
-        /// litTratamiento control.
+        /// lblTratamiento control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litTratamiento;
+        protected global::System.Web.UI.WebControls.Label lblTratamiento;
 
         /// <summary>
-        /// litDiagnostico control.
+        /// lblDiagnostico control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litDiagnostico;
+        protected global::System.Web.UI.WebControls.Label lblDiagnostico;
 
         /// <summary>
-        /// litObservacionesClinicas control.
+        /// lblObservacionesClinicas control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litObservacionesClinicas;
+        protected global::System.Web.UI.WebControls.Label lblObservacionesClinicas;
 
         /// <summary>
-        /// litObservaciones control.
+        /// lblObservaciones control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litObservaciones;
+        protected global::System.Web.UI.WebControls.Label lblObservaciones;
 
         /// <summary>
         /// lnkVolver control.

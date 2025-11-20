@@ -74,7 +74,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 {
                     lblCoberturaPlan.Text = turno.Cobertura;
                 }
-                litObservaciones.Text = string.IsNullOrEmpty(turno.Observaciones)
+                lblObservaciones.Text = string.IsNullOrEmpty(turno.Observaciones)
                                         ? "<em>Sin observaciones registradas.</em>"
                                         : turno.Observaciones;
 
@@ -84,10 +84,10 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 if (!string.IsNullOrEmpty(turno.TratamientoAplicado) || !string.IsNullOrEmpty(turno.Diagnostico))
                 {
                     phDetalleClinico.Visible = true;
-                    litTratamiento.Text = turno.TratamientoAplicado;
-                    litDiagnostico.Text = turno.Diagnostico;
+                    lblTratamiento.Text = turno.TratamientoAplicado;
+                    lblDiagnostico.Text = turno.Diagnostico;
 
-                    litObservacionesClinicas.Text = string.IsNullOrEmpty(turno.ObservacionesClinicas)
+                    lblObservacionesClinicas.Text = string.IsNullOrEmpty(turno.ObservacionesClinicas)
                                                     ? "Sin observaciones médicas adicionales."
                                                     : turno.ObservacionesClinicas;
                 }

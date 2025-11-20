@@ -17,7 +17,8 @@
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
                         <div class="d-flex align-items-center">
-                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary me-3">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary me-3 d-flex align-items-center justify-content-center"  
+                                style="width: 60px; height: 60px;">
                                 <i class="bi bi-person-vcard fs-3"></i>
                             </div>
                             <h5 class="mb-0 fw-bold text-primary">Información Personal</h5>
@@ -65,7 +66,7 @@
                 <div class="card h-100 shadow-sm border-0">
                     <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
                         <div class="d-flex align-items-center">
-                            <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success me-3">
+                            <div class="bg-success bg-opacity-10 p-3 rounded-circle text-success me-3 d-flex align-items-center justify-content-center"  style="width: 60px; height: 60px;">
                                 <i class="bi bi-briefcase fs-3"></i>
                             </div>
                             <h5 class="mb-0 fw-bold text-success">Perfil Profesional</h5>

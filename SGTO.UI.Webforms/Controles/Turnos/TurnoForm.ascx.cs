@@ -67,20 +67,35 @@ namespace SGTO.UI.Webforms.Controles.Turnos
 
         private void CargarPaciente(int idPaciente)
         {
-            // consultamos los datos del paciente para precargarlos en el textbox.
-            PacienteEdicionDto paciente = _servicioPaciente.ObtenerPorId(idPaciente);
-            CargarPacienteTextbox(paciente);
-            CargarEspecialidadesDropdown();
-            CargarEstadosTurno();
-            PreCargarCoberturaYPlan(paciente.IdCobertura, paciente.IdPlan);
 
-            // el estado turno inicia como nuevo y no puede cambiarse si se está creando
-            ddlEstadoTurno.SelectedValue = "N";
-            ddlEstadoTurno.Enabled = false;
+            try
+            {
+                PacienteEdicionDto paciente = _servicioPaciente.ObtenerPorId(idPaciente);
 
-            // si el paciente está inactivo, no podemos agendar turnos.
-            if (paciente.Estado.ToLower()[0] == 'i')
-                BloquearControlesPorPacienteInactivo();
+                hdnIdPaciente.Value = paciente.IdPaciente.ToString();
+
+                CargarPacienteTextbox(paciente);
+                CargarEspecialidadesDropdown();
+                CargarEstadosTurno();
+                PreCargarCoberturaYPlan(paciente.IdCobertura, paciente.IdPlan);
+
+                ddlEstadoTurno.SelectedValue = "N";
+                ddlEstadoTurno.Enabled = false;
+
+                if (paciente.Estado.ToLower()[0] == 'i')
+                    BloquearControlesPorPacienteInactivo();
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Error",
+                    ex.Message,
+                    "Volver",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index.aspx"),
+                    "abrirModalResultado"
+                );
+            }
         }
 
         private int ExtraerIdPaciente()
@@ -299,12 +314,11 @@ namespace SGTO.UI.Webforms.Controles.Turnos
 
         private void CargarTurnoExistente(int idTurno)
         {
-
             try
             {
-                TurnoEdicionDto turno = _servicioTurno.ObtenerPorId(idTurno);
-                if (turno == null)
-                    throw new Exception("No se encontró el turno.");
+                if (idTurno <= 0) throw new ArgumentException("ID de turno inválido.");
+
+                TurnoEdicionDto turno = _servicioTurno.ObtenerParaEdicion(idTurno);
 
                 // guardamos los valores originales en los hidden fields, de manera que podamos detectar cambios
                 hdnIdTurno.Value = turno.IdTurno.ToString();
@@ -343,8 +357,10 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 ddlEstadoTurno.Enabled = true;
 
                 txtObservaciones.Text = turno.Observaciones;
-
-
+            }
+            catch (ExcepcionReglaNegocio ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Operación no permitida", ex.Message, "Resultado", VirtualPathUtility.ToAbsolute("~/Pages/Turnos/Index"), "abrirModalResultado");
             }
             catch (Exception ex)
             {
@@ -396,7 +412,6 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 ddlFecha.Items.Add(new ListItem("Seleccione una fecha", ""));
                 return;
             }
-
             CargarFechasDisponiblesDropdown(int.Parse(ddlMedico.SelectedValue));
         }
 
@@ -446,8 +461,79 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             alertPacienteInactivo.InnerText = "El paciente se encuentra inactivo, no es posible agendar un turno.";
         }
 
+
+        private bool ValidarDatosEntrada(out int idPaciente, out int idMedico, out int idEspecialidad, out int idCobertura, out int idPlan, out DateTime fechaInicio)
+        {
+            idPaciente = 0; idMedico = 0; idEspecialidad = 0; idCobertura = 0; idPlan = 0; fechaInicio = DateTime.MinValue;
+
+            if (!int.TryParse(hdnIdPaciente.Value, out idPaciente) || idPaciente <= 0)
+            {
+                MostrarError("No se ha identificado al paciente. Intente recargar la página.");
+                return false;
+            }
+
+            if (ddlEspecialidad.SelectedIndex <= 0 || string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) || ddlEspecialidad.SelectedValue == "0")
+            {
+                MostrarError("Debe seleccionar una especialidad.");
+                return false;
+            }
+            idEspecialidad = int.Parse(ddlEspecialidad.SelectedValue);
+
+            if (ddlMedico.SelectedIndex <= 0 || string.IsNullOrEmpty(ddlMedico.SelectedValue))
+            {
+                MostrarError("Debe seleccionar un médico.");
+                return false;
+            }
+            idMedico = int.Parse(ddlMedico.SelectedValue);
+
+            if (string.IsNullOrEmpty(ddlCobertura.SelectedValue))
+            {
+                MostrarError("Debe seleccionar una cobertura.");
+                return false;
+            }
+            idCobertura = int.Parse(ddlCobertura.SelectedValue);
+
+            if (!string.IsNullOrEmpty(ddlPlan.SelectedValue))
+            {
+                int.TryParse(ddlPlan.SelectedValue, out idPlan);
+            }
+
+            if (ddlFecha.SelectedIndex <= 0 || string.IsNullOrEmpty(ddlFecha.SelectedValue))
+            {
+                MostrarError("Debe seleccionar una fecha para el turno.");
+                return false;
+            }
+
+            if (ddlHora.SelectedIndex < 0 || string.IsNullOrEmpty(ddlHora.SelectedValue))
+            {
+                MostrarError("Debe seleccionar una hora.");
+                return false;
+            }
+
+            string fechaStr = ddlFecha.SelectedValue; // formato yyyy-MM-dd
+            string horaStr = ddlHora.SelectedItem.Text; // formato HH:mm
+
+            if (!DateTime.TryParse($"{fechaStr} {horaStr}", out fechaInicio))
+            {
+                MostrarError("La fecha u hora seleccionada no tiene un formato válido.");
+                return false;
+            }
+
+            return true;
+        }
+
+        private void MostrarError(string mensaje)
+        {
+            MensajeUiHelper.SetearYMostrar(this.Page, "Atención", mensaje, "Cerrar", null, "abrirModalResultado");
+        }
+
+
         private void CrearTurno()
         {
+            if (!ValidarDatosEntrada(out int idPaciente, out int idMedico, out int idEspecialidad, out int idCobertura, out int idPlan, out DateTime fechaInicio))
+            {
+                return;
+            }
 
             TurnoCreacionDto dto = new TurnoCreacionDto
             {
@@ -488,8 +574,18 @@ namespace SGTO.UI.Webforms.Controles.Turnos
 
         private void EditarTurno()
         {
+            if (!int.TryParse(hdnIdTurno.Value, out int idTurno) || idTurno == 0)
+            {
+                MostrarError("No se ha identificado el turno a editar.");
+                return;
+            }
 
-            TurnoEdicionDto dto = new TurnoEdicionDto
+            if (!ValidarDatosEntrada(out int idPaciente, out int idMedico, out int idEspecialidad, out int idCobertura, out int idPlan, out DateTime fechaInicio))
+            {
+                return;
+            }
+
+                TurnoEdicionDto dto = new TurnoEdicionDto
             {
                 IdTurno = int.Parse(hdnIdTurno.Value),
                 IdPaciente = int.Parse(hdnIdPaciente.Value),
@@ -503,7 +599,9 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 Observaciones = txtObservaciones.Text?.Trim()
             };
 
-            _servicioTurno.Editar(dto);
+            string rutaReprogramacion = Server.MapPath("~/Plantillas/Email/ReprogramacionTurno.html");
+            string rutaCancelar = Server.MapPath("~/Plantillas/Email/CancelacionTurno.html");
+            _servicioTurno.Editar(dto, rutaReprogramacion, rutaCancelar);
 
             MensajeUiHelper.SetearYMostrar(
                 this.Page,

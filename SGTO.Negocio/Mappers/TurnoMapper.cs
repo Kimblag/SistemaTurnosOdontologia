@@ -22,6 +22,9 @@ namespace SGTO.Negocio.Mappers
                 {
                     IdTurno = turno.IdTurno,
 
+                    DniPaciente = turno.Paciente != null
+                        ? turno.Paciente.Dni.Numero
+                        : "Sin datos",
                     NombrePaciente = turno.Paciente != null
                         ? $"{turno.Paciente.Apellido} {turno.Paciente.Nombre}"
                         : "Sin datos",
@@ -29,6 +32,9 @@ namespace SGTO.Negocio.Mappers
                     IdMedico = turno.Medico.IdMedico,
                     NombreMedico = turno.Medico != null
                         ? $"{turno.Medico.Apellido} {turno.Medico.Nombre}"
+                        : "Sin datos",
+                    Matricula = turno.Medico != null
+                        ? turno.Medico.Matricula
                         : "Sin datos",
 
                     IdEspecialidad = turno.Especialidad.IdEspecialidad,

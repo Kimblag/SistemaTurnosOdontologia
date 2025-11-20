@@ -2,104 +2,108 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-
-
     <div class="container-fluid">
 
-        <div class="card shadow-sm p-4 w-100 mb-4 border-0">
+        <div class="card shadow-sm p-5 w-100 mb-4 border-0">
 
-            <div>
-                <div class="row mb-3">
-                    <h2 class="fs-4">Datos personales</h2>
+            <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                <div class="bg-primary bg-opacity-10 rounded-circle text-primary me-3 d-flex align-items-center justify-content-center"
+                    style="width: 60px; height: 60px;">
+                    <i class="bi bi-calendar-check fs-3"></i>
                 </div>
-                <div class="row g-3 mb-3">
-                    <div class="col-12 col-md-4">
-                        <label for="lblNombrePaciente" class="form-label d-block">Paciente</label>
-                        <asp:Label ID="lblNombrePaciente" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="lblNombreMedico" class="form-label d-block">Médico</label>
-                        <asp:Label ID="lblNombreMedico" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="lblFechaHora" class="form-label d-block">Fecha y Hora</label>
-                        <asp:Label ID="lblFechaHora" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
-                    </div>
+                <h2 class="fs-4 fw-bold text-primary m-0">Datos Generales</h2>
+            </div>
+
+            <%-- Fila 1 --%>
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Paciente</label>
+                    <asp:Label ID="lblNombrePaciente" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
                 </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Médico</label>
+                    <asp:Label ID="lblNombreMedico" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Fecha y Hora</label>
+                    <asp:Label ID="lblFechaHora" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
+                </div>
+            </div>
 
-
-                <div class="row g-3">
-                    <div class="col-12 col-md-4">
-                        <label for="lblEspecialidad" class="form-label d-block">Especialidad</label>
-                        <asp:Label ID="lblEspecialidad" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="lblCoberturaPlan" class="form-label d-block">Cobertura / Plan</label>
-                        <asp:Label ID="lblCoberturaPlan" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <label for="lblEstado" class="form-label d-block">Estado actual</label>
-                        <div>
-                            <asp:Label ID="lblEstado" runat="server" CssClass="badge"></asp:Label>
-                        </div>
+            <%-- Fila 2 --%>
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Especialidad</label>
+                    <asp:Label ID="lblEspecialidad" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Cobertura / Plan</label>
+                    <asp:Label ID="lblCoberturaPlan" runat="server" CssClass="fw-semibold text-dark d-block"></asp:Label>
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label d-block">Estado actual</label>
+                    <div>
+                        <asp:Label ID="lblEstado" runat="server" CssClass="badge"></asp:Label>
                     </div>
                 </div>
             </div>
+
         </div>
 
+
         <asp:PlaceHolder ID="phDetalleClinico" runat="server" Visible="false">
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white border-bottom py-3">
-                    <h4 class="fs-5 fw-bold text-dark m-0">
-                        <i class="bi bi-clipboard-pulse me-2 text-danger"></i>Historia Clínica (Registro Médico)
-                    </h4>
+            <div class="card shadow-sm p-5 w-100 mb-4 border-0">
+
+                <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                    <div class="bg-danger bg-opacity-10 rounded-circle text-danger me-3 d-flex align-items-center justify-content-center"
+                        style="width: 60px; height: 60px;">
+                        <i class="bi bi-clipboard-pulse fs-3"></i>
+                    </div>
+                    <h2 class="fs-4 fw-bold text-danger m-0">Registro Clínico de Atención</h2>
                 </div>
-                <div class="card-body p-4">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small mb-1">Tratamiento Realizado</label>
-                            <div class="p-3 bg-light rounded border-start border-3 border-success">
-                                <span class="fw-bold text-dark fs-5">
-                                    <asp:Literal ID="litTratamiento" runat="server"></asp:Literal>
-                                </span>
-                            </div>
-                        </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small mb-1">Diagnóstico</label>
-                            <div class="p-3 bg-light rounded border">
-                                <span class="text-dark">
-                                    <asp:Literal ID="litDiagnostico" runat="server"></asp:Literal>
-                                </span>
-                            </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Tratamiento Realizado</label>
+                        <div class="p-3 bg-light rounded border-start border-3 border-success">
+                            <asp:Label ID="lblTratamiento" runat="server" CssClass="fw-bold text-dark fs-5 d-block"></asp:Label>
                         </div>
+                    </div>
 
-                        <div class="col-12">
-                            <label class="form-label text-muted small mb-1">Observaciones Médicas</label>
-                            <div class="p-3 bg-light rounded border">
-                                <p class="mb-0 fst-italic text-secondary">
-                                    <asp:Literal ID="litObservacionesClinicas" runat="server"></asp:Literal>
-                                </p>
-                            </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small mb-1">Diagnóstico</label>
+                        <div class="p-3 bg-light rounded border">
+                            <asp:Label ID="lblDiagnostico" runat="server" CssClass="text-dark d-block"></asp:Label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label text-muted small mb-1">Observaciones Médicas</label>
+                        <div class="p-3 bg-light rounded border">
+                            <asp:Label ID="lblObservacionesClinicas" runat="server" CssClass="mb-0 fst-italic text-secondary d-block"></asp:Label>
                         </div>
                     </div>
                 </div>
             </div>
         </asp:PlaceHolder>
 
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-bottom py-3">
-                <h4 class="fs-5 fw-bold text-secondary m-0">
-                    <i class="bi bi-journal-text me-2"></i>Observaciones Administrativas
-                </h4>
-            </div>
-            <div class="card-body p-4">
-                <p class="mb-0 text-secondary">
-                    <asp:Literal ID="litObservaciones" runat="server"></asp:Literal>
-                </p>
+
+        <div class="card shadow-sm p-5 w-100 border-0">
+
+
+            <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                <div class="bg-secondary bg-opacity-10 rounded-circle text-secondary me-3 d-flex align-items-center justify-content-center"
+                    style="width: 60px; height: 60px;">
+                    <i class="bi bi-journal-text fs-3"></i>
+                </div>
+                <h2 class="fs-4 fw-bold text-secondary m-0">Observaciones Administrativas</h2>
             </div>
 
-            <div class="card-footer bg-white border-top py-3 d-flex justify-content-end gap-2">
+            <div class="mb-4">
+                <asp:Label ID="lblObservaciones" runat="server" CssClass="mb-0 text-secondary d-block"></asp:Label>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 pt-3 border-top">
                 <asp:HyperLink ID="lnkVolver" runat="server" CssClass="btn btn-outline-secondary" NavigateUrl="~/Pages/Turnos/Index.aspx">
                     Volver
                 </asp:HyperLink>

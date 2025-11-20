@@ -43,14 +43,15 @@ namespace SGTO.Negocio.Servicios
 
         public PacienteEdicionDto ObtenerPorId(int idPaciente)
         {
-            try
+
+            var entidad = _repositorioPaciente.ObtenerPorId(idPaciente);
+
+            if (entidad == null)
             {
-                return PacienteMapper.MapearAEdicionDto(_repositorioPaciente.ObtenerPorId(idPaciente));
+                throw new ExcepcionReglaNegocio("El paciente solicitado no existe o ha sido eliminado.");
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            return PacienteMapper.MapearAEdicionDto(entidad);
         }
 
         public void Crear(PacienteCreacionDto pacienteDto)

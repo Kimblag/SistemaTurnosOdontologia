@@ -158,6 +158,9 @@ namespace SGTO.Datos.Mappers
                     Nombre = TieneColumna(lector, "NombrePaciente")
                         ? lector.GetString(lector.GetOrdinal("NombrePaciente"))
                         : null,
+                    Dni = TieneColumna(lector, "NumeroDocumentoPaciente")
+                        ? new DocumentoIdentidad(lector.GetString(lector.GetOrdinal("NumeroDocumentoPaciente")))
+                        : null,
                     Apellido = TieneColumna(lector, "ApellidoPaciente")
                         ? lector.GetString(lector.GetOrdinal("ApellidoPaciente"))
                         : null
@@ -174,6 +177,9 @@ namespace SGTO.Datos.Mappers
                         : null,
                     Apellido = TieneColumna(lector, "ApellidoMedico")
                         ? lector.GetString(lector.GetOrdinal("ApellidoMedico"))
+                        : null,
+                    Matricula = TieneColumna(lector, "Matricula")
+                        ? lector.GetString(lector.GetOrdinal("Matricula"))
                         : null
                 };
             }

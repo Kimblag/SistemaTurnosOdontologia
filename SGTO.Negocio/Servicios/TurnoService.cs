@@ -247,44 +247,14 @@ namespace SGTO.Negocio.Servicios
             Paciente paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
             Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
             Medico medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
+
             ValidarReglasNegocioAgendaTurno(dto, paciente, especialidad);
+
             Turno turno = TurnoMapper.MapearACreacion(dto);
-            int idTurno;
-            try
-            {
-                idTurno = _repositorioTurno.Crear(turno);
+            int idTurno = _repositorioTurno.Crear(turno);
 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            EnviarEmailConfirmacion(paciente, medico, especialidad, dto.FechaInicio, dto.Observaciones, rutaPlantillaEmail);
 
-            try
-            {
-                EmailService emailService = new EmailService();
-
-                string htmlBase = CargarPlantillaDesdeArchivo(rutaPlantillaEmail);
-
-                string htmlFinal = emailService.GenerarHtmlConfirmacion(
-                    htmlBase,
-                    paciente,
-                    medico,
-                    especialidad,
-                    dto.FechaInicio,
-                    dto.Observaciones
-                );
-
-                emailService.Enviar(
-                    paciente.Email.Valor,
-                    "Confirmación de turno",
-                    htmlFinal
-                );
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error: " + ex.Message);
-            }
             return idTurno;
         }
 
@@ -302,6 +272,32 @@ namespace SGTO.Negocio.Servicios
                 return string.Empty;
             }
         }
+
+        private void EnviarEmailNotificacion(Paciente pac, Medico med, Especialidad esp, DateTime fecha, string asunto, string mensajeAdicional, string rutaPlantilla)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(rutaPlantilla)) return;
+
+                EmailService emailService = new EmailService();
+                string htmlBase = CargarPlantillaDesdeArchivo(rutaPlantilla);
+
+                string htmlFinal = emailService.GenerarHtmlConfirmacion(htmlBase, pac, med, esp, fecha, mensajeAdicional);
+
+                emailService.Enviar(pac.Email.Valor, asunto, htmlFinal);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error enviando email de notificación: " + ex.Message);
+            }
+        }
+
+
+        private void EnviarEmailConfirmacion(Paciente pac, Medico med, Especialidad esp, DateTime fecha, string obs, string ruta)
+        {
+            EnviarEmailNotificacion(pac, med, esp, fecha, "Confirmación de turno", obs, ruta);
+        }
+
 
         private void ValidarReglasNegocioAgendaTurno(TurnoCreacionDto dto, Paciente paciente, Especialidad especialidad)
         {
@@ -388,7 +384,7 @@ namespace SGTO.Negocio.Servicios
 
 
 
-        public void Editar(TurnoEdicionDto dto, int idUsuarioModificacion = 0)
+        public void Editar(TurnoEdicionDto dto, string rutaPlantillaReprogramacion, string rutaPlantillaCancelacion, int idUsuarioModificacion = 0)
         {
             Turno turnoExistente = null;
             try
@@ -402,6 +398,12 @@ namespace SGTO.Negocio.Servicios
             if (turnoExistente == null)
                 throw new ExcepcionReglaNegocio("El turno no existe.");
 
+            EstadoTurno estadoOriginal = turnoExistente.Estado;
+            DateTime fechaOriginal = turnoExistente.Horario.Inicio;
+
+            Paciente paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
+            Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
+            Medico medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
 
             ValidarPaciente(dto.IdPaciente);
             ValidarEspecialidad(dto.IdEspecialidad);
@@ -423,6 +425,31 @@ namespace SGTO.Negocio.Servicios
 
             TurnoMapper.MapearEdicion(turnoExistente, dto);
             _repositorioTurno.Actualizar(turnoExistente, idUsuarioModificacion);
+
+            // notificar cambio de estado del turno
+            // se cancela el turno:
+            if (dto.Estado == 'C' && estadoOriginal != EstadoTurno.Cancelado)
+            {
+                EnviarEmailNotificacion(
+                    paciente, medico, especialidad, dto.FechaInicio,
+                    "Turno Cancelado",
+                    "Le informamos que su turno ha sido cancelado.",
+                    rutaPlantillaCancelacion
+                );
+            }
+            //el turno se ha reprogramado:
+            else if (dto.Estado == 'R')
+            {
+                if (estadoOriginal != EstadoTurno.Reprogramado || fechaOriginal != dto.FechaInicio)
+                {
+                    EnviarEmailNotificacion(
+                        paciente, medico, especialidad, dto.FechaInicio,
+                        "Turno Reprogramado",
+                        "Su turno ha sido reprogramado exitosamente. Los nuevos datos son:",
+                        rutaPlantillaReprogramacion
+                    );
+                }
+            }
         }
 
         private void ValidarPaciente(int idPaciente)
@@ -520,7 +547,7 @@ namespace SGTO.Negocio.Servicios
 
 
             Dictionary<char, char[]> transicionesPermitidas = new Dictionary<char, char[]> {
-                { 'N', new [] { 'R', 'C', 'N' } }, // nueuevo solo puede ir a reprogramado o cancelado o mantenerse en nuevo
+                { 'N', new [] { 'R', 'C', 'N', 'X' } }, // nuevo solo puede ir a reprogramado, no asistió o cancelado o mantenerse en nuevo
                 { 'R', new [] { 'R', 'C', 'X' } }, // un reprogramado puede volver a reprogramarse, cancelarse o no asistió
                 { 'X', new char[0] } // no asisitió simplemente no se puede cambiar a nada más
             };
@@ -548,7 +575,7 @@ namespace SGTO.Negocio.Servicios
             }
 
             // validar reprogramado y no asistió según fecha/hora
-            if (actual == 'R' && estadoNuevo == 'X')
+            if ((actual == 'R' && estadoNuevo == 'X') || (actual == 'N' && estadoNuevo == 'X'))
             {
                 DateTime ahora = DateTime.Now;
                 if (ahora < turnoExistente.Horario.Fin)
@@ -558,6 +585,25 @@ namespace SGTO.Negocio.Servicios
             // un turno no se permite cerrar manualmente
             if (estadoNuevo == 'Z')
                 throw new ExcepcionReglaNegocio("El turno no puede ser cerrado manualmente. Solo el médico puede cerrarlo al generar la historia clínica.");
+        }
+
+
+        public TurnoEdicionDto ObtenerParaEdicion(int idTurno)
+        {
+            Turno entidad = _repositorioTurno.ObtenerPorId(idTurno);
+
+            if (entidad == null)
+                throw new ExcepcionReglaNegocio("El turno no existe.");
+
+            if (entidad.Estado == EstadoTurno.Cancelado
+                || entidad.Estado == EstadoTurno.Cerrado
+                || entidad.Estado == EstadoTurno.NoAsistio)
+                throw new ExcepcionReglaNegocio($"El turno no es editable, " +
+                    $"ya que se encuentra en estado " +
+                    $"{EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(entidad.Estado.ToString()[0])}.");
+
+            return TurnoMapper.MapearAEdicionDto(entidad);
+
         }
 
     }

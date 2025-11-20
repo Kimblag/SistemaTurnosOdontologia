@@ -194,8 +194,12 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 {
                     string nombrePaciente = ValidadorCampos.NormalizarTexto(t.NombrePaciente);
                     string nombreMedico = ValidadorCampos.NormalizarTexto(t.NombreMedico);
+                    string dniPaciente = t.DniPaciente;
+                    string matricula = t.Matricula;
                     bool coincide =
                         (!string.IsNullOrEmpty(nombrePaciente) && nombrePaciente.Contains(texto)) ||
+                        (!string.IsNullOrEmpty(matricula) && matricula.Contains(texto)) ||
+                        (!string.IsNullOrEmpty(dniPaciente) && dniPaciente.Contains(texto)) ||
                         (!string.IsNullOrEmpty(nombreMedico) && nombreMedico.Contains(texto));
 
                     if (coincide)
