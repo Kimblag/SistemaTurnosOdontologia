@@ -7,53 +7,44 @@
     <div class="page-generic">
 
         <%--filtros--%>
-        <div class="container-fluid px-0 mb-3">
-            <div class="row g-2 align-items-center">
+        <div class="container-fluid px-0 mb-4">
+            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
 
-                <%-- Columna izquierda: búsqueda + selects --%>
-                <div class="col-12 col-lg-9 d-flex flex-wrap align-items-center gap-2">
-
-                    <%-- Campo de búsqueda --%>
-                    <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search text-muted"></i>
-                            </span>
-                            <asp:TextBox
-                                ID="txtBuscar"
-                                runat="server"
-                                CssClass="form-control border-start-0"
-                                placeholder="Buscar por nombre, DNI o matrícula..." />
-                        </div>
+                <div class="flex-grow-1">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtBuscar" runat="server"
+                            CssClass="form-control border-start-0"
+                            placeholder="Buscar por nombre, DNI o matrícula..." />
                     </div>
-
-                    <%-- Selector del campo a filtrar --%>
-                    <div class="col-auto">
-                        <asp:DropDownList
-                            ID="ddlCampo"
-                            runat="server"
-                            CssClass="form-select"
-                            Width="170"
-                            AutoPostBack="true">
-                            <asp:ListItem Text="Filtrar por..." Value="" />
-                            <asp:ListItem Text="Especialidad" Value="Especialidad" />
-                            <asp:ListItem Text="Estado" Value="Estado" />
-                        </asp:DropDownList>
-                    </div>
-
-                    <%-- Selector del criterio  --%>
-                    <div class="col-auto">
-                        <asp:DropDownList
-                            ID="ddlCriterio"
-                            runat="server"
-                            CssClass="form-select"
-                            Width="220"
-                            Enabled="false">
-                            <asp:ListItem Text="Seleccione un criterio" Value="" />
-                        </asp:DropDownList>
-                    </div>
-
                 </div>
+
+
+                <div>
+                    <asp:DropDownList ID="ddlCampo" runat="server" CssClass="form-select" Width="160px"
+                        AutoPostBack="true"
+                        OnSelectedIndexChanged="ddlCampo_SelectedIndexChanged">
+                        <asp:ListItem Text="Filtrar por..." Value="" />
+                        <asp:ListItem Text="Especialidad" Value="Especialidad" />
+                        <asp:ListItem Text="Estado" Value="Estado" />
+                    </asp:DropDownList>
+                </div>
+
+                <div>
+                    <asp:DropDownList ID="ddlCriterio" runat="server" CssClass="form-select" Width="220px"
+                        Enabled="false">
+                        <asp:ListItem Text="Seleccione un criterio" Value="" />
+                    </asp:DropDownList>
+                </div>
+
+                <div class="d-flex gap-2 border-start ps-3 ms-1">
+
+                    <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
+                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
+                </div>
+
 
             </div>
         </div>

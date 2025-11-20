@@ -386,7 +386,6 @@ p, span, button, input, select, label, td, th {
     /*    height: calc(100vh - 8rem); */
     min-height: 600px;
     background-color: var(--color-background);
-    padding: 1rem;
     box-sizing: border-box;
 }
 
