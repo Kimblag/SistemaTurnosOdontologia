@@ -103,11 +103,11 @@ INSERT INTO ParametroSistema (Nombre, Valor, Descripcion) VALUES
 ('DuracionTurnoMinutos', '60', 'Duración predeterminada de turno'),
 ('HoraInicioJornada', '08:00', 'Inicio jornada'),
 ('HoraFinJornada', '18:00', 'Fin jornada'),
-('SMTP_Server', 'smtp-relay.brevo.com', 'Servidor de correo'),
+('SMTP_Server', 'smtp.gmail.com', 'Servidor de correo'),
 ('SMTP_Port', '587', 'Puerto SMTP'),
-('Email_From', 'no-reply@sgto.com', 'Correo remitente'),
+('Email_From', 'tpweb.grupo9c.promoweb2025@gmail.com', 'Correo remitente'),
 ('NombreClinica', 'Clínica SGTO', 'Nombre visible del sistema'),
-('UsuarioCorreo', '97ee2a002@smtp-brevo.com', 'Nombre usuario SMTP del sistema'),
+('UsuarioCorreo', 'tpweb.grupo9c.promoweb2025@gmail.com', 'Nombre usuario SMTP del sistema'),
 ('ReintentosEmail', '3', 'Cantidad de intentos para reenviar un email');
 
 -- Plan

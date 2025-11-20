@@ -445,7 +445,7 @@ namespace SGTO.Negocio.Servicios
                     EnviarEmailNotificacion(
                         paciente, medico, especialidad, dto.FechaInicio,
                         "Turno Reprogramado",
-                        "Su turno ha sido reprogramado exitosamente. Los nuevos datos son:",
+                        "Turno reprogramado",
                         rutaPlantillaReprogramacion
                     );
                 }
