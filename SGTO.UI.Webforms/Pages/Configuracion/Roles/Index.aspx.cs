@@ -132,17 +132,42 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 RolListadoDto rolDto = (RolListadoDto)e.Row.DataItem;
-                var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
 
-                if (lblEstado != null && rolDto != null)
+                var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnEliminar = (HtmlButton)e.Row.FindControl("btnEliminar");
+                var btnDetalle = (LinkButton)e.Row.FindControl("btnDetalle");
+
+                if (rolDto != null)
                 {
                     string estado = rolDto.Estado.ToLower();
-                    lblEstado.InnerText = rolDto.Estado;
+                    if (lblEstado != null)
+                    {
+                        lblEstado.InnerText = rolDto.Estado;
 
-                    if (estado == "activo")
-                        lblEstado.Attributes["class"] = "badge badge-success";
-                    else
-                        lblEstado.Attributes["class"] = "badge badge-warning";
+                        if (estado == "activo")
+                            lblEstado.Attributes["class"] = "badge badge-success";
+                        else
+                            lblEstado.Attributes["class"] = "badge badge-warning";
+                    }
+
+                    string nombreRol = rolDto.Nombre.Trim();
+                    bool esAdmin = nombreRol.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+                    bool esSistema = nombreRol.Equals("Médico", StringComparison.OrdinalIgnoreCase) ||
+                                     nombreRol.Equals("Recepcionista", StringComparison.OrdinalIgnoreCase) ||
+                                     esAdmin;
+
+                    if (esSistema)
+                    {
+                        // nadie puede borrar roles de sistema
+                        if (btnEliminar != null) btnEliminar.Visible = false;
+
+                        // el admin no se edita
+                        if (esAdmin && btnEditar != null)
+                        {
+                            btnEditar.Visible = false;
+                        }
+                    }
                 }
             }
         }
@@ -162,13 +187,16 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
             if (e.CommandName == "Editar")
             {
-                Response.Redirect($"~/Pages/Configuracion/Roles/Editar.aspx?id-rol={idRol}", false);
+                Response.Redirect($"~/Pages/Configuracion/Roles/Editar?id-rol={idRol}", false);
             }
             else if (e.CommandName == "Eliminar")
             {
-
                 hdnIdEliminar.Value = idRol.ToString();
-                ScriptManager.RegisterStartupScript(this, GetType(), "abrirModal", "abrirModalConfirmacion(" + idRol + ", 'rol');", true);
+            }
+            else if (e.CommandName == "Ver")
+            {
+
+                Response.Redirect($"~/Pages/Configuracion/Roles/Detalle?id-rol={idRol}", false);
             }
         }
 

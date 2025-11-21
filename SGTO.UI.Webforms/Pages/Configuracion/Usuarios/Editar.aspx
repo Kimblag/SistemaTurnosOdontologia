@@ -10,21 +10,53 @@
                 <div class="col-12 col-md-6">
                     <label for="txtNombre" class="form-label">Nombre</label>
                     <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvNombre" runat="server"
+                        ControlToValidate="txtNombre"
+                        ErrorMessage="El nombre es requerido."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="EditarUsuario" />
                 </div>
 
                 <div class="col-12 col-md-6">
                     <label for="txtApellido" class="form-label">Apellido</label>
                     <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvApellido" runat="server"
+                        ControlToValidate="txtApellido"
+                        ErrorMessage="El apellido es requerido."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="EditarUsuario" />
                 </div>
 
                 <div class="col-12 col-md-6">
                     <label for="txtEmail" class="form-label">Email</label>
                     <asp:TextBox ID="txtEmail" runat="server" TextMode="Email" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvEmail" runat="server"
+                        ControlToValidate="txtEmail"
+                        ErrorMessage="El email es requerido."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="EditarUsuario" />
+
+                    <asp:RegularExpressionValidator ID="revEmail" runat="server"
+                        ControlToValidate="txtEmail"
+                        ErrorMessage="Ingrese un email válido."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="EditarUsuario"
+                        ValidationExpression="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$" />
                 </div>
 
                 <div class="col-12 col-md-6">
                     <label for="txtNombreUsuario" class="form-label">Nombre de usuario</label>
                     <asp:TextBox ID="txtNombreUsuario" runat="server" CssClass="form-control" />
+                    <asp:RequiredFieldValidator ID="rfvUsuario" runat="server"
+                        ControlToValidate="txtNombreUsuario"
+                        ErrorMessage="El usuario es requerido."
+                        CssClass="text-danger small"
+                        Display="Dynamic"
+                        ValidationGroup="EditarUsuario" />
                 </div>
 
                 <div class="col-12 col-md-6">

@@ -16,6 +16,10 @@ namespace SGTO.Negocio.Servicios
         private readonly RolRepositorio _repositorioRol;
         private readonly PermisoRepositorio _permisoRepositorio;
 
+        private const string ROL_ADMIN = "Administrador";
+        private const string ROL_MEDICO = "Médico";
+        private const string ROL_RECEPCIONISTA = "Recepcionista";
+
         public RolService()
         {
             _repositorioRol = new RolRepositorio();
@@ -87,28 +91,53 @@ namespace SGTO.Negocio.Servicios
 
         public bool Modificar(RolDetalleDto dto)
         {
-            if (dto == null)
-                throw new ArgumentNullException(nameof(dto));
+            if (dto == null) throw new ArgumentNullException(nameof(dto));
 
-            // verificar que exista
             Rol rolActual = _repositorioRol.ObtenerPorId(dto.IdRol);
             if (rolActual == null)
                 throw new ExcepcionReglaNegocio("El rol indicado no existe.");
 
-            // validar datos básicos
-            ValidarDatosBasicosParaEditar(dto);
+            bool esRolSistema = EsRolDeSistema(rolActual.Nombre);
 
-            // si cambió el nombre, validar que no haya otro igual
-            if (!string.Equals(rolActual.Nombre.Trim(), dto.Nombre.Trim(), StringComparison.OrdinalIgnoreCase)
-                && _repositorioRol.ExistePorNombre(dto.Nombre))
+            if (esRolSistema)
             {
-                throw new ExcepcionReglaNegocio("Ya existe un rol con ese nombre.");
+                // si es admin bloquearlo
+                if (rolActual.Nombre.Equals(ROL_ADMIN, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ExcepcionReglaNegocio("El rol 'Administrador' es fundamental y no puede ser modificado.");
+                }
+
+                // si es medico o recepcionista
+                if (!rolActual.Nombre.Equals(dto.Nombre.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new ExcepcionReglaNegocio($"El nombre del rol '{rolActual.Nombre}' es de sistema y no se puede cambiar.");
+                }
+
+                // no permitir desactivar
+                bool intentaDesactivar = dto.Estado.ToUpper()[0] == 'I';
+
+                if (intentaDesactivar && rolActual.Estado == EstadoEntidad.Activo)
+                {
+                    throw new ExcepcionReglaNegocio($"El rol '{rolActual.Nombre}' es fundamental y no puede desactivarse.");
+                }
+            }
+            else
+            {
+                // roles personalizados
+                ValidarDatosBasicosParaEditar(dto);
+
+                // validar nombres duplicados
+                if (!string.Equals(rolActual.Nombre.Trim(), dto.Nombre.Trim(), StringComparison.OrdinalIgnoreCase)
+                    && _repositorioRol.ExistePorNombre(dto.Nombre))
+                {
+                    throw new ExcepcionReglaNegocio("Ya existe un rol con ese nombre.");
+                }
             }
 
+            // validar permisos
             List<Permiso> permisosDisponibles = _permisoRepositorio.Listar();
-
-            // validar permisos enviados ya que debe tener al menos 1
             ValidarPermisosSeleccionados(dto.IdPermisos, permisosDisponibles);
+
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
@@ -116,12 +145,19 @@ namespace SGTO.Negocio.Servicios
                 try
                 {
                     Rol rolMod = RolMapper.MapearAEntidadDesdeEditar(dto);
+
+
+                    if (esRolSistema)
+                    {
+                        rolMod.Nombre = rolActual.Nombre;
+                        rolMod.Descripcion = rolActual.Descripcion;
+                        rolMod.Estado = EstadoEntidad.Activo;
+                    }
+
                     _repositorioRol.Modificar(rolMod, datos);
 
-                    // primero eliminamos los permisos actuales
                     _repositorioRol.EliminarPermisosPorRol(dto.IdRol, datos);
 
-                    // y agregamos los nuevos
                     for (int i = 0; i < dto.IdPermisos.Count; i++)
                     {
                         int idPermiso = dto.IdPermisos[i];
@@ -143,8 +179,13 @@ namespace SGTO.Negocio.Servicios
         public bool DarDeBaja(int idRol)
         {
             Rol rol = _repositorioRol.ObtenerPorId(idRol);
-            if (rol == null)
-                throw new ExcepcionReglaNegocio("No se encontró el rol indicado.");
+            if (rol == null) throw new ExcepcionReglaNegocio("No se encontró el rol indicado.");
+
+            // no se pueden borrar los roles del sistema
+            if (EsRolDeSistema(rol.Nombre))
+            {
+                throw new ExcepcionReglaNegocio($"El rol '{rol.Nombre}' es de sistema y no puede ser eliminado ni desactivado.");
+            }
 
             if (rol.Estado == EstadoEntidad.Inactivo)
                 throw new ExcepcionReglaNegocio("El rol ya está inactivo.");
@@ -235,6 +276,16 @@ namespace SGTO.Negocio.Servicios
                 if (!existe)
                     throw new ExcepcionReglaNegocio("Se intentó asignar un permiso inexistente.");
             }
+
+        }
+
+        private bool EsRolDeSistema(string nombre)
+        {
+            if (string.IsNullOrEmpty(nombre)) return false;
+            string n = nombre.Trim();
+            return n.Equals(ROL_ADMIN, StringComparison.OrdinalIgnoreCase) ||
+                   n.Equals(ROL_MEDICO, StringComparison.OrdinalIgnoreCase) ||
+                   n.Equals(ROL_RECEPCIONISTA, StringComparison.OrdinalIgnoreCase);
         }
 
     }

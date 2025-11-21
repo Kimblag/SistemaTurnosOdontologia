@@ -141,6 +141,7 @@
     <Content Include="Pages\CoberturasPlanes\Planes\Index.aspx" />
     <Content Include="Pages\Configuracion\Index.aspx" />
     <Content Include="Pages\Configuracion\Parametros\Index.aspx" />
+    <Content Include="Pages\Configuracion\Roles\Detalle.aspx" />
     <Content Include="Pages\Configuracion\Roles\Editar.aspx" />
     <Content Include="Pages\Configuracion\Roles\Index.aspx" />
     <Content Include="Pages\Configuracion\Roles\Nuevo.aspx" />
@@ -371,6 +372,13 @@
     </Compile>
     <Compile Include="Pages\Configuracion\Parametros\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Detalle.aspx.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Configuracion\Roles\Detalle.aspx.designer.cs">
+      <DependentUpon>Detalle.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Configuracion\Roles\Editar.aspx.cs">
       <DependentUpon>Editar.aspx</DependentUpon>

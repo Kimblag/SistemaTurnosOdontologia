@@ -99,14 +99,6 @@
 
                                 <div class="btn-group btn-group-sm" role="group">
 
-                                    <asp:LinkButton ID="btnDetalle" runat="server"
-                                        CssClass="btn btn-outline-primary"
-                                        CommandName="Ver"
-                                        CommandArgument='<%# Eval("IdPaciente") %>'
-                                        ToolTip="Ver Legajo">
-                                        <i class="bi bi-eye"></i>
-                                    </asp:LinkButton>
-
                                     <asp:LinkButton ID="btnEditar"
                                         runat="server"
                                         CssClass="btn btn-outline-secondary"
@@ -114,6 +106,14 @@
                                         CommandArgument='<%# Eval("IdPaciente") %>'
                                         ToolTip="Editar Datos">
                                         <i class="bi bi-pencil"></i>
+                                    </asp:LinkButton>
+
+                                    <asp:LinkButton ID="btnDetalle" runat="server"
+                                        CssClass="btn btn-outline-primary"
+                                        CommandName="Ver"
+                                        CommandArgument='<%# Eval("IdPaciente") %>'
+                                        ToolTip="Ver Legajo">
+                                        <i class="bi bi-eye"></i>
                                     </asp:LinkButton>
 
                                     <button type="button"

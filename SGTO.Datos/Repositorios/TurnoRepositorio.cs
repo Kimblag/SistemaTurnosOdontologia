@@ -1,17 +1,18 @@
-﻿using SGTO.Datos.Infraestructura;
+﻿using SGTO.Comun.DTOs;
+using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
+using SGTO.Dominio.Enums;
+using SGTO.Dominio.ObjetosValor;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using SGTO.Comun.DTOs;
 
 
 namespace SGTO.Datos.Repositorios
 {
     public class TurnoRepositorio
     {
-
         public bool ExisteTurnoActivoPorEspecialidad(int idEspecialidad)
         {
             bool resultado = false;
@@ -532,6 +533,86 @@ namespace SGTO.Datos.Repositorios
                     throw;
                 }
             }
+        }
+
+        public bool ExisteTurnoFuturoActivoPorMedico(int idMedico)
+        {
+            bool resultado = false;
+            string query = @"
+                    SELECT COUNT(*) 
+                    FROM Turno 
+                    WHERE IdMedico = @IdMedico 
+                      AND FechaInicio >= GETDATE()
+                      AND Estado IN ('N', 'R')";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdMedico", idMedico);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            int cantidad = lector.GetInt32(0);
+                            resultado = cantidad > 0;
+                        }
+                    }
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        public List<Turno> ObtenerFuturosActivosPorMedico(int idMedico)
+        {
+            List<Turno> lista = new List<Turno>();
+
+            string query = @"
+                    SELECT 
+                        IdTurno, 
+                        FechaInicio, 
+                        FechaFin, 
+                        Estado
+                    FROM Turno
+                    WHERE IdMedico = @IdMedico
+                      AND FechaInicio >= GETDATE()
+                      AND Estado IN ('N', 'R')";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdMedico", idMedico);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Turno t = new Turno();
+                            t.IdTurno = lector.GetInt32(lector.GetOrdinal("IdTurno"));
+                            t.Horario = new HorarioTurno(
+                                lector.GetDateTime(lector.GetOrdinal("FechaInicio")),
+                                lector.GetDateTime(lector.GetOrdinal("FechaFin")));
+
+                            t.Estado = EnumeracionMapperDatos.MapearEstadoTurno(lector, "Estado");
+                            lista.Add(t);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return lista;
         }
 
     }

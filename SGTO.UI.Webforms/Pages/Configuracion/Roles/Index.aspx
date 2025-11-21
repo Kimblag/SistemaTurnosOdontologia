@@ -68,22 +68,37 @@
                     </asp:TemplateField>
 
                     <%--columna acciones--%>
-                    <asp:TemplateField HeaderText="Acciones">
+                    <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-end">
                         <ItemTemplate>
-                            <asp:LinkButton ID="btnEditar"
-                                runat="server"
-                                ToolTip="Editar"
-                                CssClass="btn btn-outline-secondary btn-sm me-1"
-                                CommandName="Editar"
-                                CommandArgument='<%# Eval("IdRol") %>'>
-                                <i class="bi bi-pencil"></i>
-                            </asp:LinkButton>
+                            <div class="d-flex justify-content-start gap-2">
+                                <div class="btn-group btn-group-sm" role="group">
 
-                            <button type="button"
-                                class="btn btn-outline-danger btn-sm me-1"
-                                data-id='<%# Eval("IdRol") %>'
-                                onclick="abrirModalConfirmacion('<%# Eval("IdRol") %>', 'rol')">
-                                <i class="bi bi-x"></i>
+                                    <asp:LinkButton ID="btnEditar"
+                                        runat="server"
+                                        ToolTip="Editar"
+                                        CssClass="btn btn-outline-secondary"
+                                        CommandName="Editar"
+                                        CommandArgument='<%# Eval("IdRol") %>'>
+                                <i class="bi bi-pencil"></i>
+                                    </asp:LinkButton>
+
+                                    <asp:LinkButton ID="btnDetalle" runat="server"
+                                        CssClass="btn btn-outline-primary"
+                                        CommandName="Ver"
+                                        ToolTip="Ver Detalle"
+                                        CommandArgument='<%# Eval("IdRol") %>'>
+                                    <i class="bi bi-eye"></i>
+                                    </asp:LinkButton>
+
+                                    <button type="button"
+                                        id="btnEliminar"
+                                        class="btn btn-outline-danger"
+                                        data-id='<%# Eval("IdRol") %>'
+                                        title="Dar de baja"
+                                        onclick="abrirModalConfirmacion('<%# Eval("IdRol") %>', 'rol')">
+                                        <i class="bi bi-x"></i>
+                                </div>
+                            </div>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

@@ -18,7 +18,12 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
 
         private readonly RolService _servicioRol = new RolService();
 
+        private const string ROL_ADMIN = "Administrador";
+        private const string ROL_MEDICO = "Médico";
+        private const string ROL_RECEPCIONISTA = "Recepcionista";
+
         public bool ModoEdicion { get; set; } = false;
+        public bool ModoLectura { get; set; } = false;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -26,16 +31,22 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
 
             if (!IsPostBack)
             {
-                if (!ModoEdicion)
+                if (idRol != 0)
+                {
+                    CargarDetalleRol(idRol);
+                }
+                else if (!ModoLectura)
                 {
                     ddlEstado.SelectedValue = "Activo";
                     ddlEstado.Enabled = false;
-
                     MarcarPermisosVerPorDefecto();
                 }
-                else
+
+                if (ModoLectura)
                 {
-                    CargarDetalleRol(idRol);
+                    BloquearTodosLosControles();
+                    btnGuardar.Visible = false;
+                    btnCancelar.Visible = false;
                 }
 
                 ModalHelper.MostrarModalDesdeSession(
@@ -44,6 +55,92 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
                     "RolMensajeDesc",
                     "/Pages/Configuracion/Roles/Index"
                 );
+            }
+        }
+
+
+        private void CargarDetalleRol(int idRol)
+        {
+            RolDetalleDto rol = _servicioRol.ObtenerPorId(idRol);
+            if (rol == null)
+            {
+                MostrarModalError("No encontrado", "No se encontró el rol solicitado.");
+                return;
+            }
+
+            txtNombre.Text = rol.Nombre;
+            txtDescripcion.Text = rol.Descripcion;
+            ddlEstado.SelectedValue = rol.Estado;
+
+            // marcar permisos
+            List<Permiso> permisosDisponibles = _servicioRol.ListarPermisos();
+            foreach (int idPermiso in rol.IdPermisos)
+            {
+                Permiso permiso = permisosDisponibles.Find(p => p.IdPermiso == idPermiso);
+                if (permiso != null)
+                {
+                    string idControl = "chk" + permiso.Modulo + permiso.Accion;
+                    CheckBox chk = this.FindControl(idControl) as CheckBox;
+                    if (chk != null) chk.Checked = true;
+                }
+            }
+            if (!ModoLectura)
+            {
+                AplicarReglasDeEdicionSegunRol(rol.Nombre);
+            }
+        }
+
+
+        private void AplicarReglasDeEdicionSegunRol(string nombreRol)
+        {
+            string nombre = nombreRol.Trim();
+
+            bool esAdmin = nombre.Equals(ROL_ADMIN, StringComparison.OrdinalIgnoreCase);
+            bool esMedico = nombre.Equals(ROL_MEDICO, StringComparison.OrdinalIgnoreCase);
+            bool esRecep = nombre.Equals(ROL_RECEPCIONISTA, StringComparison.OrdinalIgnoreCase);
+
+            if (esAdmin)
+            {
+                BloquearTodosLosControles();
+                btnGuardar.Visible = false;
+
+                MostrarModalError("Información", "El rol Administrador es fundamental y no puede ser modificado.");
+            }
+            else if (esMedico || esRecep)
+            {
+                txtNombre.Enabled = false;
+                txtNombre.ToolTip = "Rol de sistema: No editable.";
+
+                txtDescripcion.Enabled = false;
+
+                ddlEstado.Enabled = false;
+                ddlEstado.ToolTip = "Rol de sistema: No se puede desactivar.";
+            }
+            else
+            {
+                txtNombre.Enabled = true;
+                txtDescripcion.Enabled = true;
+                ddlEstado.Enabled = true;
+            }
+        }
+
+        private void BloquearTodosLosControles()
+        {
+            txtNombre.Enabled = false;
+            txtDescripcion.Enabled = false;
+            ddlEstado.Enabled = false;
+
+            Array modulos = Enum.GetValues(typeof(Modulo));
+            Array acciones = Enum.GetValues(typeof(TipoAccion));
+
+            foreach (Modulo mod in modulos)
+            {
+                foreach (TipoAccion acc in acciones)
+                {
+                    string id = "chk" + mod.ToString() + acc.ToString();
+                    CheckBox chk = this.FindControl(id) as CheckBox;
+                    if (chk != null) chk.Enabled = false;
+                }
             }
         }
 
@@ -78,11 +175,8 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             try
             {
                 ValidarCampos();
-
-                if (ModoEdicion)
-                    ModificarRol();
-                else
-                    CrearNuevoRol();
+                if (ModoEdicion) ModificarRol();
+                else CrearNuevoRol();
             }
             catch (ArgumentException ex)
             {
@@ -238,35 +332,7 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             );
         }
 
-        private void CargarDetalleRol(int idRol)
-        {
-            RolDetalleDto rol = _servicioRol.ObtenerPorId(idRol);
-            if (rol == null)
-            {
-                MostrarModalError("No encontrado", "No se encontró el rol solicitado.");
-                return;
-            }
 
-            txtNombre.Text = rol.Nombre;
-            txtDescripcion.Text = rol.Descripcion;
-            ddlEstado.SelectedValue = rol.Estado;
-
-            // marcar permisos
-            List<Permiso> permisosDisponibles = _servicioRol.ListarPermisos();
-
-            for (int i = 0; i < rol.IdPermisos.Count; i++)
-            {
-                int idPermiso = rol.IdPermisos[i];
-                Permiso permiso = permisosDisponibles.Find(p => p.IdPermiso == idPermiso);
-                if (permiso != null)
-                {
-                    string idControl = "chk" + permiso.Modulo + permiso.Accion;
-                    CheckBox chk = this.FindControl(idControl) as CheckBox;
-                    if (chk != null)
-                        chk.Checked = true;
-                }
-            }
-        }
 
     }
 }

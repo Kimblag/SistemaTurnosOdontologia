@@ -39,6 +39,7 @@
                             <asp:ListItem Text="Nuevo" Value="Nuevo" />
                             <asp:ListItem Text="Reprogramado" Value="Reprogramado" />
                             <asp:ListItem Text="No asistió" Value="No asistió" />
+                            <asp:ListItem Text="Cancelado" Value="Cancelado" />
                             <asp:ListItem Text="Cerrado" Value="Cerrado" />
                         </asp:DropDownList>
                     </div>

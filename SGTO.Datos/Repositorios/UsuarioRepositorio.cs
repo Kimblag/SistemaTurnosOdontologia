@@ -10,7 +10,6 @@ namespace SGTO.Datos.Repositorios
 {
     public class UsuarioRepositorio
     {
-
         public List<Usuario> Listar(string estado = null)
         {
             List<Usuario> usuarios = new List<Usuario>();
@@ -274,6 +273,40 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+        public int ContarOtrosAdministradoresActivos(int idUsuarioExcluido)
+        {
+            int cantidadAdmins = 0;
+
+            string query = @"
+                    SELECT COUNT(*) 
+                    FROM Usuario U
+                    INNER JOIN Rol R ON U.IdRol = R.IdRol
+                    WHERE U.Estado = 'A'
+                      AND R.Nombre = 'Administrador'
+                      AND U.IdUsuario <> @IdUsuario";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdUsuario", idUsuarioExcluido);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            cantidadAdmins = lector.GetInt32(0);
+                        }
+                    }
+                    return cantidadAdmins;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
 
     }
 }
