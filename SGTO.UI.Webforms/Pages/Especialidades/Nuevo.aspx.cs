@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Especialidades/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Especialidades");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Defina el nombre y descripción del área profesional.");

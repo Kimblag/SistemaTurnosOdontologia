@@ -19,6 +19,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Defina las variables institucionales y técnicas de la aplicación.");

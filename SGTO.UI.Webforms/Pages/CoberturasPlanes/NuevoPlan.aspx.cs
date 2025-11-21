@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/CoberturasPlanes/Planes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Administre los datos del plan y el nivel de cobertura que ofrece a los afiliados.");

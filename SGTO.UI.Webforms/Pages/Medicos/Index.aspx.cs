@@ -170,12 +170,11 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 
         protected void gvMedicos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-
             if (e.CommandName == "Ver")
             {
                 if (int.TryParse(e.CommandArgument.ToString(), out int idMedico))
                 {
-                    Response.Redirect($"~/Pages/Medicos/Detalle.aspx?id-medico={idMedico}", false);
+                    Response.Redirect($"~/Pages/Medicos/Detalle?id-medico={idMedico}", false);
                 }
             }
         }
@@ -205,18 +204,6 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     }

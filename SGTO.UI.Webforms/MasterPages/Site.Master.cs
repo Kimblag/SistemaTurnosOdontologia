@@ -17,8 +17,6 @@ namespace SGTO.UI.Webforms.MasterPages
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            MostrarBotonVolver();
-
             if (!IsPostBack)
             {
                 CargarNombreClinica();
@@ -109,53 +107,6 @@ namespace SGTO.UI.Webforms.MasterPages
         }
 
 
-        private void MostrarBotonVolver()
-        {
-            string urlActual = Request.Url.AbsolutePath.ToLowerInvariant();
-            string[] segmentos = Request.Url.Segments;
-
-            for (int i = 0; i < segmentos.Length; i++)
-                segmentos[i] = segmentos[i].Trim('/').ToLowerInvariant();
-
-            if (!urlActual.Contains("/pages/configuracion/"))
-            {
-                btnVolver.Visible = false;
-                return;
-            }
-
-            if (urlActual.EndsWith("/pages/configuracion/index"))
-            {
-                btnVolver.Visible = false;
-                return;
-            }
-
-            btnVolver.Visible = true;
-
-            if (segmentos.Length >= 5)
-            {
-                string modulo = segmentos[3].TrimEnd('/');
-                string pagina = segmentos[4].TrimEnd('/');
-
-                if (pagina == "nuevo" || pagina == "editar" || pagina == "detalles")
-                {
-                    btnVolver.NavigateUrl = $"~/Pages/Configuracion/{modulo}/Index.aspx";
-                }
-                else if (pagina == "index")
-                {
-                    btnVolver.NavigateUrl = "~/Pages/Configuracion/Index.aspx";
-                }
-                else
-                {
-                    btnVolver.NavigateUrl = $"~/Pages/Configuracion/{modulo}/Index.aspx";
-                }
-            }
-            else
-            {
-                btnVolver.NavigateUrl = "~/Pages/Configuracion/Index.aspx";
-            }
-        }
-
-
         private void CargarNombreClinica()
         {
             try
@@ -172,6 +123,17 @@ namespace SGTO.UI.Webforms.MasterPages
                 NombreClinica.InnerText = "Clínica Odontológica";
             }
         }
+
+
+        public void ConfigurarBotonVolver(bool mostrar, string urlDestino = "")
+        {
+            btnVolver.Visible = mostrar;
+            if (mostrar && !string.IsNullOrEmpty(urlDestino))
+            {
+                btnVolver.NavigateUrl = urlDestino;
+            }
+        }
+
 
     }
 }

@@ -13,6 +13,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Medicos/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Medicos");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Información de matrícula, especialidades habilitadas y grilla horaria semanal.");
@@ -25,7 +26,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 
         private void CargarDatos()
         {
-            string idStr = Request.QueryString["id"];
+            string idStr = Request.QueryString["id-medico"];
             if (int.TryParse(idStr, out int id))
             {
                 try

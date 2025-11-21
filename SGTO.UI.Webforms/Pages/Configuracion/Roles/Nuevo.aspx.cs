@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Roles/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Cree un nuevo perfil de seguridad y seleccione los permisos habilitados.");

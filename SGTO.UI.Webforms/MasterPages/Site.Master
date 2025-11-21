@@ -116,7 +116,7 @@
                         <div class="d-flex align-items-center gap-3">
 
                             <asp:HyperLink ID="btnVolver" runat="server"
-                                NavigateUrl="~/Pages/Configuracion/Index.aspx"
+                                Visible="false"
                                 CssClass="btn btn-light border shadow-sm d-flex align-items-center justify-content-center rounded-circle"
                                 Style="width: 38px; height: 38px; padding: 0;">
                                 <i class="bi bi-arrow-left text-secondary"></i>

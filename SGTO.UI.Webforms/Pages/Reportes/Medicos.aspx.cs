@@ -21,6 +21,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Reportes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Reportes");
                 master.EstablecerTituloSeccion("Reporte de Médicos");
                 master.EstablecerSubtituloSeccion("Métricas de desempeño y actividad del personal médico.");

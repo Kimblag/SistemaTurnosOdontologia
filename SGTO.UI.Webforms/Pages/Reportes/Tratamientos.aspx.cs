@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Reportes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Reportes");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Consulte estadísticas operativas y exporte información histórica del sistema.");

@@ -14,7 +14,8 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         {
             if (Master is SiteMaster master)
             {
-                master.EstablecerOpcionMenuActiva("Medicos");
+                master.ConfigurarBotonVolver(true, "~/Pages/Tratamientos/Index.aspx");
+                master.EstablecerOpcionMenuActiva("Tratamientos");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Configure la información de la prestación y su arancel correspondiente.");
             }

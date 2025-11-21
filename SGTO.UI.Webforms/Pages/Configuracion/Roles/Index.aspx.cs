@@ -24,6 +24,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Configure los niveles de autorización y permisos por grupo.");

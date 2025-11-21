@@ -2,14 +2,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">Ficha del Médico</h1>
-            <div>
-                <asp:HyperLink ID="lnkVolver" runat="server" NavigateUrl="~/Pages/Medicos/Index.aspx" CssClass="btn btn-outline-secondary me-2">
-                    <i class="bi bi-arrow-left"></i> Volver
-                </asp:HyperLink>
-                
-            </div>
         </div>
 
         <div class="row g-4">

@@ -65,6 +65,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Usuarios/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Registre un nuevo usuario, asigne sus credenciales y defina su rol en el sistema.");

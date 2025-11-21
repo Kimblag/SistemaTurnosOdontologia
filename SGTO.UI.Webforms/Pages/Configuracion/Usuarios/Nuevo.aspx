@@ -12,10 +12,6 @@
                     Paso 1 de 2 · Seleccione el rol del usuario.
                 </p>
             </div>
-            <asp:Button ID="btnVolver" runat="server"
-                Text="Volver"
-                CssClass="btn btn-outline-secondary btn-sm"
-                OnClick="btnVolver_Click" />
         </div>
 
 

@@ -79,6 +79,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Usuarios/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Modifique los datos de acceso, el estado de la cuenta o actualice el perfil médico asociado.");

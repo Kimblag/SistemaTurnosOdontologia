@@ -86,12 +86,13 @@
                     <asp:TemplateField HeaderText="Acciones" Visible="true">
                         <ItemTemplate>
 
-
-                            <asp:LinkButton ID="btnDetalle" runat="server" CssClass="btn btn-outline-primary btn-sm" CommandName="Ver" CommandArgument='<%# Eval("IdMedico") %>'> 
+                            <asp:LinkButton ID="btnDetalle" runat="server"
+                                CssClass="btn btn-outline-primary"
+                                CommandName="Ver"
+                                CommandArgument='<%# Eval("IdMedico") %>'
+                                ToolTip="Ver Detalle">
                                 <i class="bi bi-eye"></i>
                             </asp:LinkButton>
-
-
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>

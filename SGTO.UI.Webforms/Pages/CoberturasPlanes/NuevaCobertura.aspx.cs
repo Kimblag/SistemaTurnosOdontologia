@@ -14,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/CoberturasPlanes/Coberturas/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Defina la entidad prestadora de salud.");

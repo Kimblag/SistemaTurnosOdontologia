@@ -25,6 +25,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/CoberturasPlanes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Coberturas");
                 master.EstablecerTituloSeccion("Gestión de Planes");
                 master.EstablecerSubtituloSeccion("Administración de Obras Sociales, Prepagas y sus respectivos planes de cobertura.");

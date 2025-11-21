@@ -15,15 +15,6 @@ namespace SGTO.UI.Webforms.Pages.Medicos
     {
 
         /// <summary>
-        /// lnkVolver control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkVolver;
-
-        /// <summary>
         /// lblNombre control.
         /// </summary>
         /// <remarks>

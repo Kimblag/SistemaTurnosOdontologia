@@ -28,6 +28,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Administre el acceso del personal y los perfiles profesionales.");
