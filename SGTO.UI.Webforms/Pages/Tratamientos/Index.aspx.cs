@@ -20,195 +20,144 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
         private readonly TurnoService _turnoService = new TurnoService();
         private readonly EspecialidadService _especialidadService = new EspecialidadService();
 
-        private const string KEY_BUSQUEDA = "FiltroTratamientoBusqueda";
-        private const string KEY_CAMPO = "FiltroTratamientoCampo";
-        private const string KEY_CRITERIO = "FiltroTratamientoCriterio";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Tratamientos");
-                master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerTituloSeccion("Nomenclador de Tratamientos");
                 master.EstablecerSubtituloSeccion("Catálogo de prestaciones odontológicas y costos base por especialidad.");
-                if (!IsPostBack)
-                {
-                    txtBuscar.Text = Session[KEY_BUSQUEDA] as string ?? string.Empty;
+            }
 
-                    string campo = Session[KEY_CAMPO] as string;
-                    if (!string.IsNullOrEmpty(campo))
-                    {
-                        if (ddlCampo.Items.FindByValue(campo) != null)
-                        {
-                            ddlCampo.SelectedValue = campo;
-                            CargarCriterios(campo);
-                        }
-                    }
+            if (!IsPostBack)
+            {
+                CargarCombos();
+                CargarTratamientosConFiltros();
 
-                    string criterio = Session[KEY_CRITERIO] as string;
-                    if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
-                    {
-                        ddlCriterio.SelectedValue = criterio;
-                        ddlCriterio.Enabled = true;
-                    }
-
-                    AplicarFiltros();
-
-                    MensajeUiHelper.MostrarModal(this.Page);
-                }
+                MensajeUiHelper.MostrarModal(this.Page);
             }
         }
 
-        private void CargarCriterios(string campo)
+        private void CargarCombos()
         {
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Enabled = false;
-
-            if (string.IsNullOrEmpty(campo))
-            {
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                return;
-            }
-
-            campo = campo.ToLower();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = true;
-
             try
             {
-                if (campo == "estado")
+                ddlEspecialidad.Items.Clear();
+                ddlEspecialidad.Items.Add(new ListItem("Todas las especialidades", ""));
+
+                var especialidades = _especialidadService.Listar();
+                foreach (var esp in especialidades)
                 {
-                    ddlCriterio.Items.Add(new ListItem("Activo", "A"));
-                    ddlCriterio.Items.Add(new ListItem("Inactivo", "I"));
-                }
-                else if (campo == "especialidad")
-                {
-                    var especialidades = _especialidadService.Listar();
-                    foreach (var esp in especialidades)
-                    {
-                        ddlCriterio.Items.Add(new ListItem(esp.Nombre, esp.Nombre));
-                    }
+                    ddlEspecialidad.Items.Add(new ListItem(esp.Nombre, esp.Nombre));
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error cargando criterios: " + ex.Message);
-                ddlCriterio.Items.Add(new ListItem("Error al cargar", ""));
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar las especialidades: " + ex.Message);
             }
-
-            if (ddlCriterio.Items.Count > 0)
-                ddlCriterio.SelectedIndex = 0;
         }
 
-        private void AplicarFiltros()
+        private void CargarTratamientosConFiltros()
         {
-            string textoBusqueda = txtBuscar.Text.Trim();
-            string campo = ddlCampo.SelectedValue;
-            string criterio = ddlCriterio.SelectedValue;
-
-            Session[KEY_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
-            Session[KEY_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            Session[KEY_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
-
-            List<TratamientoDto> listaCompleta = new List<TratamientoDto>();
+            List<TratamientoDto> todosLosTratamientos = new List<TratamientoDto>();
+            List<TratamientoDto> listaFiltrada = new List<TratamientoDto>();
 
             try
             {
-                listaCompleta = _tratamientoService.Listar();
+                todosLosTratamientos = _tratamientoService.Listar();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error al listar tratamientos: " + ex.Message);
-                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista. " + ex.Message, "Cerrar", null, "abrirModalResultado");
+                gvTratamientos.DataSource = null;
+                gvTratamientos.DataBind();
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista de tratamientos. " + ex.Message);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
-            {
-                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
-                List<TratamientoDto> filtrada = new List<TratamientoDto>();
+            string textoBuscar = txtBuscar.Text.Trim().ToUpper();
+            string especialidadSeleccionada = ddlEspecialidad.SelectedValue;
+            string estadoSeleccionado = ddlEstado.SelectedValue;
 
-                foreach (var t in listaCompleta)
+            foreach (TratamientoDto t in todosLosTratamientos)
+            {
+                bool cumple = true;
+
+                if (!string.IsNullOrEmpty(textoBuscar))
                 {
                     string nombreNorm = ValidadorCampos.NormalizarTexto(t.Nombre);
                     string descNorm = ValidadorCampos.NormalizarTexto(t.Descripcion);
+                    string textoNorm = ValidadorCampos.NormalizarTexto(textoBuscar);
 
-                    if ((!string.IsNullOrEmpty(nombreNorm) && nombreNorm.Contains(texto)) ||
-                        (!string.IsNullOrEmpty(descNorm) && descNorm.Contains(texto)))
+                    if (!nombreNorm.Contains(textoNorm) && !descNorm.Contains(textoNorm))
                     {
-                        filtrada.Add(t);
+                        cumple = false;
                     }
                 }
-                listaCompleta = filtrada;
-            }
 
-            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
-            {
-                List<TratamientoDto> filtrada = new List<TratamientoDto>();
-
-                if (campo == "Estado")
+                if (cumple && !string.IsNullOrEmpty(especialidadSeleccionada))
                 {
-                    foreach (var t in listaCompleta)
+                    if (!string.IsNullOrEmpty(t.NombreEspecialidad))
                     {
-                        string estadoLetra = t.Estado.ToLower().StartsWith("act") ? "A" : "I";
-                        if (estadoLetra == criterio)
+                        if (!t.NombreEspecialidad.Equals(especialidadSeleccionada, StringComparison.OrdinalIgnoreCase))
                         {
-                            filtrada.Add(t);
+                            cumple = false;
                         }
                     }
-                }
-                else if (campo == "Especialidad")
-                {
-                    foreach (var t in listaCompleta)
+                    else
                     {
-                        if (!string.IsNullOrEmpty(t.NombreEspecialidad) &&
-                            t.NombreEspecialidad.Equals(criterio, StringComparison.OrdinalIgnoreCase))
-                        {
-                            filtrada.Add(t);
-                        }
+                        cumple = false;
                     }
                 }
-                listaCompleta = filtrada;
+
+                if (cumple && !string.IsNullOrEmpty(estadoSeleccionado))
+                {
+                    bool esActivoDto = t.Estado != null && t.Estado.Trim().ToLower().StartsWith("act");
+
+                    if (estadoSeleccionado == "Activo" && !esActivoDto) cumple = false;
+                    if (estadoSeleccionado == "Inactivo" && esActivoDto) cumple = false;
+                }
+
+                if (cumple)
+                {
+                    listaFiltrada.Add(t);
+                }
             }
 
-            gvTratamientos.DataSource = listaCompleta;
+            gvTratamientos.DataSource = listaFiltrada;
             gvTratamientos.DataBind();
         }
 
 
-        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string campo = ddlCampo.SelectedValue;
-            Session[KEY_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            CargarCriterios(campo);
-            Session[KEY_CRITERIO] = null;
-        }
-
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            AplicarFiltros();
+            gvTratamientos.PageIndex = 0;
+            CargarTratamientosConFiltros();
         }
+
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            Session[KEY_BUSQUEDA] = null;
-            Session[KEY_CAMPO] = null;
-            Session[KEY_CRITERIO] = null;
-
             txtBuscar.Text = string.Empty;
-            ddlCampo.SelectedIndex = 0;
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = false;
+            ddlEspecialidad.SelectedIndex = 0;
+            ddlEstado.SelectedValue = "Activo";
 
-            AplicarFiltros();
+            gvTratamientos.PageIndex = 0;
+            CargarTratamientosConFiltros();
         }
+
+
+        protected void btnNuevoTratamiento_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Tratamientos/Nuevo", false);
+        }
+
 
         protected void gvTratamientos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvTratamientos.PageIndex = e.NewPageIndex;
-            AplicarFiltros();
+            CargarTratamientosConFiltros();
         }
+
 
         protected void gvTratamientos_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -241,10 +190,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             }
         }
 
-        protected void btnNuevoTratamiento_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/Pages/Tratamientos/Nuevo", false);
-        }
+
 
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
@@ -255,7 +201,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             {
                 _tratamientoService.DarDeBaja(idTratamiento, _turnoService);
 
-                AplicarFiltros();
+                CargarTratamientosConFiltros();
 
                 MensajeUiHelper.SetearYMostrar(
                     this.Page,
@@ -290,7 +236,7 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             }
         }
 
-        
+
 
     }
 }

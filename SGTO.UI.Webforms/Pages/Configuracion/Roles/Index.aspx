@@ -5,61 +5,41 @@
     <div>
 
         <%--Filtros--%>
-        <div class="container-fluid px-0 mb-3">
-            <div class="row g-2 align-items-center">
+        <div class="container-fluid px-0 mb-4">
+            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="col-12 col-lg-9 d-flex flex-wrap align-items-center gap-2">
-
-                    <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search text-muted"></i>
-                            </span>
-                            <asp:TextBox
-                                ID="txtBuscarRol"
-                                runat="server"
-                                CssClass="form-control border-start-0"
-                                placeholder="Buscar por nombre o descripción..." />
-                        </div>
+                <div class="flex-grow-1">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <asp:TextBox ID="txtBuscarRol" runat="server"
+                            CssClass="form-control border-start-0"
+                            placeholder="Buscar Rol por Nombre o Descripción..." />
                     </div>
-
-                    <div class="col-auto">
-                        <asp:DropDownList
-                            ID="ddlEstado"
-                            runat="server"
-                            CssClass="form-select"
-                            AutoPostBack="true"
-                            Width="200">
-                            <asp:ListItem Text="Todos los estados" Value="todos" Selected="True" />
-                            <asp:ListItem Text="Activo" Value="activo" />
-                            <asp:ListItem Text="Inactivo" Value="inactivo" />
-                        </asp:DropDownList>
-                    </div>
-
-                    <asp:Button
-                        ID="btnBuscar"
-                        runat="server"
-                        Text="Aplicar Filtro"
-                        CssClass="btn btn-outline-primary"
-                        OnClick="btnBuscar_Click" />
-
-                    <asp:Button
-                        ID="btnLimpiar"
-                        runat="server"
-                        Text="Limpiar"
-                        CssClass="btn btn-outline-secondary"
-                        OnClick="btnLimpiar_Click" />
-
                 </div>
 
-                <div class="col-12 col-lg-3 text-lg-end">
-                    <asp:Button
-                        ID="btnNuevoRol"
-                        runat="server"
-                        Text="+ Nuevo Rol"
-                        CssClass="btn btn-primary btn-sm me-1"
-                        OnClick="btnNuevoRol_Click" />
+                <div>
+                    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="180px"
+                        AutoPostBack="true">
+                        <asp:ListItem Text="Todos los estados" Value="todos" Selected="True" />
+                        <asp:ListItem Text="Activo" Value="activo" />
+                        <asp:ListItem Text="Inactivo" Value="inactivo" />
+                    </asp:DropDownList>
                 </div>
+
+                <div class="d-flex gap-2 border-start ps-3 ms-1">
+                    <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
+                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
+                </div>
+
+                <div class="border-start ps-3 ms-1">
+                    <asp:Button ID="btnNuevoRol" runat="server"
+                        Text="+ Nuevo"
+                        OnClick="btnNuevoRol_Click"
+                        CssClass="btn btn-success text-nowrap" />
+                </div>
+
             </div>
         </div>
 

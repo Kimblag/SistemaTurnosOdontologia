@@ -19,210 +19,154 @@ namespace SGTO.UI.Webforms.Pages.Medicos
     {
 
         private readonly MedicoService _servicioMedico = new MedicoService();
-
         private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
-
-        private const string KEY_MEDICO_BUSQUEDA = "FiltroMedicoBusqueda";
-        private const string KEY_MEDICO_CAMPO = "FiltroMedicoCampo";
-        private const string KEY_MEDICO_CRITERIO = "FiltroMedicoCriterio";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Medicos");
-                master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerTituloSeccion("Staff Médico");
                 master.EstablecerSubtituloSeccion("Consulte la nómina de profesionales, sus especialidades y días de atención.");
             }
+
             if (!IsPostBack)
             {
-                txtBuscar.Text = Session[KEY_MEDICO_BUSQUEDA] as string ?? string.Empty;
-
-                string campo = Session[KEY_MEDICO_CAMPO] as string;
-                if (!string.IsNullOrEmpty(campo))
-                {
-                    if (ddlCampo.Items.FindByValue(campo) != null)
-                    {
-                        ddlCampo.SelectedValue = campo;
-                        CargarCriterios(campo);
-                    }
-                }
-
-                string criterio = Session[KEY_MEDICO_CRITERIO] as string;
-                if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
-                {
-                    ddlCriterio.SelectedValue = criterio;
-                    ddlCriterio.Enabled = true;
-                }
-
-                AplicarFiltros();
+                CargarCombos();
+                CargarMedicosConFiltros();
             }
         }
 
-        private void CargarCriterios(string campo)
+
+        private void CargarCombos()
         {
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Enabled = false;
-
-            if (string.IsNullOrEmpty(campo))
-            {
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                return;
-            }
-
-            campo = campo.ToLower();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = true;
-
             try
             {
-                if (campo == "estado")
+                ddlEspecialidad.Items.Clear();
+                ddlEspecialidad.Items.Add(new ListItem("Todas las especialidades", ""));
+
+                var especialidades = _servicioEspecialidad.Listar("activas");
+                foreach (var esp in especialidades)
                 {
-                    ddlCriterio.Items.Add(new ListItem("Activo", "A"));
-                    ddlCriterio.Items.Add(new ListItem("Inactivo", "I"));
-                }
-                else if (campo == "especialidad")
-                {
-                    List<EspecialidadDto> especialidades = _servicioEspecialidad.Listar("activas");
-                    foreach (EspecialidadDto esp in especialidades)
-                    {
-                        ddlCriterio.Items.Add(new ListItem(esp.Nombre, esp.Nombre));
-                    }
+                    ddlEspecialidad.Items.Add(new ListItem(esp.Nombre, esp.Nombre));
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error cargando criterios: " + ex.Message);
-                ddlCriterio.Items.Add(new ListItem("Error al cargar", ""));
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar las especialidades: " + ex.Message);
             }
-
-            if (ddlCriterio.Items.Count > 0)
-                ddlCriterio.SelectedIndex = 0;
         }
 
 
-        private void AplicarFiltros()
+        private void CargarMedicosConFiltros()
         {
-            string textoBusqueda = txtBuscar.Text.Trim();
-            string campo = ddlCampo.SelectedValue;
-            string criterio = ddlCriterio.SelectedValue;
-
-            // guardar en sesion los campos
-            Session[KEY_MEDICO_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
-            Session[KEY_MEDICO_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            Session[KEY_MEDICO_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
-
-            List<MedicoListadoDto> listaCompleta = new List<MedicoListadoDto>();
+            List<MedicoListadoDto> todosLosMedicos = new List<MedicoListadoDto>();
+            List<MedicoListadoDto> listaFiltrada = new List<MedicoListadoDto>();
 
             try
             {
-                listaCompleta = _servicioMedico.Listar();
+                todosLosMedicos = _servicioMedico.Listar();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error al listar médicos: " + ex.Message);
-                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista de médicos.", "Cerrar", null, "abrirModalResultado");
+                gvMedicos.DataSource = null;
+                gvMedicos.DataBind();
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista de médicos. " + ex.Message);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
+            string textoBuscar = txtBuscar.Text.Trim().ToUpper();
+            string especialidadSeleccionada = ddlEspecialidad.SelectedValue;
+            string estadoSeleccionado = ddlEstado.SelectedValue;
+
+            foreach (MedicoListadoDto m in todosLosMedicos)
             {
-                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
-                List<MedicoListadoDto> filtrada = new List<MedicoListadoDto>();
+                bool cumple = true;
 
-                foreach (MedicoListadoDto m in listaCompleta)
+                if (!string.IsNullOrEmpty(textoBuscar))
                 {
-                    bool coincideNombre = !string.IsNullOrEmpty(m.NombreCompleto) && ValidadorCampos.NormalizarTexto(m.NombreCompleto).Contains(texto);
-                    bool coincideDni = !string.IsNullOrEmpty(m.Dni) && m.Dni.Contains(texto);
-                    bool coincideMatricula = !string.IsNullOrEmpty(m.Matricula) && m.Matricula.Contains(texto);
+                    string nombre = m.NombreCompleto != null ? ValidadorCampos.NormalizarTexto(m.NombreCompleto) : "";
+                    string dni = m.Dni ?? "";
+                    string matricula = m.Matricula ?? "";
 
-                    if (coincideNombre || coincideDni || coincideMatricula)
+                    string textoNormalizado = ValidadorCampos.NormalizarTexto(textoBuscar);
+
+                    if (!nombre.Contains(textoNormalizado) &&
+                        !dni.Contains(textoNormalizado) &&
+                        !matricula.Contains(textoNormalizado))
                     {
-                        filtrada.Add(m);
+                        cumple = false;
                     }
                 }
-                listaCompleta = filtrada;
-            }
 
-            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
-            {
-                List<MedicoListadoDto> filtrada = new List<MedicoListadoDto>();
+                if (cumple && !string.IsNullOrEmpty(especialidadSeleccionada))
+                {
+                    bool tieneLaEspecialidad = false;
 
-                if (campo == "Estado")
-                {
-                    foreach (MedicoListadoDto m in listaCompleta)
+                    if (m.NombresEspecialidades != null)
                     {
-                        string estadoDto = m.Estado.ToLower().StartsWith("act") ? "A" : "I";
-                        if (estadoDto == criterio)
+                        foreach (string espNombre in m.NombresEspecialidades)
                         {
-                            filtrada.Add(m);
-                        }
-                    }
-                }
-                else if (campo == "Especialidad")
-                {
-                    foreach (MedicoListadoDto m in listaCompleta)
-                    {
-                        bool tieneEspecialidad = false;
-                        foreach (string esp in m.NombresEspecialidades)
-                        {
-                            if (esp.Equals(criterio, StringComparison.OrdinalIgnoreCase))
+                            if (espNombre.Equals(especialidadSeleccionada, StringComparison.OrdinalIgnoreCase))
                             {
-                                tieneEspecialidad = true;
+                                tieneLaEspecialidad = true;
                                 break;
                             }
                         }
+                    }
 
-                        if (tieneEspecialidad)
-                        {
-                            filtrada.Add(m);
-                        }
+                    if (!tieneLaEspecialidad)
+                    {
+                        cumple = false;
                     }
                 }
-                listaCompleta = filtrada;
+
+                if (cumple && !string.IsNullOrEmpty(estadoSeleccionado))
+                {
+                    bool esActivoDto = m.Estado != null && m.Estado.Trim().ToLower().StartsWith("act");
+
+                    bool buscaActivos = estadoSeleccionado == "Activo";
+                    bool buscaInactivos = estadoSeleccionado == "Inactivo";
+
+                    if (buscaActivos && !esActivoDto) cumple = false;
+                    if (buscaInactivos && esActivoDto) cumple = false;
+                }
+
+                if (cumple)
+                {
+                    listaFiltrada.Add(m);
+                }
             }
 
-            gvMedicos.DataSource = listaCompleta;
+            gvMedicos.DataSource = listaFiltrada;
             gvMedicos.DataBind();
-        }
-
-        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string campo = ddlCampo.SelectedValue;
-            Session[KEY_MEDICO_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-
-            CargarCriterios(campo);
-
-            Session[KEY_MEDICO_CRITERIO] = null;
         }
 
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            AplicarFiltros();
+            gvMedicos.PageIndex = 0;
+            CargarMedicosConFiltros();
         }
 
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            Session[KEY_MEDICO_BUSQUEDA] = null;
-            Session[KEY_MEDICO_CAMPO] = null;
-            Session[KEY_MEDICO_CRITERIO] = null;
-
             txtBuscar.Text = string.Empty;
-            ddlCampo.SelectedIndex = 0;
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = false;
+            ddlEspecialidad.SelectedIndex = 0;
+            ddlEstado.SelectedValue = "Activo";
 
-            AplicarFiltros();
+            gvMedicos.PageIndex = 0;
+            CargarMedicosConFiltros();
         }
+
 
         protected void gvMedicos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvMedicos.PageIndex = e.NewPageIndex;
-            AplicarFiltros();
+            CargarMedicosConFiltros();
         }
+
 
         protected void gvMedicos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -234,7 +178,6 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                     Response.Redirect($"~/Pages/Medicos/Detalle.aspx?id-medico={idMedico}", false);
                 }
             }
-
         }
 
 
@@ -262,6 +205,17 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 }
             }
         }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

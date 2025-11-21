@@ -8,46 +8,46 @@
 
         <%-- Filtros --%>
         <div class="container-fluid px-0 mb-4">
-            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
+            <div class="bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="flex-grow-1">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <asp:TextBox ID="txtBuscar" runat="server"
-                            CssClass="form-control border-start-0"
-                            placeholder="Buscar tratamientos..."
-                            />
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-md-4 col-lg-4">
+                        <label class="form-label small text-muted">Buscar Tratamiento</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                            <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control border-start-0"
+                                placeholder="Buscar Tratamiento por Nombre o Descripción..." />
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <asp:DropDownList ID="ddlCampo" runat="server" CssClass="form-select" Width="160px"
-                        OnSelectedIndexChanged="ddlCampo_SelectedIndexChanged" AutoPostBack="true">
-                        <asp:ListItem Text="Filtrar por..." Value="" />
-                        <asp:ListItem Text="Especialidad" Value="Especialidad" />
-                        <asp:ListItem Text="Estado" Value="Estado" />
-                    </asp:DropDownList>
-                </div>
 
-                <div>
-                    <asp:DropDownList ID="ddlCriterio" runat="server" CssClass="form-select" Width="260px" Enabled="false">
-                        <asp:ListItem Text="Seleccione un criterio" Value="" />
-                    </asp:DropDownList>
-                </div>
+                    <div class="col-md-3 col-lg-3">
+                        <label class="form-label small text-muted">Especialidad</label>
+                        <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select" AppendDataBoundItems="true">
+                            <asp:ListItem Text="Todas las especialidades" Value="" />
+                        </asp:DropDownList>
+                    </div>
 
-                <div class="d-flex gap-2 border-start ps-3 ms-1">
-                    <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
-                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
-                </div>
+                    <div class="col-md-2 col-lg-2">
+                        <label class="form-label small text-muted">Estado</label>
+                        <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
+                            <asp:ListItem Text="Activos" Value="Activo" Selected="True" />
+                            <asp:ListItem Text="Inactivos" Value="Inactivo" />
+                            <asp:ListItem Text="Todos" Value="" />
+                        </asp:DropDownList>
+                    </div>
 
-                <div class="border-start ps-3 ms-1">
-                    <asp:Button ID="btnNuevoTratamiento" runat="server"
-                        Text="+ Nuevo"
-                        OnClick="btnNuevoTratamiento_Click"
-                        CssClass="btn btn-success text-nowrap" />
-                </div>
+                    <div class="col-md-3 col-lg-2 d-flex gap-1">
+                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
+                        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
+                    </div>
 
+                    <div class="col-md-12 col-lg-1 text-end border-start ps-3">
+                        <label class="form-label d-none d-lg-block">&nbsp;</label>
+                        <asp:Button ID="btnNuevoTratamiento" runat="server" Text="+ Nuevo" OnClick="btnNuevoTratamiento_Click" CssClass="btn btn-success w-100" />
+                    </div>
+
+                </div>
             </div>
         </div>
 

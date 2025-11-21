@@ -19,197 +19,141 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
     {
         private readonly PlanService _servicioPlanes = new PlanService();
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
-
-        private const string KEY_BUSQUEDA = "FiltroPlanBusqueda";
-        private const string KEY_CAMPO = "FiltroPlanCampo";
-        private const string KEY_CRITERIO = "FiltroPlanCriterio";
-
+        private readonly TurnoService _servicioTurnos = new TurnoService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Coberturas");
-                master.EstablecerTituloSeccion(this.Page.Title);
+                master.EstablecerTituloSeccion("Gestión de Planes");
                 master.EstablecerSubtituloSeccion("Administración de Obras Sociales, Prepagas y sus respectivos planes de cobertura.");
             }
 
             if (!IsPostBack)
             {
-                txtBuscarPlanes.Text = Session[KEY_BUSQUEDA] as string ?? string.Empty;
-
-                string campo = Session[KEY_CAMPO] as string;
-                if (!string.IsNullOrEmpty(campo))
-                {
-                    if (ddlCampo.Items.FindByValue(campo) != null)
-                    {
-                        ddlCampo.SelectedValue = campo;
-                        CargarCriterios(campo);
-                    }
-                }
-
-                string criterio = Session[KEY_CRITERIO] as string;
-                if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
-                {
-                    ddlCriterio.SelectedValue = criterio;
-                    ddlCriterio.Enabled = true;
-                }
-
-                AplicarFiltros();
+                CargarCombos();
+                CargarPlanesConFiltros();
 
                 MensajeUiHelper.MostrarModal(this.Page);
             }
         }
 
-
-        private void CargarCriterios(string campo)
+        private void CargarCombos()
         {
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Enabled = false;
-
-            if (string.IsNullOrEmpty(campo))
-            {
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                return;
-            }
-
-            campo = campo.ToLower();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = true;
-
             try
             {
-                if (campo == "estado")
+                ddlCobertura.Items.Clear();
+                ddlCobertura.Items.Add(new ListItem("Todas las coberturas", "-1"));
+
+                var coberturas = _servicioCobertura.Listar();
+                foreach (var cob in coberturas)
                 {
-                    ddlCriterio.Items.Add(new ListItem("Activo", "A"));
-                    ddlCriterio.Items.Add(new ListItem("Inactivo", "I"));
-                }
-                else if (campo == "cobertura")
-                {
-                    var coberturas = _servicioCobertura.Listar();
-                    foreach (var cob in coberturas)
-                    {
-                        ddlCriterio.Items.Add(new ListItem(cob.Nombre, cob.IdCobertura.ToString()));
-                    }
+                    ddlCobertura.Items.Add(new ListItem(cob.Nombre, cob.IdCobertura.ToString()));
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error cargando criterios: " + ex.Message);
-                ddlCriterio.Items.Add(new ListItem("Error al cargar", ""));
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar las coberturas: " + ex.Message);
             }
-
-            if (ddlCriterio.Items.Count > 0)
-                ddlCriterio.SelectedIndex = 0;
         }
 
-
-        private void AplicarFiltros()
+        private void CargarPlanesConFiltros()
         {
-            string textoBusqueda = txtBuscarPlanes.Text.Trim();
-            string campo = ddlCampo.SelectedValue;
-            string criterio = ddlCriterio.SelectedValue;
-
-            Session[KEY_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
-            Session[KEY_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            Session[KEY_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
-
-            List<PlanDto> listaCompleta = new List<PlanDto>();
+            List<PlanDto> todosLosPlanes = new List<PlanDto>();
+            List<PlanDto> listaFiltrada = new List<PlanDto>();
 
             try
             {
-                listaCompleta = _servicioPlanes.Listar();
+                todosLosPlanes = _servicioPlanes.Listar();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Error listando planes: " + ex.Message);
-                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista.", "Cerrar", null, "abrirModalResultado");
+                gvPlanes.DataSource = null;
+                gvPlanes.DataBind();
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudo cargar la lista de planes. " + ex.Message);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
+            string textoBuscar = txtBuscarPlanes.Text.Trim().ToUpper();
+            string idCoberturaSeleccionada = ddlCobertura.SelectedValue;
+            string estadoSeleccionado = ddlEstado.SelectedValue;
+
+            foreach (PlanDto plan in todosLosPlanes)
             {
-                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
-                List<PlanDto> filtrada = new List<PlanDto>();
+                bool cumple = true;
 
-                foreach (var p in listaCompleta)
+                if (!string.IsNullOrEmpty(textoBuscar))
                 {
-                    string nombreNorm = ValidadorCampos.NormalizarTexto(p.Nombre);
-                    string cobNorm = ValidadorCampos.NormalizarTexto(p.NombreCobertura);
+                    string nombrePlan = plan.Nombre != null ? ValidadorCampos.NormalizarTexto(plan.Nombre) : "";
 
-                    if ((!string.IsNullOrEmpty(nombreNorm) && nombreNorm.Contains(texto)) ||
-                        (!string.IsNullOrEmpty(cobNorm) && cobNorm.Contains(texto)))
+                    string nombreCobertura = plan.NombreCobertura != null ? ValidadorCampos.NormalizarTexto(plan.NombreCobertura) : "";
+
+                    string textoNorm = ValidadorCampos.NormalizarTexto(textoBuscar);
+
+                    if (!nombrePlan.Contains(textoNorm) && !nombreCobertura.Contains(textoNorm))
                     {
-                        filtrada.Add(p);
+                        cumple = false;
                     }
                 }
-                listaCompleta = filtrada;
+
+                if (cumple && idCoberturaSeleccionada != "-1")
+                {
+                    int idCob = int.Parse(idCoberturaSeleccionada);
+                    if (plan.IdCobertura != idCob)
+                    {
+                        cumple = false;
+                    }
+                }
+
+                if (cumple && !string.IsNullOrEmpty(estadoSeleccionado))
+                {
+                    bool esActivoDto = plan.Estado != null && plan.Estado.Trim().ToLower().StartsWith("act");
+
+                    if (estadoSeleccionado == "Activo" && !esActivoDto) cumple = false;
+                    if (estadoSeleccionado == "Inactivo" && esActivoDto) cumple = false;
+                }
+
+                if (cumple)
+                {
+                    listaFiltrada.Add(plan);
+                }
             }
 
-            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
-            {
-                List<PlanDto> filtrada = new List<PlanDto>();
-
-                if (campo == "Estado")
-                {
-                    foreach (var p in listaCompleta)
-                    {
-                        string estadoLetra = p.Estado.ToLower().StartsWith("act") ? "A" : "I";
-                        if (estadoLetra == criterio)
-                        {
-                            filtrada.Add(p);
-                        }
-                    }
-                }
-                else if (campo == "Cobertura")
-                {
-                    if (int.TryParse(criterio, out int idCob))
-                    {
-                        foreach (var p in listaCompleta)
-                        {
-                            if (p.IdCobertura == idCob)
-                            {
-                                filtrada.Add(p);
-                            }
-                        }
-                    }
-                }
-                listaCompleta = filtrada;
-            }
-
-            gvPlanes.DataSource = listaCompleta;
+            gvPlanes.DataSource = listaFiltrada;
             gvPlanes.DataBind();
-        }
-
-        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string campo = ddlCampo.SelectedValue;
-            Session[KEY_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            CargarCriterios(campo);
-            Session[KEY_CRITERIO] = null;
         }
 
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            AplicarFiltros();
+            gvPlanes.PageIndex = 0;
+            CargarPlanesConFiltros();
         }
+
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            Session[KEY_BUSQUEDA] = null;
-            Session[KEY_CAMPO] = null;
-            Session[KEY_CRITERIO] = null;
-
             txtBuscarPlanes.Text = string.Empty;
-            ddlCampo.SelectedIndex = 0;
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = false;
+            ddlCobertura.SelectedIndex = 0; 
+            ddlEstado.SelectedValue = "Activo";
 
-            AplicarFiltros();
+            gvPlanes.PageIndex = 0;
+            CargarPlanesConFiltros();
         }
 
+
+        protected void btnNuevoPlan_Click(object sender, EventArgs e)
+        {
+            Response.Redirect($"~/Pages/CoberturasPlanes/NuevoPlan", false);
+        }
+
+        public void gvPlanes_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPlanes.PageIndex = e.NewPageIndex;
+            CargarPlanesConFiltros();
+        }
+  
 
         public void gvPlanes_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -232,11 +176,6 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
             }
         }
 
-        public void gvPlanes_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvPlanes.PageIndex = e.NewPageIndex;
-            AplicarFiltros();
-        }
 
         public void gvPlanes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -250,25 +189,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
             }
         }
 
-       
-
-        protected void btnNuevoPlan_Click(object sender, EventArgs e)
-        {
-            Response.Redirect($"~/Pages/CoberturasPlanes/NuevoPlan", false);
-        }
-
-
-
-        protected void ddlEstado_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AplicarFiltros();
-        }
-
-        protected void ddlCoberturas_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            AplicarFiltros();
-        }
-
+     
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
@@ -277,11 +198,10 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
 
             try
             {
-                TurnoService servicioTurno = new TurnoService();
                 if (tipo == "cobertura")
                 {
                     CoberturaService servicioCobertura = new CoberturaService();
-                    servicioCobertura.DarDeBaja(id, servicioTurno);
+                    servicioCobertura.DarDeBaja(id, _servicioTurnos);
 
                     MensajeUiHelper.SetearMensaje("Cobertura dada de baja", "La cobertura y sus planes fueron dados de baja correctamente.");
                 }
@@ -289,7 +209,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
                 {
 
                     PlanService servicioPlan = new PlanService();
-                    servicioPlan.DarDeBaja(id, servicioTurno);
+                    servicioPlan.DarDeBaja(id, _servicioTurnos);
 
                     MensajeUiHelper.SetearMensaje("Plan dado de baja", "El plan fue dado de baja correctamente.");
                 }

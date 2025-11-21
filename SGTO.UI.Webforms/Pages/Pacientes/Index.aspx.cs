@@ -17,174 +17,136 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
     public partial class Pacientes : System.Web.UI.Page
     {
         private readonly PacienteService _servicioPaciente = new PacienteService();
-        private const string KEY_PACIENTE_BUSQUEDA = "FiltroPacienteBusqueda";
-        private const string KEY_PACIENTE_CAMPO = "FiltroPacienteCampo";
-        private const string KEY_PACIENTE_CRITERIO = "FiltroPacienteCriterio";
+        private readonly CoberturaService _servicioCobertura = new CoberturaService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
-                master.EstablecerTituloSeccion(this.Page.Title);
-                master.EstablecerSubtituloSeccion("Gestione el padrón de pacientes, consulte historias clínicas o asigne nuevos turnos.");
+                master.EstablecerTituloSeccion("Directorio de Pacientes");
+                master.EstablecerSubtituloSeccion("Gestione el padrón, consulte historias clínicas o asigne turnos.");
             }
+
             if (!IsPostBack)
             {
-                // verificar si tenemos filtros
-                txtBuscar.Text = Session[KEY_PACIENTE_BUSQUEDA] as string ?? string.Empty;
-                string campo = Session[KEY_PACIENTE_CAMPO] as string;
-                if (!string.IsNullOrEmpty(campo))
-                {
-                    ddlCampo.SelectedValue = campo;
-                    CargarCriterios(campo);
-                }
-
-                string criterio = Session[KEY_PACIENTE_CRITERIO] as string;
-                if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
-                {
-                    ddlCriterio.SelectedValue = criterio;
-                    ddlCriterio.Enabled = true;
-                }
-                AplicarFiltros();
+                CargarCombos();
+                CargarPacientesConFiltros();
             }
         }
 
 
-        private void CargarPacientes(string estado = null)
+        private void CargarCombos()
         {
-            List<PacienteListadoDto> listado = new List<PacienteListadoDto>();
             try
             {
-                listado = _servicioPaciente.Listar(estado);
-                gvPacientes.DataSource = listado;
-                gvPacientes.DataBind();
+                ddlCobertura.Items.Clear();
+                ddlCobertura.Items.Add(new ListItem("Todas las coberturas", "-1"));
 
+                var coberturas = _servicioCobertura.Listar("activo");
+                foreach (var c in coberturas)
+                {
+                    ddlCobertura.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar las listas desplegables: " + ex.Message);
+            }
+        }
+
+
+
+        private void CargarPacientesConFiltros(string estado = null)
+        {
+            List<PacienteListadoDto> todosLosPacientes = new List<PacienteListadoDto>();
+            List<PacienteListadoDto> listaFiltrada = new List<PacienteListadoDto>();
+
+            string textoBuscar = txtBuscar.Text.Trim().ToUpper();
+            string idCoberturaSeleccionada = ddlCobertura.SelectedValue;
+            string estadoSeleccionado = ddlEstado.SelectedValue;
+
+            try
+            {
+                string estadoParaServicio = string.IsNullOrEmpty(estadoSeleccionado) ? null : estadoSeleccionado;
+                todosLosPacientes = _servicioPaciente.Listar(estadoParaServicio);
 
             }
             catch (Exception ex)
             {
-                gvPacientes.DataSource = listado;
+                gvPacientes.DataSource = null;
                 gvPacientes.DataBind();
-                MensajeUiHelper.SetearYMostrar(
-                   this.Page,
-                   "Error al cargar pacientes",
-                   "Ocurrió un error inesperado al intentar obtener la lista de pacientes." + ex.Message
-               );
-            }
-        }
-
-        private void CargarCoberturasDropdown()
-        {
-            try
-            {
-                var servicioCobertura = new CoberturaService();
-                var coberturas = servicioCobertura.Listar("activo");
-
-                foreach (var c in coberturas)
-                {
-                    ddlCriterio.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private void CargarCriterios(string campo)
-        {
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Enabled = false;
-
-            if (string.IsNullOrEmpty(campo))
-            {
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "Error al obtener pacientes: " + ex.Message);
                 return;
             }
 
-            campo = campo.ToLower();
+            foreach (PacienteListadoDto p in todosLosPacientes)
+            {
+                bool cumple = true;
 
-            if (campo == "estado")
-            {
-                ddlCriterio.Enabled = true;
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                ddlCriterio.Items.Add(new ListItem("Activo", "A"));
-                ddlCriterio.Items.Add(new ListItem("Inactivo", "I"));
+                if (!string.IsNullOrEmpty(textoBuscar))
+                {
+                    string nombre = p.NombreCompleto != null ? ValidadorCampos.NormalizarTexto(p.NombreCompleto) : "";
+                    string dni = p.Dni != null ? p.Dni : "";
+                    string email = p.Email != null ? p.Email.ToUpper() : "";
+
+                    if (!nombre.Contains(textoBuscar) &&
+                        !dni.Contains(textoBuscar) &&
+                        !email.Contains(textoBuscar))
+                    {
+                        cumple = false;
+                    }
+                }
+
+                if (cumple && idCoberturaSeleccionada != "-1")
+                {
+                    int idCobFiltro = int.Parse(idCoberturaSeleccionada);
+
+                    if (p.IdCobertura == null || p.IdCobertura != idCobFiltro)
+                    {
+                        cumple = false;
+                    }
+                }
+
+
+                if (cumple)
+                {
+                    listaFiltrada.Add(p);
+                }
             }
-            else if (campo == "cobertura")
-            {
-                ddlCriterio.Enabled = true;
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                CargarCoberturasDropdown();
-            }
-            if (ddlCriterio.Items.Count > 0)
-                ddlCriterio.SelectedIndex = 0;
+
+            gvPacientes.DataSource = listaFiltrada;
+            gvPacientes.DataBind();
         }
 
 
-        private void AplicarFiltros()
+        protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            string textoBusqueda = txtBuscar.Text.Trim();
-            string campo = ddlCampo.SelectedValue;
-            string criterio = ddlCriterio.SelectedValue;
+            gvPacientes.PageIndex = 0;
+            CargarPacientesConFiltros();
+        }
 
-            Session[KEY_PACIENTE_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
-            Session[KEY_PACIENTE_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            Session[KEY_PACIENTE_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtBuscar.Text = string.Empty;
+            ddlCobertura.SelectedIndex = 0;
+            ddlEstado.SelectedValue = "Activo";
 
-            List<PacienteListadoDto> lista = _servicioPaciente.Listar();
+            gvPacientes.PageIndex = 0;
+            CargarPacientesConFiltros();
+        }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
-            {
-                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
-                List<PacienteListadoDto> filtrada = new List<PacienteListadoDto>();
 
-                foreach (var p in lista)
-                {
-                    bool coincide =
-                        (!string.IsNullOrEmpty(p.NombreCompleto) && ValidadorCampos.NormalizarTexto(p.NombreCompleto).Contains(texto)) ||
-                        (!string.IsNullOrEmpty(p.Dni) && ValidadorCampos.NormalizarTexto(p.Dni).Contains(texto)) ||
-                        (!string.IsNullOrEmpty(p.Email) && ValidadorCampos.NormalizarTexto(p.Email).Contains(texto));
+        protected void btnNuevoPaciente_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/Pacientes/Nuevo", false);
+        }
 
-                    if (coincide)
-                        filtrada.Add(p);
-                }
 
-                lista = filtrada;
-            }
-
-            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
-            {
-                List<PacienteListadoDto> filtrada = new List<PacienteListadoDto>();
-
-                if (campo == "Estado")
-                {
-                    foreach (var p in lista)
-                    {
-                        if (!string.IsNullOrEmpty(p.Estado.ToString()) &&
-                            p.Estado.ToString().StartsWith(criterio, StringComparison.OrdinalIgnoreCase))
-                        {
-                            filtrada.Add(p);
-                        }
-                    }
-                }
-                else if (campo == "Cobertura")
-                {
-                    if (int.TryParse(criterio, out int idCoberturaSeleccionada))
-                    {
-                        foreach (var p in lista)
-                        {
-                            if (p.IdCobertura.HasValue && p.IdCobertura.Value == idCoberturaSeleccionada)
-                                filtrada.Add(p);
-                        }
-                    }
-                }
-                lista = filtrada;
-            }
-
-            gvPacientes.DataSource = lista;
-            gvPacientes.DataBind();
+        protected void gvPacientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPacientes.PageIndex = e.NewPageIndex;
+            CargarPacientesConFiltros();
         }
 
 
@@ -230,11 +192,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             }
         }
 
-        protected void gvPacientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvPacientes.PageIndex = e.NewPageIndex;
-            AplicarFiltros();
-        }
+
 
         protected void gvPacientes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -253,42 +211,8 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             }
         }
 
-        protected void btnNuevoPaciente_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/Pages/Pacientes/Nuevo", false);
-        }
-
-        protected void btnBuscar_Click(object sender, EventArgs e)
-        {
-            AplicarFiltros();
-        }
-
-        protected void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            Session[KEY_PACIENTE_BUSQUEDA] = null;
-            Session[KEY_PACIENTE_CAMPO] = null;
-            Session[KEY_PACIENTE_CRITERIO] = null;
-
-            txtBuscar.Text = string.Empty;
-            ddlCampo.SelectedIndex = 0;
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = false;
-
-            CargarPacientes();
-        }
-
-        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string campo = ddlCampo.SelectedValue;
-
-            Session[KEY_PACIENTE_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-
-            CargarCriterios(campo);
-
-            Session[KEY_PACIENTE_CRITERIO] = null;
-        }
-
+   
+       
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
             int idPaciente = int.Parse(hdnIdEliminar.Value);

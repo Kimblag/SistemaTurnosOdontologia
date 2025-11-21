@@ -2,57 +2,51 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <div>
+    <div class="page-generic">
 
         <%--Filtros--%>
-        <div class="d-flex gap-2 align-items-center my-3 mb-3 justify-content-between">
+        <div class="container-fluid px-0 mb-4">
+            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
 
-            <div class="d-flex gap-2 align-items-center w-75">
-
-                <div class="col-auto flex-grow-1" style="min-width: 260px; max-width: 400px;">
+                <div class="flex-grow-1">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search text-muted"></i>
+                        <span class="input-group-text bg-white border-end-0 text-muted">
+                            <i class="bi bi-search"></i>
                         </span>
-                        <asp:TextBox
-                            ID="txtBuscarUsuario"
-                            runat="server"
+                        <asp:TextBox ID="txtBuscarUsuario" runat="server"
                             CssClass="form-control border-start-0"
-                            placeholder="Buscar usuario..." />
+                            placeholder="Buscar Usuario por Nombre, Usuario o Email..." />
                     </div>
                 </div>
 
+                <div>
+                    <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" Width="190px"
+                        AutoPostBack="true">
+                    </asp:DropDownList>
+                </div>
 
-                <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" AutoPostBack="true">
-                </asp:DropDownList>
+                <div>
+                    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="200px"
+                        AutoPostBack="true">
+                        <asp:ListItem Text="Todos los estados" Value="todos" />
+                        <asp:ListItem Text="Activo" Value="activo" />
+                        <asp:ListItem Text="Inactivo" Value="inactivo" />
+                    </asp:DropDownList>
+                </div>
 
-                <asp:DropDownList ID="ddlEstado" runat="server"
-                    AutoPostBack="true"
-                    CssClass="form-select"
-                    OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
-                    <asp:ListItem Text="Todos los estados" Value="todos" />
-                    <asp:ListItem Text="Activo" Value="activo" />
-                    <asp:ListItem Text="Inactivo" Value="inactivo" />
-                </asp:DropDownList>
+                <div class="d-flex gap-2 border-start ps-3 ms-1">
+                    <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
+                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
+                </div>
 
+                <div class="border-start ps-3 ms-1">
+                    <asp:Button ID="btnNuevoUsuario" runat="server"
+                        Text="+ Nuevo"
+                        OnClick="btnNuevoUsuario_Click"
+                        CssClass="btn btn-success text-nowrap" />
+                </div>
 
-                <asp:Button
-                    ID="btnBuscar"
-                    runat="server"
-                    Text="Aplicar Filtro"
-                    CssClass="btn btn-outline-primary"
-                    OnClick="btnBuscar_Click" />
-
-                <asp:Button
-                    ID="btnLimpiar"
-                    runat="server"
-                    Text="Limpiar"
-                    CssClass="btn btn-outline-secondary"
-                    OnClick="btnLimpiar_Click" />
             </div>
-
-            <asp:Button ID="btnNuevoUsuario" runat="server" Text="+ Nuevo Usuario"
-                CssClass="btn btn-primary btn-sm me-1" OnClick="btnNuevoUsuario_Click" />
         </div>
 
 

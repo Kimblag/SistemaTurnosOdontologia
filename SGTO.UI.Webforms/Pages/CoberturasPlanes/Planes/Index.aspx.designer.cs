@@ -24,22 +24,22 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
         protected global::System.Web.UI.WebControls.TextBox txtBuscarPlanes;
 
         /// <summary>
-        /// ddlCampo control.
+        /// ddlCobertura control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCampo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCobertura;
 
         /// <summary>
-        /// ddlCriterio control.
+        /// ddlEstado control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCriterio;
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
 
         /// <summary>
         /// btnBuscar control.
