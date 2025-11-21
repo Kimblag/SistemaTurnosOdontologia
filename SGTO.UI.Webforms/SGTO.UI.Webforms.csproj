@@ -154,6 +154,7 @@
     <Content Include="Pages\Especialidades\Index.aspx" />
     <Content Include="Pages\Especialidades\Nuevo.aspx" />
     <Content Include="Pages\Home\Dashboard.aspx" />
+    <Content Include="Pages\Medicos\Atencion.aspx" />
     <Content Include="Pages\Medicos\Detalle.aspx" />
     <Content Include="Pages\Medicos\Index.aspx" />
     <Content Include="Pages\Login\Index.aspx" />
@@ -470,6 +471,13 @@
     </Compile>
     <Compile Include="Pages\Login\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Medicos\Atencion.aspx.cs">
+      <DependentUpon>Atencion.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Medicos\Atencion.aspx.designer.cs">
+      <DependentUpon>Atencion.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Medicos\Detalle.aspx.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>

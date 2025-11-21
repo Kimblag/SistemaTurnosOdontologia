@@ -105,5 +105,76 @@ namespace SGTO.Datos.Repositorios
         }
 
 
+        public void CrearTransaccional(HistoriaClinicaRegistro historia)
+        {
+            string query = @"
+                BEGIN TRANSACTION;
+
+                BEGIN TRY
+                    INSERT INTO HistoriaClinicaRegistro 
+                    (IdTurno, IdPaciente, IdMedico, IdEspecialidad, IdTratamiento, TratamientoManual, Diagnostico, Observaciones, FechaAtencion)
+                    VALUES 
+                    (@IdTurno, @IdPaciente, @IdMedico, @IdEspecialidad, @IdTratamiento, @TratamientoManual, @Diagnostico, @Observaciones, @FechaAtencion);
+
+                    UPDATE Turno 
+                    SET Estado = 'Z', 
+                        FechaModificacion = GETDATE()
+                    WHERE IdTurno = @IdTurno;
+
+                    COMMIT TRANSACTION;
+                END TRY
+                BEGIN CATCH
+                    IF @@TRANCOUNT > 0
+                        ROLLBACK TRANSACTION;
+                    THROW; 
+                END CATCH
+            ";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+
+                    datos.EstablecerParametros("@IdTurno", historia.TurnoOrigen.IdTurno);
+
+                    datos.EstablecerParametros("@IdPaciente", historia.TurnoOrigen.Paciente.IdPaciente);
+                    datos.EstablecerParametros("@IdMedico", historia.Medico.IdMedico);
+                    datos.EstablecerParametros("@IdEspecialidad", historia.Especialidad.IdEspecialidad);
+                    datos.EstablecerParametros("@FechaAtencion", historia.FechaAtencion);
+                    datos.EstablecerParametros("@Diagnostico", historia.Diagnostico);
+                    if (string.IsNullOrEmpty(historia.Observaciones))
+                        datos.EstablecerParametros("@Observaciones", DBNull.Value);
+                    else
+                        datos.EstablecerParametros("@Observaciones", historia.Observaciones);
+
+                    if (historia.TratamientoAplicado != null && historia.TratamientoAplicado.IdTratamiento > 0)
+                    {
+                        datos.EstablecerParametros("@IdTratamiento", historia.TratamientoAplicado.IdTratamiento);
+                    }
+                    else
+                    {
+                        datos.EstablecerParametros("@IdTratamiento", DBNull.Value);
+                    }
+
+                    if (!string.IsNullOrEmpty(historia.TratamientoManual))
+                    {
+                        datos.EstablecerParametros("@TratamientoManual", historia.TratamientoManual);
+                    }
+                    else
+                    {
+                        datos.EstablecerParametros("@TratamientoManual", DBNull.Value);
+                    }
+
+
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="DTOs\CoberturaDto.cs" />
     <Compile Include="DTOs\EspecialidadDto.cs" />
+    <Compile Include="DTOs\HistoriaClinica\HistoriaClinicaCreacionDto.cs" />
     <Compile Include="DTOs\Medicos\HorarioSemanalDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoCrearDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoDetalleDto.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Servicios\EspecialidadService.cs" />
     <Compile Include="Servicios\Exportacion\GeneradorCsv.cs" />
     <Compile Include="Servicios\Exportacion\GeneradorPdf.cs" />
+    <Compile Include="Servicios\HistoriaClinicaService.cs" />
     <Compile Include="Servicios\HorarioSemanalService.cs" />
     <Compile Include="Servicios\MedicoService.cs" />
     <Compile Include="Servicios\PacienteService.cs" />

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Dominio.Entidades
 {
@@ -13,6 +9,7 @@ namespace SGTO.Dominio.Entidades
         public Medico Medico { get; set; }
         public Especialidad Especialidad { get; set; }
         public Tratamiento TratamientoAplicado { get; set; }
+        public string TratamientoManual { get; set; } = string.Empty;
         public string Diagnostico { get; set; }
         public string Observaciones { get; set; } = string.Empty;
         public Turno TurnoOrigen { get; set; }
@@ -20,7 +17,7 @@ namespace SGTO.Dominio.Entidades
 
         public HistoriaClinicaRegistro()
         {
-            
+
         }
 
         public HistoriaClinicaRegistro(DateTime fechaAtencion, Medico medico,

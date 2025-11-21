@@ -100,7 +100,15 @@
                     <%-- Acciones --%>
                     <asp:TemplateField HeaderText="Acciones" ItemStyle-Width="240px" ItemStyle-CssClass="text-end">
                         <ItemTemplate>
-                            <div class="d-flex justify-content-start gap-2">
+                            <div class="d-flex justify-content-end gap-2 align-items-center">
+
+                                <asp:LinkButton ID="btnAtender" runat="server"
+                                    CssClass="btn btn-success btn-sm shadow-sm d-flex align-items-center"
+                                    CommandName="Atender"
+                                    ToolTip="Realizar consulta médica"
+                                    CommandArgument='<%# Eval("IdTurno") %>'>
+                                    <i class="bi bi-journal-medical me-1"></i> Atender
+                                </asp:LinkButton>
 
                                 <div class="btn-group btn-group-sm" role="group">
 

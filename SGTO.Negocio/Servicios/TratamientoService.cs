@@ -102,5 +102,24 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+
+        public List<TratamientoDto> ListarPorEspecialidad(int idEspecialidad)
+        {
+            try
+            {
+                if (idEspecialidad <= 0)
+                    return new List<TratamientoDto>();
+
+                List<Tratamiento> entidades = _repositorio.ListarPorEspecialidad(idEspecialidad);
+
+                return TratamientoMapper.MapearListaADto(entidades);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("ERROR en TratamientoService.ListarPorEspecialidad: " + ex.Message);
+                throw;
+            }
+        }
+
     }
 }

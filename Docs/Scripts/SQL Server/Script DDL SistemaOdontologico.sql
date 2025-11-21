@@ -235,7 +235,8 @@ CREATE TABLE HistoriaClinicaRegistro(
     IdPaciente INT NOT NULL,
     IdMedico INT NOT NULL,
     IdEspecialidad INT NOT NULL,
-    IdTratamiento INT NOT NULL,
+    IdTratamiento INT NULL,
+    TratamientoManual NVARCHAR(100) NULL,
     Diagnostico NVARCHAR(250) NOT NULL,
     Observaciones NVARCHAR(250) NOT NULL,
     FechaAtencion DATETIME NOT NULL,
@@ -244,7 +245,14 @@ CREATE TABLE HistoriaClinicaRegistro(
     CONSTRAINT FK_HistoriaClinicaRegistro_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
     CONSTRAINT FK_HistoriaClinicaRegistro_Medico FOREIGN KEY(IdMedico) REFERENCES Medico(IdMedico),
     CONSTRAINT FK_HistoriaClinicaRegistro_Especialidad FOREIGN KEY(IdEspecialidad) REFERENCES Especialidad(IdEspecialidad),
-    CONSTRAINT FK_HistoriaClinicaRegistro_Tratamiento FOREIGN KEY(IdTratamiento) REFERENCES Tratamiento(IdTratamiento)
+    CONSTRAINT FK_HistoriaClinicaRegistro_Tratamiento FOREIGN KEY(IdTratamiento) REFERENCES Tratamiento(IdTratamiento),
+
+    -- validacion para validar que al menos haya un valor de tratamiento, sea seleccionado o manual.
+    CONSTRAINT CHK_Historia_Tratamiento_Valido CHECK (
+        (IdTratamiento IS NOT NULL AND TratamientoManual IS NULL) 
+        OR 
+        (IdTratamiento IS NULL AND TratamientoManual IS NOT NULL)
+    )
 );
 
 GO

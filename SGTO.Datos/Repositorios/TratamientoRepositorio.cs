@@ -189,5 +189,50 @@ namespace SGTO.Datos.Repositorios
                 }
             }
         }
+
+        public List<Tratamiento> ListarPorEspecialidad(int idEspecialidad)
+        {
+            List<Tratamiento> tratamientos = new List<Tratamiento>();
+
+            string query = @"SELECT T.IdTratamiento, 
+                                    T.Nombre AS NombreTratamiento, 
+                                    T.Descripcion AS DescripcionTratamiento,
+                                    T.CostoBase,
+                                    T.Estado AS EstadoTratamiento,
+                                    E.IdEspecialidad,
+                                    E.Nombre AS NombreEspecialidad,
+                                    E.Descripcion AS DescripcionEspecialidad,
+                                    E.Estado AS EstadoEspecialidad
+                             FROM Tratamiento T
+                             INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                             WHERE T.IdEspecialidad = @IdEspecialidad 
+                               AND T.Estado = 'A'";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdEspecialidad", idEspecialidad);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Especialidad especialidad = EspecialidadMapper.MapearAEntidad(lector);
+                            Tratamiento tratamiento = TratamientoMapper.MapearAEntidad(lector, especialidad);
+
+                            tratamientos.Add(tratamiento);
+                        }
+                    }
+                    return tratamientos;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

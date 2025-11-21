@@ -7,119 +7,137 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SGTO.UI.Webforms.Pages.Turnos
+namespace SGTO.UI.Webforms.Pages.Medicos
 {
 
 
-    public partial class Detalle
+    public partial class Atencion
     {
 
         /// <summary>
-        /// lblNombrePaciente control.
+        /// hdnIdTurno control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNombrePaciente;
+        protected global::System.Web.UI.WebControls.HiddenField hdnIdTurno;
 
         /// <summary>
-        /// lblNombreMedico control.
+        /// txtPacienteNombre control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNombreMedico;
+        protected global::System.Web.UI.WebControls.TextBox txtPacienteNombre;
 
         /// <summary>
-        /// lblFechaHora control.
+        /// txtEspecialidad control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFechaHora;
+        protected global::System.Web.UI.WebControls.TextBox txtEspecialidad;
 
         /// <summary>
-        /// lblEspecialidad control.
+        /// txtFecha control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEspecialidad;
+        protected global::System.Web.UI.WebControls.TextBox txtFecha;
 
         /// <summary>
-        /// lblCoberturaPlan control.
+        /// txtHora control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCoberturaPlan;
+        protected global::System.Web.UI.WebControls.TextBox txtHora;
 
         /// <summary>
-        /// lblEstado control.
+        /// txtCobertura control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEstado;
+        protected global::System.Web.UI.WebControls.TextBox txtCobertura;
 
         /// <summary>
-        /// phDetalleClinico control.
+        /// pnlTratamientoSeleccion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder phDetalleClinico;
+        protected global::System.Web.UI.WebControls.Panel pnlTratamientoSeleccion;
 
         /// <summary>
-        /// lblTratamiento control.
+        /// ddlTratamiento control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTratamiento;
+        protected global::System.Web.UI.WebControls.DropDownList ddlTratamiento;
 
         /// <summary>
-        /// lblDiagnostico control.
+        /// pnlTratamientoManual control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDiagnostico;
+        protected global::System.Web.UI.WebControls.Panel pnlTratamientoManual;
 
         /// <summary>
-        /// lblObservacionesClinicas control.
+        /// txtTratamientoManual control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblObservacionesClinicas;
+        protected global::System.Web.UI.WebControls.TextBox txtTratamientoManual;
 
         /// <summary>
-        /// lblObservaciones control.
+        /// txtDiagnostico control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblObservaciones;
+        protected global::System.Web.UI.WebControls.TextBox txtDiagnostico;
 
         /// <summary>
-        /// btnEditar control.
+        /// txtObservaciones control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnEditar;
+        protected global::System.Web.UI.WebControls.TextBox txtObservaciones;
+
+        /// <summary>
+        /// btnCancelar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelar;
+
+        /// <summary>
+        /// btnGuardar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnGuardar;
     }
 }

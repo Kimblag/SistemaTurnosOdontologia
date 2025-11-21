@@ -18,6 +18,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
         {
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Turnos/Index");
                 master.EstablecerOpcionMenuActiva("turnos");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Visualización completa de la información administrativa y el registro clínico asociado.");

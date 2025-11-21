@@ -153,7 +153,12 @@ INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado)
 ('Prótesis Removible', 'Rehabilitación', 30000, 7, 'A'),
 ('Radiografía Panorámica', 'Estudio diagnóstico', 4000, 8, 'A'),
 ('Selladores', 'Prevención caries', 6000, 4, 'A'),
-('Control General', 'Consulta básica', 3500, 10, 'A');
+('Control General', 'Consulta básica', 3500, 10, 'A'),
+('Raspaje y Alisado', 'Limpieza profunda de encías por cuadrante', 18000, 3, 'A'),
+('Mantenimiento Periodontal', 'Control y limpieza semestral', 12000, 3, 'A'),
+('Implante de Titanio', 'Colocación de implante estándar', 95000, 6, 'A'),
+('Corona sobre Implante', 'Fase final de rehabilitación', 60000, 6, 'A'),
+('Tomografía Cone Beam', 'Estudio 3D para implantes', 25000, 8, 'A');
 
 -- Usuario
 INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado)
@@ -440,3 +445,16 @@ VALUES
 (10, 70, '2023-01-01', '2024-02-29', 'I', 'Reducción 2024'),
 (10, 65, '2024-03-01', NULL, 'A', 'Último porcentaje previo a inactividad');
 GO
+
+--INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado, FechaAlta)
+--VALUES (
+--    'Super', 
+--    'Usuario', 
+--    'root@sistema.com', 
+--    'root', 
+--    'HASH_DE_TU_PASSWORD_SEGURO', 
+--    (SELECT Top 1 IdRol FROM Rol WHERE Nombre = 'Administrador'), 
+--    'A', 
+--    GETDATE()
+--);
+--GO

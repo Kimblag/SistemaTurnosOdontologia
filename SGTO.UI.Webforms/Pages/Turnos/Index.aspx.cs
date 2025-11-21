@@ -189,6 +189,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
                 var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnAtender = (LinkButton)e.Row.FindControl("btnAtender");
 
                 if (turnoDto != null)
                 {
@@ -204,6 +205,14 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     {
                         btnEditar.Visible = TurnoUiHelper.EsEditable(estadoTurno);
                     }
+
+                    if (btnAtender != null)
+                    {
+                        bool esAtendible = estadoTurno == "nuevo" || estadoTurno == "reprogramado" ||
+                                           estadoTurno == "n" || estadoTurno == "r";
+
+                        btnAtender.Visible = esAtendible;
+                    }
                 }
             }
         }
@@ -217,6 +226,10 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     if (e.CommandName == "Editar")
                     {
                         Response.Redirect($"~/Pages/Turnos/Editar?id-turno={idTurno}", false);
+                    }
+                    else if (e.CommandName == "Atender")
+                    {
+                        Response.Redirect($"~/Pages/Medicos/Atencion?id={idTurno}", false);
                     }
                     else if (e.CommandName == "Ver")
                     {
