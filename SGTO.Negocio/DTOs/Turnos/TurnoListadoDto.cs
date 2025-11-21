@@ -11,7 +11,7 @@ namespace SGTO.Negocio.DTOs
         public string NombreMedico { get; set; }
         public int IdEspecialidad { get; set; }
         public string Especialidad { get; set; }
-        public string Fecha { get; set; }
+        public DateTime Fecha { get; set; }
         public string Hora { get; set; }
         public int IdCobertura { get; set; }
         public string Cobertura { get; set; }

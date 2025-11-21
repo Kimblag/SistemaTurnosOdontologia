@@ -17,65 +17,21 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
         private readonly TurnoService _servicioTurno = new TurnoService();
         private readonly MedicoService _servicioMedico = new MedicoService();
-        private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
-        private readonly CoberturaService _servicioCobertura = new CoberturaService();
-
-        private const string KEY_TURNO_BUSQUEDA = "FiltroTurnoBusqueda";
-        private const string KEY_TURNO_CAMPO = "FiltroTurnoCampo";
-        private const string KEY_TURNO_CRITERIO = "FiltroTurnoCriterio";
-
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("turnos");
-                master.EstablecerTituloSeccion(this.Page.Title);
-                master.EstablecerSubtituloSeccion("Administre la agenda médica. Para agendar nuevos turnos, inicie desde el módulo de Pacientes.");
+                master.EstablecerTituloSeccion("Gestión de Turnos");
+                master.EstablecerSubtituloSeccion("Visualice y administre la agenda diaria. Utilice los filtros para encontrar turnos específicos.");
             }
+
             if (!IsPostBack)
             {
-                txtBuscar.Text = Session[KEY_TURNO_BUSQUEDA] as string ?? string.Empty;
-                string campo = Session[KEY_TURNO_CAMPO] as string;
-                if (!string.IsNullOrEmpty(campo))
-                {
-                    if (ddlCampo.Items.FindByValue(campo) != null)
-                    {
-                        ddlCampo.SelectedValue = campo;
-                        CargarCriterios(campo);
-                    }
-                }
-
-                string criterio = Session[KEY_TURNO_CRITERIO] as string;
-                if (!string.IsNullOrEmpty(criterio) && ddlCriterio.Items.FindByValue(criterio) != null)
-                {
-                    ddlCriterio.SelectedValue = criterio;
-                    ddlCriterio.Enabled = true;
-                }
-                AplicarFiltros();
-            }
-        }
-
-
-        private void CargarTurnos()
-        {
-            List<TurnoListadoDto> turnos = new List<TurnoListadoDto>();
-            try
-            {
-                turnos = _servicioTurno.Listar();
-
-                gvTurnos.DataSource = turnos;
-                gvTurnos.DataBind();
-            }
-            catch (Exception ex)
-            {
-                gvTurnos.DataSource = turnos;
-                gvTurnos.DataBind();
-                MensajeUiHelper.SetearYMostrar(
-                   this.Page,
-                   "Error al cargar los turnos",
-                   "Ocurrió un error inesperado al intentar obtener la lista de turnos." + ex.Message
-               );
+                CargarMedicosDropdown();
+                txtFecha.Text = string.Empty;
+                CargarTurnosConFiltros();
             }
         }
 
@@ -83,198 +39,147 @@ namespace SGTO.UI.Webforms.Pages.Turnos
         {
             try
             {
+                ddlMedico.Items.Clear();
+
+                ddlMedico.Items.Add(new ListItem("Todos los médicos", "-1"));
+
                 var medicos = _servicioMedico.Listar("activos");
+
                 foreach (var m in medicos)
                 {
-                    ddlCriterio.Items.Add(new ListItem(m.NombreCompleto, m.IdMedico.ToString()));
+                    ddlMedico.Items.Add(new ListItem(m.NombreCompleto, m.IdMedico.ToString()));
                 }
-            }
-            catch (Exception) { throw; }
-        }
-
-        private void CargarEspecialidadesDropdown()
-        {
-            try
-            {
-                var especialidades = _servicioEspecialidad.Listar("activo");
-                foreach (var e in especialidades)
-                {
-                    ddlCriterio.Items.Add(new ListItem(e.Nombre, e.IdEspecialidad.ToString()));
-                }
-            }
-            catch (Exception) { throw; }
-        }
-
-        private void CargarCoberturasDropdown()
-        {
-            try
-            {
-                var coberturas = _servicioCobertura.Listar("activo");
-                foreach (var c in coberturas)
-                {
-                    ddlCriterio.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
-                }
-            }
-            catch (Exception) { throw; }
-        }
-
-
-        private void CargarCriterios(string campo)
-        {
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Enabled = false;
-
-            if (string.IsNullOrEmpty(campo))
-            {
-                ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-                return;
-            }
-
-            campo = campo.ToLower();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = true;
-
-            if (campo == "estado")
-            {
-                ddlCriterio.Items.Add(new ListItem("Nuevo", "Nuevo"));
-                ddlCriterio.Items.Add(new ListItem("Reprogramado", "Reprogramado"));
-                ddlCriterio.Items.Add(new ListItem("No asistió", "NoAsistio"));
-                ddlCriterio.Items.Add(new ListItem("Cancelado", "Cancelado"));
-                ddlCriterio.Items.Add(new ListItem("Cerrado", "Cerrado"));
-            }
-            else if (campo == "medico")
-            {
-                CargarMedicosDropdown();
-            }
-            else if (campo == "especialidad")
-            {
-                CargarEspecialidadesDropdown();
-            }
-            else if (campo == "cobertura")
-            {
-                CargarCoberturasDropdown();
-            }
-
-            if (ddlCriterio.Items.Count > 0)
-                ddlCriterio.SelectedIndex = 0;
-        }
-
-        private void AplicarFiltros()
-        {
-            string textoBusqueda = txtBuscar.Text.Trim();
-            string campo = ddlCampo.SelectedValue;
-            string criterio = ddlCriterio.SelectedValue;
-
-            Session[KEY_TURNO_BUSQUEDA] = string.IsNullOrEmpty(textoBusqueda) ? null : textoBusqueda;
-            Session[KEY_TURNO_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            Session[KEY_TURNO_CRITERIO] = string.IsNullOrEmpty(criterio) ? null : criterio;
-
-            List<TurnoListadoDto> lista = new List<TurnoListadoDto>();
-            try
-            {
-                lista = _servicioTurno.Listar();
             }
             catch (Exception ex)
             {
-                gvTurnos.DataSource = lista;
-                gvTurnos.DataBind();
-                MensajeUiHelper.SetearYMostrar(
-                   this.Page,
-                   "Error al cargar los turnos",
-                   "Ocurrió un error inesperado al intentar obtener la lista de turnos." + ex.Message
-               );
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar los médicos: " + ex.Message);
+            }
+        }
+
+        private void CargarTurnosConFiltros()
+        {
+            List<TurnoListadoDto> todosLosTurnos = new List<TurnoListadoDto>();
+
+            List<TurnoListadoDto> listaFiltrada = new List<TurnoListadoDto>();
+
+            try
+            {
+                todosLosTurnos = _servicioTurno.Listar();
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", ex.Message);
                 return;
             }
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
+            string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
+            string fechaTexto = txtFecha.Text;
+            string idMedicoSeleccionado = ddlMedico.SelectedValue;
+            string estadoSeleccionado = ddlEstado.SelectedValue;
+
+            foreach (TurnoListadoDto turno in todosLosTurnos)
             {
-                string texto = ValidadorCampos.NormalizarTexto(textoBusqueda);
-                List<TurnoListadoDto> filtrada = new List<TurnoListadoDto>();
+                bool cumple = true;
 
-                foreach (TurnoListadoDto t in lista)
+                if (!string.IsNullOrEmpty(textoBuscar))
                 {
-                    string nombrePaciente = ValidadorCampos.NormalizarTexto(t.NombrePaciente);
-                    string nombreMedico = ValidadorCampos.NormalizarTexto(t.NombreMedico);
-                    string dniPaciente = t.DniPaciente;
-                    string matricula = t.Matricula;
-                    bool coincide =
-                        (!string.IsNullOrEmpty(nombrePaciente) && nombrePaciente.Contains(texto)) ||
-                        (!string.IsNullOrEmpty(matricula) && matricula.Contains(texto)) ||
-                        (!string.IsNullOrEmpty(dniPaciente) && dniPaciente.Contains(texto)) ||
-                        (!string.IsNullOrEmpty(nombreMedico) && nombreMedico.Contains(texto));
-
-                    if (coincide)
-                        filtrada.Add(t);
+                    string nombre = ValidadorCampos.NormalizarTexto(turno.NombrePaciente) ?? "";
+                    string dni = turno.DniPaciente ?? "";
+                    string matricula = turno.Matricula ?? "";
+                    string nombreMedico = ValidadorCampos.NormalizarTexto(turno.NombreMedico) ?? "";
+                    if (!nombre.ToUpper().Contains(textoBuscar) &&
+                        !dni.Contains(textoBuscar) &&
+                        !nombreMedico.Contains(textoBuscar) &&
+                        !matricula.Contains(textoBuscar))
+                    {
+                        cumple = false;
+                    }
                 }
-                lista = filtrada;
+
+                if (cumple && !string.IsNullOrEmpty(fechaTexto))
+                {
+                    DateTime fechaFiltro;
+                    if (DateTime.TryParse(fechaTexto, out fechaFiltro))
+                    {
+                        if (turno.Fecha.Date != fechaFiltro.Date) cumple = false;
+                    }
+                }
+
+                if (cumple && idMedicoSeleccionado != "-1")
+                {
+                    if (turno.IdMedico != int.Parse(idMedicoSeleccionado)) cumple = false;
+                }
+
+                if (cumple && !string.IsNullOrEmpty(estadoSeleccionado))
+                {
+                    if (!turno.Estado.Equals(estadoSeleccionado, StringComparison.OrdinalIgnoreCase)) cumple = false;
+                }
+
+                if (cumple) listaFiltrada.Add(turno);
             }
 
-            if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
+            // se ordena la lista por fechas
+            // si no seleccionó fechas entonces se ordenan para mostrar la lista ordenada desde el día actual
+            if (string.IsNullOrEmpty(fechaTexto))
             {
-                List<TurnoListadoDto> filtrada = new List<TurnoListadoDto>();
+                List<TurnoListadoDto> listaFuturos = new List<TurnoListadoDto>();
+                List<TurnoListadoDto> listaPasados = new List<TurnoListadoDto>();
+                DateTime hoy = DateTime.Today;
 
-                if (campo == "Estado")
+                // separar en dos listas para tener los turnos del futuro y los qu eya pasaron.
+                foreach (TurnoListadoDto t in listaFiltrada)
                 {
-                    foreach (var t in lista)
-                    {
-                        if (!string.IsNullOrEmpty(t.Estado) &&
-                            t.Estado.Equals(criterio, StringComparison.OrdinalIgnoreCase))
-                        {
-                            filtrada.Add(t);
-                        }
-                    }
+                    if (t.Fecha.Date >= hoy)
+                        listaFuturos.Add(t);
+                    else
+                        listaPasados.Add(t);
                 }
-                else if (campo == "Medico")
-                {
-                    if (int.TryParse(criterio, out int idMedicoSeleccionado))
-                    {
-                        foreach (var t in lista)
-                        {
-                            if (t.IdMedico == idMedicoSeleccionado)
-                                filtrada.Add(t);
-                        }
-                    }
-                }
-                else if (campo == "Especialidad")
-                {
-                    if (int.TryParse(criterio, out int idEspecialidadSeleccionada))
-                    {
-                        foreach (var t in lista)
-                        {
-                            if (t.IdEspecialidad == idEspecialidadSeleccionada)
-                                filtrada.Add(t);
-                        }
-                    }
-                }
-                else if (campo == "Cobertura")
-                {
-                    if (int.TryParse(criterio, out int idCoberturaSeleccionada))
-                    {
-                        foreach (var t in lista)
-                        {
-                            if (t.IdCobertura == idCoberturaSeleccionada)
-                                filtrada.Add(t);
-                        }
-                    }
-                }
-                lista = filtrada;
+
+                //se ordenen los turnos futuros de menor a mayor
+                listaFuturos.Sort((x, y) => x.Fecha.CompareTo(y.Fecha));
+
+                // ordenado descendentemente los pasados
+                listaPasados.Sort((x, y) => y.Fecha.CompareTo(x.Fecha));
+
+                listaFiltrada.Clear();
+                listaFiltrada.AddRange(listaFuturos);
+                listaFiltrada.AddRange(listaPasados);
             }
-            gvTurnos.DataSource = lista;
+            else
+            {
+                listaFiltrada.Sort((x, y) => string.Compare(x.Hora, y.Hora));
+            }
+
+            gvTurnos.DataSource = listaFiltrada;
             gvTurnos.DataBind();
         }
 
 
-        protected void txtBuscar_TextChanged(object sender, EventArgs e) { }
-
-        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
+        protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            string campo = ddlCampo.SelectedValue;
-            Session[KEY_TURNO_CAMPO] = string.IsNullOrEmpty(campo) ? null : campo;
-            CargarCriterios(campo);
-            Session[KEY_TURNO_CRITERIO] = null;
+            gvTurnos.PageIndex = 0;
+            CargarTurnosConFiltros();
         }
 
-        protected void ddlCriterio_SelectedIndexChanged(object sender, EventArgs e) { }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtBuscar.Text = string.Empty;
+
+            txtFecha.Text = string.Empty;
+
+            if (ddlMedico.Items.Count > 0) ddlMedico.SelectedIndex = 0;
+            if (ddlEstado.Items.Count > 0) ddlEstado.SelectedIndex = 0;
+
+            gvTurnos.PageIndex = 0;
+            CargarTurnosConFiltros();
+        }
+
+
+        protected void gvTurnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvTurnos.PageIndex = e.NewPageIndex;
+            CargarTurnosConFiltros();
+        }
 
         protected void gvTurnos_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -285,61 +190,40 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
                 var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
 
-                string estadoTurno = turnoDto.Estado.ToLower();
-
-                if (lblEstado != null && turnoDto != null)
+                if (turnoDto != null)
                 {
-                    lblEstado.Attributes["class"] = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(estadoTurno);
-                    lblEstado.InnerText = TurnoUiHelper.ObtenerTextoEstado(estadoTurno);
-                }
+                    string estadoTurno = turnoDto.Estado != null ? turnoDto.Estado.ToLower() : "";
 
-                if (btnEditar != null && turnoDto != null)
-                {
-                    btnEditar.Visible = TurnoUiHelper.EsEditable(estadoTurno);
+                    if (lblEstado != null)
+                    {
+                        lblEstado.Attributes["class"] = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(estadoTurno);
+                        lblEstado.InnerText = TurnoUiHelper.ObtenerTextoEstado(estadoTurno);
+                    }
+
+                    if (btnEditar != null)
+                    {
+                        btnEditar.Visible = TurnoUiHelper.EsEditable(estadoTurno);
+                    }
                 }
             }
-        }
-
-        protected void gvTurnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvTurnos.PageIndex = e.NewPageIndex;
-            AplicarFiltros();
         }
 
         protected void gvTurnos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandArgument != null && !string.IsNullOrEmpty(e.CommandArgument.ToString()))
             {
-                int idTurno = Convert.ToInt32(e.CommandArgument);
-                if (e.CommandName == "Editar")
+                if (int.TryParse(e.CommandArgument.ToString(), out int idTurno))
                 {
-                    Response.Redirect($"~/Pages/Turnos/Editar?id-turno={idTurno}", false);
-                }
-                else if (e.CommandName == "Ver")
-                {
-                    Response.Redirect($"~/Pages/Turnos/Detalle?id-turno={idTurno}", false);
+                    if (e.CommandName == "Editar")
+                    {
+                        Response.Redirect($"~/Pages/Turnos/Editar?id-turno={idTurno}", false);
+                    }
+                    else if (e.CommandName == "Ver")
+                    {
+                        Response.Redirect($"~/Pages/Turnos/Detalle?id-turno={idTurno}", false);
+                    }
                 }
             }
-        }
-
-        protected void btnBuscar_Click(object sender, EventArgs e)
-        {
-            AplicarFiltros();
-        }
-
-        protected void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            Session[KEY_TURNO_BUSQUEDA] = null;
-            Session[KEY_TURNO_CAMPO] = null;
-            Session[KEY_TURNO_CRITERIO] = null;
-
-            txtBuscar.Text = string.Empty;
-            ddlCampo.SelectedIndex = 0;
-            ddlCriterio.Items.Clear();
-            ddlCriterio.Items.Add(new ListItem("Seleccione un criterio", ""));
-            ddlCriterio.Enabled = false;
-
-            CargarTurnos();
         }
     }
 }

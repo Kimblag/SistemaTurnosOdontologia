@@ -40,9 +40,7 @@ namespace SGTO.Negocio.Mappers
                     IdEspecialidad = turno.Especialidad.IdEspecialidad,
                     Especialidad = turno.Especialidad?.Nombre ?? "-",
 
-                    Fecha = turno.Horario != null
-                        ? turno.Horario.Inicio.ToString("dd/MM/yyyy")
-                        : "-",
+                    Fecha = turno.Horario.Inicio,
 
                     Hora = turno.Horario != null
                         ? turno.Horario.Inicio.ToString("HH:mm")
