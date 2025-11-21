@@ -13,12 +13,14 @@ namespace SGTO.Negocio.Servicios
         private readonly ReporteRepositorio _repositorioReportes;
         private readonly CoberturaRepositorio _repositorioCobertura;
         private readonly PlanRepositorio _repositorioPlan;
+        private readonly EspecialidadRepositorio _repositorioEspecialidad;
 
         public ReporteService()
         {
             _repositorioReportes = new ReporteRepositorio();
             _repositorioCobertura = new CoberturaRepositorio();
             _repositorioPlan = new PlanRepositorio();
+            _repositorioEspecialidad = new EspecialidadRepositorio();
         }
 
         public List<ReportePacientesDto> ObtenerReportePacientes()
@@ -80,6 +82,41 @@ namespace SGTO.Negocio.Servicios
             {
                 Debug.WriteLine("ERROR en ListarPlanes: " + ex.Message);
                 throw new Exception("Error al listar los planes activos.", ex);
+            }
+        }
+        public ReporteMedicosKpiDto ObtenerKpisMedicos(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarKpisMedicos(fechaDesde, fechaHasta);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener KPIs de médicos.", ex);
+            }
+        }
+
+        public List<ReporteMedicosDto> ObtenerReporteMedicosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, int? idEspecialidad)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarMedicosFiltrado(fechaDesde, fechaHasta, idEspecialidad);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de médicos.", ex);
+            }
+        }
+
+        public List<EspecialidadDto> ListarEspecialidades(string estado = null)
+        {
+            try
+            {
+                return EspecialidadMapper.MapearListaADto(_repositorioEspecialidad.Listar(estado));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar especialidades.", ex);
             }
         }
     }
