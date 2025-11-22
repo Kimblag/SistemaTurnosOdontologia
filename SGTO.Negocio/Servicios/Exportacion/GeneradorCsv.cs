@@ -47,5 +47,34 @@ namespace SGTO.Negocio.Servicios.Exportacion
             return valor.Replace(";", ",").Replace("\r", " ").Replace("\n", " ").Trim();
         }
 
+        public static byte[] GenerarReporteMedicosCsv(List<ReporteMedicosDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de médicos para exportar al CSV.");
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Matrícula;Nombre Completo;Especialidad;Estado;Total Turnos;Pacientes Atendidos;Último Turno");
+
+            foreach (ReporteMedicosDto m in lista)
+            {
+                string linea = string.Join(";",
+                    LimpiarCsv(m.Matricula),
+                    LimpiarCsv(m.NombreCompleto),
+                    LimpiarCsv(m.Especialidad),
+                    LimpiarCsv(m.Estado),
+                    m.TotalTurnos.ToString(),
+                    m.PacientesAtendidos.ToString(),
+                    m.UltimoTurno?.ToString("dd/MM/yyyy") ?? "-"
+                );
+
+                sb.AppendLine(linea);
+            }
+
+            return Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(sb.ToString()))
+                .ToArray();
+        }
+
     }
 }

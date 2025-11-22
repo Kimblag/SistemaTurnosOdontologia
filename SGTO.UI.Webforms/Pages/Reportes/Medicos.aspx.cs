@@ -151,7 +151,30 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void btnExportarExcel_Click(object sender, EventArgs e)
         {
-            
+            try
+            {
+                DateTime? fDesde = string.IsNullOrWhiteSpace(txtFechaDesde.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaDesde.Text);
+                DateTime? fHasta = string.IsNullOrWhiteSpace(txtFechaHasta.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaHasta.Text);
+                int? idEsp = string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) ? null : (int?)Convert.ToInt32(ddlEspecialidad.SelectedValue);
+
+                var lista = _servicioReportes.ObtenerReporteMedicosFiltrado(fDesde, fHasta, idEsp);
+
+                byte[] csvBytes = GeneradorCsv.GenerarReporteMedicosCsv(lista);
+
+                Response.Clear();
+                Response.ContentType = "text/csv";
+                Response.AddHeader("content-disposition", "attachment;filename=ReporteMedicos.csv");
+                Response.BinaryWrite(csvBytes);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException))
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error al exportar Excel", "Ocurrió un problema: " + ex.Message);
+                }
+            }
         }
     }
 }
