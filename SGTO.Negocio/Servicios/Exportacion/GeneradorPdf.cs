@@ -229,7 +229,70 @@ namespace SGTO.Negocio.Servicios.Exportacion
             cell.PaddingBottom = 4f;
             return cell;
         }
+        public static byte[] GenerarReporteMedicosPdf(List<ReporteMedicosDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de médicos para exportar.");
 
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+
+                // 1. Título y Fecha
+                var titulo = new Paragraph("Reporte de Médicos", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                {
+                    Alignment = Element.ALIGN_CENTER
+                };
+                doc.Add(titulo);
+                doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
+                doc.Add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(7);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 2, 4, 3, 2, 2, 2, 2 });
+
+                string[] headers = { "Matrícula", "Nombre", "Especialidad", "Estado", "Turnos", "Pacientes", "Ult. Atenc." };
+
+                foreach (string h in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD))) 
+                    {
+                        BackgroundColor = new BaseColor(240, 240, 240),
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        Padding = 5
+                    };
+                    table.AddCell(cell);
+                }
+
+                foreach (var m in lista)
+                {
+                    table.AddCell(new Phrase(m.Matricula ?? "-", FuenteSmall));
+                    table.AddCell(new Phrase(m.NombreCompleto ?? "-", FuenteTexto));
+                    table.AddCell(new Phrase(m.Especialidad ?? "Sin esp.", FuenteSmall));
+
+                    PdfPCell celdaEstado = new PdfPCell(new Phrase(m.Estado ?? "-", FuenteSmall));
+                    celdaEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(celdaEstado);
+
+                    PdfPCell celdaTurnos = new PdfPCell(new Phrase(m.TotalTurnos.ToString(), FuenteTexto));
+                    celdaTurnos.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(celdaTurnos);
+
+                    PdfPCell celdaPacientes = new PdfPCell(new Phrase(m.PacientesAtendidos.ToString(), FuenteTexto));
+                    celdaPacientes.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(celdaPacientes);
+
+                    table.AddCell(new Phrase(m.UltimoTurno?.ToString("dd/MM/yyyy") ?? "-", FuenteSmall));
+                }
+
+                doc.Add(table);
+                doc.Close();
+
+                return ms.ToArray();
+            }
+        }
 
     }
 }

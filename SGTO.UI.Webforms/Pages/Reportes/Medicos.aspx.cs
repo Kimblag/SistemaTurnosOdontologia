@@ -1,5 +1,6 @@
 ﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Servicios;
+using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using System;
@@ -122,7 +123,30 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void btnExportarPdf_Click(object sender, EventArgs e)
         {
+            try
+            {
+                DateTime? fDesde = string.IsNullOrWhiteSpace(txtFechaDesde.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaDesde.Text);
+                DateTime? fHasta = string.IsNullOrWhiteSpace(txtFechaHasta.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaHasta.Text);
+                int? idEsp = string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) ? null : (int?)Convert.ToInt32(ddlEspecialidad.SelectedValue);
 
+                var lista = _servicioReportes.ObtenerReporteMedicosFiltrado(fDesde, fHasta, idEsp);
+
+                byte[] pdfBytes = GeneradorPdf.GenerarReporteMedicosPdf(lista);
+
+                Response.Clear();
+                Response.ContentType = "application/pdf";
+                Response.AddHeader("content-disposition", "inline;filename=ReporteMedicos.pdf");
+                Response.OutputStream.Write(pdfBytes, 0, pdfBytes.Length);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException)) 
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error al exportar PDF", "Ocurrió un problema: " + ex.Message);
+                }
+            }
         }
 
         protected void btnExportarExcel_Click(object sender, EventArgs e)
