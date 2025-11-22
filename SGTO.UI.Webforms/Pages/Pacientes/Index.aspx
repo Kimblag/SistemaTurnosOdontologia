@@ -12,7 +12,7 @@
 
 
                     <div class="col-md-4 col-lg-3">
-                        <label class="form-label small text-muted">Buscar</label>
+                        <label class="form-label small text-muted">Buscar Paciente</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                             <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control border-start-0"

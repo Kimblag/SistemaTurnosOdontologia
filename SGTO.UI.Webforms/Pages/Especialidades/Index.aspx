@@ -8,37 +8,43 @@
 
         <%-- Filtros --%>
         <div class="container-fluid px-0 mb-4">
-            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
+            <div class="bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="flex-grow-1">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0 text-muted">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <asp:TextBox ID="txtBuscar" runat="server"
-                            CssClass="form-control border-start-0"
-                            placeholder="Buscar especialidades..." />
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-md-4 col-lg-5">
+                        <label class="form-label small text-muted">Buscar Especialidad</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <asp:TextBox ID="txtBuscar" runat="server"
+                                CssClass="form-control border-start-0"
+                                placeholder="Buscar especialidades..." />
+                        </div>
                     </div>
-                </div>
 
-                <div>
-                    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="190px">
-                        <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
-                        <asp:ListItem Text="Activo" Value="activo" />
-                        <asp:ListItem Text="Inactivo" Value="inactivo" />
-                    </asp:DropDownList>
-                </div>
+                    <div class="col-md-3 col-lg-3">
+                        <label class="form-label small text-muted">Estado</label>
+                        <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
+                            <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
+                            <asp:ListItem Text="Activo" Value="activo" />
+                            <asp:ListItem Text="Inactivo" Value="inactivo" />
+                        </asp:DropDownList>
+                    </div>
 
-                <div class="d-flex gap-2 border-start ps-3 ms-1">
-                    <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
-                    <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
-                </div>
+                    <div class="col-md-3 col-lg-3 d-flex gap-1">
+                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
+                        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
+                    </div>
 
-                <div class="border-start ps-3 ms-1">
-                    <asp:Button ID="btnNuevaEspecialidad" runat="server"
-                        Text="+ Nueva"
-                        OnClick="btnNuevaEspecialidad_Click"
-                        CssClass="btn btn-success text-nowrap" />
+                    <div class="col-md-12 col-lg-1 text-end border-start ps-3">
+                        <label class="form-label d-none d-lg-block">&nbsp;</label>
+                        <asp:Button ID="btnNuevaEspecialidad" runat="server"
+                            Text="+ Nueva"
+                            OnClick="btnNuevaEspecialidad_Click"
+                            CssClass="btn btn-success text-nowrap w-100" />
+                    </div>
                 </div>
 
             </div>
@@ -140,7 +146,7 @@
     </div>
 
     <!-- Modal Resultado  -->
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

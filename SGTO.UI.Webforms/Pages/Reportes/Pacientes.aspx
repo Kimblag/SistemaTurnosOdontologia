@@ -10,24 +10,24 @@
             <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 w-100">
                 <div class="d-flex flex-wrap gap-3 flex-grow-1">
                     <div class="filtro">
-                        <label for="txtFechaDesde" class="form-label fw-semibold">Desde</label>
+                        <label for="txtFechaDesde" class="form-label small text-muted">Desde</label>
                         <asp:TextBox ID="txtFechaDesde" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
                     </div>
 
                     <div class="filtro">
-                        <label for="txtFechaHasta" class="form-label fw-semibold">Hasta</label>
+                        <label for="txtFechaHasta" class="form-label small text-muted">Hasta</label>
                         <asp:TextBox ID="txtFechaHasta" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
                     </div>
 
                     <div class="filtro flex-grow-1">
-                        <label for="ddlCobertura" class="form-label fw-semibold">Cobertura</label>
+                        <label for="ddlCobertura"class="form-label small text-muted">Cobertura</label>
                         <asp:DropDownList ID="ddlCobertura" runat="server" CssClass="form-select w-100"
                             AutoPostBack="true" OnSelectedIndexChanged="ddlCobertura_SelectedIndexChanged">
                         </asp:DropDownList>
                     </div>
 
                     <div class="filtro flex-grow-1">
-                        <label for="ddlPlan" class="form-label fw-semibold">Plan</label>
+                        <label for="ddlPlan" class="form-label small text-muted">Plan</label>
                         <asp:DropDownList ID="ddlPlan" runat="server" CssClass="form-select w-100"
                             AutoPostBack="true" OnSelectedIndexChanged="ddlPlan_SelectedIndexChanged">
                         </asp:DropDownList>
