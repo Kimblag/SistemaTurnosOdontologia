@@ -265,7 +265,7 @@ CREATE TABLE PacienteCoberturaHistorial (
     FechaInicio DATE NOT NULL DEFAULT GETDATE(),
     FechaFin DATE NULL,
     MotivoCambio NVARCHAR(200) NULL,
-    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = histï¿½rico cerrado
+    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = histórico cerrado
 
     CONSTRAINT FK_PacienteCoberturaHistorial_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
     CONSTRAINT FK_PacienteCoberturaHistorial_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),

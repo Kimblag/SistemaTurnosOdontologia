@@ -141,6 +141,8 @@ INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 2, IdPermiso
 FROM Permiso
 WHERE
+    (Modulo = 'Inicio' AND Accion IN ('Ver'))
+    OR
     (Modulo = 'Coberturas' AND Accion IN ('Ver'))
     OR
     (Modulo = 'Planes' AND Accion = 'Ver')
@@ -160,7 +162,9 @@ WHERE
     OR
     (Modulo = 'Pacientes' AND Accion = 'Ver')
     OR
-    (Modulo = 'Atencion' AND Accion = 'Ver');
+    (Modulo = 'Atencion' AND Accion = 'Ver')
+    OR
+    (Modulo = 'Inicio' AND Accion = 'Ver');
 
 -- Tratamiento
 INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado) VALUES
@@ -174,8 +178,8 @@ INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado)
 ('Radiografía Panorámica', 'Estudio diagnóstico', 4000, 8, 'A'),
 ('Selladores', 'Prevención caries', 6000, 4, 'A'),
 ('Control General', 'Consulta básica', 3500, 10, 'A'),
-('Raspaje y Alisado', 'Limpieza profunda de encías por cuadrante', 18000, 3, 'A'),
-('Mantenimiento Periodontal', 'Control y limpieza semestral', 12000, 3, 'A'),
+('Raspaje y Alisado', 'Limpieza profunda de encías por cuadrante', 18000, 3, 'I'),
+('Mantenimiento Periodontal', 'Control y limpieza semestral', 12000, 3, 'I'),
 ('Implante de Titanio', 'Colocación de implante estándar', 95000, 6, 'A'),
 ('Corona sobre Implante', 'Fase final de rehabilitación', 60000, 6, 'A'),
 ('Tomografía Cone Beam', 'Estudio 3D para implantes', 25000, 8, 'A');
