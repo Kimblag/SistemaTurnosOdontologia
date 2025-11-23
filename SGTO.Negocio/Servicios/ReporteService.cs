@@ -108,6 +108,34 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+        public List<ReporteTratamientosDto> ObtenerReporteTratamientosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, int? idEspecialidad)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarTratamientosFiltrado(fechaDesde, fechaHasta, idEspecialidad);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de tratamientos.", ex);
+            }
+        }
+
+        public ReporteTratamientosKpiDto ObtenerKpisTratamientos(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            try
+            {
+                var kpis = _repositorioReportes.ConsultarKpisTratamientos(fechaDesde, fechaHasta);
+
+                // Lógica extra: Podemos calcular el "Más solicitado" reusando la lista si el repo no lo trajo directo
+                // O dejarlo simple. Aquí devolvemos lo que trajo la base.
+                return kpis;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener KPIs de tratamientos.", ex);
+            }
+        }
+
         public List<EspecialidadDto> ListarEspecialidades(string estado = null)
         {
             try

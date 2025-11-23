@@ -48,6 +48,8 @@
     <Compile Include="DTOs\ReporteMedicosKpiDto.cs" />
     <Compile Include="DTOs\ReportePacientesDto.cs" />
     <Compile Include="DTOs\ReportePacientesKpiDto.cs" />
+    <Compile Include="DTOs\ReporteTratamientosDto.cs" />
+    <Compile Include="DTOs\ReporteTratamientosKpiDto.cs" />
     <Compile Include="DTOs\TurnoHistorialDto.cs" />
     <Compile Include="Email\EmailConfiguracion.cs" />
     <Compile Include="Email\EmailServicio.cs" />

@@ -1,3 +1,103 @@
 ﻿<%@ Page Title="Reporte de Tratamientos" Language="C#" MasterPageFile="~/MasterPages/Site.Master" AutoEventWireup="true" CodeBehind="Tratamientos.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Reportes.Tratamientos" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="page-generic reportes-page tratamientos-reporte">
+        
+        <small class="text-muted">Análisis de demanda y facturación estimada por tratamiento.</small>
+        
+        <%-- Filtros --%>
+        <div class="filters card shadow-sm p-4 mb-4 border-0">
+            <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 w-100">
+                <div class="d-flex flex-wrap gap-3 flex-grow-1">
+                    <div class="filtro">
+                        <label for="txtFechaDesde" class="form-label fw-semibold">Desde</label>
+                        <asp:TextBox ID="txtFechaDesde" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                    </div>
+                    <div class="filtro">
+                        <label for="txtFechaHasta" class="form-label fw-semibold">Hasta</label>
+                        <asp:TextBox ID="txtFechaHasta" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                    </div>
+                    <div class="filtro flex-grow-1">
+                        <label for="ddlEspecialidad" class="form-label fw-semibold">Especialidad</label>
+                        <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select w-100"></asp:DropDownList>
+                    </div>
+                </div>
+                <div class="d-flex align-items-end gap-2">
+                    <asp:Button ID="btnAplicarFiltros" runat="server" Text="Ejecutar" CssClass="btn btn-primary px-3" OnClick="btnAplicarFiltros_Click" />
+                    <asp:Button ID="btnLimpiarFiltros" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary px-3" OnClick="btnLimpiarFiltros_Click" />
+                </div>
+            </div>
+        </div>
+
+        <%-- KPIs --%>
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4">
+                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
+                    <h6 class="text-muted mb-1">En Catálogo</h6>
+                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblTotalCatalogo" runat="server" Text="-" /></p>
+                </div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
+                    <h6 class="text-muted mb-1">Realizados (Período)</h6>
+                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblTotalRealizados" runat="server" Text="-" /></p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
+                    <h6 class="text-muted mb-1">Ingresos Estimados</h6>
+                    <p class="text-success fw-bold fs-4 mb-0"><asp:Label ID="lblIngresosEstimados" runat="server" Text="-" /></p>
+                </div>
+            </div>
+        </div>
+
+        <%-- Botones Exportar --%>
+        <div class="d-flex justify-content-end flex-wrap gap-2 mb-3 w-100">
+            <asp:Button ID="btnExportarPdf" runat="server" Text="Exportar PDF" CssClass="btn btn-outline-danger btn-sm px-3" OnClick="btnExportarPdf_Click" />
+            <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel" CssClass="btn btn-outline-success btn-sm px-3" OnClick="btnExportarExcel_Click" />
+        </div>
+
+        <%-- GridView --%>
+        <div class="content-wrapper">
+            <asp:GridView ID="gvTratamientos" runat="server" CssClass="table gridview mb-0" AutoGenerateColumns="false" 
+                EmptyDataText="No se encontraron resultados." AllowPaging="true" PageSize="10" OnPageIndexChanging="gvTratamientos_PageIndexChanging">
+                <Columns>
+                    <asp:BoundField DataField="Nombre" HeaderText="Tratamiento" />
+                    <asp:BoundField DataField="Especialidad" HeaderText="Especialidad" />
+                    <asp:BoundField DataField="Estado" HeaderText="Estado" />
+                    <asp:BoundField DataField="CostoBase" HeaderText="Costo Unit." DataFormatString="{0:C}" />
+                    <asp:BoundField DataField="CantidadRealizados" HeaderText="Cant. Realizados" />
+                    <asp:BoundField DataField="IngresosEstimados" HeaderText="Total Estimado" DataFormatString="{0:C}" />
+                </Columns>
+                <EmptyDataTemplate>
+                    <div class="empty-state">No hay datos para mostrar.</div>
+                </EmptyDataTemplate>
+            </asp:GridView>
+        </div>
+    </div>
+    
+    <%-- Modal Error --%>
+    <div class="modal fade" id="modalResultado" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="modalResultadoTitulo" class="modal-title">Resultado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body"><p id="modalResultadoDesc"></p></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            window.abrirModalResultado = function (titulo, descripcion) {
+                document.getElementById('modalResultadoTitulo').textContent = titulo || "Resultado";
+                document.getElementById('modalResultadoDesc').textContent = descripcion || "";
+                new bootstrap.Modal(document.getElementById('modalResultado')).show();
+            };
+        });
+    </script>
 </asp:Content>

@@ -332,5 +332,111 @@ namespace SGTO.Datos.Repositorios
             catch (Exception) { throw; }
         }
 
+        public List<ReporteTratamientosDto> ConsultarTratamientosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, int? idEspecialidad)
+        {
+            List<ReporteTratamientosDto> lista = new List<ReporteTratamientosDto>();
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    // Consulta: Une Tratamientos con sus ejecuciones en Historia Clínica
+                    string query = @"
+                SELECT 
+                    T.IdTratamiento,
+                    T.Nombre,
+                    E.Nombre AS Especialidad,
+                    T.CostoBase,
+                    T.Estado,
+                    -- Contamos cuántas veces aparece este tratamiento en historias clínicas dentro del rango
+                    COUNT(HCR.IdHistoriaClinicaRegistro) AS CantidadRealizados,
+                    -- Calculamos ingreso estimado
+                    (COUNT(HCR.IdHistoriaClinicaRegistro) * T.CostoBase) AS IngresosEstimados
+                FROM Tratamiento T
+                INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                LEFT JOIN HistoriaClinicaRegistro HCR ON T.IdTratamiento = HCR.IdTratamiento 
+                    AND (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
+                    AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
+                WHERE 
+                    (@Especialidad IS NULL OR T.IdEspecialidad = @Especialidad)
+                GROUP BY 
+                    T.IdTratamiento, T.Nombre, E.Nombre, T.CostoBase, T.Estado
+                ORDER BY 
+                    CantidadRealizados DESC, T.Nombre ASC";
+
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Especialidad", idEspecialidad ?? (object)DBNull.Value);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            lista.Add(new ReporteTratamientosDto
+                            {
+                                IdTratamiento = lector.GetInt32(lector.GetOrdinal("IdTratamiento")),
+                                Nombre = lector.GetString(lector.GetOrdinal("Nombre")),
+                                Especialidad = lector.GetString(lector.GetOrdinal("Especialidad")),
+                                CostoBase = lector.GetDecimal(lector.GetOrdinal("CostoBase")),
+                                Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activo" : "Inactivo",
+                                CantidadRealizados = lector.GetInt32(lector.GetOrdinal("CantidadRealizados")),
+                                IngresosEstimados = lector.GetDecimal(lector.GetOrdinal("IngresosEstimados"))
+                            });
+                        }
+                    }
+                }
+                return lista;
+            }
+            catch (Exception) { throw; }
+        }
+
+        public ReporteTratamientosKpiDto ConsultarKpisTratamientos(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
+        {
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string query = @"
+                SELECT
+                    (SELECT COUNT(*) FROM Tratamiento WHERE Estado = 'A') AS TotalEnCatalogo,
+                    
+                    (SELECT COUNT(*) FROM HistoriaClinicaRegistro HCR
+                        WHERE (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
+                        AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
+                        AND IdTratamiento IS NOT NULL
+                    ) AS TotalRealizados,
+
+                    (SELECT ISNULL(SUM(T.CostoBase), 0) 
+                        FROM HistoriaClinicaRegistro HCR
+                        INNER JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
+                        WHERE (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
+                        AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
+                    ) AS IngresoTotalEstimado";
+
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
+
+                    var dto = new ReporteTratamientosKpiDto();
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            dto.TotalEnCatalogo = lector.GetInt32(lector.GetOrdinal("TotalEnCatalogo"));
+                            dto.TotalRealizados = lector.GetInt32(lector.GetOrdinal("TotalRealizados"));
+                            dto.IngresoTotalEstimado = lector.GetDecimal(lector.GetOrdinal("IngresoTotalEstimado"));
+                        }
+                    }
+
+                    dto.TratamientoMasSolicitado = "-";
+                    dto.EspecialidadMasDemandada = "-";
+
+                    return dto;
+                }
+            }
+            catch (Exception) { throw; }
+        }
+
     }
 }
