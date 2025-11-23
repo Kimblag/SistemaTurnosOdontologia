@@ -72,20 +72,28 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                         {
                             lblFechaAlta.Text = medico.FechaIncorporacion.ToShortDateString();
                         }
+
                         lblEspecialidades.Text = (medico.Especialidades != null && medico.Especialidades.Count > 0)
                             ? string.Join(", ", medico.Especialidades)
                             : "Sin especialidades";
 
-                        lblCoberturas.Text = (medico.CoberturasAceptadas != null && medico.CoberturasAceptadas.Count > 0)
-                            ? string.Join(", ", medico.CoberturasAceptadas)
-                            : "Sin registros de atención";
+                        if (medico.Horarios != null && medico.Horarios.Count > 0)
+                        {
+                            rptHorarios.DataSource = medico.Horarios;
+                            rptHorarios.DataBind();
+                            rptHorarios.Visible = true;
+                            pnlSinHorarios.Visible = false;
+                        }
+                        else
+                        {
+                            rptHorarios.Visible = false;
+                            pnlSinHorarios.Visible = true;
+                        }
 
                         lblTotalPacientes.Text = medico.CantidadPacientesAtendidos.ToString();
 
                         gvHistorial.DataSource = medico.HistorialTurnos;
                         gvHistorial.DataBind();
-
-
                     }
                     else
                     {

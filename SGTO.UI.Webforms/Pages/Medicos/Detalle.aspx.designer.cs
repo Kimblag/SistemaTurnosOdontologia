@@ -114,15 +114,6 @@ namespace SGTO.UI.Webforms.Pages.Medicos
         protected global::System.Web.UI.WebControls.Label lblEspecialidades;
 
         /// <summary>
-        /// lblCoberturas control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCoberturas;
-
-        /// <summary>
         /// lblTotalPacientes control.
         /// </summary>
         /// <remarks>
@@ -130,6 +121,24 @@ namespace SGTO.UI.Webforms.Pages.Medicos
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalPacientes;
+
+        /// <summary>
+        /// rptHorarios control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater rptHorarios;
+
+        /// <summary>
+        /// pnlSinHorarios control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlSinHorarios;
 
         /// <summary>
         /// gvHistorial control.

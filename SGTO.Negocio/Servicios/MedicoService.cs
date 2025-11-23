@@ -11,12 +11,14 @@ namespace SGTO.Negocio.Servicios
 
         private readonly MedicoRepositorio _repositorioMedico;
         private readonly TurnoRepositorio _repositorioTurno;
+        private readonly HorarioSemanalRepositorio _repositorioHorario;
 
 
         public MedicoService()
         {
             _repositorioMedico = new MedicoRepositorio();
             _repositorioTurno = new TurnoRepositorio();
+            _repositorioHorario = new HorarioSemanalRepositorio();
         }
 
         public List<MedicoListadoDto> Listar(string estado = null)
@@ -64,15 +66,32 @@ namespace SGTO.Negocio.Servicios
                 }
                 dto.CantidadPacientesAtendidos = pacientesUnicos.Count;
 
-                List<string> coberturasUnicas = new List<string>();
-                foreach (var turno in historial)
+                var horariosEntidad = _repositorioHorario.ObtenerPorMedico(id);
+
+                foreach (var h in horariosEntidad)
                 {
-                    if (!coberturasUnicas.Contains(turno.Cobertura))
+                    string nombreDia = "";
+
+                    switch (h.DiaSemana)
                     {
-                        coberturasUnicas.Add(turno.Cobertura);
+                        case 1: nombreDia = "Lunes"; break;
+                        case 2: nombreDia = "Martes"; break;
+                        case 3: nombreDia = "Miércoles"; break;
+                        case 4: nombreDia = "Jueves"; break;
+                        case 5: nombreDia = "Viernes"; break;
+                        case 6: nombreDia = "Sábado"; break;
+                        case 7: nombreDia = "Domingo"; break;
+                        default: nombreDia = "Desconocido"; break;
                     }
+
+                    string rango = $"{h.HoraInicio.ToString(@"hh\:mm")} - {h.HoraFin.ToString(@"hh\:mm")}";
+
+                    dto.Horarios.Add(new MedicoHorarioDetalleDto
+                    {
+                        Dia = nombreDia,
+                        RangoHorario = rango
+                    });
                 }
-                dto.CoberturasAceptadas = coberturasUnicas;
 
                 dto.HistorialTurnos = historial;
 

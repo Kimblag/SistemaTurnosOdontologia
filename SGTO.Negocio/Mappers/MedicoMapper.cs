@@ -122,9 +122,8 @@ namespace SGTO.Negocio.Mappers
                 IdEspecialidades = ids,
                 Especialidades = nombres,
 
-                CoberturasAceptadas = new List<string>(),
                 CantidadPacientesAtendidos = 0,
-                HistorialTurnos = new List<SGTO.Comun.DTOs.TurnoHistorialDto>()
+                HistorialTurnos = new List<TurnoHistorialDto>()
             };
         }
         public static MedicoEdicionDto MapearAEdicionDto(Medico medico)

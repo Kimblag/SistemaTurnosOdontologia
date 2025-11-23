@@ -54,6 +54,7 @@
     <Compile Include="DTOs\Medicos\MedicoCrearDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoDetalleDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoEdicionDto.cs" />
+    <Compile Include="DTOs\Medicos\MedicoHorarioDetalleDto.cs" />
     <Compile Include="DTOs\Medicos\MedicoListadoDto.cs" />
     <Compile Include="DTOs\Pacientes\HistoriaClinicaResumenDto.cs" />
     <Compile Include="DTOs\Pacientes\PacienteCreacionDto.cs" />

@@ -21,10 +21,11 @@ namespace SGTO.Negocio.DTOs.Medicos
         public DateTime FechaIncorporacion { get; set; }
         public string NombreUsuario { get; set; }
 
-        // Listas
         public List<int> IdEspecialidades { get; set; } = new List<int>();
         public List<string> Especialidades { get; set; } = new List<string>();
-        public List<string> CoberturasAceptadas { get; set; } = new List<string>();
+
+        public List<MedicoHorarioDetalleDto> Horarios { get; set; } = new List<MedicoHorarioDetalleDto>();
+
         public int CantidadPacientesAtendidos { get; set; }
 
         // --- Historial ---

@@ -11,7 +11,7 @@
                     style="width: 60px; height: 60px;">
                     <i class="bi bi-calendar-check fs-3"></i>
                 </div>
-                <h2 class="fs-4 fw-bold text-primary m-0">Datos Generales</h2>
+                <h2 class="fs-5 fw-bold text-primary m-0">Datos Generales</h2>
             </div>
 
             <%-- Fila 1 --%>
@@ -59,7 +59,7 @@
                         style="width: 60px; height: 60px;">
                         <i class="bi bi-clipboard-pulse fs-3"></i>
                     </div>
-                    <h2 class="fs-4 fw-bold text-danger m-0">Registro Clínico de Atención</h2>
+                    <h2 class="fs-5 fw-bold text-danger m-0">Registro Clínico de Atención</h2>
                 </div>
 
                 <div class="row g-4">
@@ -96,7 +96,7 @@
                     style="width: 60px; height: 60px;">
                     <i class="bi bi-journal-text fs-3"></i>
                 </div>
-                <h2 class="fs-4 fw-bold text-secondary m-0">Observaciones Administrativas</h2>
+                <h2 class="fs-5 fw-bold text-secondary m-0">Observaciones Administrativas</h2>
             </div>
 
             <div class="mb-4">
