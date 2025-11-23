@@ -16,11 +16,13 @@ namespace SGTO.Negocio.Servicios
     {
         
         private readonly EspecialidadRepositorio _repositorio;
+        private readonly TratamientoRepositorio _repositorioTratamiento;
 
         
         public EspecialidadService()
         {
             _repositorio = new EspecialidadRepositorio();
+            _repositorioTratamiento = new TratamientoRepositorio();
         }
 
         // CRUD
@@ -103,6 +105,7 @@ namespace SGTO.Negocio.Servicios
                 try
                 {
                     datos.IniciarTransaccion();
+                    _repositorioTratamiento.DarDeBajaPorEspecialidad(idEspecialidad, 'I', datos);
                     _repositorio.DarDeBaja(idEspecialidad, 'I', datos);
                     datos.ConfirmarTransaccion();
                     return true;

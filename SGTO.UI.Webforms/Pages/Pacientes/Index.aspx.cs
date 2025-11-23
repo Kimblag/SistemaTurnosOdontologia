@@ -270,7 +270,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                     VirtualPathUtility.ToAbsolute("~/Pages/Pacientes/Index"),
                     "abrirModalResultado"
                 );
-                Response.Redirect(Request.RawUrl, false);
+
             }
             catch (ExcepcionReglaNegocio ex)
             {

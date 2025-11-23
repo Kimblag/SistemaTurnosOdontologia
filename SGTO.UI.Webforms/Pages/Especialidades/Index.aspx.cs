@@ -132,10 +132,6 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             {
                 Response.Redirect($"~/Pages/Especialidades/Editar?id-especialidad={idEspecialidad}", false);
             }
-            else if (e.CommandName == "Ver")
-            {
-                // Response.Redirect($"~/Pages/Especialidades/Detalle?id-especialidad={idEspecialidad}", false);
-            }
         }
 
         protected void ddlEstado_SelectedIndexChanged(object sender, EventArgs e)
@@ -151,7 +147,7 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             Session[KEY_ESTADO_ESPECIALIDADES] = null;
-            ddlEstado.SelectedValue = "todos"; // Corregido (era "Todos")
+            ddlEstado.SelectedValue = "todos";
             txtBuscar.Text = string.Empty;
             CargarEspecialidades();
         }
@@ -170,13 +166,12 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
 
                 MensajeUiHelper.SetearYMostrar(
                     this.Page,
-                    "Especialidad dado de baja",
+                    "Especialidad dada de baja",
                     "La especialidad fue dada de baja correctamente.",
                     "Resultado",
                     VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
                     "abrirModalResultado"
                 );
-                Response.Redirect(Request.RawUrl, false);
             }
             catch (ExcepcionReglaNegocio ex)
             {

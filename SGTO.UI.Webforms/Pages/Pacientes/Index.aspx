@@ -116,11 +116,11 @@
                                         <i class="bi bi-eye"></i>
                                     </asp:LinkButton>
 
-                                   <button id="btnEliminar" runat="server" type="button"
-    class="btn btn-outline-danger"
-    title="Dar de baja">
-    <i class="bi bi-trash"></i>
-</button>
+                                    <button id="btnEliminar" runat="server" type="button"
+                                        class="btn btn-outline-danger"
+                                        title="Dar de baja">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </div>
 
                             </div>
@@ -166,7 +166,7 @@
     </div>
 
     <%-- modal resultado --%>
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

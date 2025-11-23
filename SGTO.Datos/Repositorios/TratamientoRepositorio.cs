@@ -234,5 +234,18 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+        public void DarDeBajaPorEspecialidad(int idEspecialidad, char estado, ConexionDBFactory datos)
+        {
+            string query = @"UPDATE Tratamiento 
+                     SET Estado = @Estado
+                     WHERE IdEspecialidad = @IdEspecialidad AND Estado = 'A'";
+
+            datos.LimpiarParametros();
+            datos.DefinirConsulta(query);
+            datos.EstablecerParametros("@Estado", estado);
+            datos.EstablecerParametros("@IdEspecialidad", idEspecialidad);
+            datos.EjecutarAccion();
+        }
+
     }
 }

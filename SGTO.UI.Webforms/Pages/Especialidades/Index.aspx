@@ -145,7 +145,7 @@
         </div>
     </div>
 
-    <!-- Modal Resultado  -->
+    <%-- modal resultado --%>
     <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -183,12 +183,15 @@
                 }
             };
 
-            window.abrirModalResultado = function (titulo, descripcion, href) {
-
-                if (titulo) document.getElementById('modalResultadoTitulo').textContent = titulo;
-                if (descripcion) document.getElementById('modalResultadoDescripcion').textContent = descripcion;
-                if (href) document.getElementById('modalResultadoLink').setAttribute('href', href);
-                new bootstrap.Modal(document.getElementById('modalResultado')).show();
+            // modal resultado
+            window.abrirModalResultado = function (titulo, descripcion) {
+                try {
+                    document.getElementById('modalResultadoTitulo').textContent = titulo || "Resultado";
+                    document.getElementById('modalResultadoDesc').textContent = descripcion || "";
+                    new bootstrap.Modal(document.getElementById('modalResultado')).show();
+                } catch (err) {
+                    console.error("Error al abrir modal de resultado:", err);
+                }
             };
         });
     </script>

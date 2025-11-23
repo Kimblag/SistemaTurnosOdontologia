@@ -14,10 +14,12 @@ namespace SGTO.Negocio.Servicios
     public class TratamientoService
     {
         private readonly TratamientoRepositorio _repositorio;
+        private readonly EspecialidadRepositorio _repositorioEspecialidad;
 
         public TratamientoService()
         {
             _repositorio = new TratamientoRepositorio();
+            _repositorioEspecialidad = new EspecialidadRepositorio();
         }
 
 
@@ -55,11 +57,14 @@ namespace SGTO.Negocio.Servicios
 
         public void ModificarTratamiento(TratamientoDto dto)
         {
+            ValidarEspecialidadActiva(dto.IdEspecialidad);
             Tratamiento tratamiento = TratamientoMapper.MapearAEntidad(dto);
             _repositorio.Modificar(tratamiento);
         }
+
         public void GuardarNuevoTratamiento(TratamientoDto nuevoDto)
         {
+            ValidarEspecialidadActiva(nuevoDto.IdEspecialidad);
             Tratamiento nuevoTratamiento = TratamientoMapper.MapearAEntidad(nuevoDto);
             _repositorio.Crear(nuevoTratamiento);
         }
@@ -118,6 +123,22 @@ namespace SGTO.Negocio.Servicios
             {
                 Debug.WriteLine("ERROR en TratamientoService.ListarPorEspecialidad: " + ex.Message);
                 throw;
+            }
+        }
+
+
+        private void ValidarEspecialidadActiva(int idEspecialidad)
+        {
+            var especialidad = _repositorioEspecialidad.ObtenerPorId(idEspecialidad);
+
+            if (especialidad == null)
+            {
+                throw new ExcepcionReglaNegocio("La especialidad seleccionada no existe.");
+            }
+
+            if (especialidad.Estado == EstadoEntidad.Inactivo)
+            {
+                throw new ExcepcionReglaNegocio("No se puede asociar un tratamiento a una especialidad que está Inactiva.");
             }
         }
 

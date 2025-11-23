@@ -18,15 +18,34 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
 {
     public partial class EspecialidadForm : System.Web.UI.UserControl
     {
-        public bool ModoEdicion { get; set; } = false;
         private readonly EspecialidadService _especialidadService;
+        private readonly TratamientoService _tratamientoService;
+
+        public bool ModoEdicion { get; set; } = false;
 
         public EspecialidadForm()
         {
             _especialidadService = new EspecialidadService();
+            _tratamientoService = new TratamientoService();
         }
 
         protected void Page_Load(object sender, EventArgs e)
+        {
+            int idEspecialidad = ValidarModoEdicion();
+
+            if (!IsPostBack)
+            {
+                if (ModoEdicion)
+                {
+                    CargarDetalleEspecialidad(idEspecialidad);
+                    CargarTratamientosAsociados(idEspecialidad);
+                }
+
+                ModalHelper.MostrarModalDesdeSession(this.Page, "EspecialidadMensajeTitulo", "EspecialidadMensajeDesc", "/Pages/Especialidades/Index");
+            }
+        }
+
+        private int ValidarModoEdicion()
         {
             int idEspecialidad = ExtraerIdEspecialidad();
 
@@ -34,25 +53,23 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
             {
                 ModoEdicion = true;
                 chkActivo.Enabled = true;
+                panelTratamientos.Visible = true;
             }
-
-            if (!IsPostBack)
+            else
             {
-                if (idEspecialidad != 0)
-                {
-                    CargarDetalleEspecialidad(idEspecialidad);
-                }
+                panelTratamientos.Visible = false;
+                chkActivo.Checked = true;
+                chkActivo.Enabled = false;
             }
+            return idEspecialidad;
         }
 
-        public int ExtraerIdEspecialidad()
+
+
+        private int ExtraerIdEspecialidad()
         {
             string idString = Request.QueryString["id-especialidad"] ?? string.Empty;
-            if (!string.IsNullOrEmpty(idString) && int.TryParse(idString, out int id))
-            {
-                return id;
-            }
-            return 0;
+            return int.TryParse(idString, out int id) ? id : 0;
         }
 
         public void CargarDetalleEspecialidad(int idEspecialidad)
@@ -68,15 +85,42 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
                 }
                 else
                 {
-                    Response.Redirect("~/Pages/Especialidades/Index.aspx", false);
+                    MensajeUiHelper.SetearYMostrar(this.Page,
+                         "Especialidad no encontrada",
+                         "No se encontró la especialidad solicitada.",
+                         "Resultado",
+                         VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
+                         "abrirModalResultado");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Response.Redirect("~/Pages/Especialidades/Index.aspx", false);
+                MensajeUiHelper.SetearYMostrar(this.Page,
+                     "Error inesperado",
+                     "Ocurrió un error al cargar la especialidad. " + ex.Message,
+                     "Resultado",
+                     VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
+                     "abrirModalResultado");
             }
         }
 
+
+
+        private void CargarTratamientosAsociados(int idEspecialidad)
+        {
+            try
+            {
+                List<TratamientoDto> lista = _tratamientoService.ListarPorEspecialidad(idEspecialidad);
+
+                gvTratamientos.DataSource = lista;
+                gvTratamientos.DataBind();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             if (ModoEdicion)
@@ -91,73 +135,77 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
 
         private void CrearEspecialidad()
         {
-            string nombre = txtNombre.Text;
-            string descripcion = txtDescripcion.Text;
-            string estado = chkActivo.Checked ? "activo" : "inactivo";
-            EspecialidadDto especialidadDto = EspecialidadMapper.MapearADto(0, nombre, descripcion, estado);
-
             try
             {
-                ValidarCampos();
+                ValidarCamposFormulario();
+
+                string nombre = txtNombre.Text.Trim();
+                string descripcion = txtDescripcion.Text.Trim();
+                string estado = chkActivo.Checked ? "activo" : "inactivo";
+
+                EspecialidadDto especialidadDto = EspecialidadMapper.MapearADto(0, nombre, descripcion, estado);
 
                 _especialidadService.GuardarNuevaEspecialidad(especialidadDto);
-                Session["EspecialidadMensajeTitulo"] = "Especialidad creada";
-                Session["EspecialidadMensajeDesc"] = "La especialidad se ha creado correctamente.";
-                ModalHelper.MostrarModalDesdeSession(this.Page,
-                    "EspecialidadMensajeTitulo",
-                    "EspecialidadMensajeDesc",
-                    VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
-                    "abrirModalResultado");
+
+                MensajeUiHelper.SetearYMostrar(
+                     this.Page,
+                     "Especialidad creada",
+                     "La especialidad se ha creado correctamente.",
+                     "Resultado",
+                     VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
+                     "abrirModalResultado"
+                 );
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Dato inválido", ex.Message, "Resultado", null, "abrirModalResultado");
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["EspecialidadMensajeTitulo"] = "Operación no permitida";
-                Session["EspecialidadMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "EspecialidadMensajeTitulo", "EspecialidadMensajeDesc", null, "abrirModalResultado");
-                return;
+                MensajeUiHelper.SetearYMostrar(this.Page, "Operación no permitida", ex.Message, "Resultado", null, "abrirModalResultado");
             }
             catch (Exception ex)
             {
-                Session["EspecialidadMensajeTitulo"] = "Error inesperado";
-                Session["EspecialidadMensajeDesc"] = "Ocurrió un error al intentar crear la especialidad." + ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "EspecialidadMensajeTitulo", "EspecialidadMensajeDesc", null, "abrirModalResultado");
-                return;
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error inesperado", "Error al crear: " + ex.Message, "Resultado", null, "abrirModalResultado");
             }
         }
 
         public void ModificarEspecialidad()
         {
             int idEspecialidad = ExtraerIdEspecialidad();
-            string nombre = txtNombre.Text;
-            string descripcion = txtDescripcion.Text;
-            string estado = chkActivo.Checked ? "activo" : "inactivo";
 
             try
             {
-                ValidarCampos();
-                
+                ValidarCamposFormulario();
+
+                string nombre = txtNombre.Text.Trim();
+                string descripcion = txtDescripcion.Text.Trim();
+                string estado = chkActivo.Checked ? "activo" : "inactivo";
+
                 EspecialidadDto especialidadDto = EspecialidadMapper.MapearADto(idEspecialidad, nombre, descripcion, estado);
+
                 _especialidadService.ModificarEspecialidad(especialidadDto);
-                Session["EspecialidadMensajeTitulo"] = "Especialidad modificada con éxito.";
-                Session["EspecialidadMensajeDesc"] = "La especialidad ha sido actualizada correctamente.";
-                Session["ModalTipo"] = "Resultado";
-                Response.Redirect($"~/Pages/Especialidades/Index.aspx", false);
+
+                MensajeUiHelper.SetearYMostrar(
+                    this.Page,
+                    "Especialidad modificada",
+                    "La especialidad ha sido actualizada correctamente.",
+                    "Resultado",
+                    VirtualPathUtility.ToAbsolute("~/Pages/Especialidades/Index"),
+                    "abrirModalResultado"
+                );
+            }
+            catch (ArgumentException ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Dato inválido", ex.Message, "Resultado", null, "abrirModalResultado");
             }
             catch (ExcepcionReglaNegocio ex)
             {
-                Session["EspecialidadMensajeTitulo"] = "Operación no permitida";
-                Session["EspecialidadMensajeDesc"] = ex.Message;
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Operación no permitida", ex.Message, "Resultado", null, "abrirModalResultado");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Session["EspecialidadMensajeTitulo"] = "Error inesperado";
-                Session["EspecialidadMensajeDesc"] = "Ocurrió un error al intentar dar de baja la cobertura.";
-                Session["ModalTipo"] = "Resultado";
-                ModalHelper.MostrarModalDesdeSession(this.Page, "CoberturaMensajeTitulo", "CoberturaMensajeDesc", null, "abrirModalResultado");
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error inesperado", "Error al modificar: " + ex.Message, "Resultado", null, "abrirModalResultado");
             }
         }
 
@@ -166,18 +214,16 @@ namespace SGTO.UI.Webforms.Controles.Especialidades
             Response.Redirect($"~/Pages/Especialidades/Index.aspx", false);
         }
 
-        private bool ValidarCampos()
+        private void ValidarCamposFormulario()
         {
             string nombre = txtNombre.Text;
             string descripcion = txtDescripcion.Text;
 
             if (!ValidadorCampos.EsTextoValido(nombre, 3, 50))
-                throw new ExcepcionReglaNegocio("El nombre debe tener entre 3 y 50 caracteres y no puede estar vacío.");
+                throw new ArgumentException("El nombre debe tener entre 3 y 50 caracteres y no puede estar vacío.");
 
-            if (!ValidadorCampos.EsTextoValido(descripcion, 10, 200)) 
-                throw new ExcepcionReglaNegocio("La descripción debe tener al menos 10 caracteres si se completa.");
-
-            return true;
+            if (!string.IsNullOrWhiteSpace(descripcion) && !ValidadorCampos.EsTextoValido(descripcion, 10, 200))
+                throw new ArgumentException("La descripción debe tener al menos 10 caracteres si se completa.");
         }
     }
 }
