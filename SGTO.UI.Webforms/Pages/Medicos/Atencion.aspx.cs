@@ -125,10 +125,15 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             {
                 try
                 {
-                    // TODO: CAMBIAR PARA OBTENER EL USUARIO ACTUAL
                     int idUsuarioLogueado = ObtenerIdUsuarioActual();
 
                     if (ddlTratamiento.SelectedValue == "0")
+                    {
+                        MensajeUiHelper.SetearYMostrar(this, "Error de Sesión", "No se pudo identificar al usuario. Por favor inicie sesión nuevamente.", "Ir al Login", "~/Pages/Login/Index.aspx", "abrirModalResultado");
+                        return;
+                    }
+
+                    if (pnlTratamientoSeleccion.Visible && ddlTratamiento.SelectedValue == "0")
                     {
                         MensajeUiHelper.SetearYMostrar(this, "Atención", "Debe seleccionar un tratamiento realizado.", "Cerrar", null, "abrirModalResultado");
                         return;
@@ -144,12 +149,6 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 
                     if (pnlTratamientoSeleccion.Visible)
                     {
-                        if (ddlTratamiento.SelectedValue == "0")
-                        {
-                            MensajeUiHelper.SetearYMostrar(this,
-                                "Error", "Seleccione un tratamiento.", "Cerrar", null, "abrirModalResultado");
-                            return;
-                        }
                         dto.IdTratamiento = int.Parse(ddlTratamiento.SelectedValue);
                         dto.TratamientoManual = null;
                     }
@@ -157,9 +156,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                     {
                         if (string.IsNullOrWhiteSpace(txtTratamientoManual.Text))
                         {
-                            MensajeUiHelper.SetearYMostrar(this,
-                                "Error",
-                                "Debe especificar el tratamiento manual.", "Cerrar", null, "abrirModalResultado");
+                            MensajeUiHelper.SetearYMostrar(this, "Error", "Debe especificar el tratamiento manual.", "Cerrar", null, "abrirModalResultado");
                             return;
                         }
                         dto.IdTratamiento = 0;
@@ -196,11 +193,11 @@ namespace SGTO.UI.Webforms.Pages.Medicos
         private int ObtenerIdUsuarioActual()
         {
 
-            if (Session["Usuario"] != null)
+            if (SessionManager.EstaLogueado())
             {
-                return 9;
+                return SessionManager.Usuario.IdUsuario;
             }
-            return 9;
+            return 0;
         }
 
     }
