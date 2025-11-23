@@ -1,13 +1,13 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
@@ -17,6 +17,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
 {
     public partial class Index : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly PlanService _servicioPlanes = new PlanService();
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
         private readonly TurnoService _servicioTurnos = new TurnoService();
@@ -31,8 +32,33 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
                 master.EstablecerSubtituloSeccion("Administración de Obras Sociales, Prepagas y sus respectivos planes de cobertura.");
             }
 
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
+                bool puedeCrear = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "CREAR");
+                pnlNuevoPlan.Visible = puedeCrear;
+
+                if (!puedeCrear)
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                }
+                else
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-4";
+                }
+
+                bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "EDITAR");
+                bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "ELIMINAR");
+
+                if (!puedeEditar && !puedeEliminar)
+                {
+                    gvPlanes.Columns[5].Visible = false;
+                }
                 CargarCombos();
                 CargarPlanesConFiltros();
 
@@ -136,7 +162,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             txtBuscarPlanes.Text = string.Empty;
-            ddlCobertura.SelectedIndex = 0; 
+            ddlCobertura.SelectedIndex = 0;
             ddlEstado.SelectedValue = "Activo";
 
             gvPlanes.PageIndex = 0;
@@ -154,7 +180,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
             gvPlanes.PageIndex = e.NewPageIndex;
             CargarPlanesConFiltros();
         }
-  
+
 
         public void gvPlanes_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -163,15 +189,29 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
                 PlanDto planDto = (PlanDto)e.Row.DataItem;
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
-                if (lblEstado != null && planDto != null)
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnEliminar = (HtmlControl)e.Row.FindControl("btnEliminar");
+
+                if (planDto != null)
                 {
-                    if (planDto.Estado.ToLower() == "Activo".ToLower())
+                    if (lblEstado != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-success";
+                        bool activo = planDto.Estado.ToLower() == "activo";
+                        lblEstado.Attributes["class"] = activo ? "badge badge-success" : "badge badge-warning";
                     }
-                    else
+
+                    bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "EDITAR");
+                    bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "ELIMINAR");
+
+                    if (btnEditar != null) btnEditar.Visible = puedeEditar;
+
+                    if (btnEliminar != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-warning";
+                        btnEliminar.Visible = puedeEliminar;
+                        if (puedeEliminar)
+                        {
+                            btnEliminar.Attributes["onclick"] = $"abrirModalConfirmacion('{planDto.IdPlan}', 'plan');";
+                        }
                     }
                 }
             }
@@ -190,7 +230,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
             }
         }
 
-     
+
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {

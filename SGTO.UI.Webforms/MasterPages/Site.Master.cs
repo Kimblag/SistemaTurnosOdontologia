@@ -1,8 +1,10 @@
-﻿using SGTO.Negocio.Servicios;
+﻿using SGTO.Negocio.DTOs.Seguridad;
+using SGTO.Negocio.Seguridad;
+using SGTO.Negocio.Servicios;
+using SGTO.UI.Webforms.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.UI;
@@ -14,14 +16,81 @@ namespace SGTO.UI.Webforms.MasterPages
     public partial class SiteMaster : MasterPage
     {
         private readonly ParametroService _servicioParametros = new ParametroService();
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index");
+                return;
+            }
+
             if (!IsPostBack)
             {
                 CargarNombreClinica();
+                CargarDatosUsuarioHeader();
+                ConfigurarMenu(); // mostrar menú segun el permiso
             }
         }
+
+
+        private void CargarDatosUsuarioHeader()
+        {
+            UsuarioSesionDto usuario = SessionManager.Usuario;
+            if (usuario != null)
+            {
+                NombreUsuario.InnerText = usuario.NombreCompleto;
+                RolUsuario.InnerText = usuario.NombreRol;
+            }
+        }
+
+        private void ConfigurarMenu()
+        {
+            UsuarioSesionDto usuario = SessionManager.Usuario;
+
+            // volvermos a validar si hay un usuario, sino ocultamos todo.
+            if (usuario == null)
+            {
+                OcultarTodoElMenu();
+                return;
+            }
+
+            // verificar el permiso de lectura para mostrar la opcion del menu
+            MenuTurnos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TURNOS", "VER");
+            MenuPacientes.Visible = _servicioAutorizacion.TienePermiso(usuario, "PACIENTES", "VER");
+
+            MenuMedicos.Visible = _servicioAutorizacion.TienePermiso(usuario, "MEDICOS", "VER");
+
+            MenuCoberturas.Visible = _servicioAutorizacion.TienePermiso(usuario, "COBERTURAS", "VER");
+            MenuEspecialidades.Visible = _servicioAutorizacion.TienePermiso(usuario, "ESPECIALIDADES", "VER");
+            MenuTratamientos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TRATAMIENTOS", "VER");
+            MenuReportes.Visible = _servicioAutorizacion.TienePermiso(usuario, "REPORTES", "VER");
+
+            // para los admins
+            MenuConfiguracion.Visible = _servicioAutorizacion.TienePermiso(usuario, "CONFIGURACION", "VER")
+                                        || _servicioAutorizacion.TienePermiso(usuario, "USUARIOS", "VER");
+        }
+
+        private void OcultarTodoElMenu()
+        {
+            MenuDashboard.Visible = false;
+            MenuTurnos.Visible = false;
+            MenuPacientes.Visible = false;
+            MenuMedicos.Visible = false;
+            MenuCoberturas.Visible = false;
+            MenuEspecialidades.Visible = false;
+            MenuTratamientos.Visible = false;
+            MenuReportes.Visible = false;
+            MenuConfiguracion.Visible = false;
+        }
+
+        protected void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            SessionManager.CerrarSesion();
+            Response.Redirect("~/Pages/Login/Index");
+        }
+
 
         public void EstablecerTituloSeccion(string tituloSeccionActiva)
         {

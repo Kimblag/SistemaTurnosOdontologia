@@ -10,7 +10,7 @@
 
                 <div class="row g-2 align-items-end">
 
-                    <div class="col-md-4 col-lg-5">
+                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-5">
                         <label for="txtBuscarCobertura" class="form-label small text-muted">Buscar Cobertura</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
@@ -20,7 +20,7 @@
                     </div>
 
 
-                     <div class="col-md-3 col-lg-3">
+                    <div class="col-md-3 col-lg-3">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select"
                             OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
@@ -37,7 +37,7 @@
 
 
 
-                    <div class="col-md-12 col-lg-1 text-end border-start ps-3">
+                    <div id="pnlNuevaCobertura" runat="server" class="col-md-12 col-lg-1 text-end border-start ps-3">
                         <label class="form-label d-none d-lg-block">&nbsp;</label>
                         <asp:Button ID="btnNuevaCobertura" runat="server"
                             Text="+ Nueva"
@@ -104,14 +104,12 @@
                                         CommandName="Editar"
                                         ToolTip="Editar Datos"
                                         CommandArgument='<%# Eval("IdCobertura") %>'>
-                             <i class="bi bi-pencil"></i>
+                                         <i class="bi bi-pencil"></i>
                                     </asp:LinkButton>
 
-                                    <button type="button"
+                                    <button id="btnEliminar" runat="server" type="button"
                                         class="btn btn-outline-danger"
-                                        data-id='<%# Eval("IdCobertura") %>'
-                                        title="Dar de baja"
-                                        onclick="abrirModalConfirmacion('<%# Eval("IdCobertura") %>', 'cobertura')">
+                                        title="Dar de baja">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>

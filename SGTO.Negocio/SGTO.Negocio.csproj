@@ -66,10 +66,13 @@
     <Compile Include="DTOs\PlanDto.cs" />
     <Compile Include="DTOs\ReportePacienteDto.cs" />
     <Compile Include="DTOs\ReporteTurnosDto.cs" />
+    <Compile Include="DTOs\Roles\ModuloPermisosDto.cs" />
     <Compile Include="DTOs\Roles\RolCrearDto.cs" />
     <Compile Include="DTOs\Roles\RolDetalleDto.cs" />
     <Compile Include="DTOs\Roles\RolListadoDto.cs" />
+    <Compile Include="DTOs\Seguridad\UsuarioSesionDto.cs" />
     <Compile Include="DTOs\TratamientoDto.cs" />
+    <Compile Include="DTOs\Turnos\FiltroTurnoDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoCreacionDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoDetalleDto.cs" />
     <Compile Include="DTOs\Turnos\TurnoEdicionDto.cs" />
@@ -80,7 +83,7 @@
     <Compile Include="DTOs\Usuarios\UsuarioEdicionDto.cs" />
     <Compile Include="DTOs\Usuarios\UsuarioListadoDto.cs" />
     <Compile Include="Excepciones\ExcepcionReglaNegocio.cs" />
-    <Compile Include="Excepciones\ExcepcionUsuarioNoAutorizado.cs" />
+    <Compile Include="Excepciones\ExcepcionAutenticacion.cs" />
     <Compile Include="Mappers\CoberturaMapper.cs" />
     <Compile Include="Mappers\EnumeracionMapperNegocio.cs" />
     <Compile Include="Mappers\EspecialidadMapper.cs" />

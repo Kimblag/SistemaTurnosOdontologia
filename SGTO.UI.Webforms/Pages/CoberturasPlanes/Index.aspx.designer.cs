@@ -15,6 +15,24 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
     {
 
         /// <summary>
+        /// lnkCardCoberturas control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkCardCoberturas;
+
+        /// <summary>
+        /// lnkCardPlanes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkCardPlanes;
+
+        /// <summary>
         /// hdnIdEliminar control.
         /// </summary>
         /// <remarks>

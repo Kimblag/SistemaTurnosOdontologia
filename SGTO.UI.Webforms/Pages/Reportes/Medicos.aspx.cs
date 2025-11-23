@@ -1,7 +1,9 @@
 ﻿using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 {
     public partial class Medicos : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly ReporteService _servicioReportes = new ReporteService();
 
         private const string KEY_REP_MED_DESDE = "FiltroRepMedDesde";
@@ -20,6 +23,18 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "REPORTES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.ConfigurarBotonVolver(true, "~/Pages/Reportes/Index.aspx");

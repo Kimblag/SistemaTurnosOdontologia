@@ -1,5 +1,7 @@
-﻿using SGTO.Negocio.Servicios;
+﻿using SGTO.Negocio.Seguridad;
+using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using System;
 using System.Web.UI;
 
@@ -7,10 +9,23 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 {
     public partial class Detalle : Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly MedicoService _medicoService = new MedicoService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "MEDICOS", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.ConfigurarBotonVolver(true, "~/Pages/Medicos/Index.aspx");
@@ -79,7 +94,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 }
                 catch (Exception)
                 {
-                    Response.Redirect("~/Pages/Error/Error.aspx");
+                    Response.Redirect("~/Pages/Errores/Error.aspx");
                 }
             }
             else

@@ -2,6 +2,7 @@
 using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.DTOs.Seguridad;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Mappers;
@@ -91,7 +92,7 @@ namespace SGTO.Negocio.Servicios
         {
             try
             {
-                return TurnoMapper.MapearListaTurnoListadoDto(_repositorioTurno.Listar());
+                return TurnoMapper.MapearListaTurnoListadoDto(_repositorioTurno.Listar(null, null, null, null, null));
             }
             catch (Exception)
             {
@@ -605,6 +606,35 @@ namespace SGTO.Negocio.Servicios
             return TurnoMapper.MapearAEdicionDto(entidad);
 
         }
+
+
+        public List<TurnoListadoDto> ListarConFiltros(FiltroTurnoDto filtros, UsuarioSesionDto usuarioSolicitante)
+        {
+            // si el usuario es médico, ignoramos el filtro.IdMEdico y usamos su propio id
+            if (usuarioSolicitante.IdRol == 3)
+            {
+                if (usuarioSolicitante.IdMedico.HasValue)
+                {
+                    filtros.IdMedico = usuarioSolicitante.IdMedico.Value;
+                }
+                else
+                {
+                    // por seguridad, si el usuario es médico pero no tiene ficha médicoa, no mostramos nada.
+                    return new List<TurnoListadoDto>();
+                }
+            }
+
+            List<Turno> turnos = _repositorioTurno.Listar(
+                filtros.FechaInicio,
+                filtros.FechaFin,
+                filtros.IdMedico,
+                filtros.IdPaciente,
+                filtros.IdEspecialidad
+            );
+
+            return TurnoMapper.MapearListaTurnoListadoDto(turnos);
+        }
+
 
     }
 }

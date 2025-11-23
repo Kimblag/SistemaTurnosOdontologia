@@ -148,8 +148,9 @@
     <Content Include="Pages\Configuracion\Usuarios\Editar.aspx" />
     <Content Include="Pages\Configuracion\Usuarios\Index.aspx" />
     <Content Include="Pages\Configuracion\Usuarios\Nuevo.aspx" />
-    <Content Include="Pages\Error\Error.aspx" />
-    <Content Include="Pages\Error\NotFound.aspx" />
+    <Content Include="Pages\Errores\AccesoDenegado.aspx" />
+    <Content Include="Pages\Errores\Error.aspx" />
+    <Content Include="Pages\Errores\NotFound.aspx" />
     <Content Include="Pages\Especialidades\Editar.aspx" />
     <Content Include="Pages\Especialidades\Index.aspx" />
     <Content Include="Pages\Especialidades\Nuevo.aspx" />
@@ -423,18 +424,25 @@
     <Compile Include="Pages\Configuracion\Usuarios\Nuevo.aspx.designer.cs">
       <DependentUpon>Nuevo.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Error\Error.aspx.cs">
+    <Compile Include="Pages\Errores\AccesoDenegado.aspx.cs">
+      <DependentUpon>AccesoDenegado.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Errores\AccesoDenegado.aspx.designer.cs">
+      <DependentUpon>AccesoDenegado.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Errores\Error.aspx.cs">
       <DependentUpon>Error.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Error\Error.aspx.designer.cs">
+    <Compile Include="Pages\Errores\Error.aspx.designer.cs">
       <DependentUpon>Error.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Error\NotFound.aspx.cs">
+    <Compile Include="Pages\Errores\NotFound.aspx.cs">
       <DependentUpon>NotFound.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Pages\Error\NotFound.aspx.designer.cs">
+    <Compile Include="Pages\Errores\NotFound.aspx.designer.cs">
       <DependentUpon>NotFound.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Especialidades\Editar.aspx.cs">
@@ -634,6 +642,7 @@
     <Compile Include="MasterPages\ViewSwitcher.ascx.designer.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Seguridad\SessionManager.cs" />
     <Compile Include="Utils\MensajeUiHelper.cs" />
     <Compile Include="Utils\ModalHelper.cs" />
     <Compile Include="Utils\TurnoUiHelper.cs" />

@@ -1,9 +1,11 @@
 ﻿using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,27 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 {
     public partial class Detalle : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly PacienteService _servicioPaciente = new PacienteService();
         private readonly ParametroService _servicioParametro = new ParametroService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PACIENTES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Pacientes/Index");
                 master.EstablecerOpcionMenuActiva("Pacientes");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Vista consolidada de datos filiatorios, historial de atenciones y agenda futura.");

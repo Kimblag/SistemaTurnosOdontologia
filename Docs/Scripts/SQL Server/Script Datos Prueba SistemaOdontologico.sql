@@ -22,6 +22,7 @@ INSERT INTO Rol (Nombre, Descripcion, Estado) VALUES
 
 -- Permiso
 INSERT INTO Permiso (Modulo, Accion, Descripcion) VALUES
+('Inicio','Ver','Ver dashboard del sistema'),
 ('Turnos','Ver','Ver listado de turnos'),
 ('Turnos','Crear','Registrar nuevos turnos'),
 ('Turnos','Editar','Editar turnos existentes'),
@@ -82,8 +83,9 @@ INSERT INTO Permiso (Modulo, Accion, Descripcion) VALUES
 ('Roles','Eliminar','Eliminar rol'),
 ('Configuracion','Ver','Ver configuración'),
 ('Configuracion','Editar','Editar configuración'),
-('ParametrosSistema','Ver','Ver parámetros'),
-('ParametrosSistema','Editar','Editar parámetros');
+('ParametroSistema','Ver','Ver parámetros'),
+('ParametroSistema','Editar','Editar parámetros'),
+('Atencion','Ver','Ver página de atención del paciente');
 
 -- Especialidad
 INSERT INTO Especialidad (Nombre, Descripcion, Estado) VALUES
@@ -131,16 +133,34 @@ SELECT 1, IdPermiso FROM Permiso;
 -- Recepcionista: TODO sobre Turnos y Pacientes
 INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 2, IdPermiso FROM Permiso
-WHERE Modulo IN ('Turnos','Pacientes');
+WHERE Modulo IN ('Turnos','Pacientes', 'Medicos');
+
+GO
+-- Recepcionista: Sólo ver
+INSERT INTO RolPermiso (IdRol, IdPermiso)
+SELECT 2, IdPermiso
+FROM Permiso
+WHERE
+    (Modulo = 'Coberturas' AND Accion IN ('Ver'))
+    OR
+    (Modulo = 'Planes' AND Accion = 'Ver')
+    OR
+    (Modulo = 'Especialidades' AND Accion = 'Ver')
+    OR
+    (Modulo = 'Tratamientos' AND Accion = 'Ver');
+
+GO
 
 -- Médico: Turnos(Ver/Editar) + Pacientes(Ver) + Tratamientos(Ver) + Especialidades(Ver)
 INSERT INTO RolPermiso (IdRol, IdPermiso)
 SELECT 3, IdPermiso
 FROM Permiso
 WHERE
-    (Modulo = 'Turnos' AND Accion IN ('Ver','Editar'))
+    (Modulo = 'Turnos' AND Accion IN ('Ver'))
     OR
-    (Modulo = 'Pacientes' AND Accion = 'Ver');
+    (Modulo = 'Pacientes' AND Accion = 'Ver')
+    OR
+    (Modulo = 'Atencion' AND Accion = 'Ver');
 
 -- Tratamiento
 INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado) VALUES
@@ -161,15 +181,29 @@ INSERT INTO Tratamiento (Nombre, Descripcion, CostoBase, IdEspecialidad, Estado)
 ('Tomografía Cone Beam', 'Estudio 3D para implantes', 25000, 8, 'A');
 
 -- Usuario
+INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado, FechaAlta)
+VALUES (
+    'Super', 
+    'Usuario', 
+    'root@sistema.com', 
+    'root', 
+    'ihYD5DAPxK1tnFBpV8qIdT395LegNh3Uxd3v+oOE6xB0iKNN3CG0OwzZdvyNUq6x', 
+    (SELECT Top 1 IdRol FROM Rol WHERE Nombre = 'Administrador'), 
+    'A', 
+    GETDATE()
+);
+
+GO
+
 INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado)
 VALUES
 ('Ana','García','ana.garcia@sgto.com','agarcia','hash1',1,'A'),
 ('Esteban','Fernández','esteban.fernandez@sgto.com','efernandez','hash2',1,'A'),
-('Luis','Pérez','luis.perez@sgto.com','lperez','hash3',2,'A'),
+('Luis','Pérez','luis.perez@sgto.com','lperez','7b2XJvi68rgst3PU1cDtstsE5FTWfbV1G3h6Vtyd1ZOH2j5tfsoQKIWy8PgZFh7G',2,'A'),
 ('Paula','Mendoza','paula.mendoza@sgto.com','pmendoza','hash4',2,'I'),
-('Sofía','López','sofia.lopez@sgto.com','slopez','hash5',3,'A'),
+('Sofía','López','sofia.lopez@sgto.com','slopez','MJo60JzWVcscL09tb/kPwrURprGtAFi/syvMf2wE5O2TshiezY/7Ns22GWQxGsPi',3,'A'),
 ('Martín','Ruiz','martin.ruiz@sgto.com','mruiz','hash6',3,'A'),
-('Nicolás','Benítez','nicolas.benitez@sgto.com','nbenitez','hash7',3,'A'),
+('Nicolás','Benítez','nicolas.benitez@sgto.com','nbenitez','mIq1I4frcDeymJq8kAiX+tP1WqnW5jEidaecycFtsMQ3dG6vmMrsUdBHMzWYrufN',3,'A'),
 ('Lucía','Romero','lucia.romero@sgto.com','lromero','hash8',3,'I'),
 ('Camila','Rossi','camila.rossi@sgto.com','crossi','hash9',3,'A'),
 ('Carlos','Méndez','carlos.mendez@sgto.com','cmendez','hash10',3,'A');
@@ -178,12 +212,12 @@ VALUES
 INSERT INTO Medico
 (Nombre, Apellido, NumeroDocumento, Genero, FechaNacimiento, Telefono, Matricula, IdUsuario, Estado)
 VALUES
-('Sofía','López','31234568','F','1988-10-20','1123456790','121235',5,'A'),
-('Martín','Ruiz','30234567','M','1985-04-15','1123456789','121234',6,'A'),
-('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','121236',7,'A'),
-('Lucía','Romero','28234570','F','1990-07-18','1123456792','121237',8,'I'),
-('Camila','Rossi','32234571','F','1991-05-12','1123456793','121238',9,'A'),
-('Carlos','Méndez','27234572','M','1982-11-02','1123456794','121239',10,'A');
+('Sofía','López','31234568','F','1988-10-20','1123456790','121235',6,'A'),
+('Martín','Ruiz','30234567','M','1985-04-15','1123456789','121234',7,'A'),
+('Nicolás','Benítez','29234569','M','1984-02-28','1123456791','121236',8,'A'),
+('Lucía','Romero','28234570','F','1990-07-18','1123456792','121237',9,'I'),
+('Camila','Rossi','32234571','F','1991-05-12','1123456793','121238',10,'A'),
+('Carlos','Méndez','27234572','M','1982-11-02','1123456794','121239',11,'A');
 
 GO
 
@@ -446,15 +480,3 @@ VALUES
 (10, 65, '2024-03-01', NULL, 'A', 'Último porcentaje previo a inactividad');
 GO
 
---INSERT INTO Usuario (Nombre, Apellido, Email, NombreUsuario, PasswordHash, IdRol, Estado, FechaAlta)
---VALUES (
---    'Super', 
---    'Usuario', 
---    'root@sistema.com', 
---    'root', 
---    'HASH_DE_TU_PASSWORD_SEGURO', 
---    (SELECT Top 1 IdRol FROM Rol WHERE Nombre = 'Administrador'), 
---    'A', 
---    GETDATE()
---);
---GO

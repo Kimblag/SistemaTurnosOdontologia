@@ -1,6 +1,9 @@
 ﻿using SGTO.Negocio.DTOs;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
+using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,12 +11,12 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using SGTO.Negocio.Servicios.Exportacion;
 
 namespace SGTO.UI.Webforms.Pages.Reportes
 {
     public partial class Pacientes : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly ReporteService _servicioReportes = new ReporteService();
 
         private const string KEY_REPORTE_FECHA_DESDE = "FiltroReporteFechaDesde";
@@ -24,6 +27,17 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "REPORTES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
 
             if (Master is SiteMaster master)
             {

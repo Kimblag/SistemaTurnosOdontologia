@@ -1,8 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,20 +17,53 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
 {
     public partial class Especialidades : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly EspecialidadService _especialidadService = new EspecialidadService();
         private readonly TurnoService _turnoService = new TurnoService();
         private const string KEY_ESTADO_ESPECIALIDADES = "FiltroEstadoEspecialidades";
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Especialidades");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Catálogo de las áreas de práctica odontológica habilitadas.");
             }
+
             if (!IsPostBack)
             {
+                bool puedeCrear = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "CREAR");
+                pnlNuevaEspecialidad.Visible = puedeCrear;
+
+                if (!puedeCrear)
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-6";
+                }
+                else
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                }
+
+                bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "EDITAR");
+                bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "ELIMINAR");
+
+                if (!puedeEditar && !puedeEliminar)
+                {
+                    gvEspecialidades.Columns[3].Visible = false;
+                }
                 string estadoFiltroGuardado = Session[KEY_ESTADO_ESPECIALIDADES] as string;
 
                 if (estadoFiltroGuardado != null)
@@ -56,6 +91,8 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
             {
                 var especialidadDto = (EspecialidadDto)e.Row.DataItem;
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+                var btnEliminar = (HtmlControl)e.Row.FindControl("btnEliminar");
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
 
                 if (lblEstado != null && especialidadDto != null)
                 {
@@ -67,6 +104,23 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
                     {
                         lblEstado.Attributes["class"] = "badge badge-warning";
                     }
+
+                }
+                if (btnEliminar != null && btnEliminar.Visible)
+                {
+                    bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "ELIMINAR");
+                    btnEliminar.Visible = puedeEliminar;
+
+                    if (puedeEliminar)
+                    {
+                        btnEliminar.Attributes["onclick"] = $"abrirModalConfirmacion('{especialidadDto.IdEspecialidad}')";
+                    }
+                }
+
+                if (btnEditar != null)
+                {
+                    bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "EDITAR");
+                    btnEditar.Visible = puedeEditar;
                 }
             }
         }

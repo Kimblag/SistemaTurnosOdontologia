@@ -308,5 +308,41 @@ namespace SGTO.Datos.Repositorios
             }
         }
 
+
+        public Usuario ObtenerPorCredencial(string credencial)
+        {
+            string query = @"
+                SELECT U.IdUsuario, U.Nombre, U.Apellido, U.Email, U.NombreUsuario,
+                       U.PasswordHash, U.IdRol, R.Nombre AS NombreRol,
+                       U.Estado, U.FechaAlta, U.FechaModificacion
+                FROM Usuario U
+                JOIN Rol R ON U.IdRol = R.IdRol
+                WHERE (U.NombreUsuario = @Credencial OR U.Email = @Credencial)
+                AND U.Estado = 'A'";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@Credencial", credencial);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            return UsuarioMapper.MapearAEntidad(lector);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return null;
+        }
+
     }
 }

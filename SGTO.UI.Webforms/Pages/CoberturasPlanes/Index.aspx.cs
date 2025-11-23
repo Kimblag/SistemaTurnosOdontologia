@@ -1,6 +1,8 @@
 ﻿using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,32 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
 {
     public partial class CoberturasPlanes : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
+
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            bool puedeVerCoberturas = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "COBERTURAS", "VER");
+            bool puedeVerPlanes = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "VER");
+
+            if (!puedeVerCoberturas && !puedeVerPlanes)
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
+            if (lnkCardCoberturas != null)
+                lnkCardCoberturas.Visible = puedeVerCoberturas;
+
+            if (lnkCardPlanes != null)
+                lnkCardPlanes.Visible = puedeVerPlanes;
+
             // se pregunta si se carga la página desde un site master (la pagina actual es hija de site master)
             // y se activa la opcion
             if (Master is SiteMaster master)
@@ -23,6 +49,7 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Administración de Obras Sociales, Prepagas y sus respectivos planes de cobertura.");
             }
+
             ModalHelper.MostrarModalDesdeSession(this, "ModalTitulo", "ModalDesc");
         }
 
@@ -60,6 +87,16 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes
             }
 
             Response.Redirect(Request.RawUrl, false);
+        }
+
+        protected void lnkCardCoberturas_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/CoberturasPlanes/Coberturas/Index.aspx", false);
+        }
+
+        protected void lnkCardPlanes_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Pages/CoberturasPlanes/Planes/Index.aspx", false);
         }
     }
 }

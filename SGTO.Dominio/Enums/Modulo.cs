@@ -14,7 +14,8 @@
         Configuracion = 10,
         Usuarios = 11,
         Roles = 12,
-        ParametrosSistema = 13
+        ParametroSistema = 13,
+        Atencion = 14
     }
 
 }

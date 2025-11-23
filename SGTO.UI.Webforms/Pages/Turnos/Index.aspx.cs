@@ -1,7 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.DTOs.Turnos;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -14,12 +17,24 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 {
     public partial class Index : System.Web.UI.Page
     {
-
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly TurnoService _servicioTurno = new TurnoService();
         private readonly MedicoService _servicioMedico = new MedicoService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TURNOS", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("turnos");
@@ -29,11 +44,30 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
             if (!IsPostBack)
             {
-                CargarMedicosDropdown();
+
+                ConfigurarVistaPorRol();
+
+                if (pnlFiltroMedico.Visible)
+                {
+                    // solo se carag el dropdown si el usuario no es médico
+                    CargarMedicosDropdown();
+                }
+
                 txtFecha.Text = string.Empty;
+
                 CargarTurnosConFiltros();
             }
         }
+
+        private void ConfigurarVistaPorRol()
+        {
+            // si usuario es medico, entonces ocultar el filtro, porque sólo puede ver sus turnos
+            if (_servicioAutorizacion.EsMedico(SessionManager.Usuario))
+            {
+                pnlFiltroMedico.Visible = false;
+            }
+        }
+
 
         private void CargarMedicosDropdown()
         {
@@ -58,100 +92,91 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
         private void CargarTurnosConFiltros()
         {
-            List<TurnoListadoDto> todosLosTurnos = new List<TurnoListadoDto>();
 
-            List<TurnoListadoDto> listaFiltrada = new List<TurnoListadoDto>();
 
             try
             {
-                todosLosTurnos = _servicioTurno.Listar();
+                // este dto es para ayudarnos a armar los filtros necesarios para la bd
+                FiltroTurnoDto filtros = new FiltroTurnoDto();
+
+
+                // verificar si hay filtro por fecha
+                if (DateTime.TryParse(txtFecha.Text, out DateTime fechaSeleccionada))
+                {
+                    filtros.FechaInicio = fechaSeleccionada.Date;
+                    filtros.FechaFin = fechaSeleccionada.Date.AddDays(1).AddSeconds(-1);
+                }
+
+                // verificar filtro de medicos, sólo estara visible para recepcionista o admin
+                if (pnlFiltroMedico.Visible && ddlMedico.SelectedValue != "-1")
+                {
+                    if (int.TryParse(ddlMedico.SelectedValue, out int idMedicoSeleccionado))
+                    {
+                        filtros.IdMedico = idMedicoSeleccionado;
+                    }
+                }
+
+                List<TurnoListadoDto> listaDesdeBase = _servicioTurno.ListarConFiltros(filtros, SessionManager.Usuario);
+                List<TurnoListadoDto> listaFinal = new List<TurnoListadoDto>();
+
+                string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
+                string estadoSeleccionado = ddlEstado.SelectedValue;
+
+                foreach (TurnoListadoDto turno in listaDesdeBase)
+                {
+                    bool cumpleCriterios = true;
+
+                    if (!string.IsNullOrEmpty(textoBuscar))
+                    {
+                        string nombrePac = ValidadorCampos.NormalizarTexto(turno.NombrePaciente) ?? "";
+                        string dniPac = turno.DniPaciente ?? "";
+                        string matricula = turno.Matricula ?? "";
+                        string nombreMed = ValidadorCampos.NormalizarTexto(turno.NombreMedico) ?? "";
+
+                        bool encontrado = nombrePac.Contains(textoBuscar) ||
+                                          dniPac.Contains(textoBuscar) ||
+                                          nombreMed.Contains(textoBuscar) ||
+                                          matricula.Contains(textoBuscar);
+
+                        if (!encontrado)
+                        {
+                            cumpleCriterios = false;
+                        }
+                    }
+
+                    if (cumpleCriterios && !string.IsNullOrEmpty(estadoSeleccionado))
+                    {
+                        if (!turno.Estado.Equals(estadoSeleccionado, StringComparison.OrdinalIgnoreCase))
+                        {
+                            cumpleCriterios = false;
+                        }
+                    }
+
+                    if (cumpleCriterios)
+                    {
+                        listaFinal.Add(turno);
+                    }
+                }
+
+                listaFinal.Sort((x, y) =>
+                {
+                    int comparacionFecha = x.Fecha.CompareTo(y.Fecha);
+                    if (comparacionFecha == 0)
+                    {
+                        return string.Compare(x.Hora, y.Hora);
+                    }
+                    return comparacionFecha;
+                });
+
+                gvTurnos.DataSource = listaFinal;
+                gvTurnos.DataBind();
+
             }
             catch (Exception ex)
             {
-                MensajeUiHelper.SetearYMostrar(this.Page, "Error", ex.Message);
-                return;
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "Ocurrió un error al cargar los turnos: " + ex.Message);
             }
 
-            string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
-            string fechaTexto = txtFecha.Text;
-            string idMedicoSeleccionado = ddlMedico.SelectedValue;
-            string estadoSeleccionado = ddlEstado.SelectedValue;
-
-            foreach (TurnoListadoDto turno in todosLosTurnos)
-            {
-                bool cumple = true;
-
-                if (!string.IsNullOrEmpty(textoBuscar))
-                {
-                    string nombre = ValidadorCampos.NormalizarTexto(turno.NombrePaciente) ?? "";
-                    string dni = turno.DniPaciente ?? "";
-                    string matricula = turno.Matricula ?? "";
-                    string nombreMedico = ValidadorCampos.NormalizarTexto(turno.NombreMedico) ?? "";
-                    if (!nombre.ToUpper().Contains(textoBuscar) &&
-                        !dni.Contains(textoBuscar) &&
-                        !nombreMedico.Contains(textoBuscar) &&
-                        !matricula.Contains(textoBuscar))
-                    {
-                        cumple = false;
-                    }
-                }
-
-                if (cumple && !string.IsNullOrEmpty(fechaTexto))
-                {
-                    DateTime fechaFiltro;
-                    if (DateTime.TryParse(fechaTexto, out fechaFiltro))
-                    {
-                        if (turno.Fecha.Date != fechaFiltro.Date) cumple = false;
-                    }
-                }
-
-                if (cumple && idMedicoSeleccionado != "-1")
-                {
-                    if (turno.IdMedico != int.Parse(idMedicoSeleccionado)) cumple = false;
-                }
-
-                if (cumple && !string.IsNullOrEmpty(estadoSeleccionado))
-                {
-                    if (!turno.Estado.Equals(estadoSeleccionado, StringComparison.OrdinalIgnoreCase)) cumple = false;
-                }
-
-                if (cumple) listaFiltrada.Add(turno);
-            }
-
-            // se ordena la lista por fechas
-            // si no seleccionó fechas entonces se ordenan para mostrar la lista ordenada desde el día actual
-            if (string.IsNullOrEmpty(fechaTexto))
-            {
-                List<TurnoListadoDto> listaFuturos = new List<TurnoListadoDto>();
-                List<TurnoListadoDto> listaPasados = new List<TurnoListadoDto>();
-                DateTime hoy = DateTime.Today;
-
-                // separar en dos listas para tener los turnos del futuro y los qu eya pasaron.
-                foreach (TurnoListadoDto t in listaFiltrada)
-                {
-                    if (t.Fecha.Date >= hoy)
-                        listaFuturos.Add(t);
-                    else
-                        listaPasados.Add(t);
-                }
-
-                //se ordenen los turnos futuros de menor a mayor
-                listaFuturos.Sort((x, y) => x.Fecha.CompareTo(y.Fecha));
-
-                // ordenado descendentemente los pasados
-                listaPasados.Sort((x, y) => y.Fecha.CompareTo(x.Fecha));
-
-                listaFiltrada.Clear();
-                listaFiltrada.AddRange(listaFuturos);
-                listaFiltrada.AddRange(listaPasados);
-            }
-            else
-            {
-                listaFiltrada.Sort((x, y) => string.Compare(x.Hora, y.Hora));
-            }
-
-            gvTurnos.DataSource = listaFiltrada;
-            gvTurnos.DataBind();
         }
 
 
@@ -190,6 +215,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
                 var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
                 var btnAtender = (LinkButton)e.Row.FindControl("btnAtender");
+                var btnDetalle = (LinkButton)e.Row.FindControl("btnDetalle");
 
                 if (turnoDto != null)
                 {
@@ -203,15 +229,30 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
                     if (btnEditar != null)
                     {
-                        btnEditar.Visible = TurnoUiHelper.EsEditable(estadoTurno);
+                        // validar que el estado del turno permita editarlo
+                        bool estadoPermiteEdicion = TurnoUiHelper.EsEditable(estadoTurno);
+
+                        // verificar que el usuario actual tenga el permiso para editar
+                        bool tienePermisoEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TURNOS", "EDITAR");
+
+                        btnEditar.Visible = estadoPermiteEdicion && tienePermisoEditar;
                     }
 
                     if (btnAtender != null)
                     {
-                        bool esAtendible = estadoTurno == "nuevo" || estadoTurno == "reprogramado" ||
-                                           estadoTurno == "n" || estadoTurno == "r";
+                        // validar que su estado permita atender un turno
+                        bool esAtendible = (estadoTurno == "nuevo" || estadoTurno == "reprogramado" ||
+                                             estadoTurno == "n" || estadoTurno == "r");
+                        // validar que el usuario es un médico
+                        bool esMedico = _servicioAutorizacion.EsMedico(SessionManager.Usuario);
+                        bool puedeAtender = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ATENCION", "VER");
 
-                        btnAtender.Visible = esAtendible;
+                        btnAtender.Visible = esAtendible && esMedico && puedeAtender;
+                    }
+
+                    if (btnDetalle != null)
+                    {
+                        btnDetalle.Visible = true;
                     }
                 }
             }

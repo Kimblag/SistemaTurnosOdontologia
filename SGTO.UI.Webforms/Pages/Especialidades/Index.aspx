@@ -12,7 +12,7 @@
 
                 <div class="row g-2 align-items-end">
 
-                    <div class="col-md-4 col-lg-5">
+                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-5">
                         <label class="form-label small text-muted">Buscar Especialidad</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted">
@@ -38,7 +38,7 @@
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
                     </div>
 
-                    <div class="col-md-12 col-lg-1 text-end border-start ps-3">
+                    <div id="pnlNuevaEspecialidad" runat="server" class="col-md-12 col-lg-1 text-end border-start ps-3">
                         <label class="form-label d-none d-lg-block">&nbsp;</label>
                         <asp:Button ID="btnNuevaEspecialidad" runat="server"
                             Text="+ Nueva"

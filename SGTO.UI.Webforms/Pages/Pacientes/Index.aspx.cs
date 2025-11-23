@@ -2,8 +2,10 @@
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,24 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 {
     public partial class Pacientes : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly PacienteService _servicioPaciente = new PacienteService();
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PACIENTES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Pacientes");
@@ -30,6 +45,20 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
             if (!IsPostBack)
             {
+                bool puedeCrear = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PACIENTES", "CREAR");
+
+                pnlNuevoPaciente.Visible = puedeCrear;
+
+                if (!puedeCrear)
+                {
+
+                    pnlBuscador.Attributes["class"] = "col-md-6 col-lg-5";
+                }
+                else
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-3";
+                }
+
                 CargarCombos();
                 CargarPacientesConFiltros();
             }
@@ -157,8 +186,9 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                 PacienteListadoDto pacienteDto = (PacienteListadoDto)e.Row.DataItem;
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
-
                 var btnAgendar = (LinkButton)e.Row.FindControl("btnAgendarTurno");
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnEliminar = (HtmlControl)e.Row.FindControl("btnEliminar");
 
                 if (pacienteDto != null)
                 {
@@ -167,25 +197,37 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
 
                     if (lblEstado != null)
                     {
-                        if (esActivo)
-                        {
-                            lblEstado.Attributes["class"] = "badge badge-success";
-                            lblEstado.InnerText = "Activo";
-                        }
-                        else
-                        {
-                            lblEstado.Attributes["class"] = "badge badge-warning";
-                            lblEstado.InnerText = "Inactivo";
-                        }
+                        lblEstado.Attributes["class"] = esActivo ? "badge badge-success" : "badge badge-warning";
+                        lblEstado.InnerText = esActivo ? "Activo" : "Inactivo";
                     }
 
                     if (btnAgendar != null)
                     {
+                        bool permisoAgendar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TURNOS", "CREAR");
+                        if (!permisoAgendar)
+                        {
+                            btnAgendar.Visible = false;
+                        }
                         if (!esActivo)
                         {
                             btnAgendar.Enabled = false;
                             btnAgendar.CssClass += " disabled border-0 opacity-50";
                             btnAgendar.ToolTip = "No se puede agendar a un paciente inactivo";
+                        }
+                    }
+                    if (btnEditar != null)
+                    {
+                        btnEditar.Visible = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PACIENTES", "EDITAR");
+                    }
+
+                    if (btnEliminar != null)
+                    {
+                        bool permisoEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PACIENTES", "ELIMINAR");
+
+                        btnEliminar.Visible = permisoEliminar && esActivo;
+                        if (btnEliminar.Visible)
+                        {
+                            btnEliminar.Attributes["onclick"] = $"abrirModalConfirmacion('{pacienteDto.IdPaciente}', 'paciente');";
                         }
                     }
                 }
@@ -211,8 +253,8 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             }
         }
 
-   
-       
+
+
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
             int idPaciente = int.Parse(hdnIdEliminar.Value);

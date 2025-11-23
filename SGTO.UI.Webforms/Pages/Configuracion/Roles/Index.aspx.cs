@@ -1,8 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs.Roles;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 {
     public partial class Index : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly RolService _servicioRol = new RolService();
 
         private const string KEY_ROL_BUSQUEDA = "FiltroRolBusqueda";
@@ -22,6 +25,19 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ROLES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");

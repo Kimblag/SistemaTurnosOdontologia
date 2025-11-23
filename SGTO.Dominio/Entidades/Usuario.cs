@@ -38,5 +38,10 @@ namespace SGTO.Dominio.Entidades
             FechaAlta = DateTime.Now;
             FechaModificacion = DateTime.Now;
         }
+
+        public string NombreCompleto()
+        {
+            return $"{Nombre} {Apellido}";
+        }
     }
 }

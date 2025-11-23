@@ -7,8 +7,8 @@
         <div class="row g-4">
 
             <div class="col-12 col-md-6">
-                <a href='<%= ResolveUrl("~/Pages/CoberturasPlanes/Coberturas/Index.aspx") %>'
-                    class="card card-config bg-soft-primary shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
+                <asp:LinkButton ID="lnkCardCoberturas" runat="server" OnClick="lnkCardCoberturas_Click"
+                    CssClass="card card-config bg-soft-primary shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
                     <div class="card-body text-center d-flex flex-column justify-content-between p-5">
                         <div>
                             <div class="icon-wrapper bg-primary bg-opacity-10 text-primary mb-4 mx-auto rounded-circle d-flex align-items-center justify-content-center"
@@ -24,12 +24,12 @@
                             Gestionar Coberturas <i class="bi bi-arrow-right ms-2"></i>
                         </div>
                     </div>
-                </a>
+                </asp:LinkButton>
             </div>
 
             <div class="col-12 col-md-6">
-                <a href='<%= ResolveUrl("~/Pages/CoberturasPlanes/Planes/Index.aspx") %>'
-                    class="card card-config bg-soft-success shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
+                <asp:LinkButton ID="lnkCardPlanes" runat="server" OnClick="lnkCardPlanes_Click"
+                    CssClass="card card-config bg-soft-success shadow-sm border-0 text-decoration-none text-dark h-100 hover-scale">
                     <div class="card-body text-center d-flex flex-column justify-content-between p-5">
                         <div>
                             <div class="icon-wrapper bg-success bg-opacity-10 text-success mb-4 mx-auto rounded-circle d-flex align-items-center justify-content-center"
@@ -45,7 +45,7 @@
                             Gestionar Planes <i class="bi bi-arrow-right ms-2"></i>
                         </div>
                     </div>
-                </a>
+                </asp:LinkButton>
             </div>
 
         </div>
@@ -76,25 +76,25 @@
     </div>
 
     <%-- modal resultado --%>
-      <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 shadow">
-              <div class="modal-header bg-white border-bottom-0">
-                  <h5 id="modalResultadoTitulo" class="modal-title fw-bold">Mensaje</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body text-center py-4">
-                  <div class="mb-3">
-                      <i class="bi bi-info-circle text-primary" style="font-size: 3rem;"></i>
-                  </div>
-                  <p id="modalResultadoDesc" class="lead fs-6"></p>
-              </div>
-              <div class="modal-footer border-top-0 justify-content-center pb-4">
-                  <button id="btnModalCerrar" type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Aceptar</button>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-white border-bottom-0">
+                    <h5 id="modalResultadoTitulo" class="modal-title fw-bold">Mensaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="bi bi-info-circle text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <p id="modalResultadoDesc" class="lead fs-6"></p>
+                </div>
+                <div class="modal-footer border-top-0 justify-content-center pb-4">
+                    <button id="btnModalCerrar" type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>

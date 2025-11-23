@@ -15,6 +15,15 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
     {
 
         /// <summary>
+        /// pnlBuscador control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlBuscador;
+
+        /// <summary>
         /// txtBuscarPlanes control.
         /// </summary>
         /// <remarks>
@@ -58,6 +67,15 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
+
+        /// <summary>
+        /// pnlNuevoPlan control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlNuevoPlan;
 
         /// <summary>
         /// btnNuevaPlanes control.

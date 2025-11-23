@@ -105,6 +105,15 @@ namespace SGTO.UI.Webforms.MasterPages
         protected global::System.Web.UI.HtmlControls.HtmlAnchor MenuConfiguracion;
 
         /// <summary>
+        /// btnCerrarSesion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnCerrarSesion;
+
+        /// <summary>
         /// btnVolver control.
         /// </summary>
         /// <remarks>

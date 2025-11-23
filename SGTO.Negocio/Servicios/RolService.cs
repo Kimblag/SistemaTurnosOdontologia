@@ -288,5 +288,80 @@ namespace SGTO.Negocio.Servicios
                    n.Equals(ROL_RECEPCIONISTA, StringComparison.OrdinalIgnoreCase);
         }
 
+
+        public List<ModuloPermisosDto> ObtenerMatrizPermisos(List<int> idsAsignados = null)
+        {
+            List<Permiso> todosLosPermisos = _permisoRepositorio.Listar();
+            List<ModuloPermisosDto> matriz = new List<ModuloPermisosDto>();
+
+            // extraer los modulos unicos
+            List<string> nombresModulos = new List<string>();
+            foreach (Permiso p in todosLosPermisos)
+            {
+                string nombre = p.Modulo.ToString();
+                if (!nombresModulos.Contains(nombre))
+                {
+                    nombresModulos.Add(nombre);
+                }
+            }
+            nombresModulos.Sort();
+
+            // pro cada modulo se creara la mariz de permisos para poder ubicarlos facilmente
+            foreach (string modulo in nombresModulos)
+            {
+                ModuloPermisosDto fila = new ModuloPermisosDto();
+                fila.NombreModulo = modulo;
+
+                // extraer permisos del modulo actual
+                foreach (Permiso p in todosLosPermisos)
+                {
+                    if (p.Modulo.ToString() == modulo)
+                    {
+                        bool estaAsignado = false;
+                        if (idsAsignados != null)
+                        {
+                            estaAsignado = idsAsignados.Contains(p.IdPermiso);
+                        }
+
+                        string accion = p.Accion.ToString().ToLower();
+
+                        if (accion == "ver")
+                        {
+                            fila.IdPermisoVer = p.IdPermiso;
+                            fila.AsignadoVer = estaAsignado;
+                        }
+                        else if (accion == "crear")
+                        {
+                            fila.IdPermisoCrear = p.IdPermiso;
+                            fila.AsignadoCrear = estaAsignado;
+                        }
+                        else if (accion == "editar")
+                        {
+                            fila.IdPermisoEditar = p.IdPermiso;
+                            fila.AsignadoEditar = estaAsignado;
+                        }
+                        else if (accion == "eliminar")
+                        {
+                            fila.IdPermisoEliminar = p.IdPermiso;
+                            fila.AsignadoEliminar = estaAsignado;
+                        }
+                        else if (accion == "activar")
+                        {
+                            fila.IdPermisoActivar = p.IdPermiso;
+                            fila.AsignadoActivar = estaAsignado;
+                        }
+                        else if (accion == "desactivar")
+                        {
+                            fila.IdPermisoDesactivar = p.IdPermiso;
+                            fila.AsignadoDesactivar = estaAsignado;
+                        }
+                    }
+                }
+                matriz.Add(fila);
+            }
+
+            return matriz;
+        }
+
     }
 }

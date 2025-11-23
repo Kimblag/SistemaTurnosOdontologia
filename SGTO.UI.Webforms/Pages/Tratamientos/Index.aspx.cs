@@ -1,8 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,25 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
 {
     public partial class Tratamientos : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly TratamientoService _tratamientoService = new TratamientoService();
         private readonly TurnoService _turnoService = new TurnoService();
         private readonly EspecialidadService _especialidadService = new EspecialidadService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Tratamientos");
@@ -31,6 +46,26 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
 
             if (!IsPostBack)
             {
+                bool puedeCrear = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "CREAR");
+                pnlNuevoTratamiento.Visible = puedeCrear;
+
+                if (!puedeCrear)
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                }
+                else
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-4";
+                }
+
+                bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "EDITAR");
+                bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "ELIMINAR");
+
+                if (!puedeEditar && !puedeEliminar)
+                {
+                    gvTratamientos.Columns[5].Visible = false;
+                }
+
                 CargarCombos();
                 CargarTratamientosConFiltros();
 
@@ -165,6 +200,8 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
             {
                 var tratamientoDto = (TratamientoDto)e.Row.DataItem;
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnEliminar = (HtmlControl)e.Row.FindControl("btnEliminar");
 
                 if (lblEstado != null && tratamientoDto != null)
                 {
@@ -175,6 +212,18 @@ namespace SGTO.UI.Webforms.Pages.Tratamientos
                     else
                     {
                         lblEstado.Attributes["class"] = "badge badge-warning";
+                    }
+                }
+                if (btnEditar != null)
+                    btnEditar.Visible = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "EDITAR");
+
+                if (btnEliminar != null)
+                {
+                    bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TRATAMIENTOS", "ELIMINAR");
+                    btnEliminar.Visible = puedeEliminar;
+                    if (puedeEliminar)
+                    {
+                        btnEliminar.Attributes["onclick"] = $"abrirModalConfirmacion('{tratamientoDto.IdTratamiento}')";
                     }
                 }
             }

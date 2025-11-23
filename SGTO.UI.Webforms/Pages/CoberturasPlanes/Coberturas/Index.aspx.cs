@@ -1,8 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,9 +19,10 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
 {
     public partial class Index : System.Web.UI.Page
     {
-
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly CoberturaService _servicioCobertura = new CoberturaService();
         private const string KEY_ESTADO_COBERTURAS = "FiltroEstadoCoberturas";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
@@ -29,13 +32,37 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
                 master.EstablecerTituloSeccion("Gestión de Coberturas");
                 master.EstablecerSubtituloSeccion("Defina las entidades prestadoras de salud y visualice sus planes asociados.");
             }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "COBERTURAS", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (!IsPostBack)
             {
+                bool puedeCrear = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "COBERTURAS", "CREAR");
+
+                pnlNuevaCobertura.Visible = puedeCrear;
+
+                if (!puedeCrear)
+                {
+                    // Si ocultamos el botón nuevo (col-lg-1), se lo sumamos al buscador
+                    // Original: col-lg-5. Nuevo: col-lg-6.
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-6";
+                }
+                else
+                {
+                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                }
+
                 string estadoFiltroGuardado = Session[KEY_ESTADO_COBERTURAS] as string;
 
                 /// retomamos el valor del filtro si es que hay algo
                 if (estadoFiltroGuardado != null)
                     ddlEstado.SelectedValue = estadoFiltroGuardado;
+
+
 
                 CargarCoberturas(estadoFiltroGuardado);
 
@@ -51,15 +78,29 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
                 CoberturaDto coberturaDto = (CoberturaDto)e.Row.DataItem;
 
                 var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
-                if (lblEstado != null && coberturaDto != null)
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+                var btnEliminar = (HtmlControl)e.Row.FindControl("btnEliminar");
+
+                if (coberturaDto != null)
                 {
-                    if (coberturaDto.Estado.ToLower() == "activo")
+                    if (lblEstado != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-success";
+                        bool activo = coberturaDto.Estado.ToLower() == "activo";
+                        lblEstado.Attributes["class"] = activo ? "badge badge-success" : "badge badge-warning";
                     }
-                    else
+
+                    bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "COBERTURAS", "EDITAR");
+                    bool puedeEliminar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "COBERTURAS", "ELIMINAR");
+
+                    if (btnEditar != null) btnEditar.Visible = puedeEditar;
+
+                    if (btnEliminar != null)
                     {
-                        lblEstado.Attributes["class"] = "badge badge-warning";
+                        btnEliminar.Visible = puedeEliminar;
+                        if (puedeEliminar)
+                        {
+                            btnEliminar.Attributes["onclick"] = $"abrirModalConfirmacion('{coberturaDto.IdCobertura}', 'cobertura');";
+                        }
                     }
                 }
             }

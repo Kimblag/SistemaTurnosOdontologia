@@ -3,8 +3,10 @@ using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.HistoriaClinica;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -16,16 +18,28 @@ namespace SGTO.UI.Webforms.Pages.Medicos
 {
     public partial class Atencion : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly TurnoService _servicioTurno = new TurnoService();
         private readonly HistoriaClinicaService _servicioHistoria = new HistoriaClinicaService();
-
         private readonly TratamientoService _servicioTratamiento = new TratamientoService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ATENCION", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
-                master.ConfigurarBotonVolver(true, "~/Pages/Medicos/Index.aspx");
+                master.ConfigurarBotonVolver(true, "~/Pages/Turnos/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Medicos");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("En esta sección puedes cargar los detalles de la atención brindada al paciente");

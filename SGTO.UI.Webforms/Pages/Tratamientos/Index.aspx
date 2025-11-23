@@ -12,7 +12,7 @@
 
                 <div class="row g-2 align-items-end">
 
-                    <div class="col-md-4 col-lg-4">
+                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-4">
                         <label class="form-label small text-muted">Buscar Tratamiento</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
@@ -42,7 +42,7 @@
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
                     </div>
 
-                    <div class="col-md-12 col-lg-1 text-end border-start ps-3">
+                    <div id="pnlNuevoTratamiento" runat="server" class="col-md-12 col-lg-1 text-end border-start ps-3">
                         <label class="form-label d-none d-lg-block">&nbsp;</label>
                         <asp:Button ID="btnNuevoTratamiento" runat="server" Text="+ Nuevo" OnClick="btnNuevoTratamiento_Click" CssClass="btn btn-success w-100" />
                     </div>
@@ -93,11 +93,10 @@
                                 <i class="bi bi-pencil"></i>
                                 </asp:LinkButton>
 
-                                <button type="button"
+                                <button id="btnEliminar" runat="server" type="button"
                                     class="btn btn-outline-danger"
                                     title="Dar de baja"
-                                    data-id='<%# Eval("IdTratamiento") %>'
-                                    onclick="abrirModalConfirmacion('<%# Eval("IdTratamiento") %>')">
+                                    data-id='<%# Eval("IdTratamiento") %>'>
                                     <i class="bi bi-trash"></i>
                                 </button>
 
@@ -143,7 +142,7 @@
         </div>
     </div>
 
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

@@ -79,264 +79,76 @@
                 <div class="alert alert-info small mb-3" role="alert">
                     <i class="bi bi-info-circle"></i>
                     Si un módulo no tiene ningún permiso seleccionado, el rol no podrá acceder ni visualizarlo en la aplicación.
+               
                 </div>
                 <div class="m-0 border border-1"></div>
 
-                <%--Tabla con tipos de permiso por módulos--%>
-                <div>
+                <%--Tabla Dinámica con Repeater--%>
+                <div class="table-responsive">
+                    <table class="table table-borderless align-middle">
+                        <thead>
+                            <tr class="border-bottom fw-bold">
+                                <th class="text-start" style="width: 20%;">Módulo</th>
+                                <th class="text-center">Ver</th>
+                                <th class="text-center">Crear</th>
+                                <th class="text-center">Editar</th>
+                                <th class="text-center">Activar</th>
+                                <th class="text-center">Desactivar</th>
+                                <th class="text-center">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <asp:Repeater ID="rptPermisos" runat="server">
+                                <ItemTemplate>
+                                    <tr class="border-bottom">
+                                        <%-- Nombre del Módulo --%>
+                                        <td class="fw-bold text-start">
+                                            <%# Eval("NombreModulo") %>
+                                        </td>
 
-                    <%-- Encabezado de columnas --%>
-                    <div class="row fw-bold border-bottom py-2">
-                        <div class="col text-start">Módulo</div>
-                        <div class="col">Ver</div>
-                        <div class="col">Crear</div>
-                        <div class="col">Editar</div>
-                        <div class="col">Activar</div>
-                        <div class="col">Desactivar</div>
-                    </div>
+                                        <%-- el HiddenField sera para guardar el iddel permiso y CheckBox para el estado --%>
 
+                                        <%-- Ver --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnVer" runat="server" Value='<%# Eval("IdPermisoVer") %>' />
+                                            <asp:CheckBox ID="chkVer" runat="server" Checked='<%# Eval("AsignadoVer") %>' Visible='<%# (int)Eval("IdPermisoVer") > 0 %>' />
+                                        </td>
 
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">
-                            Turnos
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTurnosVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTurnosCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTurnosEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTurnosActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTurnosDesactivar" runat="server" />
-                        </div>
-                    </div>
+                                        <%-- Crear --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnCrear" runat="server" Value='<%# Eval("IdPermisoCrear") %>' />
+                                            <asp:CheckBox ID="chkCrear" runat="server" Checked='<%# Eval("AsignadoCrear") %>' Visible='<%# (int)Eval("IdPermisoCrear") > 0 %>' />
+                                        </td>
 
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Pacientes</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPacientesVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPacientesCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPacientesEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPacientesActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPacientesDesactivar" runat="server" />
-                        </div>
-                    </div>
+                                        <%-- Editar --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnEditar" runat="server" Value='<%# Eval("IdPermisoEditar") %>' />
+                                            <asp:CheckBox ID="chkEditar" runat="server" Checked='<%# Eval("AsignadoEditar") %>' Visible='<%# (int)Eval("IdPermisoEditar") > 0 %>' />
+                                        </td>
 
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Médicos</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkMedicosDesactivar" runat="server" />
-                        </div>
-                    </div>
+                                        <%-- Activar --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnActivar" runat="server" Value='<%# Eval("IdPermisoActivar") %>' />
+                                            <asp:CheckBox ID="chkActivar" runat="server" Checked='<%# Eval("AsignadoActivar") %>' Visible='<%# (int)Eval("IdPermisoActivar") > 0 %>' />
+                                        </td>
 
+                                        <%-- Desactivar --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnDesactivar" runat="server" Value='<%# Eval("IdPermisoDesactivar") %>' />
+                                            <asp:CheckBox ID="chkDesactivar" runat="server" Checked='<%# Eval("AsignadoDesactivar") %>' Visible='<%# (int)Eval("IdPermisoDesactivar") > 0 %>' />
+                                        </td>
 
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Coberturas</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkCoberturasDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Planes</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkPlanesDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Especialidades</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkEspecialidadesDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Tratamientos</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkTratamientosDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Reportes</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkReportesDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Configuración</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkConfiguracionDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Usuarios</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkUsuariosDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Roles</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkRolesDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
-                    <div class="row py-2 border-bottom">
-                        <div class="col fw-bold">Parámetros del Sistema</div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosSistemaVer" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosSistemaCrear" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosSistemaEditar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosSistemaActivar" runat="server" />
-                        </div>
-                        <div class="col">
-                            <asp:CheckBox ID="chkParametrosSistemaDesactivar" runat="server" />
-                        </div>
-                    </div>
-
-
+                                        <%-- Elimianr --%>
+                                        <td class="text-center">
+                                            <asp:HiddenField ID="hdnEliminar" runat="server" Value='<%# Eval("IdPermisoEliminar") %>' />
+                                            <asp:CheckBox ID="chkEliminar" runat="server" Checked='<%# Eval("AsignadoEliminar") %>' Visible='<%# (int)Eval("IdPermisoEliminar") > 0 %>' />
+                                        </td>
+                                    </tr>
+                                </ItemTemplate>
+                            </asp:Repeater>
+                        </tbody>
+                    </table>
                 </div>
-
             </div>
 
         </div>

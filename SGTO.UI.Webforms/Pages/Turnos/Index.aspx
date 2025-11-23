@@ -25,7 +25,7 @@
                         <asp:TextBox ID="txtFecha" runat="server" TextMode="Date" CssClass="form-control" />
                     </div>
 
-                    <div class="col-md-3">
+                    <div id="pnlFiltroMedico" runat="server" class="col-md-3">
                         <label class="form-label small text-muted">Médico</label>
                         <asp:DropDownList ID="ddlMedico" runat="server" CssClass="form-select" AppendDataBoundItems="true">
                             <asp:ListItem Text="Todos los médicos" Value="-1" />

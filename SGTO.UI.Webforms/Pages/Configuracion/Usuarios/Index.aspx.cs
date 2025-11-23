@@ -2,8 +2,10 @@
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Roles;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
     {
 
         private readonly UsuarioService _servicioUsuario = new UsuarioService();
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
 
         private const string KEY_USUARIO_BUSQUEDA = "FiltroUsuarioBusqueda";
         private const string KEY_USUARIO_ROL = "FiltroUsuarioRol";
@@ -26,6 +29,17 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "USUARIOS", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");
@@ -33,6 +47,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Administre el acceso del personal y los perfiles profesionales.");
             }
+
 
             if (!IsPostBack)
             {

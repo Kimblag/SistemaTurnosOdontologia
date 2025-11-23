@@ -39,7 +39,14 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
                 {
                     ddlEstado.SelectedValue = "Activo";
                     ddlEstado.Enabled = false;
-                    MarcarPermisosVerPorDefecto();
+                    // iniciar la matriz de permisos vacío
+                    List<ModuloPermisosDto> matriz = _servicioRol.ObtenerMatrizPermisos(null);
+
+                    // marcamos ver por defecto para el modo crear
+                    foreach (var m in matriz) { if (m.IdPermisoVer > 0) m.AsignadoVer = true; }
+
+                    rptPermisos.DataSource = matriz;
+                    rptPermisos.DataBind();
                 }
 
                 if (ModoLectura)
@@ -72,18 +79,10 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             txtDescripcion.Text = rol.Descripcion;
             ddlEstado.SelectedValue = rol.Estado;
 
-            // marcar permisos
-            List<Permiso> permisosDisponibles = _servicioRol.ListarPermisos();
-            foreach (int idPermiso in rol.IdPermisos)
-            {
-                Permiso permiso = permisosDisponibles.Find(p => p.IdPermiso == idPermiso);
-                if (permiso != null)
-                {
-                    string idControl = "chk" + permiso.Modulo + permiso.Accion;
-                    CheckBox chk = this.FindControl(idControl) as CheckBox;
-                    if (chk != null) chk.Checked = true;
-                }
-            }
+            List<ModuloPermisosDto> matriz = _servicioRol.ObtenerMatrizPermisos(rol.IdPermisos);
+            rptPermisos.DataSource = matriz;
+            rptPermisos.DataBind();
+
             if (!ModoLectura)
             {
                 AplicarReglasDeEdicionSegunRol(rol.Nombre);
@@ -218,7 +217,7 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         private void CrearNuevoRol()
         {
             List<Permiso> permisosDisponibles = _servicioRol.ListarPermisos();
-            List<int> idsSeleccionados = ObtenerIdsPermisosSeleccionados(permisosDisponibles);
+            List<int> idsSeleccionados = ObtenerIdsPermisosSeleccionados();
 
             RolCrearDto dto = new RolCrearDto()
             {
@@ -244,7 +243,7 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
         {
             int idRol = ExtraerIdRol();
             List<Permiso> permisosDisponibles = _servicioRol.ListarPermisos();
-            List<int> idsSeleccionados = ObtenerIdsPermisosSeleccionados(permisosDisponibles);
+            List<int> idsSeleccionados = ObtenerIdsPermisosSeleccionados();
 
             RolDetalleDto dto = new RolDetalleDto()
             {
@@ -267,34 +266,33 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             );
         }
 
-        private List<int> ObtenerIdsPermisosSeleccionados(List<Permiso> permisosDisponibles)
+        private List<int> ObtenerIdsPermisosSeleccionados()
         {
-            List<int> ids = new List<int>();
-            Array modulos = Enum.GetValues(typeof(Modulo));
-            Array acciones = Enum.GetValues(typeof(TipoAccion));
+            List<int> idsSeleccionados = new List<int>();
 
-            for (int i = 0; i < modulos.Length; i++)
+            foreach (RepeaterItem item in rptPermisos.Items)
             {
-                Modulo modulo = (Modulo)modulos.GetValue(i);
-                string nombreModulo = modulo.ToString();
-
-                for (int j = 0; j < acciones.Length; j++)
+                if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                 {
-                    TipoAccion accion = (TipoAccion)acciones.GetValue(j);
-                    string nombreAccion = accion.ToString();
+                    string[] sufijos = { "Ver", "Crear", "Editar", "Activar", "Desactivar", "Eliminar" };
 
-                    string idControl = "chk" + nombreModulo + nombreAccion;
-                    CheckBox chk = this.FindControl(idControl) as CheckBox;
-
-                    if (chk != null && chk.Checked)
+                    foreach (string sufijo in sufijos)
                     {
-                        int idPermiso = BuscarIdPermiso(permisosDisponibles, modulo, accion);
-                        if (idPermiso != 0)
-                            ids.Add(idPermiso);
+                        CheckBox chk = (CheckBox)item.FindControl("chk" + sufijo);
+                        HiddenField hdn = (HiddenField)item.FindControl("hdn" + sufijo);
+
+                        if (chk != null && chk.Checked && hdn != null)
+                        {
+                            int idPermiso;
+                            if (int.TryParse(hdn.Value, out idPermiso) && idPermiso > 0)
+                            {
+                                idsSeleccionados.Add(idPermiso);
+                            }
+                        }
                     }
                 }
             }
-            return ids;
+            return idsSeleccionados;
         }
 
         private int BuscarIdPermiso(List<Permiso> permisos, Modulo modulo, TipoAccion accion)

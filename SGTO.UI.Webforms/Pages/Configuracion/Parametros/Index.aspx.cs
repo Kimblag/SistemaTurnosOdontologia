@@ -1,8 +1,10 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs.ParametroSistema;
 using SGTO.Negocio.Excepciones;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Diagnostics;
@@ -14,7 +16,9 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
 {
     public partial class Index : System.Web.UI.Page
     {
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly ParametroService _servicioParametros = new ParametroService();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Master is SiteMaster master)
@@ -23,6 +27,12 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
                 master.EstablecerOpcionMenuActiva("Configuracion");
                 master.EstablecerTituloSeccion(this.Page.Title);
                 master.EstablecerSubtituloSeccion("Defina las variables institucionales y técnicas de la aplicación.");
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PARAMETROSISTEMA", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
             }
 
             if (!IsPostBack)
@@ -108,7 +118,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
                 string nombreClinica = txtNombreClinica.Text.Trim();
                 string duracionTurnoStr = "60";
                 //string duracionTurnoStr = ddlDuracionTurno.SelectedValue;
-                string horaInicio = "08:00"; 
+                string horaInicio = "08:00";
                 string horaCierre = "18:00";
                 string servidorCorreo = txtServidorCorreo.Text.Trim();
                 string puertoStr = txtPuertoCorreo.Text.Trim();

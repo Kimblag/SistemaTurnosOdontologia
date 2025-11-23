@@ -1,9 +1,12 @@
-﻿using SGTO.Negocio.DTOs; 
+using SGTO.Negocio.DTOs; 
 using SGTO.Comun.DTOs;  
 using SGTO.Negocio.Servicios;
 using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
+using SGTO.Negocio.Seguridad;
+using SGTO.UI.Webforms.MasterPages;
+using SGTO.UI.Webforms.Seguridad;
 using System;
 using System.Collections.Generic;
 using System.Web.UI;
@@ -18,9 +21,22 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         private const string KEY_REP_TRAT_DESDE = "FiltroRepTratDesde";
         private const string KEY_REP_TRAT_HASTA = "FiltroRepTratHasta";
         private const string KEY_REP_TRAT_ESP = "FiltroRepTratEsp";
+        private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!SessionManager.EstaLogueado())
+            {
+                Response.Redirect("~/Pages/Login/Index.aspx");
+                return;
+            }
+
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "REPORTES", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
             if (Master is SiteMaster master)
             {
                 master.EstablecerOpcionMenuActiva("Reportes");

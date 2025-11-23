@@ -193,48 +193,52 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public List<Turno> Listar()
+        public List<Turno> Listar(DateTime? fechaInicio, DateTime? fechaFin, int? idMedico, int? idPaciente, int? idEspecialidad)
         {
             List<Turno> turnos = new List<Turno>();
 
             string query = @"
                 SELECT 
-                    T.IdTurno,
-                    T.FechaInicio,
-                    T.FechaFin,
-                    T.Estado AS EstadoTurno,
-                    T.Observaciones,
-
-                    P.IdPaciente,
-                    P.NumeroDocumento AS NumeroDocumentoPaciente,
-                    P.Nombre AS NombrePaciente,
-                    P.Apellido AS ApellidoPaciente,
-
-                    M.IdMedico,
-                    M.Matricula,
-                    M.Nombre AS NombreMedico,
-                    M.Apellido AS ApellidoMedico,
-
-                    E.IdEspecialidad,
-                    E.Nombre AS NombreEspecialidad,
-
-                    C.IdCobertura,
-                    C.Nombre AS NombreCobertura,
-
-                    PL.IdPlan,
-                    PL.Nombre AS NombrePlan
-
+                    T.IdTurno, T.FechaInicio, T.FechaFin, T.Estado AS EstadoTurno, T.Observaciones,
+                    P.IdPaciente, P.Nombre AS NombrePaciente, P.Apellido AS ApellidoPaciente, P.NumeroDocumento AS NumeroDocumentoPaciente,
+                    M.IdMedico, M.Nombre AS NombreMedico, M.Apellido AS ApellidoMedico, M.Matricula,
+                    E.IdEspecialidad, E.Nombre AS NombreEspecialidad,
+                    C.IdCobertura, C.Nombre AS NombreCobertura,
+                    PL.IdPlan, PL.Nombre AS NombrePlan
                 FROM Turno T
                     INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
                     INNER JOIN Medico M ON T.IdMedico = M.IdMedico
                     INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
                     INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
                     LEFT JOIN [Plan] PL ON T.IdPlan = PL.IdPlan
-                ORDER BY T.FechaInicio ASC";
+                WHERE 1=1 ";
+
+            if (idMedico.HasValue) query += " AND T.IdMedico = @IdMedico ";
+            if (idPaciente.HasValue) query += " AND T.IdPaciente = @IdPaciente ";
+            if (idEspecialidad.HasValue) query += " AND T.IdEspecialidad = @IdEspecialidad ";
+
+            if (fechaInicio.HasValue) query += " AND T.FechaInicio >= @FechaInicio ";
+            if (fechaFin.HasValue) query += " AND T.FechaInicio <= @FechaFin "; // filtro por fecha de inicio de turno
+
+            query += " ORDER BY T.FechaInicio DESC";
 
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 datos.DefinirConsulta(query);
+
+                if (idMedico.HasValue) datos.EstablecerParametros("@IdMedico", idMedico.Value);
+                if (idPaciente.HasValue) datos.EstablecerParametros("@IdPaciente", idPaciente.Value);
+                if (idEspecialidad.HasValue) datos.EstablecerParametros("@IdEspecialidad", idEspecialidad.Value);
+
+                if (fechaInicio.HasValue) datos.EstablecerParametros("@FechaInicio", fechaInicio.Value);
+
+                // Para la fecha fin, hay que cubriri TODO el dia, sino obtenemos resultado indeseados.
+                if (fechaFin.HasValue)
+                {
+                    DateTime finDia = fechaFin.Value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
+                    datos.EstablecerParametros("@FechaFin", finDia);
+                }
+
                 try
                 {
                     using (SqlDataReader lector = datos.EjecutarConsulta())

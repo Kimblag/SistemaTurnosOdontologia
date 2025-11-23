@@ -98,10 +98,10 @@
 
                 <%--cerrar sesion--%>
                 <div class="p-4 mt-auto">
-                    <button type="button" class="btn-logout w-100">
+                    <asp:LinkButton ID="btnCerrarSesion" runat="server" CssClass="btn-logout w-100 text-decoration-none d-flex align-items-center justify-content-center gap-2" OnClick="btnCerrarSesion_Click" CausesValidation="false">
                         <i class="bi bi-box-arrow-right fs-5"></i>
                         <span>Cerrar sesión</span>
-                    </button>
+                    </asp:LinkButton>
                 </div>
 
             </aside>
