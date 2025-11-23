@@ -1,6 +1,7 @@
 ﻿using SGTO.Comun.DTOs;
 using SGTO.Datos.Repositorios;
 using SGTO.Negocio.DTOs;
+using SGTO.Negocio.DTOs.Medicos;
 using SGTO.Negocio.Mappers;
 using System;
 using System.Collections.Generic;
@@ -125,9 +126,6 @@ namespace SGTO.Negocio.Servicios
             try
             {
                 var kpis = _repositorioReportes.ConsultarKpisTratamientos(fechaDesde, fechaHasta);
-
-                // Lógica extra: Podemos calcular el "Más solicitado" reusando la lista si el repo no lo trajo directo
-                // O dejarlo simple. Aquí devolvemos lo que trajo la base.
                 return kpis;
             }
             catch (Exception ex)
@@ -147,5 +145,36 @@ namespace SGTO.Negocio.Servicios
                 throw new Exception("Error al listar especialidades.", ex);
             }
         }
+
+
+        public List<ReporteTurnosDto> ObtenerReporteTurnosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, string estado, int? idMedico, int? idEspecialidad)
+        {
+            try
+            {
+                if (fechaDesde.HasValue && fechaHasta.HasValue && fechaDesde.Value > fechaHasta.Value)
+                {
+                    throw new ArgumentException("La fecha 'Desde' no puede ser mayor a la fecha 'Hasta'.");
+                }
+
+                return _repositorioReportes.ConsultarTurnosFiltrado(fechaDesde, fechaHasta, estado, idMedico, idEspecialidad);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte detallado de turnos.", ex);
+            }
+        }
+
+        public ReporteTurnosKpiDto ObtenerKpisTurnos(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarKpisTurnos(fechaDesde, fechaHasta);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al calcular los indicadores de turnos.", ex);
+            }
+        }
+
     }
 }

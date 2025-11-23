@@ -438,5 +438,148 @@ namespace SGTO.Datos.Repositorios
             catch (Exception) { throw; }
         }
 
+
+        public List<ReporteTurnosDto> ConsultarTurnosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta,
+                                                              string estado, int? idMedico, int? idEspecialidad)
+        {
+            List<ReporteTurnosDto> lista = new List<ReporteTurnosDto>();
+
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string query = @"
+                        SELECT 
+                            T.IdTurno,
+                            T.FechaInicio,
+                            P.Apellido + ', ' + P.Nombre AS Paciente,
+                            P.NumeroDocumento AS DniPaciente,
+                            M.Apellido + ', ' + M.Nombre AS Medico,
+                            E.Nombre AS Especialidad,
+                            C.Nombre AS Cobertura,
+                            PL.Nombre AS [Plan],
+                            T.Estado AS CodigoEstado,
+                            CASE T.Estado
+                                WHEN 'N' THEN 'Nuevo'
+                                WHEN 'R' THEN 'Reprogramado'
+                                WHEN 'C' THEN 'Cancelado'
+                                WHEN 'X' THEN 'NoAsistio'
+                                WHEN 'Z' THEN 'Cerrado'
+                                ELSE T.Estado
+                            END AS EstadoTexto
+                        FROM Turno T
+                        INNER JOIN Paciente P ON T.IdPaciente = P.IdPaciente
+                        INNER JOIN Medico M ON T.IdMedico = M.IdMedico
+                        INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                        INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                        LEFT JOIN [Plan] PL ON T.IdPlan = PL.IdPlan
+                        WHERE 
+                            (@Desde IS NULL OR T.FechaInicio >= @Desde)
+                            AND (@Hasta IS NULL OR T.FechaInicio <= @Hasta)
+                            AND (@IdMedico IS NULL OR T.IdMedico = @IdMedico)
+                            AND (@IdEspecialidad IS NULL OR T.IdEspecialidad = @IdEspecialidad)
+                            AND (@Estado IS NULL OR T.Estado = @Estado)
+                        ORDER BY T.FechaInicio DESC";
+
+                    datos.DefinirConsulta(query);
+
+                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@IdMedico", idMedico ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@IdEspecialidad", idEspecialidad ?? (object)DBNull.Value);
+
+                    if (!string.IsNullOrEmpty(estado))
+                        datos.EstablecerParametros("@Estado", estado.Substring(0, 1));
+                    else
+                        datos.EstablecerParametros("@Estado", DBNull.Value);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        int ordId = lector.GetOrdinal("IdTurno");
+                        int ordFecha = lector.GetOrdinal("FechaInicio");
+                        int ordPac = lector.GetOrdinal("Paciente");
+                        int ordDni = lector.GetOrdinal("DniPaciente");
+                        int ordMed = lector.GetOrdinal("Medico");
+                        int ordEsp = lector.GetOrdinal("Especialidad");
+                        int ordCob = lector.GetOrdinal("Cobertura");
+                        int ordPlan = lector.GetOrdinal("Plan");
+                        int ordEst = lector.GetOrdinal("EstadoTexto");
+
+                        while (lector.Read())
+                        {
+                            var fecha = lector.GetDateTime(ordFecha);
+
+                            lista.Add(new ReporteTurnosDto
+                            {
+                                IdTurno = lector.GetInt32(ordId),
+                                Fecha = fecha,
+                                Hora = fecha.ToString("HH:mm"),
+                                Paciente = lector.GetString(ordPac),
+                                DniPaciente = lector.GetString(ordDni),
+                                Medico = lector.GetString(ordMed),
+                                Especialidad = lector.GetString(ordEsp),
+                                Cobertura = lector.GetString(ordCob),
+                                Plan = lector.IsDBNull(ordPlan) ? "-" : lector.GetString(ordPlan),
+                                Estado = lector.GetString(ordEst)
+                            });
+                        }
+                    }
+                }
+                return lista;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        public ReporteTurnosKpiDto ConsultarKpisTurnos(DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string query = @"
+                        SELECT 
+                            COUNT(*) AS Total,
+                            SUM(CASE WHEN Estado = 'Z' THEN 1 ELSE 0 END) AS Atendidos,
+                            SUM(CASE WHEN Estado = 'C' THEN 1 ELSE 0 END) AS Cancelados,
+                            SUM(CASE WHEN Estado = 'X' THEN 1 ELSE 0 END) AS Ausentes,
+                            SUM(CASE WHEN Estado = 'R' THEN 1 ELSE 0 END) AS Reprogramados,
+                            SUM(CASE WHEN Estado IN ('N','P') THEN 1 ELSE 0 END) AS Pendientes
+                        FROM Turno
+                        WHERE 
+                            (@Desde IS NULL OR FechaInicio >= @Desde)
+                            AND (@Hasta IS NULL OR FechaInicio <= @Hasta)";
+
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            return new ReporteTurnosKpiDto
+                            {
+                                TotalTurnos = lector.GetInt32(lector.GetOrdinal("Total")),
+                                Atendidos = lector.IsDBNull(lector.GetOrdinal("Atendidos")) ? 0 : lector.GetInt32(lector.GetOrdinal("Atendidos")),
+                                Cancelados = lector.IsDBNull(lector.GetOrdinal("Cancelados")) ? 0 : lector.GetInt32(lector.GetOrdinal("Cancelados")),
+                                Ausentes = lector.IsDBNull(lector.GetOrdinal("Ausentes")) ? 0 : lector.GetInt32(lector.GetOrdinal("Ausentes")),
+                                Reprogramados = lector.IsDBNull(lector.GetOrdinal("Reprogramados")) ? 0 : lector.GetInt32(lector.GetOrdinal("Reprogramados")),
+                                Pendientes = lector.IsDBNull(lector.GetOrdinal("Pendientes")) ? 0 : lector.GetInt32(lector.GetOrdinal("Pendientes"))
+                            };
+                        }
+                    }
+                }
+                return new ReporteTurnosKpiDto();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

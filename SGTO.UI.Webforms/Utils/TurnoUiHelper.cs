@@ -12,7 +12,6 @@ namespace SGTO.UI.Webforms.Utils
             {"nuevo", "badge badge-primary" },
             {"cancelado", "badge badge-danger" },
             {"reprogramado", "badge badge-info" },
-            {"pendientereprogramacion", "badge badge-pending" },
             {"noasistio", "badge badge-dark"  },
             {"cerrado", "badge badge-completed" }
         };
@@ -22,7 +21,6 @@ namespace SGTO.UI.Webforms.Utils
             {"nuevo", "Nuevo" },
             {"cancelado", "Cancelado" },
             {"reprogramado", "Reprogramado" },
-            {"pendientereprogramacion", "Pendiente Reprogramación" },
             {"noasistio", "No Asistió" },
             {"cerrado", "Cerrado" }
         };

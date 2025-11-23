@@ -76,5 +76,38 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 .ToArray();
         }
 
+
+        public static byte[] GenerarReporteTurnosCsv(List<ReporteTurnosDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de turnos para exportar al CSV.");
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("IdTurno;Fecha;Hora;Paciente;DNI Paciente;Médico;Especialidad;Estado;Cobertura;Plan");
+
+            foreach (ReporteTurnosDto t in lista)
+            {
+                string linea = string.Join(";",
+                    t.IdTurno.ToString(),
+                    t.Fecha.ToString("dd/MM/yyyy"),
+                    t.Hora,
+                    LimpiarCsv(t.Paciente),
+                    LimpiarCsv(t.DniPaciente),
+                    LimpiarCsv(t.Medico),
+                    LimpiarCsv(t.Especialidad),
+                    LimpiarCsv(t.Estado),
+                    LimpiarCsv(t.Cobertura),
+                    LimpiarCsv(t.Plan)
+                );
+
+                sb.AppendLine(linea);
+            }
+
+            return Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(sb.ToString()))
+                .ToArray();
+        }
+
     }
 }

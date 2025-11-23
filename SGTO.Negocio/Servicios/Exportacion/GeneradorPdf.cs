@@ -294,5 +294,64 @@ namespace SGTO.Negocio.Servicios.Exportacion
             }
         }
 
+
+        public static byte[] GenerarReporteTurnosPdf(List<ReporteTurnosDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de turnos para exportar.");
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 30, 30, 40, 40);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+
+                var titulo = new Paragraph("Reporte de Turnos", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                {
+                    Alignment = Element.ALIGN_CENTER
+                };
+                doc.Add(titulo);
+                doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
+                doc.Add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(7);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 2, 1, 3, 3, 3, 2, 2 });
+
+                string[] headers = { "Fecha", "Hora", "Paciente", "Médico", "Especialidad", "Estado", "Cobertura" };
+
+                foreach (string h in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    {
+                        BackgroundColor = new BaseColor(240, 240, 240),
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        Padding = 5
+                    };
+                    table.AddCell(cell);
+                }
+
+                foreach (var t in lista)
+                {
+                    table.AddCell(new Phrase(t.Fecha.ToString("dd/MM/yyyy"), FuenteSmall));
+                    table.AddCell(new Phrase(t.Hora, FuenteSmall));
+                    table.AddCell(new Phrase(t.Paciente, FuenteTexto));
+                    table.AddCell(new Phrase(t.Medico, FuenteTexto));
+                    table.AddCell(new Phrase(t.Especialidad, FuenteSmall));
+
+                    PdfPCell cellEstado = new PdfPCell(new Phrase(t.Estado, FuenteSmall));
+                    cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellEstado);
+
+                    table.AddCell(new Phrase(t.Cobertura, FuenteSmall));
+                }
+
+                doc.Add(table);
+                doc.Close();
+
+                return ms.ToArray();
+            }
+        }
+
     }
 }

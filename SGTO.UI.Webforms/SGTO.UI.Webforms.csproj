@@ -126,7 +126,6 @@
     <Content Include="Controles\Coberturas\CoberturasForm.ascx" />
     <Content Include="Controles\Coberturas\PlanesForm.ascx" />
     <Content Include="Controles\Pacientes\PacienteForm.ascx" />
-    <Content Include="Controles\Reportes\Turnos\ReporteTurnos.ascx" />
     <Content Include="Controles\Tratamientos\TratamientoForm.ascx" />
     <Content Include="Controles\Turnos\TurnoForm.ascx" />
     <Content Include="Default.aspx" />
@@ -279,13 +278,6 @@
     </Compile>
     <Compile Include="Controles\Pacientes\PacienteForm.ascx.designer.cs">
       <DependentUpon>PacienteForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.cs">
-      <DependentUpon>ReporteTurnos.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Controles\Reportes\Turnos\ReporteTurnos.ascx.designer.cs">
-      <DependentUpon>ReporteTurnos.ascx</DependentUpon>
     </Compile>
     <Compile Include="Controles\Tratamientos\TratamientoForm.ascx.cs">
       <DependentUpon>TratamientoForm.ascx</DependentUpon>

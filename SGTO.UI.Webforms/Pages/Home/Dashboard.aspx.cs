@@ -1,4 +1,5 @@
 ﻿using SGTO.Comun.DTOs;
+using SGTO.Negocio.DTOs.Seguridad;
 using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
@@ -53,14 +54,15 @@ namespace SGTO.UI.Webforms.Pages.Home
 
         private void CargarDatosDashboard()
         {
+            UsuarioSesionDto usuarioActual = SessionManager.Usuario;
             // obtencion de kpis
-            DashboardResumenDto resumen = _servicioDashboard.ObtenerResumenDiario();
+            DashboardResumenDto resumen = _servicioDashboard.ObtenerResumenDiario(usuarioActual);
             KpiTurnosDia = resumen.TurnosDelDia;
             KpiPacientesAtendidos = resumen.PacientesAtendidos;
             KpiReprogramados = resumen.Reprogramados;
             KpiCancelados = resumen.Cancelados;
 
-            List<DashboardActividadSemanalDto> actividad = _servicioDashboard.ObtenerActividadSemanal();
+            List<DashboardActividadSemanalDto> actividad = _servicioDashboard.ObtenerActividadSemanal(usuarioActual);
 
             var sbCategorias = new StringBuilder();
             var sbValores = new StringBuilder();
@@ -73,8 +75,9 @@ namespace SGTO.UI.Webforms.Pages.Home
                     sbValores.Append(",");
                 }
 
+                string etiqueta = $"{actividad[i].Dia} {actividad[i].Fecha.ToString("dd/MM")}";
                 //  por ejemplo > Lunes, martes...
-                sbCategorias.Append("'").Append(actividad[i].Dia.Replace("'", "\\'")).Append("'");
+                sbCategorias.Append("'").Append(etiqueta.Replace("'", "\\'")).Append("'");
                 sbValores.Append(actividad[i].Cantidad);
             }
             CategoriasCsv = sbCategorias.ToString();

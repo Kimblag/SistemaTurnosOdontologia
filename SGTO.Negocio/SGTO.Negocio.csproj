@@ -65,8 +65,6 @@
     <Compile Include="DTOs\Permisos\PermisoAsignadoDto.cs" />
     <Compile Include="DTOs\Permisos\PermisoDto.cs" />
     <Compile Include="DTOs\PlanDto.cs" />
-    <Compile Include="DTOs\ReportePacienteDto.cs" />
-    <Compile Include="DTOs\ReporteTurnosDto.cs" />
     <Compile Include="DTOs\Roles\ModuloPermisosDto.cs" />
     <Compile Include="DTOs\Roles\RolCrearDto.cs" />
     <Compile Include="DTOs\Roles\RolDetalleDto.cs" />

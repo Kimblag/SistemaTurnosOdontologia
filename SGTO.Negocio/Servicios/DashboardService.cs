@@ -1,7 +1,8 @@
-﻿using SGTO.Datos.Repositorios;
+﻿using SGTO.Comun.DTOs;
+using SGTO.Datos.Repositorios;
+using SGTO.Negocio.DTOs.Seguridad;
 using System;
 using System.Collections.Generic;
-using SGTO.Comun.DTOs;
 using System.Diagnostics;
 
 namespace SGTO.Negocio.Servicios
@@ -10,37 +11,47 @@ namespace SGTO.Negocio.Servicios
     {
 
         private readonly DashboardRepositorio _repositorioDashboard;
+        private readonly MedicoRepositorio _repositorioMedico;
 
         public DashboardService()
         {
             _repositorioDashboard = new DashboardRepositorio();
+            _repositorioMedico = new MedicoRepositorio();
+        }
+
+        private int? ObtenerFiltroMedico(UsuarioSesionDto usuario)
+        {
+            if (usuario.NombreRol.Equals("Médico", StringComparison.OrdinalIgnoreCase))
+            {
+                return _repositorioMedico.ObtenerPorUsuarioId(usuario.IdUsuario).IdMedico;
+            }
+
+            return null;
         }
 
 
-        public DashboardResumenDto ObtenerResumenDiario()
+        public DashboardResumenDto ObtenerResumenDiario(UsuarioSesionDto usuario)
         {
             try
             {
-                DashboardResumenDto resumen = _repositorioDashboard.ObtenerResumenDiario();
-                return resumen;
+                int? idMedico = ObtenerFiltroMedico(usuario);
+                return _repositorioDashboard.ObtenerResumenDiario(idMedico);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine("Error en resumen diario: " + ex.Message);
                 throw;
             }
         }
 
-        public List<DashboardActividadSemanalDto> ObtenerActividadSemanal()
+        public List<DashboardActividadSemanalDto> ObtenerActividadSemanal(UsuarioSesionDto usuario)
         {
             try
             {
-                List<DashboardActividadSemanalDto> lista = _repositorioDashboard.ObtenerActividadSemanal();
-                return lista;
+                int? idMedico = ObtenerFiltroMedico(usuario);
+                return _repositorioDashboard.ObtenerActividadSemanal(idMedico);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine("Error en actividad semanal: " + ex.Message);
                 throw;
             }
         }

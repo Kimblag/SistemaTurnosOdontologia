@@ -252,6 +252,10 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 Response.Flush();
                 Response.End();
             }
+            catch (System.Threading.ThreadAbortException)
+            {
+                
+            }
             catch (Exception ex)
             {
                 MensajeUiHelper.SetearYMostrar(
@@ -288,6 +292,10 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 Response.BinaryWrite(csvBytes);
                 Response.Flush();
                 Response.End();
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                // agregué esta excepcion porque el response.END hace que se lance una excepción al terminar bruscamente la solicitud
             }
             catch (Exception ex)
             {
