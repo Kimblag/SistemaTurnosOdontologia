@@ -2,7 +2,6 @@
 using SGTO.Datos.Infraestructura;
 using SGTO.Datos.Mappers;
 using SGTO.Dominio.Entidades;
-using SGTO.Dominio.Enums;
 using SGTO.Dominio.ObjetosValor;
 using System;
 using System.Collections.Generic;
@@ -352,7 +351,7 @@ namespace SGTO.Datos.Repositorios
 
                 datos.EstablecerParametros("@FechaInicio", turno.Horario.Inicio);
                 datos.EstablecerParametros("@FechaFin", turno.Horario.Fin);
-                datos.EstablecerParametros("@Estado", turno.Estado.ToString()[0]);
+                datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(turno.Estado));
 
                 if (string.IsNullOrWhiteSpace(turno.Observaciones))
                     datos.EstablecerParametros("@Observaciones", DBNull.Value);
@@ -520,7 +519,7 @@ namespace SGTO.Datos.Repositorios
                 datos.EstablecerParametros("@IdPlan", (object)turno.Plan?.IdPlan ?? DBNull.Value);
                 datos.EstablecerParametros("@FechaInicio", turno.Horario.Inicio);
                 datos.EstablecerParametros("@FechaFin", turno.Horario.Fin);
-                datos.EstablecerParametros("@Estado", turno.Estado.ToString()[0]);
+                datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(turno.Estado));
                 datos.EstablecerParametros("@Observaciones", (object)turno.Observaciones ?? DBNull.Value);
                 if (idUsuarioModificacion != 0)
                     datos.EstablecerParametros("@IdUsuarioModificacion", idUsuarioModificacion);

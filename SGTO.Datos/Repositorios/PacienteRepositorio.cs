@@ -321,7 +321,5 @@ namespace SGTO.Datos.Repositorios
             }
             return resultado;
         }
-
-
     }
 }

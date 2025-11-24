@@ -92,8 +92,6 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
         private void CargarTurnosConFiltros()
         {
-
-
             try
             {
                 // este dto es para ayudarnos a armar los filtros necesarios para la bd
@@ -120,39 +118,26 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 List<TurnoListadoDto> listaFinal = new List<TurnoListadoDto>();
 
                 string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
+                string[] palabrasClave = string.IsNullOrEmpty(textoBuscar) 
+                    ? new string[0]
+                    : textoBuscar.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
                 string estadoSeleccionado = ddlEstado.SelectedValue;
 
                 foreach (TurnoListadoDto turno in listaDesdeBase)
                 {
-                    bool cumpleCriterios = true;
+                    bool coincideTexto = EsCoincidenciaDeBusqueda(turno, palabrasClave);
 
-                    if (!string.IsNullOrEmpty(textoBuscar))
-                    {
-                        string nombrePac = ValidadorCampos.NormalizarTexto(turno.NombrePaciente) ?? "";
-                        string dniPac = turno.DniPaciente ?? "";
-                        string matricula = turno.Matricula ?? "";
-                        string nombreMed = ValidadorCampos.NormalizarTexto(turno.NombreMedico) ?? "";
-
-                        bool encontrado = nombrePac.Contains(textoBuscar) ||
-                                          dniPac.Contains(textoBuscar) ||
-                                          nombreMed.Contains(textoBuscar) ||
-                                          matricula.Contains(textoBuscar);
-
-                        if (!encontrado)
-                        {
-                            cumpleCriterios = false;
-                        }
-                    }
-
-                    if (cumpleCriterios && !string.IsNullOrEmpty(estadoSeleccionado))
+                    bool coincideEstado = true;
+                    if (!string.IsNullOrEmpty(estadoSeleccionado))
                     {
                         if (!turno.Estado.Equals(estadoSeleccionado, StringComparison.OrdinalIgnoreCase))
                         {
-                            cumpleCriterios = false;
+                            coincideEstado = false;
                         }
                     }
 
-                    if (cumpleCriterios)
+                    if (coincideTexto && coincideEstado)
                     {
                         listaFinal.Add(turno);
                     }
@@ -243,11 +228,15 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                         // validar que su estado permita atender un turno
                         bool esAtendible = (estadoTurno == "nuevo" || estadoTurno == "reprogramado" ||
                                              estadoTurno == "n" || estadoTurno == "r");
+
+                        // validar que sean turnos del día actual, esto evita que atienda turnos del futuro.
+                        bool esFechaHoy = turnoDto.Fecha.Date == DateTime.Today;
+
                         // validar que el usuario es un médico
                         bool esMedico = _servicioAutorizacion.EsMedico(SessionManager.Usuario);
                         bool puedeAtender = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ATENCION", "VER");
 
-                        btnAtender.Visible = esAtendible && esMedico && puedeAtender;
+                        btnAtender.Visible = esAtendible && esFechaHoy && esMedico && puedeAtender;
                     }
 
                     if (btnDetalle != null)
@@ -278,6 +267,36 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     }
                 }
             }
+        }
+
+        private bool EsCoincidenciaDeBusqueda(TurnoListadoDto turno, string[] palabrasClave)
+        {
+            // creé este método para hacer búsquedas por tokens eb kugar de usar un simple contains
+            // ya que había una inconsistencia al buscar.
+            // Por ejemplo en el listado se ve Blandon Kim, pero si buscamos "kim blandon"
+            // el contains no lo ubica porque compara siguiendo el orden exacto de los caracteres.
+
+            if (palabrasClave == null || palabrasClave.Length == 0)
+                return true;
+
+            string nombrePac = ValidadorCampos.NormalizarTexto(turno.NombrePaciente) ?? "";
+            string dniPac = turno.DniPaciente ?? "";
+            string matricula = turno.Matricula ?? "";
+            string nombreMed = ValidadorCampos.NormalizarTexto(turno.NombreMedico) ?? "";
+
+            // agregar espacios entre cada token para evitar errores de palabras pegadas a la siguiente
+            string datosTurnoConcatenados = string.Format("{0} {1} {2} {3}", nombrePac, dniPac, matricula, nombreMed);
+
+            // se verifica que todos los tokens existan
+            foreach (string palabra in palabrasClave)
+            {
+                //si falta al menos una, ya no es coincidencia
+                if (!datosTurnoConcatenados.Contains(palabra))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

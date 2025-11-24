@@ -83,12 +83,12 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Nombre", nuevoMedico.Nombre);
             datos.EstablecerParametros("@Apellido", nuevoMedico.Apellido);
             datos.EstablecerParametros("@NumeroDocumento", nuevoMedico.Dni.Numero);
-            datos.EstablecerParametros("@Genero", nuevoMedico.Genero.ToString()[0]);
+            datos.EstablecerParametros("@Genero", EnumeracionMapperDatos.ObtenerChar(nuevoMedico.Genero));
             datos.EstablecerParametros("@FechaNacimiento", nuevoMedico.FechaNacimiento);
             datos.EstablecerParametros("@Telefono", nuevoMedico.Telefono.Numero);
             datos.EstablecerParametros("@Matricula", nuevoMedico.Matricula);
             datos.EstablecerParametros("@IdUsuario", nuevoMedico.Usuario.IdUsuario);
-            datos.EstablecerParametros("@Estado", nuevoMedico.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(nuevoMedico.Estado));
             datos.EstablecerParametros("@FechaAlta", nuevoMedico.FechaAlta);
             datos.EstablecerParametros("@FechaModificacion", nuevoMedico.FechaModificacion);
 
@@ -188,11 +188,11 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Nombre", medico.Nombre);
             datos.EstablecerParametros("@Apellido", medico.Apellido);
             datos.EstablecerParametros("@NumeroDocumento", medico.Dni.Numero);
-            datos.EstablecerParametros("@Genero", medico.Genero.ToString()[0]);
+            datos.EstablecerParametros("@Genero", EnumeracionMapperDatos.ObtenerChar(medico.Genero));
             datos.EstablecerParametros("@FechaNacimiento", medico.FechaNacimiento);
             datos.EstablecerParametros("@Telefono", medico.Telefono.Numero);
             datos.EstablecerParametros("@Matricula", medico.Matricula);
-            datos.EstablecerParametros("@Estado", medico.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(medico.Estado));
             datos.EstablecerParametros("@FechaModificacion", medico.FechaModificacion);
             datos.EstablecerParametros("@IdUsuario", medico.Usuario.IdUsuario);
 
@@ -268,16 +268,16 @@ namespace SGTO.Datos.Repositorios
             using (ConexionDBFactory datos = new ConexionDBFactory())
             {
                 string query = @"
-            SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
-                   M.FechaNacimiento, M.Telefono, M.Matricula, 
-                   M.IdUsuario, M.Estado, M.FechaAlta, M.FechaModificacion,
-                   U.NombreUsuario, U.Email, 
-                   ME.IdEspecialidad, E.Nombre AS NombreEspecialidad
-            FROM Medico M
-            INNER JOIN Usuario U ON M.IdUsuario = U.IdUsuario
-            LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
-            LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
-            WHERE M.IdMedico = @IdMedico";
+                    SELECT M.IdMedico, M.Nombre, M.Apellido, M.NumeroDocumento, M.Genero, 
+                           M.FechaNacimiento, M.Telefono, M.Matricula, 
+                           M.IdUsuario, M.Estado, M.FechaAlta, M.FechaModificacion,
+                           U.NombreUsuario, U.Email, 
+                           ME.IdEspecialidad, E.Nombre AS NombreEspecialidad
+                    FROM Medico M
+                    INNER JOIN Usuario U ON M.IdUsuario = U.IdUsuario
+                    LEFT JOIN MedicoEspecialidad ME ON M.IdMedico = ME.IdMedico
+                    LEFT JOIN Especialidad E ON ME.IdEspecialidad = E.IdEspecialidad
+                    WHERE M.IdMedico = @IdMedico";
 
                 datos.DefinirConsulta(query);
                 datos.EstablecerParametros("@IdMedico", idMedico);

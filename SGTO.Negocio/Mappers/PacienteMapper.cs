@@ -1,9 +1,6 @@
-﻿using SGTO.Datos.Mappers;
-using SGTO.Dominio.Entidades;
+﻿using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs.Pacientes;
-using System;
 using System.Collections.Generic;
-
 
 namespace SGTO.Negocio.Mappers
 {
@@ -90,7 +87,5 @@ namespace SGTO.Negocio.Mappers
                 Estado = paciente.Estado.ToString()
             };
         }
-
-
     }
 }

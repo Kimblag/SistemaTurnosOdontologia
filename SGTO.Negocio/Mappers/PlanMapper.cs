@@ -1,11 +1,6 @@
-﻿using SGTO.Datos.Mappers;
-using SGTO.Dominio.Entidades;
+﻿using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SGTO.Negocio.Mappers
 {

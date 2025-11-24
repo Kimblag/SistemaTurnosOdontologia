@@ -2,7 +2,6 @@
 using System;
 using System.Data.SqlClient;
 
-
 namespace SGTO.Datos.Mappers
 {
     public class HistoriaClinicaMapper

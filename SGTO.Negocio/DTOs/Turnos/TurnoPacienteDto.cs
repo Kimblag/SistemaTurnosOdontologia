@@ -1,5 +1,4 @@
-﻿
-namespace SGTO.Negocio.DTOs.Turnos
+﻿namespace SGTO.Negocio.DTOs.Turnos
 {
     public class TurnoPacienteDto
     {

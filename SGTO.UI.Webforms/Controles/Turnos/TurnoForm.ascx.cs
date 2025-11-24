@@ -1,5 +1,4 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Negocio.DTOs;
+﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
 using SGTO.Negocio.DTOs.Pacientes;
 using SGTO.Negocio.DTOs.Turnos;
@@ -8,7 +7,6 @@ using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -177,11 +175,21 @@ namespace SGTO.UI.Webforms.Controles.Turnos
         }
 
 
-        public void CargarFechasDisponiblesDropdown(int idMedico)
+        public void CargarFechasDisponiblesDropdown(int idMedico, DateTime? fechaTurnoActual = null)
         {
             List<DateTime> fechas = _servicioTurno.ObtenerFechasDisponibles(idMedico, CANTIDAD_SEMANAS);
 
             ddlFecha.Items.Clear();
+
+            if (fechaTurnoActual.HasValue)
+            {
+                if (!fechas.Exists(f => f.Date == fechaTurnoActual.Value.Date))
+                {
+                    fechas.Add(fechaTurnoActual.Value.Date);
+                }
+            }
+
+            fechas.Sort();
 
             if (fechas.Count == 0)
             {
@@ -205,6 +213,20 @@ namespace SGTO.UI.Webforms.Controles.Turnos
 
             ddlHora.Items.Clear();
 
+            if (horaTurnoActual.HasValue)
+            {
+                if (fecha.Date == DateTime.Parse(hdnFechaInicioOriginal.Value).Date)
+                {
+                    if (!horas.Contains(horaTurnoActual.Value))
+                    {
+                        horas.Add(horaTurnoActual.Value);
+                    }
+                }
+            }
+
+
+            horas.Sort();
+
             if (horas.Count == 0)
             {
                 ddlHora.Items.Add(new ListItem("Sin horarios disponibles", ""));
@@ -215,36 +237,21 @@ namespace SGTO.UI.Webforms.Controles.Turnos
             ddlHora.Items.Add(new ListItem("Seleccione una hora", ""));
 
             foreach (TimeSpan h in horas)
+            {
                 ddlHora.Items.Add(new ListItem(h.ToString(@"hh\:mm"), h.ToString()));
+            }
 
 
             if (horaTurnoActual.HasValue)
             {
-                bool existe = false;
-                foreach (ListItem item in ddlHora.Items)
+                string horaStr = horaTurnoActual.Value.ToString();
+                if (ddlHora.Items.FindByValue(horaStr) != null)
                 {
-                    if (item.Value == horaTurnoActual.Value.ToString())
-                    {
-                        existe = true;
-                        break;
-                    }
-                }
-
-                if (!existe)
-                    ddlHora.Items.Insert(1, new ListItem(horaTurnoActual.Value.ToString(@"hh\:mm"), horaTurnoActual.Value.ToString()));
-
-                // seleccionar la hora actual
-                foreach (ListItem item in ddlHora.Items)
-                {
-                    if (item.Value == horaTurnoActual.Value.ToString())
-                    {
-                        item.Selected = true;
-                        break;
-                    }
+                    ddlHora.SelectedValue = horaStr;
                 }
             }
 
-            ddlHora.Enabled = horas.Count > 0 || horaTurnoActual.HasValue;
+            ddlHora.Enabled = true;
         }
 
 
@@ -342,7 +349,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 CargarMedicoDropdown(turno.IdEspecialidad);
                 ddlMedico.SelectedValue = turno.IdMedico.ToString();
 
-                CargarFechasDisponiblesDropdown(turno.IdMedico);
+                CargarFechasDisponiblesDropdown(turno.IdMedico, turno.FechaInicio);
 
                 string fechaFormato = turno.FechaInicio.ToString("yyyy-MM-dd");
                 if (ddlFecha.Items.FindByValue(fechaFormato) != null)
@@ -585,7 +592,7 @@ namespace SGTO.UI.Webforms.Controles.Turnos
                 return;
             }
 
-                TurnoEdicionDto dto = new TurnoEdicionDto
+            TurnoEdicionDto dto = new TurnoEdicionDto
             {
                 IdTurno = int.Parse(hdnIdTurno.Value),
                 IdPaciente = int.Parse(hdnIdPaciente.Value),

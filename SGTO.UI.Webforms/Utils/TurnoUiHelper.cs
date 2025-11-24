@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SGTO.Comun.Validacion;
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -58,9 +59,9 @@ namespace SGTO.UI.Webforms.Utils
         {
             if (string.IsNullOrWhiteSpace(estadoTurno)) return false;
 
-            string estado = estadoTurno.ToLower().Trim();
+            string estado = ValidadorCampos.NormalizarTexto(estadoTurno.Replace(" ", ""));
 
-            return !(estado == "cancelado" || estado == "cerrado" || estado == "noasistio");
+            return !(estado == "cancelado" || estado == "cerrado" || estado == "noasistio" || estado == "no asistio");
         }
 
     }

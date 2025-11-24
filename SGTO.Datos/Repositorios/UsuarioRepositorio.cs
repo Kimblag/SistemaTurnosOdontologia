@@ -126,7 +126,7 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@NombreUsuario", nuevoUsuario.NombreUsuario);
             datos.EstablecerParametros("@PasswordHash", nuevoUsuario.PasswordHash);
             datos.EstablecerParametros("@IdRol", nuevoUsuario.Rol.IdRol);
-            datos.EstablecerParametros("@Estado", nuevoUsuario.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(nuevoUsuario.Estado));
             datos.EstablecerParametros("@FechaAlta", nuevoUsuario.FechaAlta);
             datos.EstablecerParametros("@FechaModificacion", nuevoUsuario.FechaModificacion);
 
@@ -256,7 +256,7 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Email", usuario.Email.Valor);
             datos.EstablecerParametros("@NombreUsuario", usuario.NombreUsuario);
             datos.EstablecerParametros("@IdRol", usuario.Rol.IdRol);
-            datos.EstablecerParametros("@Estado", usuario.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado",EnumeracionMapperDatos.ObtenerChar(usuario.Estado));
             datos.EstablecerParametros("@FechaModificacion", usuario.FechaModificacion);
 
             if (!string.IsNullOrEmpty(usuario.PasswordHash))

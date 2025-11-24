@@ -37,6 +37,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
                 }
                 else
                 {
+                    Session[_keySessionListaPlanes] = null;
                     List<Plan> planes = new List<Plan>();
                     gvPlanes.DataSource = planes;
                     gvPlanes.DataBind();
@@ -205,6 +206,7 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
 
                 _servicioCobertura.Crear(coberturaDto, planes);
 
+                Session[_keySessionListaPlanes] = null;
                 MensajeUiHelper.SetearYMostrar(
                    this.Page,
                    "Cobertura creada",

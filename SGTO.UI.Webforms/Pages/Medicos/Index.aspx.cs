@@ -71,7 +71,34 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             }
         }
 
+        private bool EsCoincidenciaDeBusqueda(MedicoListadoDto medico, string[] palabrasClave)
+        {
+            // creé este método para hacer búsquedas por tokens eb kugar de usar un simple contains
+            // ya que había una inconsistencia al buscar.
+            // Por ejemplo en el listado se ve Blandon Kim, pero si buscamos "kim blandon"
+            // el contains no lo ubica porque compara siguiendo el orden exacto de los caracteres.
 
+            if (palabrasClave == null || palabrasClave.Length == 0)
+                return true;
+
+            string dniMed = medico.Dni ?? "";
+            string matricula = medico.Matricula ?? "";
+            string nombreMed = ValidadorCampos.NormalizarTexto(medico.NombreCompleto) ?? "";
+
+            // agregar espacios entre cada token para evitar errores de palabras pegadas a la siguiente
+            string datosMedicoConcatenados = string.Format("{0} {1} {2}", nombreMed, dniMed, matricula);
+
+            // se verifica que todos los tokens existan
+            foreach (string palabra in palabrasClave)
+            {
+                //si falta al menos una, ya no es coincidencia
+                if (!datosMedicoConcatenados.Contains(palabra))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         private void CargarMedicosConFiltros()
         {
             List<MedicoListadoDto> todosLosMedicos = new List<MedicoListadoDto>();
@@ -89,29 +116,18 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 return;
             }
 
-            string textoBuscar = txtBuscar.Text.Trim().ToUpper();
+            string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
+            string[] palabrasClave = string.IsNullOrEmpty(textoBuscar)
+                    ? new string[0]
+                    : textoBuscar.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
             string especialidadSeleccionada = ddlEspecialidad.SelectedValue;
             string estadoSeleccionado = ddlEstado.SelectedValue;
 
             foreach (MedicoListadoDto m in todosLosMedicos)
             {
                 bool cumple = true;
-
-                if (!string.IsNullOrEmpty(textoBuscar))
-                {
-                    string nombre = m.NombreCompleto != null ? ValidadorCampos.NormalizarTexto(m.NombreCompleto) : "";
-                    string dni = m.Dni ?? "";
-                    string matricula = m.Matricula ?? "";
-
-                    string textoNormalizado = ValidadorCampos.NormalizarTexto(textoBuscar);
-
-                    if (!nombre.Contains(textoNormalizado) &&
-                        !dni.Contains(textoNormalizado) &&
-                        !matricula.Contains(textoNormalizado))
-                    {
-                        cumple = false;
-                    }
-                }
+                bool coincideTexto = EsCoincidenciaDeBusqueda(m, palabrasClave);
 
                 if (cumple && !string.IsNullOrEmpty(especialidadSeleccionada))
                 {
@@ -146,7 +162,7 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                     if (buscaInactivos && esActivoDto) cumple = false;
                 }
 
-                if (cumple)
+                if (cumple && coincideTexto)
                 {
                     listaFiltrada.Add(m);
                 }

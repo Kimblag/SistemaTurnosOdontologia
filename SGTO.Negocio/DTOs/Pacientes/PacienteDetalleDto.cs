@@ -1,7 +1,5 @@
 ﻿using SGTO.Negocio.DTOs.Turnos;
-using System;
 using System.Collections.Generic;
-
 
 namespace SGTO.Negocio.DTOs.Pacientes
 {

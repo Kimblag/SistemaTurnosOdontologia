@@ -184,7 +184,7 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@Nombre", rol.Nombre);
             datos.EstablecerParametros("@Descripcion", rol.Descripcion);
-            datos.EstablecerParametros("@Estado", rol.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(rol.Estado));
 
             int idNuevoRol = datos.EjecutarAccionEscalar();
             return idNuevoRol;
@@ -203,7 +203,7 @@ namespace SGTO.Datos.Repositorios
             datos.DefinirConsulta(query);
             datos.EstablecerParametros("@Nombre", rol.Nombre);
             datos.EstablecerParametros("@Descripcion", rol.Descripcion);
-            datos.EstablecerParametros("@Estado", rol.Estado.ToString()[0]);
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(rol.Estado));
             datos.EstablecerParametros("@IdRol", rol.IdRol);
             datos.EjecutarAccion();
         }

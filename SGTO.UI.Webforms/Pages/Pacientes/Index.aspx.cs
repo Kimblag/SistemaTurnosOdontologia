@@ -85,13 +85,44 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
         }
 
 
+        private bool EsCoincidenciaDeBusqueda(PacienteListadoDto paciente, string[] palabrasClave)
+        {
+            // creé este método para hacer búsquedas por tokens eb kugar de usar un simple contains
+            // ya que había una inconsistencia al buscar.
+            // Por ejemplo en el listado se ve Blandon Kim, pero si buscamos "kim blandon"
+            // el contains no lo ubica porque compara siguiendo el orden exacto de los caracteres.
 
+            if (palabrasClave == null || palabrasClave.Length == 0)
+                return true;
+
+            string nombrePac = ValidadorCampos.NormalizarTexto(paciente.NombreCompleto) ?? "";
+            string dniPac = paciente.Dni ?? "";
+            string emailPac = paciente.Email ?? "";
+
+            // agregar espacios entre cada token para evitar errores de palabras pegadas a la siguiente
+            string datosTurnoConcatenados = string.Format("{0} {1} {2}", nombrePac, dniPac, emailPac);
+
+            // se verifica que todos los tokens existan
+            foreach (string palabra in palabrasClave)
+            {
+                //si falta al menos una, ya no es coincidencia
+                if (!datosTurnoConcatenados.Contains(palabra))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         private void CargarPacientesConFiltros(string estado = null)
         {
             List<PacienteListadoDto> todosLosPacientes = new List<PacienteListadoDto>();
             List<PacienteListadoDto> listaFiltrada = new List<PacienteListadoDto>();
 
-            string textoBuscar = txtBuscar.Text.Trim().ToUpper();
+            string textoBuscar = ValidadorCampos.NormalizarTexto(txtBuscar.Text.Trim());
+            string[] palabrasClave = string.IsNullOrEmpty(textoBuscar)
+                    ? new string[0]
+                    : textoBuscar.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
             string idCoberturaSeleccionada = ddlCobertura.SelectedValue;
             string estadoSeleccionado = ddlEstado.SelectedValue;
 
@@ -113,19 +144,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
             {
                 bool cumple = true;
 
-                if (!string.IsNullOrEmpty(textoBuscar))
-                {
-                    string nombre = p.NombreCompleto != null ? ValidadorCampos.NormalizarTexto(p.NombreCompleto) : "";
-                    string dni = p.Dni != null ? p.Dni : "";
-                    string email = p.Email != null ? p.Email.ToUpper() : "";
-
-                    if (!nombre.Contains(textoBuscar) &&
-                        !dni.Contains(textoBuscar) &&
-                        !email.Contains(textoBuscar))
-                    {
-                        cumple = false;
-                    }
-                }
+                bool coincideTexto = EsCoincidenciaDeBusqueda(p, palabrasClave);
 
                 if (cumple && idCoberturaSeleccionada != "-1")
                 {
@@ -138,7 +157,7 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                 }
 
 
-                if (cumple)
+                if (cumple && coincideTexto)
                 {
                     listaFiltrada.Add(p);
                 }

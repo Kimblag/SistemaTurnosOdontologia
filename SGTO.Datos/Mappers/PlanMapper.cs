@@ -1,7 +1,5 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace SGTO.Datos.Mappers
@@ -27,9 +25,7 @@ namespace SGTO.Datos.Mappers
                 cobertura,
                 estado
                 );
-
             return plan;
         }
-
     }
 }

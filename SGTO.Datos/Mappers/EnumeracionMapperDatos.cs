@@ -65,5 +65,61 @@ namespace SGTO.Datos.Mappers
             return (TipoAccion)Enum.Parse(typeof(TipoAccion), valor, true);
         }
 
+        public static char ObtenerChar(Genero genero)
+        {
+            string valor = genero.ToString().ToLower();
+            switch (valor)
+            {
+                case "masculino":
+                    return 'M';
+                case "femenino":
+                    return 'F';
+                case "otro":
+                    return 'O';
+                case "prefierenodecir":
+                    return 'N';
+                default:
+                    throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para Genero.");
+            }
+        }
+
+        public static char ObtenerChar(EstadoEntidad estado)
+        {
+            string valor = estado.ToString().ToLower();
+            switch (valor)
+            {
+                case "activo":
+                    return 'A';
+                case "inactivo":
+                    return 'I';
+                default:
+                    throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para Genero.");
+            }
+        }
+
+
+        public static char ObtenerChar(EstadoTurno estado)
+        {
+            string valor = estado.ToString().ToLower();
+           
+            switch (valor)
+            {
+                case "nuevo":
+                    return 'N';
+                case "reprogramado":
+                    return 'R';
+                case "cancelado":
+                    return 'C';
+                case "noasistio":
+                    return 'X';
+                case "cerrado":
+                    return 'Z';
+                default:
+                    throw new ArgumentOutOfRangeException($"Valor desconocido '{valor}' para EstadoTurno.");
+            }
+        }
+
+
+
     }
 }

@@ -1,8 +1,6 @@
 ﻿using SGTO.Datos.Utils;
 using SGTO.Dominio.Entidades;
 using SGTO.Dominio.Enums;
-using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 
 

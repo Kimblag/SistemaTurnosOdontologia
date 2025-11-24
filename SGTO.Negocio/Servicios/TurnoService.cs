@@ -112,7 +112,7 @@ namespace SGTO.Negocio.Servicios
                 if (horarios.Count == 0)
                     return fechasDisponibles;
 
-                DateTime desde = DateTime.Today.AddDays(1);
+                DateTime desde = DateTime.Today;
                 DateTime hasta = DateTime.Today.AddDays(semanas * 7);
 
                 // se debe recorrer cada día que se encientra dentro del rango
@@ -122,9 +122,8 @@ namespace SGTO.Negocio.Servicios
                     byte diaSemanaBD = (byte)((int)fecha.DayOfWeek == 0 ? 7 : (int)fecha.DayOfWeek);
 
                     // verificar si el médico trabaja ese día
-                    HorarioSemanalMedico horarioDia = horarios.Find(h => h.DiaSemana == diaSemanaBD);
-                    if (horarioDia == null)
-                        continue;
+                    bool trabajaEseDia = horarios.Exists(h => h.DiaSemana == diaSemanaBD);
+                    if (!trabajaEseDia) continue;
 
                     // verificar si existen slots disponibles
                     List<TimeSpan> slots = ObtenerSlotsDisponibles(idMedico, fecha);
@@ -152,8 +151,8 @@ namespace SGTO.Negocio.Servicios
                 // normalizar ya que el día inicia en lunes == 1, pero en la bd domingo == 1:
                 byte diaSemanaBD = (byte)((int)fecha.DayOfWeek == 0 ? 7 : (int)fecha.DayOfWeek);
 
-                HorarioSemanalMedico horario = horarios.Find(h => h.DiaSemana == diaSemanaBD);
-                if (horario == null)
+                List<HorarioSemanalMedico> rangosDelDia = horarios.FindAll(h => h.DiaSemana == diaSemanaBD);
+                if (rangosDelDia.Count == 0)
                     return new List<TimeSpan>();
 
                 List<Turno> turnos = _repositorioTurno.ObtenerTurnosPorMedicoEnRango(
@@ -163,22 +162,36 @@ namespace SGTO.Negocio.Servicios
                 );
 
                 List<TimeSpan> slots = new List<TimeSpan>();
-
-                TimeSpan cursor = horario.HoraInicio;
                 TimeSpan duracion = TimeSpan.FromHours(1);
 
-                while (cursor.Add(duracion) <= horario.HoraFin)
+                // verificamos la hora y día actual para poder ofrecer turnos disponibles en el día actual
+                TimeSpan horaActual = DateTime.Now.TimeOfDay;
+                bool esHoy = fecha.Date == DateTime.Today;
+
+                foreach (HorarioSemanalMedico rango in rangosDelDia)
                 {
-                    bool ocupado = turnos.Exists(t =>
-                        t.Horario.Inicio.TimeOfDay == cursor
-                    );
+                    TimeSpan cursor = rango.HoraInicio;
+                    // mientras el rango (hora de inicio del médico) sea menor que la hora del fin de este rango
+                    // por ejemplo inicia 9:00 hs y termina a las 12 hs, le sumamos la duración que sería un timespan de 1 hora
+                    // 9 : 00 hs + 1:00 hs = 10 : 00 : 00 hs
+                    while (cursor.Add(duracion) <= rango.HoraFin)
+                    {
+                        // si es el dia acyial y la hora de inicio del turno es menor a la hora actual,
+                        // significa que el turno ya pasó así que lo obviamos
+                        if (esHoy && cursor < horaActual)
+                        {
+                            cursor = cursor.Add(duracion);
+                            continue;
+                        }
+                        // si timeofday (extrae la hora del datetime, ejemplo 9:00:00) es igual al curso actual, ese rango esta ocupado
+                        bool ocupado = turnos.Exists(t => t.Horario.Inicio.TimeOfDay == cursor);
+                        if (!ocupado) slots.Add(cursor);
 
-                    if (!ocupado)
-                        slots.Add(cursor);
-
-                    cursor = cursor.Add(duracion);
+                        // le reasignamos al cursor 1 hora más por ejemplo si cursor era 9:00:00, ahoa sera 10:00:00 para la siguiente vuelta
+                        cursor = cursor.Add(duracion);
+                    }
                 }
-
+                slots.Sort();
                 return slots;
             }
             catch
@@ -341,14 +354,23 @@ namespace SGTO.Negocio.Servicios
             // verificar que el médico de verdad atiende el día indicado
             List<HorarioSemanalMedico> horarios = _repositorioHorario.ObtenerPorMedico(dto.IdMedico);
             byte dia = (byte)((int)dto.FechaInicio.DayOfWeek == 0 ? 7 : (int)dto.FechaInicio.DayOfWeek);
-            HorarioSemanalMedico horario = horarios.Find(h => h.DiaSemana == dia);
+            List<HorarioSemanalMedico> rangosDelDia = horarios.FindAll(h => h.DiaSemana == dia);
 
-            if (horario == null)
+            if (rangosDelDia.Count == 0)
                 throw new ExcepcionReglaNegocio("El médico no atiende ese día.");
 
-            // validar qu ela hora seleccionada esté dentro del rango del horario del médico
-            if (dto.FechaInicio.TimeOfDay < horario.HoraInicio ||
-                dto.FechaFin.TimeOfDay > horario.HoraFin)
+            bool horarioValido = false;
+            foreach (var rango in rangosDelDia)
+            {
+                if (dto.FechaInicio.TimeOfDay >= rango.HoraInicio &&
+                    dto.FechaFin.TimeOfDay <= rango.HoraFin)
+                {
+                    horarioValido = true;
+                    break;
+                }
+            }
+
+            if (!horarioValido)
                 throw new ExcepcionReglaNegocio("El horario no está dentro de la jornada del médico.");
 
             // validar que la hora no sea inválida
@@ -396,41 +418,72 @@ namespace SGTO.Negocio.Servicios
             {
                 throw;
             }
+
             if (turnoExistente == null)
                 throw new ExcepcionReglaNegocio("El turno no existe.");
 
             EstadoTurno estadoOriginal = turnoExistente.Estado;
             DateTime fechaOriginal = turnoExistente.Horario.Inicio;
 
-            Paciente paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
-            Especialidad especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
-            Medico medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
 
-            ValidarPaciente(dto.IdPaciente);
-            ValidarEspecialidad(dto.IdEspecialidad);
-            ValidarMedico(dto.IdMedico, dto.IdEspecialidad);
-            ValidarCoberturaYPlan(dto.IdCobertura, dto.IdPlan, dto.IdPaciente);
+            // validar si es un cambio de estado nada mas como cancelado o no asistió
+            bool esCambioEstadoAdministrativo = (dto.Estado == 'X' || dto.Estado == 'C');
 
-            ValidarFechaYHora(dto.FechaInicio, dto.FechaFin);
-            ValidarDisponibilidadMedico(dto.IdMedico, dto.FechaInicio, dto.FechaFin, dto.IdTurno);
-            ValidarTurnosPacienteMismoDia(dto.IdPaciente, dto.IdEspecialidad, dto.FechaInicio, dto.IdTurno);
-
-
-            // Detectar cambio de fecha/hora para turno nuevo
-            if (turnoExistente.Estado == EstadoTurno.Nuevo &&
-                (turnoExistente.Horario.Inicio != dto.FechaInicio || turnoExistente.Horario.Fin != dto.FechaFin))
+            if (esCambioEstadoAdministrativo)
             {
-                dto.Estado = 'R';
-            }
-            ValidarCambioDeEstado(turnoExistente, dto.Estado, dto.FechaInicio, dto.FechaFin);
+                // si cambia a cancelar o no asistió se debe manetener la información original para trazabilidad.
+                dto.IdPaciente = turnoExistente.Paciente.IdPaciente;
+                dto.IdMedico = turnoExistente.Medico.IdMedico;
+                dto.IdEspecialidad = turnoExistente.Especialidad.IdEspecialidad;
+                dto.FechaInicio = turnoExistente.Horario.Inicio;
+                dto.FechaFin = turnoExistente.Horario.Fin;
 
-            TurnoMapper.MapearEdicion(turnoExistente, dto);
+                dto.IdCobertura = turnoExistente.Paciente.Cobertura.IdCobertura;
+                if (turnoExistente.Paciente.Plan != null)
+                    dto.IdPlan = turnoExistente.Paciente.Plan.IdPlan;
+
+                // validar que si cambia a NO asistió la hora ya haya pasado
+                ValidarCambioDeEstado(turnoExistente, dto.Estado, dto.FechaInicio, dto.FechaFin);
+                TurnoMapper.MapearEdicion(turnoExistente, dto, false);
+            }
+            else
+            {
+                // verificar si está intentando cambiar de horario
+                bool esCambioDeHorario = turnoExistente.Horario.Inicio != dto.FechaInicio ||
+                                         turnoExistente.Horario.Fin != dto.FechaFin;
+
+                ValidarPaciente(dto.IdPaciente);
+                ValidarEspecialidad(dto.IdEspecialidad);
+                ValidarMedico(dto.IdMedico, dto.IdEspecialidad);
+                ValidarCoberturaYPlan(dto.IdCobertura, dto.IdPlan, dto.IdPaciente);
+
+                ValidarFechaYHora(dto.FechaInicio, dto.FechaFin);
+
+                // Validamos disponibilidad solo si se reprograma o si se intenta guardar cambios en un turno nuevo
+                if (esCambioDeHorario || dto.Estado == 'R' || dto.Estado == 'N')
+                {
+                    ValidarDisponibilidadMedico(dto.IdMedico, dto.FechaInicio, dto.FechaFin, dto.IdTurno);
+                    ValidarTurnosPacienteMismoDia(dto.IdPaciente, dto.IdEspecialidad, dto.FechaInicio, dto.IdTurno);
+                }
+
+                // Detectar cambio de fecha/hora para forzar estado reprogramado si estaba en Nuevo
+                if (turnoExistente.Estado == EstadoTurno.Nuevo && esCambioDeHorario)
+                {
+                    dto.Estado = 'R';
+                }
+
+                ValidarCambioDeEstado(turnoExistente, dto.Estado, dto.FechaInicio, dto.FechaFin);
+                TurnoMapper.MapearEdicion(turnoExistente, dto, true);
+            }
+
             _repositorioTurno.Actualizar(turnoExistente, idUsuarioModificacion);
 
-            // notificar cambio de estado del turno
-            // se cancela el turno:
             if (dto.Estado == 'C' && estadoOriginal != EstadoTurno.Cancelado)
             {
+                var paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
+                var medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
+                var especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
+
                 EnviarEmailNotificacion(
                     paciente, medico, especialidad, dto.FechaInicio,
                     "Turno Cancelado",
@@ -438,11 +491,14 @@ namespace SGTO.Negocio.Servicios
                     rutaPlantillaCancelacion
                 );
             }
-            //el turno se ha reprogramado:
             else if (dto.Estado == 'R')
             {
                 if (estadoOriginal != EstadoTurno.Reprogramado || fechaOriginal != dto.FechaInicio)
                 {
+                    var paciente = _repositorioPaciente.ObtenerPorId(dto.IdPaciente);
+                    var medico = _repositorioMedico.ObtenerPorId(dto.IdMedico);
+                    var especialidad = _repositorioEspecialidad.ObtenerPorId(dto.IdEspecialidad);
+
                     EnviarEmailNotificacion(
                         paciente, medico, especialidad, dto.FechaInicio,
                         "Turno Reprogramado",
@@ -514,14 +570,32 @@ namespace SGTO.Negocio.Servicios
         {
             List<HorarioSemanalMedico> horarios = _repositorioHorario.ObtenerPorMedico(idMedico);
             byte dia = (byte)((int)inicio.DayOfWeek == 0 ? 7 : (int)inicio.DayOfWeek);
-            HorarioSemanalMedico horario = horarios.Find(h => h.DiaSemana == dia);
-            if (horario == null)
+            List<HorarioSemanalMedico> rangosDelDia = horarios.FindAll(h => h.DiaSemana == dia);
+            if (rangosDelDia.Count == 0)
                 throw new ExcepcionReglaNegocio("El médico no atiende ese día.");
-            if (inicio.TimeOfDay < horario.HoraInicio || fin.TimeOfDay > horario.HoraFin)
+
+            // revisar si el turno a agendar encaja dentro del rango del m[edico
+            bool horarioValido = false;
+            foreach (var rango in rangosDelDia)
+            {
+
+                if (inicio.TimeOfDay >= rango.HoraInicio && fin.TimeOfDay <= rango.HoraFin)
+                {
+                    horarioValido = true;
+                    break;
+                }
+            }
+
+            if (!horarioValido)
                 throw new ExcepcionReglaNegocio("El turno está fuera del horario del médico.");
 
+            // evitar que se solape con otros turnos o consigo mismo
             List<Turno> turnos = _repositorioTurno.ObtenerTurnosPorMedicoEnRango(idMedico, inicio.Date, inicio.Date.AddDays(1));
-            bool ocupado = turnos.Exists(t => t.IdTurno != idTurno && (inicio < t.Horario.Fin && fin > t.Horario.Inicio));
+            bool ocupado = turnos.Exists(t =>
+                t.IdTurno != idTurno &&
+                (inicio < t.Horario.Fin && fin > t.Horario.Inicio)
+            );
+
             if (ocupado)
                 throw new ExcepcionReglaNegocio("El horario seleccionado ya está ocupado por otro turno.");
         }
@@ -576,11 +650,20 @@ namespace SGTO.Negocio.Servicios
             }
 
             // validar reprogramado y no asistió según fecha/hora
-            if ((actual == 'R' && estadoNuevo == 'X') || (actual == 'N' && estadoNuevo == 'X'))
+            if (estadoNuevo == 'X')
             {
-                DateTime ahora = DateTime.Now;
-                if (ahora < turnoExistente.Horario.Fin)
-                    throw new ExcepcionReglaNegocio("No se puede marcar como 'No asistió' antes de que el turno haya finalizado.");
+                if (actual != 'N' && actual != 'R')
+                {
+                    throw new ExcepcionReglaNegocio("Solo se pueden marcar como ausentes los turnos nuevos o reprogramados.");
+                }
+
+                // se puede marcar como no asistio luego de pasadas 15 minutos despues de la hora de inicio
+                DateTime toleranciaInicio = turnoExistente.Horario.Inicio.AddMinutes(15);
+
+                if (DateTime.Now < toleranciaInicio)
+                {
+                    throw new ExcepcionReglaNegocio("No puede marcar 'No Asistió' en un turno futuro o que recién comienza. Espere al horario del turno.");
+                }
             }
 
             // un turno no se permite cerrar manualmente
@@ -601,7 +684,7 @@ namespace SGTO.Negocio.Servicios
                 || entidad.Estado == EstadoTurno.NoAsistio)
                 throw new ExcepcionReglaNegocio($"El turno no es editable, " +
                     $"ya que se encuentra en estado " +
-                    $"{EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(entidad.Estado.ToString()[0])}.");
+                    $"{EnumeracionMapperNegocio.ObtenerNombreEstadoTurno(EnumeracionMapperNegocio.ObtenerChar(entidad.Estado))}.");
 
             return TurnoMapper.MapearAEdicionDto(entidad);
 
@@ -638,6 +721,5 @@ namespace SGTO.Negocio.Servicios
 
     }
 }
-
 
 

@@ -101,7 +101,7 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("@Nombre", tratamiento.Nombre);
                     datos.EstablecerParametros("@Descripcion", tratamiento.Descripcion);
                     datos.EstablecerParametros("@CostoBase", tratamiento.CostoBase);
-                    datos.EstablecerParametros("@Estado", tratamiento.Estado.ToString().Substring(0, 1));
+                    datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(tratamiento.Estado));
                     datos.EstablecerParametros("@IdEspecialidad", tratamiento.Especialidad.IdEspecialidad);
                     datos.EjecutarAccion();
                 }
@@ -128,7 +128,7 @@ namespace SGTO.Datos.Repositorios
                     datos.EstablecerParametros("@Nombre", tratamiento.Nombre);
                     datos.EstablecerParametros("@Descripcion", tratamiento.Descripcion);
                     datos.EstablecerParametros("@CostoBase", tratamiento.CostoBase);
-                    datos.EstablecerParametros("@Estado", tratamiento.Estado.ToString().Substring(0, 1));
+                    datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(tratamiento.Estado));
                     datos.EstablecerParametros("@IdEspecialidad", tratamiento.Especialidad.IdEspecialidad);
                     datos.EstablecerParametros("@IdTratamiento", tratamiento.IdTratamiento);
                     datos.EjecutarAccion();
@@ -152,7 +152,7 @@ namespace SGTO.Datos.Repositorios
             }
             catch (Exception)
             {
-                throw; 
+                throw;
             }
         }
         public bool EstaDadoDeBaja(int idTratamiento)

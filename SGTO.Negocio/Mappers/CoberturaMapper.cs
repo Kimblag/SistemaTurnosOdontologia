@@ -1,7 +1,6 @@
 ﻿using SGTO.Dominio.Entidades;
 using SGTO.Negocio.DTOs;
 using System.Collections.Generic;
-using SGTO.Datos.Mappers;
 
 namespace SGTO.Negocio.Mappers
 {
@@ -73,11 +72,7 @@ namespace SGTO.Negocio.Mappers
                 PorcentajeCobertura = coberturaDto.PorcentajeCobertura,
                 Estado = EnumeracionMapperNegocio.MapearEstadoEntidad(coberturaDto.Estado)
             };
-
             return cobertura;
         }
-
-
-
     }
 }

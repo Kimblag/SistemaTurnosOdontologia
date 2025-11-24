@@ -5,12 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-
 namespace SGTO.Datos.Mappers
 {
     public static class PacienteMapper
     {
-
         public static Paciente MapearAEntidad(SqlDataReader lector)
         {
             int idPaciente = lector.GetInt32(lector.GetOrdinal("IdPaciente"));

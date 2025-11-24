@@ -5,6 +5,7 @@ using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Turnos;
 using System;
 using System.Collections.Generic;
+using System.Xml.Schema;
 
 
 namespace SGTO.Negocio.Mappers
@@ -131,7 +132,7 @@ namespace SGTO.Negocio.Mappers
         }
 
 
-        public static void MapearEdicion(Turno turno, TurnoEdicionDto dto)
+        public static void MapearEdicion(Turno turno, TurnoEdicionDto dto, bool validar = true)
         {
             if (turno == null || dto == null)
                 return;
@@ -141,7 +142,7 @@ namespace SGTO.Negocio.Mappers
             turno.Especialidad = new Especialidad { IdEspecialidad = dto.IdEspecialidad };
             turno.Cobertura = new Cobertura { IdCobertura = dto.IdCobertura };
             turno.Plan = dto.IdPlan != 0 ? new Plan { IdPlan = dto.IdPlan } : null;
-            turno.Horario = new HorarioTurno(dto.FechaInicio, dto.FechaFin, validar: true);
+            turno.Horario = new HorarioTurno(dto.FechaInicio, dto.FechaFin, validar);
             turno.Estado = (EstadoTurno)dto.Estado; // ojo con esto, si dto.Estado sigue siendo char hay que convertir
             turno.Observaciones = dto.Observaciones;
         }
