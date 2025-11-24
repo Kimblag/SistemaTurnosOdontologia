@@ -108,12 +108,11 @@ namespace SGTO.Negocio.Servicios
                 throw new Exception("Error al obtener el reporte de médicos.", ex);
             }
         }
-
-        public List<ReporteTratamientosDto> ObtenerReporteTratamientosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, int? idEspecialidad)
+        public List<ReporteTratamientosDto> ObtenerReporteTratamientosFiltrado(int? idEspecialidad, string estado)
         {
             try
             {
-                return _repositorioReportes.ConsultarTratamientosFiltrado(fechaDesde, fechaHasta, idEspecialidad);
+                return _repositorioReportes.ConsultarTratamientosFiltrado(idEspecialidad, estado);
             }
             catch (Exception ex)
             {

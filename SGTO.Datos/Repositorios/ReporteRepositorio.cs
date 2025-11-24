@@ -332,14 +332,13 @@ namespace SGTO.Datos.Repositorios
             catch (Exception) { throw; }
         }
 
-        public List<ReporteTratamientosDto> ConsultarTratamientosFiltrado(DateTime? fechaDesde, DateTime? fechaHasta, int? idEspecialidad)
+        public List<ReporteTratamientosDto> ConsultarTratamientosFiltrado(int? idEspecialidad, string estado)
         {
             List<ReporteTratamientosDto> lista = new List<ReporteTratamientosDto>();
             try
             {
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
-                    // Consulta: Une Tratamientos con sus ejecuciones en Historia Clínica
                     string query = @"
                 SELECT 
                     T.IdTratamiento,
@@ -347,26 +346,27 @@ namespace SGTO.Datos.Repositorios
                     E.Nombre AS Especialidad,
                     T.CostoBase,
                     T.Estado,
-                    -- Contamos cuántas veces aparece este tratamiento en historias clínicas dentro del rango
+                    -- Cuenta histórica total (sin filtro de fecha)
                     COUNT(HCR.IdHistoriaClinicaRegistro) AS CantidadRealizados,
-                    -- Calculamos ingreso estimado
                     (COUNT(HCR.IdHistoriaClinicaRegistro) * T.CostoBase) AS IngresosEstimados
                 FROM Tratamiento T
                 INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
                 LEFT JOIN HistoriaClinicaRegistro HCR ON T.IdTratamiento = HCR.IdTratamiento 
-                    AND (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
-                    AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
                 WHERE 
                     (@Especialidad IS NULL OR T.IdEspecialidad = @Especialidad)
+                    AND (@Estado IS NULL OR T.Estado = @Estado) -- Nuevo filtro
                 GROUP BY 
                     T.IdTratamiento, T.Nombre, E.Nombre, T.CostoBase, T.Estado
                 ORDER BY 
-                    CantidadRealizados DESC, T.Nombre ASC";
+                    T.Nombre ASC";
 
                     datos.DefinirConsulta(query);
-                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
-                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
                     datos.EstablecerParametros("@Especialidad", idEspecialidad ?? (object)DBNull.Value);
+
+                    if (string.IsNullOrEmpty(estado))
+                        datos.EstablecerParametros("@Estado", DBNull.Value);
+                    else
+                        datos.EstablecerParametros("@Estado", estado);
 
                     using (SqlDataReader lector = datos.EjecutarConsulta())
                     {

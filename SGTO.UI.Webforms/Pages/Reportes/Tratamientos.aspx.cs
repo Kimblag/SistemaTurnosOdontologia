@@ -1,11 +1,10 @@
-using SGTO.Negocio.DTOs; 
-using SGTO.Comun.DTOs;  
+using SGTO.Negocio.DTOs;
+using SGTO.Comun.DTOs;
 using SGTO.Negocio.Servicios;
 using SGTO.Negocio.Servicios.Exportacion;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Utils;
 using SGTO.Negocio.Seguridad;
-using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Seguridad;
 using System;
 using System.Collections.Generic;
@@ -17,11 +16,10 @@ namespace SGTO.UI.Webforms.Pages.Reportes
     public partial class Tratamientos : System.Web.UI.Page
     {
         private readonly ReporteService _servicioReportes = new ReporteService();
-
-        private const string KEY_REP_TRAT_DESDE = "FiltroRepTratDesde";
-        private const string KEY_REP_TRAT_HASTA = "FiltroRepTratHasta";
-        private const string KEY_REP_TRAT_ESP = "FiltroRepTratEsp";
         private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
+
+        private const string KEY_REP_TRAT_ESP = "FiltroRepTratEsp";
+        private const string KEY_REP_TRAT_ESTADO = "FiltroRepTratEstado";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -48,9 +46,18 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             {
                 CargarEspecialidades();
 
-                txtFechaDesde.Text = Session[KEY_REP_TRAT_DESDE] as string ?? string.Empty;
-                txtFechaHasta.Text = Session[KEY_REP_TRAT_HASTA] as string ?? string.Empty;
                 ddlEspecialidad.SelectedValue = Session[KEY_REP_TRAT_ESP] as string ?? string.Empty;
+
+                string estadoSession = Session[KEY_REP_TRAT_ESTADO] as string;
+
+                if (ddlEstado.Items.FindByValue(estadoSession) != null)
+                {
+                    ddlEstado.SelectedValue = estadoSession;
+                }
+                else
+                {
+                    ddlEstado.SelectedValue = "A"; 
+                }
 
                 AplicarFiltros();
             }
@@ -79,25 +86,17 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         {
             try
             {
-                DateTime? fDesde = string.IsNullOrWhiteSpace(txtFechaDesde.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaDesde.Text);
-                DateTime? fHasta = string.IsNullOrWhiteSpace(txtFechaHasta.Text) ? null : (DateTime?)Convert.ToDateTime(txtFechaHasta.Text);
                 int? idEsp = string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) ? null : (int?)Convert.ToInt32(ddlEspecialidad.SelectedValue);
+                string estado = ddlEstado.SelectedValue;
 
-                if (fDesde.HasValue && fHasta.HasValue && fHasta < fDesde)
-                {
-                    MensajeUiHelper.SetearYMostrar(this.Page, "Fechas inválidas", "La fecha hasta no puede ser menor a la fecha desde.", "Error", null, "abrirModalResultado");
-                    return;
-                }
-
-                Session[KEY_REP_TRAT_DESDE] = txtFechaDesde.Text;
-                Session[KEY_REP_TRAT_HASTA] = txtFechaHasta.Text;
                 Session[KEY_REP_TRAT_ESP] = ddlEspecialidad.SelectedValue;
+                Session[KEY_REP_TRAT_ESTADO] = estado;
 
-                var lista = _servicioReportes.ObtenerReporteTratamientosFiltrado(fDesde, fHasta, idEsp);
+                var lista = _servicioReportes.ObtenerReporteTratamientosFiltrado(idEsp, estado);
                 gvTratamientos.DataSource = lista;
                 gvTratamientos.DataBind();
 
-                ActualizarKpis(fDesde, fHasta);
+                ActualizarKpis(null, null);
             }
             catch (Exception ex)
             {
@@ -112,7 +111,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 var kpis = _servicioReportes.ObtenerKpisTratamientos(fDesde, fHasta);
                 lblTotalCatalogo.Text = kpis.TotalEnCatalogo.ToString();
                 lblTotalRealizados.Text = kpis.TotalRealizados.ToString();
-                lblIngresosEstimados.Text = kpis.IngresoTotalEstimado.ToString("C"); // Formato Moneda
+                lblIngresosEstimados.Text = kpis.IngresoTotalEstimado.ToString("C");
             }
             catch { }
         }
@@ -121,12 +120,12 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
-            txtFechaDesde.Text = "";
-            txtFechaHasta.Text = "";
             ddlEspecialidad.SelectedIndex = 0;
-            Session[KEY_REP_TRAT_DESDE] = null;
-            Session[KEY_REP_TRAT_HASTA] = null;
+            ddlEstado.SelectedValue = "A"; 
+
             Session[KEY_REP_TRAT_ESP] = null;
+            Session[KEY_REP_TRAT_ESTADO] = null;
+
             AplicarFiltros();
         }
 
@@ -136,16 +135,58 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             AplicarFiltros();
         }
 
-
-
         protected void btnExportarPdf_Click(object sender, EventArgs e)
         {
-    
+            try
+            {
+                int? idEsp = string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) ? null : (int?)Convert.ToInt32(ddlEspecialidad.SelectedValue);
+                string estado = ddlEstado.SelectedValue;
+
+                var lista = _servicioReportes.ObtenerReporteTratamientosFiltrado(idEsp, estado);
+
+                byte[] bytes = GeneradorPdf.GenerarReporteTratamientosPdf(lista);
+
+                Response.Clear();
+                Response.ContentType = "application/pdf";
+                Response.AddHeader("content-disposition", "inline;filename=ReporteTratamientos.pdf");
+                Response.OutputStream.Write(bytes, 0, bytes.Length);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException))
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error al exportar PDF", "Ocurrió un problema: " + ex.Message);
+                }
+            }
         }
 
         protected void btnExportarExcel_Click(object sender, EventArgs e)
         {
-   
+            try
+            {
+                int? idEsp = string.IsNullOrEmpty(ddlEspecialidad.SelectedValue) ? null : (int?)Convert.ToInt32(ddlEspecialidad.SelectedValue);
+                string estado = ddlEstado.SelectedValue;
+
+                var lista = _servicioReportes.ObtenerReporteTratamientosFiltrado(idEsp, estado);
+
+                byte[] bytes = GeneradorCsv.GenerarReporteTratamientosCsv(lista);
+
+                Response.Clear();
+                Response.ContentType = "text/csv";
+                Response.AddHeader("content-disposition", "attachment;filename=ReporteTratamientos.csv");
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException))
+                {
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error al exportar Excel", "Ocurrió un problema: " + ex.Message);
+                }
+            }
         }
     }
 }

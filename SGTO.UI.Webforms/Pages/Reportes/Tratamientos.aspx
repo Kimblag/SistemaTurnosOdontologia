@@ -5,29 +5,32 @@
         
         <small class="text-muted">Análisis de demanda y facturación estimada por tratamiento.</small>
         
-        <%-- Filtros --%>
-        <div class="filters card shadow-sm p-4 mb-4 border-0">
-            <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 w-100">
-                <div class="d-flex flex-wrap gap-3 flex-grow-1">
-                    <div class="filtro">
-                        <label for="txtFechaDesde" class="form-label fw-semibold">Desde</label>
-                        <asp:TextBox ID="txtFechaDesde" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                    </div>
-                    <div class="filtro">
-                        <label for="txtFechaHasta" class="form-label fw-semibold">Hasta</label>
-                        <asp:TextBox ID="txtFechaHasta" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                    </div>
-                    <div class="filtro flex-grow-1">
-                        <label for="ddlEspecialidad" class="form-label fw-semibold">Especialidad</label>
-                        <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select w-100"></asp:DropDownList>
-                    </div>
-                </div>
-                <div class="d-flex align-items-end gap-2">
-                    <asp:Button ID="btnAplicarFiltros" runat="server" Text="Ejecutar" CssClass="btn btn-primary px-3" OnClick="btnAplicarFiltros_Click" />
-                    <asp:Button ID="btnLimpiarFiltros" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary px-3" OnClick="btnLimpiarFiltros_Click" />
-                </div>
+       <%-- Bloque de filtros  --%>
+<div class="filters card shadow-sm p-4 mb-4 border-0">
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 w-100">
+        <div class="d-flex flex-wrap gap-3 flex-grow-1">
+            
+            <%-- Filtro Estado  --%>
+            <div class="filtro">
+                <label for="ddlEstado" class="form-label fw-semibold">Estado</label>
+                <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
+                    <asp:ListItem Text="Todos" Value="" />
+                    <asp:ListItem Text="Activos" Value="A" Selected="True" />
+                    <asp:ListItem Text="Inactivos" Value="I" />
+                </asp:DropDownList>
+            </div>
+
+            <div class="filtro flex-grow-1">
+                <label for="ddlEspecialidad" class="form-label fw-semibold">Especialidad</label>
+                <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select w-100"></asp:DropDownList>
             </div>
         </div>
+        <div class="d-flex align-items-end gap-2">
+            <asp:Button ID="btnAplicarFiltros" runat="server" Text="Ejecutar" CssClass="btn btn-primary px-3" OnClick="btnAplicarFiltros_Click" />
+            <asp:Button ID="btnLimpiarFiltros" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary px-3" OnClick="btnLimpiarFiltros_Click" />
+        </div>
+    </div>
+</div>
 
         <%-- KPIs --%>
         <div class="row g-3 mb-4">

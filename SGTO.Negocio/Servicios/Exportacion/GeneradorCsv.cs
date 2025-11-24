@@ -109,5 +109,32 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 .ToArray();
         }
 
+        public static byte[] GenerarReporteTratamientosCsv(List<ReporteTratamientosDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de tratamientos para exportar.");
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Tratamiento;Especialidad;Estado;Costo Base;Cantidad Realizados;Ingresos Estimados");
+
+            foreach (var t in lista)
+            {
+                string linea = string.Join(";",
+                    LimpiarCsv(t.Nombre),
+                    LimpiarCsv(t.Especialidad),
+                    LimpiarCsv(t.Estado),
+                    t.CostoBase.ToString("F2"),
+                    t.CantidadRealizados.ToString(),
+                    t.IngresosEstimados.ToString("F2")
+                );
+
+                sb.AppendLine(linea);
+            }
+
+            return Encoding.UTF8.GetPreamble()
+                .Concat(Encoding.UTF8.GetBytes(sb.ToString()))
+                .ToArray();
+        }
     }
 }
