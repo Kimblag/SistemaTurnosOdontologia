@@ -256,7 +256,7 @@ namespace SGTO.Datos.Repositorios
             datos.EstablecerParametros("@Email", usuario.Email.Valor);
             datos.EstablecerParametros("@NombreUsuario", usuario.NombreUsuario);
             datos.EstablecerParametros("@IdRol", usuario.Rol.IdRol);
-            datos.EstablecerParametros("@Estado",EnumeracionMapperDatos.ObtenerChar(usuario.Estado));
+            datos.EstablecerParametros("@Estado", EnumeracionMapperDatos.ObtenerChar(usuario.Estado));
             datos.EstablecerParametros("@FechaModificacion", usuario.FechaModificacion);
 
             if (!string.IsNullOrEmpty(usuario.PasswordHash))
@@ -342,6 +342,30 @@ namespace SGTO.Datos.Repositorios
                 }
             }
             return null;
+        }
+
+
+        public void ActualizarPassword(int idUsuario, string nuevoPasswordHash)
+        {
+            string query = @"UPDATE Usuario 
+                     SET PasswordHash = @PasswordHash, 
+                         FechaModificacion = GETDATE() 
+                     WHERE IdUsuario = @IdUsuario";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@PasswordHash", nuevoPasswordHash);
+                    datos.EstablecerParametros("@IdUsuario", idUsuario);
+                    datos.EjecutarAccion();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
         }
 
     }

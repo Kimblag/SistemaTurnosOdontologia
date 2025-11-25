@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 namespace SGTO.UI.Webforms.Controles.Coberturas
@@ -48,7 +49,23 @@ namespace SGTO.UI.Webforms.Controles.Coberturas
             }
         }
 
-        public void gvPlanes_RowDataBound(object sender, GridViewRowEventArgs e) { }
+        public void gvPlanes_RowDataBound(object sender, GridViewRowEventArgs e) {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                PlanDto planDto = (PlanDto)e.Row.DataItem;
+                var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+
+                if(planDto != null)
+                {
+                    if(lblEstado != null)
+                    {
+                        bool activo = planDto.Estado.ToLower() == "activo";
+                        lblEstado.Attributes["class"] = activo ? "badge badge-success" : "badge badge-warning";
+                    }
+                }
+            }
+        
+        }
         public void gvPlanes_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             int indexDtoPlan = Convert.ToInt32(e.CommandArgument);

@@ -1,11 +1,11 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Login.Login" %>
+﻿<%@ Page Language="C#" Title="Login" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="SGTO.UI.Webforms.Pages.Login.Login" %>
 
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iniciar Sesión - DentalSoft</title>
+    <title>Iniciar Sesión</title>
 
     <%-- Fuentes Google --%>
     <link href="https://fonts.googleapis.com" rel="preconnect" />
@@ -107,9 +107,7 @@
                                 ErrorMessage="La contraseña es requerida." CssClass="text-danger small mt-1" Display="Dynamic" ValidationGroup="LoginGroup"></asp:RequiredFieldValidator>
                         </div>
 
-                        <div class="d-flex justify-content-end mb-4">
-                            <a href="#" class="text-decoration-none text-primary-custom small fw-bold">¿Olvidaste tu contraseña?</a>
-                        </div>
+
 
                         <div class="d-grid gap-2">
                             <asp:Button ID="btnLogin" runat="server" Text="Iniciar sesión" CssClass="btn bg-primary-custom text-white fw-bold py-3 rounded-3"

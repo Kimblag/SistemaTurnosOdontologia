@@ -162,6 +162,7 @@
     <Content Include="Pages\Pacientes\Editar.aspx" />
     <Content Include="Pages\Pacientes\Nuevo.aspx" />
     <Content Include="Pages\Pacientes\Index.aspx" />
+    <Content Include="Pages\Perfil\Index.aspx" />
     <Content Include="Pages\Reportes\Coberturas.aspx" />
     <Content Include="Pages\Reportes\Index.aspx" />
     <Content Include="Pages\Reportes\Medicos.aspx" />
@@ -519,6 +520,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Pages\Pacientes\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Perfil\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pages\Perfil\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Pages\Reportes\Coberturas.aspx.cs">

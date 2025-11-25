@@ -134,7 +134,7 @@
                         <%--columna estado--%>
                         <asp:TemplateField HeaderText="Estado">
                             <ItemTemplate>
-                                <span id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></span>
+                                <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                             </ItemTemplate>
                         </asp:TemplateField>
 

@@ -130,14 +130,29 @@
                             </div>
                         </div>
 
-                        <div class="text-end border-start ps-3">
-                            <p id="NombreUsuario" runat="server" class="fw-semibold mb-0 text-dark small">
-                                Juan Pérez
-                            </p>
-                            <p id="RolUsuario" runat="server" class="text-muted mb-0" style="font-size: 0.75rem;">
-                                Administrador
-                            </p>
-                        </div>
+                        <a class="text-end border-start ps-3 d-flex align-items-center gap-2 text-decoration-none user-profile-link"
+                            href='<%= ResolveUrl("~/Pages/Perfil/Index.aspx") %>'>
+
+                            <div class="d-flex flex-column align-items-end">
+                                <p id="NombreUsuario" runat="server" class="fw-bold mb-0 text-dark fs-6 font-monospace text-truncate" style="max-width: 150px;">
+                                    Usuario
+       
+                                </p>
+                                <p id="RolUsuario" runat="server" class="text-muted mb-0 small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                                    Rol
+       
+                                </p>
+                            </div>
+
+                            <div class="position-relative">
+                                <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-primary" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-person-fill fs-5"></i>
+                                </div>
+                                <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-light rounded-circle">
+                                    <span class="visually-hidden">Activo</span>
+                                </span>
+                            </div>
+                        </a>
 
                     </div>
                 </header>

@@ -483,6 +483,25 @@ namespace SGTO.Negocio.Servicios
             return false;
         }
 
+        public void CambiarPassword(int idUsuario, string passwordActual, string passwordNueva)
+        {
+            Usuario usuario = _repositorioUsuario.ObtenerPorId(idUsuario);
+            if (usuario == null)
+                throw new ExcepcionReglaNegocio("El usuario no existe.");
+
+            if (!PasswordHasher.Verify(passwordActual, usuario.PasswordHash))
+            {
+                throw new ExcepcionReglaNegocio("La contraseña actual ingresada es incorrecta.");
+            }
+
+            if (string.IsNullOrWhiteSpace(passwordNueva) || passwordNueva.Length < 4)
+            {
+                throw new ExcepcionReglaNegocio("La nueva contraseña debe tener al menos 4 caracteres.");
+            }
+
+            string nuevoHash = PasswordHasher.Hash(passwordNueva);
+            _repositorioUsuario.ActualizarPassword(idUsuario, nuevoHash);
+        }
 
     }
 }

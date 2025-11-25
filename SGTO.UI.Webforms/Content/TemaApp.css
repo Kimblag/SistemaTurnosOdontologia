@@ -787,3 +787,21 @@ ul.cbl-especialidades {
         align-items: stretch;
     }
 }
+
+
+/* =========================================================
+   estilos para icono mi perfil en header
+   ========================================================= */
+.user-profile-link {
+    transition: all 0.2s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+    .user-profile-link:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+        .user-profile-link:hover .text-dark {
+            color: var(--bs-primary) !important;
+        }
