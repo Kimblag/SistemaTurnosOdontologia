@@ -618,5 +618,53 @@ namespace SGTO.Datos.Repositorios
             return lista;
         }
 
+        public List<Turno> ObtenerTurnosPorPacienteEnRango(int idPaciente, DateTime desde, DateTime hasta)
+        {
+            List<Turno> turnosPaciente = new List<Turno>();
+            string query = @"
+                    SELECT 
+                        T.IdTurno,
+                        T.IdPaciente,
+                        T.IdMedico,
+                        T.IdEspecialidad,
+                        E.Nombre AS NombreEspecialidad,
+                        T.FechaInicio,
+                        T.FechaFin,
+                        T.Estado,
+                        T.Observaciones
+                    FROM Turno T
+                    INNER JOIN Especialidad E ON E.IdEspecialidad = T.IdEspecialidad 
+                    WHERE T.IdPaciente = @IdPaciente
+                      AND T.FechaInicio >= @Desde
+                      AND T.FechaInicio < @Hasta
+                      AND T.Estado NOT IN ('C', 'X', 'Z')";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                datos.LimpiarParametros();
+                datos.DefinirConsulta(query);
+                datos.EstablecerParametros("@IdPaciente", idPaciente);
+                datos.EstablecerParametros("@Desde", desde);
+                datos.EstablecerParametros("@Hasta", hasta);
+
+                try
+                {
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            Turno turno = TurnoMapper.MapearAEntidadBasico(lector);
+                            turnosPaciente.Add(turno);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return turnosPaciente;
+            }
+        }
+
     }
 }

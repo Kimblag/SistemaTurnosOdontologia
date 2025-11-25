@@ -37,6 +37,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Reportes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Reportes");
                 master.EstablecerTituloSeccion("Reporte de Tratamientos");
                 master.EstablecerSubtituloSeccion("Métricas de uso y rendimiento económico de tratamientos.");
