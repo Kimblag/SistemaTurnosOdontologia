@@ -175,5 +175,30 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
+        public List<ReporteCoberturasDto> ObtenerReporteCoberturas(string estado)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarReporteCoberturas(estado);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de coberturas.", ex);
+            }
+        }
+
+        public List<ReportePlanesDto> ObtenerReportePlanes(int? idCobertura, string estado, string orden)
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarReportePlanes(idCobertura, estado, orden);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de planes.", ex);
+            }
+        }
+
+
     }
 }

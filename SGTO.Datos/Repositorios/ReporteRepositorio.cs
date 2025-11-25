@@ -249,7 +249,7 @@ namespace SGTO.Datos.Repositorios
                                 Activos = lector.GetInt32(lector.GetOrdinal("Activos")),
                                 TotalTurnosRealizados = lector.GetInt32(lector.GetOrdinal("TotalTurnosRealizados")),
                                 EspecialidadesCubiertas = lector.GetInt32(lector.GetOrdinal("EspecialidadesCubiertas")),
-                                ConMasPacientes = 0 // Lógica compleja omitida para simplicidad
+                                ConMasPacientes = 0 
                             };
                         }
                     }
@@ -580,6 +580,113 @@ namespace SGTO.Datos.Repositorios
                 throw;
             }
         }
+        public List<ReporteCoberturasDto> ConsultarReporteCoberturas(string estado)
+        {
+            List<ReporteCoberturasDto> lista = new List<ReporteCoberturasDto>();
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string query = @"
+                        SELECT 
+                            C.IdCobertura,
+                            C.Nombre AS Cobertura,
+                            C.Estado,
+                            (SELECT COUNT(*) FROM [Plan] P WHERE P.IdCobertura = C.IdCobertura AND P.Estado = 'A') AS CantidadPlanes,
+                            COUNT(T.IdTurno) AS TotalTurnos,
+                            COUNT(DISTINCT T.IdPaciente) AS PacientesAtendidos
+                        FROM Cobertura C
+                        LEFT JOIN Turno T ON C.IdCobertura = T.IdCobertura
+                        WHERE (@Estado IS NULL OR C.Estado = @Estado)
+                        GROUP BY C.IdCobertura, C.Nombre, C.Estado
+                        ORDER BY C.Nombre ASC";
+
+                    datos.DefinirConsulta(query);
+
+                    if (string.IsNullOrEmpty(estado))
+                        datos.EstablecerParametros("@Estado", DBNull.Value);
+                    else
+                        datos.EstablecerParametros("@Estado", estado);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            ReporteCoberturasDto dto = new ReporteCoberturasDto();
+                            dto.Cobertura = lector.GetString(lector.GetOrdinal("Cobertura"));
+                            dto.Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activa" : "Inactiva";
+                            dto.CantidadPlanes = lector.GetInt32(lector.GetOrdinal("CantidadPlanes"));
+                            dto.TotalTurnos = lector.GetInt32(lector.GetOrdinal("TotalTurnos"));
+                            dto.PacientesAtendidos = lector.GetInt32(lector.GetOrdinal("PacientesAtendidos"));
+
+                            lista.Add(dto);
+                        }
+                    }
+                }
+                return lista;
+            }
+            catch (Exception) { throw; }
+        }
+
+        public List<ReportePlanesDto> ConsultarReportePlanes(int? idCobertura, string estado, string orden)
+        {
+            List<ReportePlanesDto> lista = new List<ReportePlanesDto>();
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string clausulaOrden = "C.Nombre ASC, P.Nombre ASC"; 
+
+                    if (orden == "mayor")
+                        clausulaOrden = "P.PorcentajeCobertura DESC";
+                    else if (orden == "menor")
+                        clausulaOrden = "P.PorcentajeCobertura ASC";
+
+                    string query = $@"
+                        SELECT 
+                            C.Nombre AS Cobertura,
+                            P.Nombre AS [Plan],
+                            P.PorcentajeCobertura,
+                            P.Estado,
+                            COUNT(T.IdTurno) AS TotalTurnos
+                        FROM [Plan] P
+                        INNER JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                        LEFT JOIN Turno T ON P.IdPlan = T.IdPlan 
+                        WHERE 
+                            (@IdCob IS NULL OR C.IdCobertura = @IdCob)
+                            AND (@Estado IS NULL OR P.Estado = @Estado)
+                        GROUP BY C.Nombre, P.Nombre, P.PorcentajeCobertura, P.Estado
+                        ORDER BY {clausulaOrden}";
+
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdCob", idCobertura ?? (object)DBNull.Value);
+
+                    if (string.IsNullOrEmpty(estado))
+                        datos.EstablecerParametros("@Estado", DBNull.Value);
+                    else
+                        datos.EstablecerParametros("@Estado", estado);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        while (lector.Read())
+                        {
+                            ReportePlanesDto dto = new ReportePlanesDto();
+                            dto.Cobertura = lector.GetString(lector.GetOrdinal("Cobertura"));
+                            dto.Plan = lector.GetString(lector.GetOrdinal("Plan"));
+                            dto.PorcentajeCubierto = lector.GetDecimal(lector.GetOrdinal("PorcentajeCobertura"));
+                            dto.Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activo" : "Inactivo";
+                            dto.TotalTurnos = lector.GetInt32(lector.GetOrdinal("TotalTurnos"));
+
+                            lista.Add(dto);
+                        }
+                    }
+                }
+                return lista;
+            }
+            catch (Exception) { throw; }
+        }
+
+
 
     }
 }
