@@ -15,21 +15,15 @@
         </div>
 
 
-        <div class="row gy-3 mb-3">
-            <div class="col-12 col-md-5">
-                <label for="ddlRol" class="form-label fw-semibold">Rol</label>
-                <asp:DropDownList
-                    ID="ddlRol"
-                    runat="server"
-                    CssClass="form-select"
-                    AutoPostBack="true"
-                    OnSelectedIndexChanged="ddlRol_SelectedIndexChanged">
-                    <asp:ListItem Value="">Seleccione un rol...</asp:ListItem>
-                    <asp:ListItem Value="Administrador">Administrador</asp:ListItem>
-                    <asp:ListItem Value="Recepcionista">Recepcionista</asp:ListItem>
-                    <asp:ListItem Value="Médico">Médico</asp:ListItem>
-                </asp:DropDownList>
-            </div>
+        <div class="col-12 col-md-5">
+            <label for="ddlRol" class="form-label fw-semibold">Rol</label>
+            <asp:DropDownList
+                ID="ddlRol"
+                runat="server"
+                CssClass="form-select"
+                AutoPostBack="true"
+                OnSelectedIndexChanged="ddlRol_SelectedIndexChanged">
+            </asp:DropDownList>
         </div>
 
         <hr class="my-3" />
@@ -578,7 +572,7 @@
 
 
     <%-- modal resultado --%>
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

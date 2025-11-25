@@ -23,6 +23,10 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
         private const string KEY_ROL_BUSQUEDA = "FiltroRolBusqueda";
         private const string KEY_ROL_ESTADO = "FiltroRolEstado";
 
+        private bool _puedeCrear = false;
+        private bool _puedeEditar = false;
+        private bool _puedeEliminar = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -32,11 +36,17 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
                 return;
             }
 
-            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ROLES", "VER"))
+            var usuarioActual = SessionManager.Usuario;
+
+            if (!_servicioAutorizacion.TienePermiso(usuarioActual, "ROLES", "VER"))
             {
                 Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
                 return;
             }
+
+            _puedeCrear = _servicioAutorizacion.TienePermiso(usuarioActual, "ROLES", "CREAR");
+            _puedeEditar = _servicioAutorizacion.TienePermiso(usuarioActual, "ROLES", "EDITAR");
+            _puedeEliminar = _servicioAutorizacion.TienePermiso(usuarioActual, "ROLES", "ELIMINAR");
 
             if (Master is SiteMaster master)
             {
@@ -48,6 +58,8 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
             if (!IsPostBack)
             {
+                divBtnNuevo.Visible = _puedeCrear;
+
                 txtBuscarRol.Text = Session[KEY_ROL_BUSQUEDA] as string ?? string.Empty;
                 string estado = Session[KEY_ROL_ESTADO] as string;
                 if (!string.IsNullOrEmpty(estado) && ddlEstado.Items.FindByValue(estado) != null)
@@ -56,6 +68,10 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
                 }
 
                 AplicarFiltros();
+            }
+            else
+            {
+                divBtnNuevo.Visible = _puedeCrear;
             }
         }
 
@@ -136,6 +152,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
             gvRoles.DataSource = lista;
             gvRoles.DataBind();
+            if (!_puedeEditar && !_puedeEliminar)
+            {
+                if (gvRoles.Columns.Count > 4)
+                {
+                    gvRoles.Columns[4].Visible = false;
+                }
+            }
         }
 
         protected void btnNuevoRol_Click(object sender, EventArgs e)
@@ -169,20 +192,20 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
                     string nombreRol = rolDto.Nombre.Trim();
                     bool esAdmin = nombreRol.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
-                    bool esSistema = nombreRol.Equals("Médico", StringComparison.OrdinalIgnoreCase) ||
+                    bool esRolSistema = nombreRol.Equals("Médico", StringComparison.OrdinalIgnoreCase) ||
                                      nombreRol.Equals("Recepcionista", StringComparison.OrdinalIgnoreCase) ||
                                      esAdmin;
 
-                    if (esSistema)
+                    if (btnEditar != null)
                     {
-                        // nadie puede borrar roles de sistema
-                        if (btnEliminar != null) btnEliminar.Visible = false;
+                        bool reglaNegocioEditar = !esAdmin;
+                        btnEditar.Visible = _puedeEditar && reglaNegocioEditar;
+                    }
 
-                        // el admin no se edita
-                        if (esAdmin && btnEditar != null)
-                        {
-                            btnEditar.Visible = false;
-                        }
+                    if (btnEliminar != null)
+                    {
+                        bool reglaNegocioEliminar = !esRolSistema;
+                        btnEliminar.Visible = _puedeEliminar && reglaNegocioEliminar;
                     }
                 }
             }
@@ -223,6 +246,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Roles
 
         protected void btnConfirmarEliminar_Click(object sender, EventArgs e)
         {
+
+            if (!_puedeEliminar)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Acceso Denegado", "No tiene permisos para realizar esta acción.", "Error", null, "abrirModalResultado");
+                return;
+            }
+
             if (string.IsNullOrEmpty(hdnIdEliminar.Value))
                 return;
 

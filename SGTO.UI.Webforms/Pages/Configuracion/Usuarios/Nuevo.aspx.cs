@@ -1,6 +1,7 @@
 ﻿using SGTO.Comun.Validacion;
 using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.Medicos;
+using SGTO.Negocio.DTOs.Roles;
 using SGTO.Negocio.DTOs.Usuarios;
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Seguridad;
@@ -22,6 +23,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
         private readonly UsuarioService _servicioUsuario = new UsuarioService();
+        private readonly RolService _servicioRol = new RolService();
 
 
         // para poder mantener el estado de la ui para manejar los horarios tenemos que 
@@ -86,6 +88,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
             if (!IsPostBack)
             {
+                CargarRoles();
                 CalcularFechaMaximaValida();
                 CargarHorarioClinica();
                 BindearTodosLosDias();
@@ -318,17 +321,36 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         }
 
 
+        private void CargarRoles()
+        {
+            try
+            {
+                List<RolListadoDto> roles = _servicioRol.Listar("Activo");
 
+                ddlRol.DataSource = roles;
+                ddlRol.DataTextField = "Nombre";
+                ddlRol.DataValueField = "IdRol";
+                ddlRol.DataBind();
+                ddlRol.Items.Insert(0, new ListItem("Seleccione un rol...", ""));
+            }
+            catch (Exception)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "No se pudieron cargar los roles.", "Error", null, "abrirModalResultado");
+            }
+        }
 
         protected void ddlRol_SelectedIndexChanged(object sender, EventArgs e)
         {
-            bool ok = !string.IsNullOrEmpty(ddlRol.SelectedValue);
+            bool rolSeleccionado = !string.IsNullOrEmpty(ddlRol.SelectedValue);
 
-            panelCamposGenerales.Visible = ok;
-            panelAcciones.Visible = ok;
-            panelCamposMedico.Visible = (ddlRol.SelectedValue == "Médico");
+            panelCamposGenerales.Visible = rolSeleccionado;
+            panelAcciones.Visible = rolSeleccionado;
 
-            lblPaso.InnerText = ok
+            bool esMedico = rolSeleccionado && ddlRol.SelectedItem.Text.ToUpper() == "MÉDICO";
+
+            panelCamposMedico.Visible = esMedico;
+
+            lblPaso.InnerText = rolSeleccionado
                 ? "Paso 2 de 2 · Complete los datos del usuario."
                 : "Paso 1 de 2 · Seleccione el rol del usuario.";
         }
@@ -340,6 +362,8 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             {
                 ValidarCamposFormulario();
 
+                int idRolSeleccionado = int.Parse(ddlRol.SelectedValue);
+
                 UsuarioCrearDto usuarioDto = new UsuarioCrearDto()
                 {
                     Nombre = txtNombre.Text.Trim(),
@@ -348,13 +372,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                     NombreUsuario = txtNombreUsuario.Text.Trim(),
                     Password = txtPassword.Text,
                     ConfirmarPassword = txtConfirmarPassword.Text,
-                    IdRol = ObtenerIdRol(ddlRol.SelectedValue),
+                    IdRol = idRolSeleccionado,
                     Estado = ddlEstado.SelectedValue
                 };
 
                 MedicoCrearDto medicoDto = null;
 
-                if (ddlRol.SelectedValue == "Médico")
+                if (ddlRol.SelectedItem.Text.ToUpper() == "MÉDICO")
                 {
                     bool tieneEspecialidad = false;
                     foreach (ListItem item in cblEspecialidades.Items)
@@ -455,7 +479,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             if (txtPassword.Text != txtConfirmarPassword.Text)
                 throw new ArgumentException("Las contraseñas no coinciden.");
 
-            if (ddlRol.SelectedValue == "Médico")
+            if (ddlRol.SelectedItem.Text.ToUpper() == "MÉDICO")
             {
                 if (!ValidadorCampos.EsEnteroPositivo(txtDni.Text))
                     throw new ArgumentException("El DNI debe ser numérico.");
@@ -480,17 +504,6 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                 if (item.Selected)
                     lista.Add(int.Parse(item.Value));
             return lista;
-        }
-
-        private int ObtenerIdRol(string rol)
-        {
-            switch (rol)
-            {
-                case "Administrador": return 1;
-                case "Recepcionista": return 2;
-                case "Médico": return 3;
-                default: throw new ExcepcionReglaNegocio("Rol desconocido.");
-            }
         }
 
         protected void btnCancelar_Click(object sender, EventArgs e)

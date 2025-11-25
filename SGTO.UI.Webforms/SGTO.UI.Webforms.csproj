@@ -637,6 +637,7 @@
     <Compile Include="Seguridad\SessionManager.cs" />
     <Compile Include="Utils\MensajeUiHelper.cs" />
     <Compile Include="Utils\ModalHelper.cs" />
+    <Compile Include="Utils\NavegacionHelper.cs" />
     <Compile Include="Utils\TurnoUiHelper.cs" />
   </ItemGroup>
   <ItemGroup>

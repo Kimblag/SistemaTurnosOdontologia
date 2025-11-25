@@ -2,6 +2,7 @@
 using SGTO.Negocio.Excepciones;
 using SGTO.Negocio.Seguridad;
 using SGTO.UI.Webforms.Seguridad;
+using SGTO.UI.Webforms.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace SGTO.UI.Webforms.Pages.Login
                 // si el usuario esta logueado, enviar al inicio
                 if (SessionManager.EstaLogueado())
                 {
-                    Response.Redirect("~/Pages/Home/Dashboard", false);
+                    RedirigirSegunPermisos(SessionManager.Usuario);
                 }
             }
         }
@@ -39,8 +40,7 @@ namespace SGTO.UI.Webforms.Pages.Login
 
                 SessionManager.Usuario = usuarioSesion;
 
-                Response.Redirect("~/Pages/Home/Dashboard.aspx", false);
-                Context.ApplicationInstance.CompleteRequest();
+                RedirigirSegunPermisos(usuarioSesion);
             }
             catch (ExcepcionAutenticacion ex)
             {
@@ -51,6 +51,13 @@ namespace SGTO.UI.Webforms.Pages.Login
 
                 MostrarError("Ocurrió un error inesperado al intentar ingresar. Intente nuevamente.");
             }
+        }
+
+        private void RedirigirSegunPermisos(UsuarioSesionDto usuario)
+        {
+            string urlDestino = NavegacionHelper.ObtenerUrlInicial(usuario);
+            Response.Redirect(urlDestino, false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         private void MostrarError(string mensaje)

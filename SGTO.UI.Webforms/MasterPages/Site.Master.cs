@@ -57,19 +57,24 @@ namespace SGTO.UI.Webforms.MasterPages
             }
 
             // verificar el permiso de lectura para mostrar la opcion del menu
-            MenuTurnos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TURNOS", "VER");
-            MenuPacientes.Visible = _servicioAutorizacion.TienePermiso(usuario, "PACIENTES", "VER");
+            if (MenuDashboard != null) MenuDashboard.Visible = _servicioAutorizacion.TienePermiso(usuario, "INICIO", "VER");
+            if (MenuTurnos != null) MenuTurnos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TURNOS", "VER");
+            if (MenuPacientes != null) MenuPacientes.Visible = _servicioAutorizacion.TienePermiso(usuario, "PACIENTES", "VER");
+            if (MenuMedicos != null) MenuMedicos.Visible = _servicioAutorizacion.TienePermiso(usuario, "MEDICOS", "VER");
+            if (MenuCoberturas != null) MenuCoberturas.Visible = _servicioAutorizacion.TienePermiso(usuario, "COBERTURAS", "VER");
+            if (MenuEspecialidades != null) MenuEspecialidades.Visible = _servicioAutorizacion.TienePermiso(usuario, "ESPECIALIDADES", "VER");
+            if (MenuTratamientos != null) MenuTratamientos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TRATAMIENTOS", "VER");
+            if (MenuReportes != null) MenuReportes.Visible = _servicioAutorizacion.TienePermiso(usuario, "REPORTES", "VER");
 
-            MenuMedicos.Visible = _servicioAutorizacion.TienePermiso(usuario, "MEDICOS", "VER");
+            if (MenuConfiguracion != null)
+            {
+                bool verConfigGeneral = _servicioAutorizacion.TienePermiso(usuario, "CONFIGURACION", "VER");
+                bool verUsuarios = _servicioAutorizacion.TienePermiso(usuario, "USUARIOS", "VER");
+                bool verRoles = _servicioAutorizacion.TienePermiso(usuario, "ROLES", "VER");
+                bool verParametros = _servicioAutorizacion.TienePermiso(usuario, "PARAMETROSISTEMA", "VER");
 
-            MenuCoberturas.Visible = _servicioAutorizacion.TienePermiso(usuario, "COBERTURAS", "VER");
-            MenuEspecialidades.Visible = _servicioAutorizacion.TienePermiso(usuario, "ESPECIALIDADES", "VER");
-            MenuTratamientos.Visible = _servicioAutorizacion.TienePermiso(usuario, "TRATAMIENTOS", "VER");
-            MenuReportes.Visible = _servicioAutorizacion.TienePermiso(usuario, "REPORTES", "VER");
-
-            // para los admins
-            MenuConfiguracion.Visible = _servicioAutorizacion.TienePermiso(usuario, "CONFIGURACION", "VER")
-                                        || _servicioAutorizacion.TienePermiso(usuario, "USUARIOS", "VER");
+                MenuConfiguracion.Visible = verConfigGeneral || verUsuarios || verRoles || verParametros;
+            }
         }
 
         private void OcultarTodoElMenu()

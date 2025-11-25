@@ -6,40 +6,44 @@
 
         <%--Filtros--%>
         <div class="container-fluid px-0 mb-4">
-            <div class="d-flex flex-wrap align-items-center gap-2 bg-white p-3 rounded shadow-sm border w-100">
+            <div class="d-flex flex-wrap align-items-center gap-3 bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="flex-grow-1">
+                <div class="flex-grow-1" style="min-width: 250px;">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0 text-muted">
                             <i class="bi bi-search"></i>
                         </span>
                         <asp:TextBox ID="txtBuscarUsuario" runat="server"
                             CssClass="form-control border-start-0"
-                            placeholder="Buscar Usuario por Nombre, Usuario o Email..." />
+                            placeholder="Buscar..." />
                     </div>
                 </div>
 
-                <div>
-                    <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" Width="190px"
-                        AutoPostBack="true">
-                    </asp:DropDownList>
+                <div class="d-flex gap-2 flex-wrap">
+                    <div style="min-width: 180px;">
+                        <asp:DropDownList ID="ddlRol" runat="server"
+                            CssClass="form-select w-100"
+                            AutoPostBack="true">
+                        </asp:DropDownList>
+                    </div>
+
+                    <div style="min-width: 180px;">
+                        <asp:DropDownList ID="ddlEstado" runat="server"
+                            CssClass="form-select w-100"
+                            AutoPostBack="true">
+                            <asp:ListItem Text="Todos los estados" Value="todos" />
+                            <asp:ListItem Text="Activo" Value="activo" />
+                            <asp:ListItem Text="Inactivo" Value="inactivo" />
+                        </asp:DropDownList>
+                    </div>
                 </div>
 
-                <div>
-                    <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="200px"
-                        AutoPostBack="true">
-                        <asp:ListItem Text="Todos los estados" Value="todos" />
-                        <asp:ListItem Text="Activo" Value="activo" />
-                        <asp:ListItem Text="Inactivo" Value="inactivo" />
-                    </asp:DropDownList>
-                </div>
-
-                <div class="d-flex gap-2 border-start ps-3 ms-1">
+                <div class="d-flex gap-2 border-start ps-3">
                     <asp:Button ID="btnBuscar" runat="server" Text="Aplicar" CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
                     <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
                 </div>
 
-                <div class="border-start ps-3 ms-1">
+                <div id="divBtnNuevo" runat="server" class="border-start ps-3">
                     <asp:Button ID="btnNuevoUsuario" runat="server"
                         Text="+ Nuevo"
                         OnClick="btnNuevoUsuario_Click"
@@ -115,7 +119,7 @@
 
 
     <%-- modal resultado --%>
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

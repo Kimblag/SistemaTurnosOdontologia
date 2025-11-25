@@ -72,9 +72,6 @@
                 <div class="col-12 col-md-6">
                     <label for="ddlRol" class="form-label">Rol</label>
                     <asp:DropDownList ID="ddlRol" runat="server" CssClass="form-select" Enabled="false">
-                        <asp:ListItem Value="1">Administrador</asp:ListItem>
-                        <asp:ListItem Value="2">Recepcionista</asp:ListItem>
-                        <asp:ListItem Value="3">Médico</asp:ListItem>
                     </asp:DropDownList>
                 </div>
 
@@ -455,7 +452,7 @@
 
 
     <%-- modal resultado --%>
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

@@ -19,8 +19,21 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
         private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly ParametroService _servicioParametros = new ParametroService();
 
+        private bool _puedeEditar = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            var usuario = SessionManager.Usuario;
+
+            if (!_servicioAutorizacion.TienePermiso(usuario, "PARAMETROSISTEMA", "VER"))
+            {
+                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
+                return;
+            }
+
+            _puedeEditar = _servicioAutorizacion.TienePermiso(usuario, "PARAMETROSISTEMA", "EDITAR");
+
             if (Master is SiteMaster master)
             {
                 master.ConfigurarBotonVolver(true, "~/Pages/Configuracion/Index.aspx");
@@ -29,18 +42,32 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
                 master.EstablecerSubtituloSeccion("Defina las variables institucionales y técnicas de la aplicación.");
             }
 
-            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PARAMETROSISTEMA", "VER"))
-            {
-                Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
-                return;
-            }
-
             if (!IsPostBack)
             {
                 CargarParametros();
 
+                if (!_puedeEditar)
+                {
+                    BloquearFormulario();
+                }
+
                 ModalHelper.MostrarModalDesdeSession(this.Page, "ConfigMensajeTitulo", "ConfigMensajeDesc", "/Pages/Configuracion/Index");
             }
+        }
+
+        private void BloquearFormulario()
+        {
+            txtNombreClinica.Enabled = false;
+            txtServidorCorreo.Enabled = false;
+            txtPuertoCorreo.Enabled = false;
+            txtUsuarioCorreo.Enabled = false;
+            txtEmailRemitente.Enabled = false;
+            txtReintentosEmail.Enabled = false;
+
+            btnGuardar.Visible = false;
+
+            btnCancelar.Text = "Volver";
+            btnCancelar.CssClass = "btn btn-primary btn-sm";
         }
 
 
@@ -113,11 +140,15 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Parametros
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PARAMETROSISTEMA", "EDITAR"))
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Acceso Denegado", "No tiene permisos para modificar la configuración.", "Error", null, "abrirModalResultado");
+                return;
+            }
             try
             {
                 string nombreClinica = txtNombreClinica.Text.Trim();
                 string duracionTurnoStr = "60";
-                //string duracionTurnoStr = ddlDuracionTurno.SelectedValue;
                 string horaInicio = "08:00";
                 string horaCierre = "18:00";
                 string servidorCorreo = txtServidorCorreo.Text.Trim();

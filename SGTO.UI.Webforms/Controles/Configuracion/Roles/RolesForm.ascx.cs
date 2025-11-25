@@ -129,17 +129,27 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             txtDescripcion.Enabled = false;
             ddlEstado.Enabled = false;
 
-            Array modulos = Enum.GetValues(typeof(Modulo));
-            Array acciones = Enum.GetValues(typeof(TipoAccion));
-
-            foreach (Modulo mod in modulos)
+            // iterar por los items creados en el repeater para poder desactivarlos en modo lectura
+            foreach (RepeaterItem item in rptPermisos.Items)
             {
-                foreach (TipoAccion acc in acciones)
+                // verificar que sea el item de datos
+                if (item.ItemType == ListItemType.Item || item.ItemType == ListItemType.AlternatingItem)
                 {
-                    string id = "chk" + mod.ToString() + acc.ToString();
-                    CheckBox chk = this.FindControl(id) as CheckBox;
-                    if (chk != null) chk.Enabled = false;
+                    // lista de los permisos
+                    string[] sufijos = { "Ver", "Crear", "Editar", "Activar", "Desactivar", "Eliminar" };
+
+                    foreach (string sufijo in sufijos)
+                    {
+                        // buscar el control actual, usando el ID del template
+                        CheckBox chk = item.FindControl("chk" + sufijo) as CheckBox;
+
+                        if (chk != null)
+                        {
+                            chk.Enabled = false;
+                        }
+                    }
                 }
+
             }
         }
 
@@ -295,28 +305,6 @@ namespace SGTO.UI.Webforms.Controles.Configuracion.Roles
             return idsSeleccionados;
         }
 
-        private int BuscarIdPermiso(List<Permiso> permisos, Modulo modulo, TipoAccion accion)
-        {
-            for (int i = 0; i < permisos.Count; i++)
-            {
-                if (permisos[i].Modulo == modulo && permisos[i].Accion == accion)
-                    return permisos[i].IdPermiso;
-            }
-            return 0;
-        }
-
-        private void MarcarPermisosVerPorDefecto()
-        {
-            Array modulos = Enum.GetValues(typeof(Modulo));
-
-            for (int i = 0; i < modulos.Length; i++)
-            {
-                string idControl = "chk" + ((Modulo)modulos.GetValue(i)).ToString() + "Ver";
-                CheckBox chk = this.FindControl(idControl) as CheckBox;
-                if (chk != null)
-                    chk.Checked = true;
-            }
-        }
 
         private void MostrarModalError(string titulo, string mensaje)
         {

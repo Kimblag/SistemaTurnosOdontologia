@@ -24,6 +24,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         private readonly UsuarioService _servicioUsuario = new UsuarioService();
         private readonly EspecialidadService _servicioEspecialidad = new EspecialidadService();
         private readonly HorarioSemanalService _servicioHorarioSemanal = new HorarioSemanalService();
+        private readonly RolService _servicioRol = new RolService();
 
 
         private Dictionary<string, List<HorarioSemanalItemUi>> HorariosDias
@@ -110,7 +111,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                         "abrirModalResultado");
                     return;
                 }
-
+                CargarRoles();
                 CargarHorarioClinica();
                 CargarEspecialidades();
                 BindearTodosLosDias();
@@ -127,6 +128,23 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             repViernes.DataSource = HorariosDias["Viernes"]; repViernes.DataBind();
             repSabado.DataSource = HorariosDias["Sabado"]; repSabado.DataBind();
             repDomingo.DataSource = HorariosDias["Domingo"]; repDomingo.DataBind();
+        }
+
+        private void CargarRoles()
+        {
+            try
+            {
+                var roles = _servicioRol.Listar();
+
+                ddlRol.DataSource = roles;
+                ddlRol.DataTextField = "Nombre";
+                ddlRol.DataValueField = "IdRol";
+                ddlRol.DataBind();
+            }
+            catch
+            {
+                ddlRol.Items.Add(new ListItem("Error al obtener roles", ""));
+            }
         }
 
         private void CargarUsuario()
@@ -259,7 +277,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
                 MedicoEdicionDto medicoDto = null;
 
-                if (ddlRol.SelectedValue == "3")
+                if (ddlRol.SelectedItem.Text.ToUpper() == "MÉDICO")
                 {
                     medicoDto = new MedicoEdicionDto
                     {
@@ -431,7 +449,7 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
             if (!ValidadorCampos.EsEmailValido(txtEmail.Text))
                 throw new ArgumentException("El email no tiene un formato válido.");
 
-            if (ddlRol.SelectedValue == "3")
+            if (ddlRol.SelectedItem.Text.ToUpper() == "MÉDICO")
             {
                 if (!ValidadorCampos.EsEnteroPositivo(txtDni.Text))
                     throw new ArgumentException("El DNI debe ser numérico.");

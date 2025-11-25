@@ -13,5 +13,32 @@ namespace SGTO.UI.Webforms.Pages.Configuracion
 
     public partial class Configuracion
     {
+
+        /// <summary>
+        /// colUsuarios control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl colUsuarios;
+
+        /// <summary>
+        /// colRoles control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl colRoles;
+
+        /// <summary>
+        /// colParametros control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl colParametros;
     }
 }

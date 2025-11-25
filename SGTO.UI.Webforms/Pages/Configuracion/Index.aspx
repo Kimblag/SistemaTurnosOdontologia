@@ -2,11 +2,11 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
- <div class="page-generic configuracion-page justify-content-center">
+ <div class="page-generic configuracion-page justify-content-center align-items-center">
         <div class="row g-4">
 
             <!-- Usuarios -->
-            <div class="col-12 col-md-6 col-lg-4">
+           <div id="colUsuarios" runat="server" class="col-12 col-md-6 col-lg-4">
                 <a href='<%= ResolveUrl("~/Pages/Configuracion/Usuarios/Index.aspx") %>' class="card card-config bg-soft-primary shadow-sm border-0 text-decoration-none text-dark h-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
                         <div>
@@ -24,7 +24,7 @@
             </div>
 
             <!-- Roles -->
-            <div class="col-12 col-md-6 col-lg-4">
+            <div id="colRoles" runat="server" class="col-12 col-md-6 col-lg-4">
                 <a href='<%= ResolveUrl("~/Pages/Configuracion/Roles/Index.aspx") %>' class="card card-config bg-soft-success shadow-sm border-0 text-decoration-none text-dark h-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
                         <div>
@@ -42,7 +42,7 @@
             </div>
 
             <!-- Parámetros -->
-            <div class="col-12 col-md-6 col-lg-4">
+           <div id="colParametros" runat="server" class="col-12 col-md-6 col-lg-4">
                 <a href='<%= ResolveUrl("~/Pages/Configuracion/Parametros/Index.aspx") %>' class="card card-config bg-soft-warning shadow-sm border-0 text-decoration-none text-dark h-100">
                     <div class="card-body text-center d-flex flex-column justify-content-between">
                         <div>

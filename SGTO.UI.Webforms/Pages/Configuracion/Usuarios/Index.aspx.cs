@@ -27,6 +27,11 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
         private const string KEY_USUARIO_ROL = "FiltroUsuarioRol";
         private const string KEY_USUARIO_ESTADO = "FiltroUsuarioEstado";
 
+
+        private bool _puedeCrear = false;
+        private bool _puedeEditar = false;
+        private bool _puedeEliminar = false;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!SessionManager.EstaLogueado())
@@ -34,11 +39,17 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                 Response.Redirect("~/Pages/Login/Index.aspx");
                 return;
             }
-            if (!_servicioAutorizacion.TienePermiso(SessionManager.Usuario, "USUARIOS", "VER"))
+            var usuarioActual = SessionManager.Usuario;
+
+            if (!_servicioAutorizacion.TienePermiso(usuarioActual, "USUARIOS", "VER"))
             {
                 Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx");
                 return;
             }
+
+            _puedeCrear = _servicioAutorizacion.TienePermiso(usuarioActual, "USUARIOS", "CREAR");
+            _puedeEditar = _servicioAutorizacion.TienePermiso(usuarioActual, "USUARIOS", "EDITAR");
+            _puedeEliminar = _servicioAutorizacion.TienePermiso(usuarioActual, "USUARIOS", "ELIMINAR");
 
             if (Master is SiteMaster master)
             {
@@ -51,11 +62,15 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
             if (!IsPostBack)
             {
+                divBtnNuevo.Visible = _puedeCrear;
+
                 CargarRolesDropDown();
-
                 RestaurarFiltrosDesdeSession();
-
                 AplicarFiltros();
+            }
+            else
+            {
+                divBtnNuevo.Visible = _puedeCrear;
             }
         }
 
@@ -171,7 +186,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
 
             gvUsuarios.DataSource = lista;
             gvUsuarios.DataBind();
-
+            if (!_puedeEditar && !_puedeEliminar)
+            {
+                if (gvUsuarios.Columns.Count > 5)
+                {
+                    gvUsuarios.Columns[5].Visible = false;
+                }
+            }
         }
 
 
@@ -202,6 +223,13 @@ namespace SGTO.UI.Webforms.Pages.Configuracion.Usuarios
                     {
                         lblEstado.Attributes["class"] = "badge badge-warning";
                     }
+                }
+
+                var btnEditar = (LinkButton)e.Row.FindControl("btnEditar");
+
+                if (btnEditar != null)
+                {
+                    btnEditar.Visible = _puedeEditar;
                 }
             }
         }
