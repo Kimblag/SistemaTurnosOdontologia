@@ -61,7 +61,8 @@ namespace SGTO.Negocio.Servicios
                 filtros.FechaFin,
                 filtros.IdMedico,
                 filtros.IdPaciente,
-                filtros.IdEspecialidad
+                filtros.IdEspecialidad,
+                filtros.IdCobertura
             );
 
             return TurnoMapper.MapearListaTurnoListadoDto(turnos);
@@ -121,7 +122,7 @@ namespace SGTO.Negocio.Servicios
         {
             try
             {
-                return TurnoMapper.MapearListaTurnoListadoDto(_repositorioTurno.Listar(null, null, null, null, null));
+                return TurnoMapper.MapearListaTurnoListadoDto(_repositorioTurno.Listar(null, null, null, null, null, null));
             }
             catch (Exception)
             {

@@ -192,7 +192,7 @@ namespace SGTO.Datos.Repositorios
         }
 
 
-        public List<Turno> Listar(DateTime? fechaInicio, DateTime? fechaFin, int? idMedico, int? idPaciente, int? idEspecialidad)
+        public List<Turno> Listar(DateTime? fechaInicio, DateTime? fechaFin, int? idMedico, int? idPaciente, int? idEspecialidad, int? idCobertura)
         {
             List<Turno> turnos = new List<Turno>();
 
@@ -215,6 +215,7 @@ namespace SGTO.Datos.Repositorios
             if (idMedico.HasValue) query += " AND T.IdMedico = @IdMedico ";
             if (idPaciente.HasValue) query += " AND T.IdPaciente = @IdPaciente ";
             if (idEspecialidad.HasValue) query += " AND T.IdEspecialidad = @IdEspecialidad ";
+            if (idCobertura.HasValue) query += " AND T.IdCobertura = @IdCobertura ";
 
             if (fechaInicio.HasValue) query += " AND T.FechaInicio >= @FechaInicio ";
             if (fechaFin.HasValue) query += " AND T.FechaInicio <= @FechaFin "; // filtro por fecha de inicio de turno
@@ -228,6 +229,7 @@ namespace SGTO.Datos.Repositorios
                 if (idMedico.HasValue) datos.EstablecerParametros("@IdMedico", idMedico.Value);
                 if (idPaciente.HasValue) datos.EstablecerParametros("@IdPaciente", idPaciente.Value);
                 if (idEspecialidad.HasValue) datos.EstablecerParametros("@IdEspecialidad", idEspecialidad.Value);
+                if (idCobertura.HasValue) datos.EstablecerParametros("@IdCobertura", idCobertura.Value);
 
                 if (fechaInicio.HasValue) datos.EstablecerParametros("@FechaInicio", fechaInicio.Value);
 

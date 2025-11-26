@@ -20,6 +20,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
         private readonly ServicioAutorizacion _servicioAutorizacion = new ServicioAutorizacion();
         private readonly TurnoService _servicioTurno = new TurnoService();
         private readonly MedicoService _servicioMedico = new MedicoService();
+        private readonly CoberturaService _servicioCobertura = new CoberturaService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -52,6 +53,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     // solo se carag el dropdown si el usuario no es médico
                     CargarMedicosDropdown();
                 }
+                CargarCoberturasDropdown();
 
                 txtFecha.Text = string.Empty;
 
@@ -90,6 +92,26 @@ namespace SGTO.UI.Webforms.Pages.Turnos
             }
         }
 
+        private void CargarCoberturasDropdown()
+        {
+            try
+            {
+                ddlCobertura.Items.Clear();
+                ddlCobertura.Items.Add(new ListItem("Todas", "-1"));
+
+                var coberturas = _servicioCobertura.Listar("activas");
+
+                foreach (var c in coberturas)
+                {
+                    ddlCobertura.Items.Add(new ListItem(c.Nombre, c.IdCobertura.ToString()));
+                }
+            }
+            catch (Exception ex)
+            {
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "Error cargando coberturas: " + ex.Message);
+            }
+        }
+
         private void CargarTurnosConFiltros()
         {
             try
@@ -111,6 +133,14 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                     if (int.TryParse(ddlMedico.SelectedValue, out int idMedicoSeleccionado))
                     {
                         filtros.IdMedico = idMedicoSeleccionado;
+                    }
+                }
+
+                if (ddlCobertura.SelectedValue != "-1")
+                {
+                    if (int.TryParse(ddlCobertura.SelectedValue, out int idCoberturaSeleccionado))
+                    {
+                        filtros.IdCobertura = idCoberturaSeleccionado;
                     }
                 }
 
@@ -179,6 +209,7 @@ namespace SGTO.UI.Webforms.Pages.Turnos
 
             if (ddlMedico.Items.Count > 0) ddlMedico.SelectedIndex = 0;
             if (ddlEstado.Items.Count > 0) ddlEstado.SelectedIndex = 0;
+            if (ddlCobertura.Items.Count > 0) ddlCobertura.SelectedIndex = 0;
 
             gvTurnos.PageIndex = 0;
             CargarTurnosConFiltros();

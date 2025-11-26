@@ -10,7 +10,6 @@
         <%-- Filtros --%>
         <div class="container-fluid px-0 mb-4">
             <div class="bg-white p-3 rounded shadow-sm border w-100">
-
                 <div class="row g-3">
                     <div class="col-md-12">
                         <div class="input-group">
@@ -20,7 +19,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label small text-muted">Fecha Turno</label>
                         <asp:TextBox ID="txtFecha" runat="server" TextMode="Date" CssClass="form-control" />
                     </div>
@@ -28,11 +27,18 @@
                     <div id="pnlFiltroMedico" runat="server" class="col-md-3">
                         <label class="form-label small text-muted">Médico</label>
                         <asp:DropDownList ID="ddlMedico" runat="server" CssClass="form-select" AppendDataBoundItems="true">
-                            <asp:ListItem Text="Todos los médicos" Value="-1" />
+                            <asp:ListItem Text="Todos" Value="-1" />
                         </asp:DropDownList>
                     </div>
 
                     <div class="col-md-3">
+                        <label class="form-label small text-muted">Cobertura</label>
+                        <asp:DropDownList ID="ddlCobertura" runat="server" CssClass="form-select" AppendDataBoundItems="true">
+                            <asp:ListItem Text="Todas" Value="-1" />
+                        </asp:DropDownList>
+                    </div>
+
+                    <div class="col-md-2">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
                             <asp:ListItem Text="Todos" Value="" />
@@ -44,12 +50,11 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3 d-flex align-items-end gap-2">
+                    <div class="col-md-2 d-flex align-items-end gap-2">
                         <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-100" OnClick="btnBuscar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
                     </div>
                 </div>
-
             </div>
         </div>
 
