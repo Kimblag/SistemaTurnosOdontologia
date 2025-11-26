@@ -1,4 +1,8 @@
-﻿USE SistemaOdontologico;
+﻿-- Este script pobla la base de datos con un set de datos coherente para pruebas funcionales
+-- Incluye datos para coberturas, roles, permisos, especialidades, parámetros del sistema, planes, usuarios, médicos, pacientes, horarios y turnos.
+-- Además establece los valores por defecto que necesita el sistema para operar correctamente: usuario root, parámetros del sistema, roles y permisos básicos.
+
+USE SistemaOdontologico;
 GO
 
 -- Cobertura

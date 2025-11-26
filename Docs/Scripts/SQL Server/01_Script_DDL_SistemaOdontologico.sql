@@ -1,3 +1,7 @@
+-- Este script define el esquema relacional de la base de datos SistemaOdontologico.
+-- El diseño prioriza la integridad referencial y el uso de bajas lógicas en lugar de eliminaciones físicas.
+-- Cada tabla incluye restricciones para asegurar la validez de los datos y mantener la coherencia del sistema.
+
 USE master;
 GO
 
@@ -265,7 +269,7 @@ CREATE TABLE PacienteCoberturaHistorial (
     FechaInicio DATE NOT NULL DEFAULT GETDATE(),
     FechaFin DATE NULL,
     MotivoCambio NVARCHAR(200) NULL,
-    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = hist�rico cerrado
+    Estado CHAR(1) NOT NULL DEFAULT 'A', -- 'A' = vigente, 'I' = hist�rico cerrado
 
     CONSTRAINT FK_PacienteCoberturaHistorial_Paciente FOREIGN KEY(IdPaciente) REFERENCES Paciente(IdPaciente),
     CONSTRAINT FK_PacienteCoberturaHistorial_Cobertura FOREIGN KEY(IdCobertura) REFERENCES Cobertura(IdCobertura),
