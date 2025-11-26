@@ -8,7 +8,7 @@ El sistema está diseñado para manejar la disponibilidad de los especialistas p
 
 ## Vista del Sistema
 Se muestra a continuación la interfaz del usuario.
-![Captura de la pantalla de Login del sistema](Docs/Imágenes/Interfaz/01_interfaz_login.png)
+![Captura de la pantalla de Login del sistema](Docs/Imagenes/Interfaz/01_interfaz_login.png)
 ![Captura de pantalla principal del Dashboard con gráficos y KPIs](Docs/Imagenes/Interfaz/02_interfaz_dashboard.png)
 
 
@@ -19,7 +19,7 @@ Se muestra a continuación la interfaz del usuario.
 
 El SGTO cumple con los siguientes requisitos funcionales:
 - **Dashboard de Inicio**: Muestra una visión general del estado actual de la clínica, incluyendo un gráfico de la data de turnos de la semana y KPIs clave por estado de los turnos. Esta vista es común para los 3 roles principales, la diferencia radica en que tanto Administrador como Recepcionista pueden ver toda la información, mientras que el rol Médico sólo puede ver los datos relacionados al usuario de manera que NO puede ver información que no le pertenezca.
-![Captura del Dashboard con datos filtrados por rol](Docs/Imágenes/Interfaz/03_interfaz_dashboard_rol_medico.png)
+![Captura del Dashboard con datos filtrados por rol](Docs/Imagenes/Interfaz/03_interfaz_dashboard_rol_medico.png)
 
 - **Gestión de Maestros**: Creación, edición y baja lógica de PAcientes, Coberturas, Planes, Especialidades y Tratamientos.
 - **Gestión de Personal**: Administración de Usuarios, Roles (Administrador, Recepcionista, Médico) y médicos (asociación de especialidades y definición de horarios semanales de trabajo).
@@ -30,7 +30,7 @@ El SGTO cumple con los siguientes requisitos funcionales:
     * Manejo de estados de turno: Nuevo, Reprogramado, Cancelado, No Asistió, Cerrado.
     * Funcionalidad de reprogramación y cancelación (sin eliminación física).
     * Envío de confirmación por correo electrónico al paciente
-![Captura de la página de Agendar Turno, mostrando la propuesta de horarios sugeridos](Docs/Imágenes/Interfaz/04_interfaz_agenda_turnos.png)
+![Captura de la página de Agendar Turno, mostrando la propuesta de horarios sugeridos](Docs/Imagenes/Interfaz/04_interfaz_agenda_turnos.png)
 
 - **Seguridad y Perfiles**: Implementación de un modelo de Roles y Permisos (RBAC) para controlar el acceso a módulos y acciones del sistema.
 - **Módulo de Atención (Médicos)**: Permite al médico ver sus turnos y cargar el Registro de Historia Clínica asociado al turno, incluyendo el diagnóstico y el tratamiento realizado.
@@ -84,11 +84,11 @@ El sistema requiere la creación de la base de datos `SistemaOdontologico` y la 
 
 ## Ejecución del Proyecto
     1. Verificar que la base de datos esté correctamente creada y configurada con los datos de prueba.
-![Captura de la base de datos creada en SQL Server Management Studio](Docs/Imágenes/Instrucciones/01_bbdd_verificacion_creacion.png)
+![Captura de la base de datos creada en SQL Server Management Studio](Docs/Imagenes/Instrucciones/01_bbdd_verificacion_creacion.png)
 
 
     2. En Visual Studio, establecer el proyecto SGTO.UI.Webforms como proyecto de inicio
-![Captura de la configuración del proyecto inicial en Visual Studio](Docs/Imágenes/Instrucciones/02_establecer_proyecto_inicial.png "Proyecto inicial")
+![Captura de la configuración del proyecto inicial en Visual Studio](Docs/Imagenes/Instrucciones/02_establecer_proyecto_inicial.png "Proyecto inicial")
 
     3. Compilar la solución
     4. Ejecutar el proyecto
