@@ -21,10 +21,10 @@ El SGTO cumple con los siguientes requisitos funcionales:
 - **Dashboard de Inicio**: Muestra una visión general del estado actual de la clínica, incluyendo un gráfico de la data de turnos de la semana y KPIs clave por estado de los turnos. Esta vista es común para los 3 roles principales, la diferencia radica en que tanto Administrador como Recepcionista pueden ver toda la información, mientras que el rol Médico sólo puede ver los datos relacionados al usuario de manera que NO puede ver información que no le pertenezca.
 ![Captura del Dashboard con datos filtrados por rol](Docs/Imagenes/Interfaz/03_interfaz_dashboard_rol_medico.png)
 
-- **Gestión de Maestros**: Creación, edición y baja lógica de PAcientes, Coberturas, Planes, Especialidades y Tratamientos.
+- **Gestión de Maestros**: Creación, edición y baja lógica de Pacientes, Coberturas, Planes, Especialidades y Tratamientos.
 - **Gestión de Personal**: Administración de Usuarios, Roles (Administrador, Recepcionista, Médico) y médicos (asociación de especialidades y definición de horarios semanales de trabajo).
 - **Núcleo de Turnos**:
-    * Asignación e turnos a pacientes y médicos.
+    * Asignación de turnos a pacientes y médicos.
     * Propuesta de horarios basada en especialidad y disponibilidad médica.
     * Validaciones de unicidad de turno (mismo médico, día, hora) y unicidad de paciente (mismo día, hora).
     * Manejo de estados de turno: Nuevo, Reprogramado, Cancelado, No Asistió, Cerrado.
@@ -32,9 +32,9 @@ El SGTO cumple con los siguientes requisitos funcionales:
     * Envío de confirmación por correo electrónico al paciente
 ![Captura de la página de Agendar Turno, mostrando la propuesta de horarios sugeridos](Docs/Imagenes/Interfaz/04_interfaz_agenda_turnos.png)
 
-- **Seguridad y Perfiles**: Implementación de un modelo de Roles y Permisos (RBAC) para controlar el acceso a módulos y acciones del sistema.
+- **Seguridad y Perfiles**: Implementación de un modelo de Roles y Permisos para controlar el acceso a módulos y acciones del sistema.
 - **Módulo de Atención (Médicos)**: Permite al médico ver sus turnos y cargar el Registro de Historia Clínica asociado al turno, incluyendo el diagnóstico y el tratamiento realizado.
-_ **Reportes**: Opciones de consulta y exportación de datos sobre turnos, pacientes, coberturas, etc.
+- **Reportes**: Opciones de consulta y exportación de datos sobre turnos, pacientes, coberturas, etc.
 
 ---
 
