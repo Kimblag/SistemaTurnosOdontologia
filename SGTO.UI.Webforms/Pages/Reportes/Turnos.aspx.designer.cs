@@ -96,6 +96,15 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         protected global::System.Web.UI.WebControls.Label lblAtendidos;
 
         /// <summary>
+        /// lblReprogramados control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblReprogramados;
+
+        /// <summary>
         /// lblCancelados control.
         /// </summary>
         /// <remarks>

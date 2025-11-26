@@ -51,8 +51,9 @@
             </div>
         </div>
 
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-2 flex-fill">
+        <div class="row row-cols-2 row-cols-md-3 row-cols-xl-6 g-3 mb-4">
+
+            <div class="col">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
                     <h6 class="text-muted small mb-1">TOTAL</h6>
                     <p class="text-dark fw-bold fs-4 mb-0">
@@ -60,7 +61,8 @@
                     </p>
                 </div>
             </div>
-            <div class="col-6 col-md-2 flex-fill">
+
+            <div class="col">
                 <div class="kpi-card text-center py-3 px-2 bg-success bg-opacity-10 border border-success rounded shadow-sm h-100">
                     <h6 class="text-success small mb-1">ATENDIDOS</h6>
                     <p class="text-success fw-bold fs-4 mb-0">
@@ -68,7 +70,17 @@
                     </p>
                 </div>
             </div>
-            <div class="col-6 col-md-2 flex-fill">
+
+            <div class="col">
+                <div class="kpi-card text-center py-3 px-2 bg-info bg-opacity-10 border border-info rounded shadow-sm h-100">
+                    <h6 class="text-info-emphasis small mb-1 text-truncate" title="REPROGRAMADOS">REPROGRAMADOS</h6>
+                    <p class="text-info-emphasis fw-bold fs-4 mb-0">
+                        <asp:Label ID="lblReprogramados" runat="server" Text="0" />
+                    </p>
+                </div>
+            </div>
+
+            <div class="col">
                 <div class="kpi-card text-center py-3 px-2 bg-danger bg-opacity-10 border border-danger rounded shadow-sm h-100">
                     <h6 class="text-danger small mb-1">CANCELADOS</h6>
                     <p class="text-danger fw-bold fs-4 mb-0">
@@ -76,7 +88,8 @@
                     </p>
                 </div>
             </div>
-            <div class="col-6 col-md-2 flex-fill">
+
+            <div class="col">
                 <div class="kpi-card text-center py-3 px-2 bg-warning bg-opacity-10 border border-warning rounded shadow-sm h-100">
                     <h6 class="text-warning-emphasis small mb-1">AUSENTES</h6>
                     <p class="text-warning-emphasis fw-bold fs-4 mb-0">
@@ -84,10 +97,11 @@
                     </p>
                 </div>
             </div>
-            <div class="col-6 col-md-2 flex-fill">
-                <div class="kpi-card text-center py-3 px-2 bg-info bg-opacity-10 border border-info rounded shadow-sm h-100">
-                    <h6 class="text-info-emphasis small mb-1">PENDIENTES</h6>
-                    <p class="text-info-emphasis fw-bold fs-4 mb-0">
+
+            <div class="col">
+                <div class="kpi-card text-center py-3 px-2 bg-primary bg-opacity-10 border border-primary rounded shadow-sm h-100">
+                    <h6 class="text-primary-emphasis small mb-1">PENDIENTES</h6>
+                    <p class="text-primary-emphasis fw-bold fs-4 mb-0">
                         <asp:Label ID="lblPendientes" runat="server" Text="0" />
                     </p>
                 </div>

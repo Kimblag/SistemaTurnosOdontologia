@@ -102,6 +102,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
                 lblTotal.Text = kpis.TotalTurnos.ToString();
                 lblAtendidos.Text = kpis.Atendidos.ToString();
+                lblReprogramados.Text = kpis.Reprogramados.ToString();
                 lblCancelados.Text = kpis.Cancelados.ToString();
                 lblAusentes.Text = kpis.Ausentes.ToString();
                 lblPendientes.Text = kpis.Pendientes.ToString();
