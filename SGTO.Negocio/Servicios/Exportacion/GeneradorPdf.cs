@@ -72,8 +72,8 @@ namespace SGTO.Negocio.Servicios.Exportacion
         }
 
 
-        public static byte[] GenerarHistoriaClinicaPdf(PacienteDetalleDto paciente, 
-            List<HistoriaClinicaResumenDto> historial, 
+        public static byte[] GenerarHistoriaClinicaPdf(PacienteDetalleDto paciente,
+            List<HistoriaClinicaResumenDto> historial,
             string nombreClinica)
         {
             if (paciente == null) throw new ArgumentNullException(nameof(paciente));
@@ -94,7 +94,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 PdfPTable headerTable = new PdfPTable(1);
                 headerTable.WidthPercentage = 100;
 
-          
+
                 PdfPCell cellHeader = new PdfPCell(new Phrase(tituloClinica.ToUpper(), FuenteTitulo));
                 cellHeader.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellHeader.Border = Rectangle.NO_BORDER;
@@ -184,7 +184,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
                         // tratamiento y diagnostico
                         PdfPCell cellBody = new PdfPCell();
                         cellBody.BorderColor = new BaseColor(200, 200, 200);
-                        cellBody.BorderWidthTop = 0; 
+                        cellBody.BorderWidthTop = 0;
                         cellBody.Padding = 8f;
 
                         // Tratamiento
@@ -256,7 +256,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
                 foreach (string h in headers)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD))) 
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
                     {
                         BackgroundColor = new BaseColor(240, 240, 240),
                         HorizontalAlignment = Element.ALIGN_CENTER,
@@ -359,11 +359,11 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
             using (MemoryStream ms = new MemoryStream())
             {
-                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                Document doc = new Document(PageSize.A4, 30, 30, 40, 40);
                 PdfWriter.GetInstance(doc, ms);
                 doc.Open();
 
-                var titulo = new Paragraph("Reporte de Tratamientos", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                var titulo = new Paragraph("Reporte de Tratamientos (Desglose Financiero)", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
                 {
                     Alignment = Element.ALIGN_CENTER
                 };
@@ -371,15 +371,16 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
                 doc.Add(new Paragraph(" "));
 
-                PdfPTable table = new PdfPTable(6);
+                PdfPTable table = new PdfPTable(8);
                 table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 4, 3, 2, 2, 2, 2 });
 
-                string[] headers = { "Tratamiento", "Especialidad", "Estado", "Costo Base", "Cant. Realiz.", "Ingresos Est." };
+                table.SetWidths(new float[] { 3f, 2f, 1f, 2f, 1f, 2f, 2f, 2f });
+
+                string[] headers = { "Tratamiento", "Especialidad", "Est.", "Costo Unit.", "Cant.", "Total Bruto", "Cobertura", "Paciente" };
 
                 foreach (string h in headers)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 8, Font.BOLD)))
                     {
                         BackgroundColor = new BaseColor(240, 240, 240),
                         HorizontalAlignment = Element.ALIGN_CENTER,
@@ -393,21 +394,30 @@ namespace SGTO.Negocio.Servicios.Exportacion
                     table.AddCell(new Phrase(t.Nombre ?? "-", FuenteTexto));
                     table.AddCell(new Phrase(t.Especialidad ?? "-", FuenteSmall));
 
-                    PdfPCell celdaEstado = new PdfPCell(new Phrase(t.Estado ?? "-", FuenteSmall));
-                    celdaEstado.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(celdaEstado);
+                    PdfPCell cellEstado = new PdfPCell(new Phrase(t.Estado?.Substring(0, 1) ?? "-", FuenteSmall));
+                    cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellEstado);
 
-                    PdfPCell celdaCosto = new PdfPCell(new Phrase(t.CostoBase.ToString("C"), FuenteTexto));
-                    celdaCosto.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    table.AddCell(celdaCosto);
+                    PdfPCell cellCosto = new PdfPCell(new Phrase(t.CostoBase.ToString("N0"), FuenteSmall));
+                    cellCosto.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellCosto);
 
-                    PdfPCell celdaCant = new PdfPCell(new Phrase(t.CantidadRealizados.ToString(), FuenteTexto));
-                    celdaCant.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(celdaCant);
+                    PdfPCell cellCant = new PdfPCell(new Phrase(t.CantidadRealizados.ToString(), FuenteTexto));
+                    cellCant.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellCant);
 
-                    PdfPCell celdaTotal = new PdfPCell(new Phrase(t.IngresosEstimados.ToString("C"), FuenteTexto));
-                    celdaTotal.HorizontalAlignment = Element.ALIGN_RIGHT;
-                    table.AddCell(celdaTotal);
+
+                    PdfPCell cellBruto = new PdfPCell(new Phrase(t.TotalFacturado.ToString("N0"), FuenteTextoBold));
+                    cellBruto.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellBruto);
+
+                    PdfPCell cellOS = new PdfPCell(new Phrase(t.TotalCobradoObraSocial.ToString("N0"), FuenteSmall));
+                    cellOS.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellOS);
+
+                    PdfPCell cellPac = new PdfPCell(new Phrase(t.TotalCobradoPaciente.ToString("N0"), FuenteSmall));
+                    cellPac.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellPac);
                 }
 
                 doc.Add(table);
@@ -416,6 +426,8 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 return ms.ToArray();
             }
         }
+
+
         public static byte[] GenerarReporteCoberturasPdf(List<ReporteCoberturasDto> lista)
         {
             if (lista == null || lista.Count == 0)
@@ -423,26 +435,25 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
             using (MemoryStream ms = new MemoryStream())
             {
-                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                Document doc = new Document(PageSize.A4, 30, 30, 40, 40);
                 PdfWriter.GetInstance(doc, ms);
                 doc.Open();
 
-                var titulo = new Paragraph("Reporte de Obras Sociales", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
-                {
-                    Alignment = Element.ALIGN_CENTER
-                };
+                var titulo = new Paragraph("Reporte de Obras Sociales (Rendimiento)", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                { Alignment = Element.ALIGN_CENTER };
                 doc.Add(titulo);
                 doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
                 doc.Add(new Paragraph(" "));
 
-                PdfPTable table = new PdfPTable(5);
+                PdfPTable table = new PdfPTable(8);
                 table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 4, 2, 2, 2, 2 });
+                table.SetWidths(new float[] { 3f, 1.5f, 1f, 1.5f, 1.5f, 2f, 2f, 2f });
 
-                string[] headers = { "Obra Social", "Estado", "Planes", "Turnos", "Pacientes" };
+                string[] headers = { "Obra Social", "Estado", "Planes", "Agend.", "Realiz.", "Facturado", "A Cargo OS", "Copagos" };
+
                 foreach (string h in headers)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 8, Font.BOLD)))
                     {
                         BackgroundColor = new BaseColor(240, 240, 240),
                         HorizontalAlignment = Element.ALIGN_CENTER,
@@ -463,13 +474,25 @@ namespace SGTO.Negocio.Servicios.Exportacion
                     cellPlanes.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cellPlanes);
 
-                    PdfPCell cellTurnos = new PdfPCell(new Phrase(item.TotalTurnos.ToString(), FuenteTexto));
-                    cellTurnos.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(cellTurnos);
+                    PdfPCell cellAgend = new PdfPCell(new Phrase(item.TurnosAgendados.ToString(), FuenteSmall));
+                    cellAgend.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellAgend);
 
-                    PdfPCell cellPacientes = new PdfPCell(new Phrase(item.PacientesAtendidos.ToString(), FuenteTexto));
-                    cellPacientes.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(cellPacientes);
+                    PdfPCell cellRealiz = new PdfPCell(new Phrase(item.TurnosRealizados.ToString(), FuenteTexto));
+                    cellRealiz.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellRealiz);
+
+                    PdfPCell cellFact = new PdfPCell(new Phrase(item.TotalFacturado.ToString("N0"), FuenteSmall));
+                    cellFact.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellFact);
+
+                    PdfPCell cellOS = new PdfPCell(new Phrase(item.A_Cargo_OS.ToString("N0"), FuenteTextoBold));
+                    cellOS.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellOS);
+
+                    PdfPCell cellPac = new PdfPCell(new Phrase(item.A_Cargo_Paciente.ToString("N0"), FuenteSmall));
+                    cellPac.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellPac);
                 }
 
                 doc.Add(table);
@@ -485,27 +508,25 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
             using (MemoryStream ms = new MemoryStream())
             {
-                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                Document doc = new Document(PageSize.A4, 30, 30, 40, 40);
                 PdfWriter.GetInstance(doc, ms);
                 doc.Open();
 
-                var titulo = new Paragraph("Reporte de Planes", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
-                {
-                    Alignment = Element.ALIGN_CENTER
-                };
+                var titulo = new Paragraph("Reporte de Planes (Rendimiento)", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                { Alignment = Element.ALIGN_CENTER };
                 doc.Add(titulo);
                 doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
                 doc.Add(new Paragraph(" "));
 
-                // Tabla 5 columnas
-                PdfPTable table = new PdfPTable(5);
+                PdfPTable table = new PdfPTable(8);
                 table.WidthPercentage = 100;
-                table.SetWidths(new float[] { 3, 3, 2, 2, 2 });
+                table.SetWidths(new float[] { 2.5f, 2.5f, 1f, 1f, 1.5f, 2f, 2f, 2f });
 
-                string[] headers = { "Obra Social", "Plan", "Estado", "% Cobertura", "Turnos" };
+                string[] headers = { "Obra Social", "Plan", "Est.", "% Cob", "Realiz.", "Facturado", "A Cargo OS", "Copagos" };
+
                 foreach (string h in headers)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 8, Font.BOLD)))
                     {
                         BackgroundColor = new BaseColor(240, 240, 240),
                         HorizontalAlignment = Element.ALIGN_CENTER,
@@ -516,20 +537,32 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
                 foreach (var item in lista)
                 {
-                    table.AddCell(new Phrase(item.Cobertura ?? "-", FuenteTexto));
+                    table.AddCell(new Phrase(item.Cobertura ?? "-", FuenteSmall));
                     table.AddCell(new Phrase(item.Plan ?? "-", FuenteTexto));
 
-                    PdfPCell cellEstado = new PdfPCell(new Phrase(item.Estado, FuenteSmall));
+                    PdfPCell cellEstado = new PdfPCell(new Phrase(item.Estado?.Substring(0, 1), FuenteSmall));
                     cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cellEstado);
 
-                    PdfPCell cellPorc = new PdfPCell(new Phrase(item.PorcentajeCubierto.ToString("N0") + "%", FuenteTexto));
+                    PdfPCell cellPorc = new PdfPCell(new Phrase(item.PorcentajeCubierto.ToString("N0") + "%", FuenteSmall));
                     cellPorc.HorizontalAlignment = Element.ALIGN_RIGHT;
                     table.AddCell(cellPorc);
 
-                    PdfPCell cellTurnos = new PdfPCell(new Phrase(item.TotalTurnos.ToString(), FuenteTexto));
+                    PdfPCell cellTurnos = new PdfPCell(new Phrase(item.TurnosRealizados.ToString(), FuenteTexto));
                     cellTurnos.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cellTurnos);
+
+                    PdfPCell cellFact = new PdfPCell(new Phrase(item.TotalFacturado.ToString("N0"), FuenteSmall));
+                    cellFact.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellFact);
+
+                    PdfPCell cellOS = new PdfPCell(new Phrase(item.A_Cargo_OS.ToString("N0"), FuenteTextoBold));
+                    cellOS.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellOS);
+
+                    PdfPCell cellPac = new PdfPCell(new Phrase(item.A_Cargo_Paciente.ToString("N0"), FuenteSmall));
+                    cellPac.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellPac);
                 }
 
                 doc.Add(table);

@@ -199,11 +199,11 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-        public ReporteCoberturasKpiDto ObtenerKpisCoberturas()
+        public ReporteCoberturasKpiDto ObtenerKpisCoberturas(DateTime? desde = null, DateTime? hasta = null)
         {
             try
             {
-                return _repositorioReportes.ConsultarKpisCoberturas();
+                return _repositorioReportes.ConsultarKpisCoberturas(desde, hasta);
             }
             catch (Exception ex)
             {

@@ -249,7 +249,7 @@ namespace SGTO.Datos.Repositorios
                                 Activos = lector.GetInt32(lector.GetOrdinal("Activos")),
                                 TotalTurnosRealizados = lector.GetInt32(lector.GetOrdinal("TotalTurnosRealizados")),
                                 EspecialidadesCubiertas = lector.GetInt32(lector.GetOrdinal("EspecialidadesCubiertas")),
-                                ConMasPacientes = 0 
+                                ConMasPacientes = 0
                             };
                         }
                     }
@@ -340,25 +340,53 @@ namespace SGTO.Datos.Repositorios
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
                     string query = @"
-                SELECT 
-                    T.IdTratamiento,
-                    T.Nombre,
-                    E.Nombre AS Especialidad,
-                    T.CostoBase,
-                    T.Estado,
-                    -- Cuenta histórica total (sin filtro de fecha)
-                    COUNT(HCR.IdHistoriaClinicaRegistro) AS CantidadRealizados,
-                    (COUNT(HCR.IdHistoriaClinicaRegistro) * T.CostoBase) AS IngresosEstimados
-                FROM Tratamiento T
-                INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
-                LEFT JOIN HistoriaClinicaRegistro HCR ON T.IdTratamiento = HCR.IdTratamiento 
-                WHERE 
-                    (@Especialidad IS NULL OR T.IdEspecialidad = @Especialidad)
-                    AND (@Estado IS NULL OR T.Estado = @Estado) -- Nuevo filtro
-                GROUP BY 
-                    T.IdTratamiento, T.Nombre, E.Nombre, T.CostoBase, T.Estado
-                ORDER BY 
-                    T.Nombre ASC";
+                            SELECT 
+                                T.IdTratamiento,
+                                T.Nombre,
+                                E.Nombre AS Especialidad,
+                                T.CostoBase,
+                                T.Estado,
+                                COUNT(HCR.IdHistoriaClinicaRegistro) AS CantidadRealizados,
+                                SUM(CASE WHEN HCR.IdHistoriaClinicaRegistro IS NULL THEN 0 ELSE T.CostoBase END) AS TotalFacturado,
+                                SUM(
+                                    CASE 
+                                        WHEN HCR.IdHistoriaClinicaRegistro IS NULL THEN 0
+                                        WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                        WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                            
+                                        ELSE 0 
+                                    END
+                                ) AS TotalCobradoObraSocial,
+
+                                SUM(
+                                    CASE 
+                                        WHEN HCR.IdHistoriaClinicaRegistro IS NULL THEN 0
+                                        ELSE T.CostoBase - (
+                                            CASE 
+                                                WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                                WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                                ELSE 0
+                                            END
+                                        )
+                                    END
+                                ) AS TotalCobradoPaciente
+                            FROM Tratamiento T
+                            INNER JOIN Especialidad E ON T.IdEspecialidad = E.IdEspecialidad
+                            LEFT JOIN HistoriaClinicaRegistro HCR ON T.IdTratamiento = HCR.IdTratamiento
+                            LEFT JOIN Turno Tu ON HCR.IdTurno = Tu.IdTurno
+                            LEFT JOIN [Plan] P ON Tu.IdPlan = P.IdPlan
+                            LEFT JOIN CoberturaPorcentajeHistorial CPH ON 
+                                Tu.IdCobertura = CPH.IdCobertura 
+                                AND Tu.IdPlan IS NULL
+                                AND HCR.FechaAtencion >= CPH.FechaInicio 
+                                AND (CPH.FechaFin IS NULL OR HCR.FechaAtencion <= CPH.FechaFin)
+                            WHERE 
+                                (@Especialidad IS NULL OR T.IdEspecialidad = @Especialidad)
+                                AND (@Estado IS NULL OR T.Estado = @Estado)
+                            GROUP BY 
+                                T.IdTratamiento, T.Nombre, E.Nombre, T.CostoBase, T.Estado
+                            ORDER BY 
+                                T.Nombre ASC";
 
                     datos.DefinirConsulta(query);
                     datos.EstablecerParametros("@Especialidad", idEspecialidad ?? (object)DBNull.Value);
@@ -380,7 +408,9 @@ namespace SGTO.Datos.Repositorios
                                 CostoBase = lector.GetDecimal(lector.GetOrdinal("CostoBase")),
                                 Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activo" : "Inactivo",
                                 CantidadRealizados = lector.GetInt32(lector.GetOrdinal("CantidadRealizados")),
-                                IngresosEstimados = lector.GetDecimal(lector.GetOrdinal("IngresosEstimados"))
+                                TotalFacturado = lector.GetDecimal(lector.GetOrdinal("TotalFacturado")),
+                                TotalCobradoObraSocial = lector.GetDecimal(lector.GetOrdinal("TotalCobradoObraSocial")),
+                                TotalCobradoPaciente = lector.GetDecimal(lector.GetOrdinal("TotalCobradoPaciente"))
                             });
                         }
                     }
@@ -397,21 +427,38 @@ namespace SGTO.Datos.Repositorios
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
                     string query = @"
-                SELECT
-                    (SELECT COUNT(*) FROM Tratamiento WHERE Estado = 'A') AS TotalEnCatalogo,
-                    
-                    (SELECT COUNT(*) FROM HistoriaClinicaRegistro HCR
-                        WHERE (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
-                        AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
-                        AND IdTratamiento IS NOT NULL
-                    ) AS TotalRealizados,
-
-                    (SELECT ISNULL(SUM(T.CostoBase), 0) 
-                        FROM HistoriaClinicaRegistro HCR
-                        INNER JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
-                        WHERE (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
-                        AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)
-                    ) AS IngresoTotalEstimado";
+                           SELECT
+                            (SELECT COUNT(*) FROM Tratamiento WHERE Estado = 'A') AS TotalEnCatalogo,
+                            COUNT(HCR.IdHistoriaClinicaRegistro) AS TotalRealizados,
+                            ISNULL(SUM(T.CostoBase), 0) AS TotalFacturado,
+                            ISNULL(SUM(
+                                CASE 
+                                    WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                    WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                    ELSE 0 
+                                END
+                            ), 0) AS TotalCobradoObraSocial,
+                            ISNULL(SUM(
+                                T.CostoBase - (
+                                    CASE 
+                                        WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                        WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                        ELSE 0
+                                    END
+                                )
+                            ), 0) AS TotalCobradoPaciente
+                            FROM HistoriaClinicaRegistro HCR
+                            INNER JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
+                            LEFT JOIN Turno Tu ON HCR.IdTurno = Tu.IdTurno
+                            LEFT JOIN [Plan] P ON Tu.IdPlan = P.IdPlan
+                            LEFT JOIN CoberturaPorcentajeHistorial CPH ON 
+                            Tu.IdCobertura = CPH.IdCobertura 
+                            AND Tu.IdPlan IS NULL 
+                            AND HCR.FechaAtencion >= CPH.FechaInicio 
+                            AND (CPH.FechaFin IS NULL OR HCR.FechaAtencion <= CPH.FechaFin)
+                            WHERE 
+                            (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
+                            AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)";
 
                     datos.DefinirConsulta(query);
                     datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
@@ -425,7 +472,9 @@ namespace SGTO.Datos.Repositorios
                         {
                             dto.TotalEnCatalogo = lector.GetInt32(lector.GetOrdinal("TotalEnCatalogo"));
                             dto.TotalRealizados = lector.GetInt32(lector.GetOrdinal("TotalRealizados"));
-                            dto.IngresoTotalEstimado = lector.GetDecimal(lector.GetOrdinal("IngresoTotalEstimado"));
+                            dto.TotalFacturado = lector.GetDecimal(lector.GetOrdinal("TotalFacturado"));
+                            dto.TotalCobradoObraSocial = lector.GetDecimal(lector.GetOrdinal("TotalCobradoObraSocial"));
+                            dto.TotalCobradoPaciente = lector.GetDecimal(lector.GetOrdinal("TotalCobradoPaciente"));
                         }
                     }
 
@@ -588,18 +637,50 @@ namespace SGTO.Datos.Repositorios
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
                     string query = @"
-                        SELECT 
+                       SELECT 
                             C.IdCobertura,
                             C.Nombre AS Cobertura,
                             C.Estado,
                             (SELECT COUNT(*) FROM [Plan] P WHERE P.IdCobertura = C.IdCobertura AND P.Estado = 'A') AS CantidadPlanes,
-                            COUNT(T.IdTurno) AS TotalTurnos,
-                            COUNT(DISTINCT T.IdPaciente) AS PacientesAtendidos
-                        FROM Cobertura C
-                        LEFT JOIN Turno T ON C.IdCobertura = T.IdCobertura
-                        WHERE (@Estado IS NULL OR C.Estado = @Estado)
-                        GROUP BY C.IdCobertura, C.Nombre, C.Estado
-                        ORDER BY C.Nombre ASC";
+                            COUNT(DISTINCT Tu.IdTurno) AS TurnosAgendados,
+                            SUM(CASE WHEN Tu.Estado = 'Z' THEN 1 ELSE 0 END) AS TurnosRealizados,
+                            ISNULL(SUM(
+                                CASE WHEN Tu.Estado = 'Z' AND HCR.IdHistoriaClinicaRegistro IS NOT NULL 
+                                        THEN T.CostoBase ELSE 0 END
+                            ), 0) AS TotalFacturado,
+                            ISNULL(SUM(
+                                CASE 
+                                    WHEN Tu.Estado <> 'Z' OR HCR.IdHistoriaClinicaRegistro IS NULL THEN 0
+                                    WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                    WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                    ELSE 0
+                                END
+                            ), 0) AS A_Cargo_OS,
+                            ISNULL(SUM(
+                                CASE 
+                                    WHEN Tu.Estado <> 'Z' OR HCR.IdHistoriaClinicaRegistro IS NULL THEN 0
+                                    ELSE T.CostoBase - (
+                                        CASE 
+                                            WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                            WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                            ELSE 0
+                                        END
+                                    )
+                                END
+                            ), 0) AS A_Cargo_Paciente
+                            FROM Cobertura C
+                            LEFT JOIN Turno Tu ON C.IdCobertura = Tu.IdCobertura
+                            LEFT JOIN HistoriaClinicaRegistro HCR ON Tu.IdTurno = HCR.IdTurno
+                            LEFT JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
+                            LEFT JOIN [Plan] P ON Tu.IdPlan = P.IdPlan
+                            LEFT JOIN CoberturaPorcentajeHistorial CPH ON 
+                            Tu.IdCobertura = CPH.IdCobertura 
+                            AND Tu.IdPlan IS NULL 
+                            AND HCR.FechaAtencion >= CPH.FechaInicio 
+                            AND (CPH.FechaFin IS NULL OR HCR.FechaAtencion <= CPH.FechaFin)
+                            WHERE (@Estado IS NULL OR C.Estado = @Estado)
+                            GROUP BY C.IdCobertura, C.Nombre, C.Estado
+                            ORDER BY TotalFacturado DESC, C.Nombre ASC";
 
                     datos.DefinirConsulta(query);
 
@@ -612,14 +693,17 @@ namespace SGTO.Datos.Repositorios
                     {
                         while (lector.Read())
                         {
-                            ReporteCoberturasDto dto = new ReporteCoberturasDto();
-                            dto.Cobertura = lector.GetString(lector.GetOrdinal("Cobertura"));
-                            dto.Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activa" : "Inactiva";
-                            dto.CantidadPlanes = lector.GetInt32(lector.GetOrdinal("CantidadPlanes"));
-                            dto.TotalTurnos = lector.GetInt32(lector.GetOrdinal("TotalTurnos"));
-                            dto.PacientesAtendidos = lector.GetInt32(lector.GetOrdinal("PacientesAtendidos"));
-
-                            lista.Add(dto);
+                            lista.Add(new ReporteCoberturasDto
+                            {
+                                Cobertura = lector.GetString(lector.GetOrdinal("Cobertura")),
+                                Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activa" : "Inactiva",
+                                CantidadPlanes = lector.GetInt32(lector.GetOrdinal("CantidadPlanes")),
+                                TurnosAgendados = lector.GetInt32(lector.GetOrdinal("TurnosAgendados")),
+                                TurnosRealizados = lector.GetInt32(lector.GetOrdinal("TurnosRealizados")),
+                                TotalFacturado = lector.GetDecimal(lector.GetOrdinal("TotalFacturado")),
+                                A_Cargo_OS = lector.GetDecimal(lector.GetOrdinal("A_Cargo_OS")),
+                                A_Cargo_Paciente = lector.GetDecimal(lector.GetOrdinal("A_Cargo_Paciente"))
+                            });
                         }
                     }
                 }
@@ -635,28 +719,47 @@ namespace SGTO.Datos.Repositorios
             {
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
-                    string clausulaOrden = "C.Nombre ASC, P.Nombre ASC"; 
+                    string clausulaOrden = "TotalFacturado DESC";
 
-                    if (orden == "mayor")
-                        clausulaOrden = "P.PorcentajeCobertura DESC";
-                    else if (orden == "menor")
-                        clausulaOrden = "P.PorcentajeCobertura ASC";
+                    if (orden == "mayor") clausulaOrden = "P.PorcentajeCobertura DESC";
+                    else if (orden == "menor") clausulaOrden = "P.PorcentajeCobertura ASC";
+                    else if (orden == "nombre") clausulaOrden = "C.Nombre ASC, P.Nombre ASC";
 
                     string query = $@"
-                        SELECT 
-                            C.Nombre AS Cobertura,
-                            P.Nombre AS [Plan],
-                            P.PorcentajeCobertura,
-                            P.Estado,
-                            COUNT(T.IdTurno) AS TotalTurnos
-                        FROM [Plan] P
-                        INNER JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
-                        LEFT JOIN Turno T ON P.IdPlan = T.IdPlan 
-                        WHERE 
-                            (@IdCob IS NULL OR C.IdCobertura = @IdCob)
-                            AND (@Estado IS NULL OR P.Estado = @Estado)
-                        GROUP BY C.Nombre, P.Nombre, P.PorcentajeCobertura, P.Estado
-                        ORDER BY {clausulaOrden}";
+                                SELECT 
+                                    C.Nombre AS Cobertura,
+                                    P.Nombre AS [Plan],
+                                    P.Estado,
+                                    P.PorcentajeCobertura,
+                                    SUM(CASE WHEN Tu.Estado = 'Z' THEN 1 ELSE 0 END) AS TurnosRealizados,
+                                    ISNULL(SUM(
+                                        CASE WHEN Tu.Estado = 'Z' AND HCR.IdHistoriaClinicaRegistro IS NOT NULL 
+                                             THEN T.CostoBase ELSE 0 END
+                                    ), 0) AS TotalFacturado,
+                                    ISNULL(SUM(
+                                        CASE 
+                                            WHEN Tu.Estado = 'Z' AND HCR.IdHistoriaClinicaRegistro IS NOT NULL 
+                                            THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                            ELSE 0 
+                                        END
+                                    ), 0) AS A_Cargo_OS,
+                                    ISNULL(SUM(
+                                        CASE 
+                                            WHEN Tu.Estado = 'Z' AND HCR.IdHistoriaClinicaRegistro IS NOT NULL 
+                                            THEN T.CostoBase - (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                            ELSE 0 
+                                        END
+                                    ), 0) AS A_Cargo_Paciente
+                                FROM [Plan] P
+                                INNER JOIN Cobertura C ON P.IdCobertura = C.IdCobertura
+                                LEFT JOIN Turno Tu ON P.IdPlan = Tu.IdPlan
+                                LEFT JOIN HistoriaClinicaRegistro HCR ON Tu.IdTurno = HCR.IdTurno
+                                LEFT JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
+                                WHERE 
+                                    (@IdCob IS NULL OR C.IdCobertura = @IdCob)
+                                    AND (@Estado IS NULL OR P.Estado = @Estado)
+                                GROUP BY C.Nombre, P.Nombre, P.PorcentajeCobertura, P.Estado
+                                ORDER BY {clausulaOrden}";
 
                     datos.DefinirConsulta(query);
                     datos.EstablecerParametros("@IdCob", idCobertura ?? (object)DBNull.Value);
@@ -670,14 +773,17 @@ namespace SGTO.Datos.Repositorios
                     {
                         while (lector.Read())
                         {
-                            ReportePlanesDto dto = new ReportePlanesDto();
-                            dto.Cobertura = lector.GetString(lector.GetOrdinal("Cobertura"));
-                            dto.Plan = lector.GetString(lector.GetOrdinal("Plan"));
-                            dto.PorcentajeCubierto = lector.GetDecimal(lector.GetOrdinal("PorcentajeCobertura"));
-                            dto.Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activo" : "Inactivo";
-                            dto.TotalTurnos = lector.GetInt32(lector.GetOrdinal("TotalTurnos"));
-
-                            lista.Add(dto);
+                            lista.Add(new ReportePlanesDto
+                            {
+                                Cobertura = lector.GetString(lector.GetOrdinal("Cobertura")),
+                                Plan = lector.GetString(lector.GetOrdinal("Plan")),
+                                Estado = lector.GetString(lector.GetOrdinal("Estado")) == "A" ? "Activo" : "Inactivo",
+                                PorcentajeCubierto = lector.GetDecimal(lector.GetOrdinal("PorcentajeCobertura")),
+                                TurnosRealizados = lector.GetInt32(lector.GetOrdinal("TurnosRealizados")),
+                                TotalFacturado = lector.GetDecimal(lector.GetOrdinal("TotalFacturado")),
+                                A_Cargo_OS = lector.GetDecimal(lector.GetOrdinal("A_Cargo_OS")),
+                                A_Cargo_Paciente = lector.GetDecimal(lector.GetOrdinal("A_Cargo_Paciente"))
+                            });
                         }
                     }
                 }
@@ -685,27 +791,59 @@ namespace SGTO.Datos.Repositorios
             }
             catch (Exception) { throw; }
         }
-        public ReporteCoberturasKpiDto ConsultarKpisCoberturas()
+        public ReporteCoberturasKpiDto ConsultarKpisCoberturas(DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
             try
             {
                 using (ConexionDBFactory datos = new ConexionDBFactory())
                 {
                     string query = @"
-                SELECT
-                    (SELECT COUNT(*) FROM Cobertura WHERE Estado = 'A') AS TotalCoberturas,
-                    (SELECT COUNT(*) FROM [Plan] WHERE Estado = 'A') AS TotalPlanes,
-                    (SELECT COUNT(*) FROM Turno T INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura WHERE C.Nombre <> 'Particular') AS TurnosOS,
-
-                    (SELECT TOP 1 C.Nombre 
-                     FROM Turno T 
-                     INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
-                     WHERE C.Nombre <> 'Particular'
-                     GROUP BY C.Nombre 
-                     ORDER BY COUNT(*) DESC, C.Nombre ASC 
-                    ) AS MasUsada";
+                        SELECT
+                            (SELECT COUNT(*) FROM Cobertura WHERE Estado = 'A') AS TotalCoberturas,
+                            (SELECT COUNT(*) FROM [Plan] WHERE Estado = 'A') AS TotalPlanes,
+                            (SELECT TOP 1 C.Nombre 
+                                FROM Turno T 
+                                INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                                WHERE C.Nombre <> 'Particular' 
+                                AND (@Desde IS NULL OR T.FechaInicio >= @Desde)
+                                AND (@Hasta IS NULL OR T.FechaInicio <= @Hasta)
+                                GROUP BY C.Nombre 
+                                ORDER BY COUNT(*) DESC, C.Nombre ASC
+                            ) AS MasUsada,
+                            ISNULL(SUM(T.CostoBase), 0) AS TotalFacturado,
+                            ISNULL(SUM(
+                                CASE 
+                                    WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                    WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                    ELSE 0
+                                END
+                            ), 0) AS TotalACobrarOS,
+                            ISNULL(SUM(
+                                T.CostoBase - (
+                                    CASE 
+                                        WHEN Tu.IdPlan IS NOT NULL THEN (T.CostoBase * P.PorcentajeCobertura / 100.0)
+                                        WHEN Tu.IdPlan IS NULL THEN (T.CostoBase * ISNULL(CPH.PorcentajeCobertura, 0) / 100.0)
+                                        ELSE 0
+                                    END
+                                )
+                            ), 0) AS TotalCopagos
+                            FROM HistoriaClinicaRegistro HCR
+                            INNER JOIN Turno Tu ON HCR.IdTurno = Tu.IdTurno
+                            INNER JOIN Tratamiento T ON HCR.IdTratamiento = T.IdTratamiento
+                            LEFT JOIN [Plan] P ON Tu.IdPlan = P.IdPlan
+                            LEFT JOIN CoberturaPorcentajeHistorial CPH ON 
+                            Tu.IdCobertura = CPH.IdCobertura 
+                            AND Tu.IdPlan IS NULL 
+                            AND HCR.FechaAtencion >= CPH.FechaInicio 
+                            AND (CPH.FechaFin IS NULL OR HCR.FechaAtencion <= CPH.FechaFin)
+                            WHERE 
+                            Tu.Estado = 'Z'
+                            AND (@Desde IS NULL OR HCR.FechaAtencion >= @Desde)
+                            AND (@Hasta IS NULL OR HCR.FechaAtencion <= @Hasta)";
 
                     datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@Desde", fechaDesde ?? (object)DBNull.Value);
+                    datos.EstablecerParametros("@Hasta", fechaHasta ?? (object)DBNull.Value);
 
                     using (var lector = datos.EjecutarConsulta())
                     {
@@ -715,8 +853,10 @@ namespace SGTO.Datos.Repositorios
                             {
                                 TotalCoberturas = lector.GetInt32(lector.GetOrdinal("TotalCoberturas")),
                                 TotalPlanes = lector.GetInt32(lector.GetOrdinal("TotalPlanes")),
-                                TurnosPorObraSocial = lector.GetInt32(lector.GetOrdinal("TurnosOS")),
-                                CoberturaMasUsada = lector.IsDBNull(lector.GetOrdinal("MasUsada")) ? "-" : lector.GetString(lector.GetOrdinal("MasUsada"))
+                                CoberturaMasUsada = lector.IsDBNull(lector.GetOrdinal("MasUsada")) ? "-" : lector.GetString(lector.GetOrdinal("MasUsada")),
+                                TotalFacturado = lector.GetDecimal(lector.GetOrdinal("TotalFacturado")),
+                                TotalACobrarOS = lector.GetDecimal(lector.GetOrdinal("TotalACobrarOS")),
+                                TotalCopagos = lector.GetDecimal(lector.GetOrdinal("TotalCopagos"))
                             };
                         }
                     }

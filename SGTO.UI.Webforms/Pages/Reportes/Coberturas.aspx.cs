@@ -40,9 +40,10 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
             if (Master is SiteMaster master)
             {
+                master.ConfigurarBotonVolver(true, "~/Pages/Reportes/Index.aspx");
                 master.EstablecerOpcionMenuActiva("Reportes");
-                master.EstablecerTituloSeccion("Reporte de Coberturas");
-                master.EstablecerSubtituloSeccion("Catálogo y detalle de planes.");
+                master.EstablecerTituloSeccion("Reporte de Coberturas y planes");
+                master.EstablecerSubtituloSeccion("Catálogo y detalle de coberturas y planes.");
             }
 
             if (!IsPostBack)
@@ -58,12 +59,16 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         {
             try
             {
-                var kpis = _servicioReportes.ObtenerKpisCoberturas();
+                var kpis = _servicioReportes.ObtenerKpisCoberturas(null, null);
 
                 lblTotalCoberturas.Text = kpis.TotalCoberturas.ToString();
                 lblTotalPlanes.Text = kpis.TotalPlanes.ToString();
-                lblTurnosOS.Text = kpis.TurnosPorObraSocial.ToString();
                 lblMasUsada.Text = kpis.CoberturaMasUsada;
+
+                lblTotalFacturado.Text = kpis.TotalFacturado.ToString("C0");
+                lblTurnosOS.Text = kpis.TotalACobrarOS.ToString("C0");
+                lblTotalCopagos.Text = kpis.TotalCopagos.ToString("C0");
+                lblTurnosOS.ToolTip = "Monto total a reclamar a Obras Sociales";
             }
             catch { }
         }

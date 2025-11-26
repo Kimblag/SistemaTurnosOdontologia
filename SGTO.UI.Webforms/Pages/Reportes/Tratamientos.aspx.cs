@@ -110,9 +110,12 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             try
             {
                 var kpis = _servicioReportes.ObtenerKpisTratamientos(fDesde, fHasta);
+
                 lblTotalCatalogo.Text = kpis.TotalEnCatalogo.ToString();
                 lblTotalRealizados.Text = kpis.TotalRealizados.ToString();
-                lblIngresosEstimados.Text = kpis.IngresoTotalEstimado.ToString("C");
+                lblIngresosBrutos.Text = kpis.TotalFacturado.ToString("C0");
+                lblIngresosOS.Text = kpis.TotalCobradoObraSocial.ToString("C0");
+                lblIngresosPac.Text = kpis.TotalCobradoPaciente.ToString("C0");
             }
             catch { }
         }

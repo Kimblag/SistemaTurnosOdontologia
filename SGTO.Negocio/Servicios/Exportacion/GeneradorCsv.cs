@@ -116,7 +116,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
 
             StringBuilder sb = new StringBuilder();
 
-            sb.AppendLine("Tratamiento;Especialidad;Estado;Costo Base;Cantidad Realizados;Ingresos Estimados");
+            sb.AppendLine("Tratamiento;Especialidad;Estado;Costo Base;Cantidad Realizados;Total Bruto;Cobertura (O.S.);Pago Paciente");
 
             foreach (var t in lista)
             {
@@ -126,7 +126,9 @@ namespace SGTO.Negocio.Servicios.Exportacion
                     LimpiarCsv(t.Estado),
                     t.CostoBase.ToString("F2"),
                     t.CantidadRealizados.ToString(),
-                    t.IngresosEstimados.ToString("F2")
+                    t.TotalFacturado.ToString("F2"),
+                    t.TotalCobradoObraSocial.ToString("F2"),
+                    t.TotalCobradoPaciente.ToString("F2")
                 );
 
                 sb.AppendLine(linea);
@@ -136,13 +138,15 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 .Concat(Encoding.UTF8.GetBytes(sb.ToString()))
                 .ToArray();
         }
+
+
         public static byte[] GenerarReporteCoberturasCsv(List<ReporteCoberturasDto> lista)
         {
             if (lista == null || lista.Count == 0)
                 throw new ArgumentException("No hay datos de coberturas para exportar.");
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Obra Social;Estado;Cantidad Planes;Total Turnos;Pacientes Atendidos");
+            sb.AppendLine("Obra Social;Estado;Planes;Turnos Agendados;Turnos Realizados;Total Facturado;A Cargo O.S.;Copagos Paciente");
 
             foreach (var item in lista)
             {
@@ -150,8 +154,11 @@ namespace SGTO.Negocio.Servicios.Exportacion
                     LimpiarCsv(item.Cobertura),
                     LimpiarCsv(item.Estado),
                     item.CantidadPlanes.ToString(),
-                    item.TotalTurnos.ToString(),
-                    item.PacientesAtendidos.ToString()
+                    item.TurnosAgendados.ToString(),
+                    item.TurnosRealizados.ToString(),
+                    item.TotalFacturado.ToString("F2"),
+                    item.A_Cargo_OS.ToString("F2"),
+                    item.A_Cargo_Paciente.ToString("F2")
                 );
                 sb.AppendLine(linea);
             }
@@ -164,7 +171,7 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 throw new ArgumentException("No hay datos de planes para exportar.");
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Obra Social;Plan;Estado;Porcentaje Cobertura;Total Turnos");
+            sb.AppendLine("Obra Social;Plan;Estado;% Cobertura Actual;Turnos Realizados;Total Facturado;A Cargo O.S.;Copagos Paciente");
 
             foreach (var item in lista)
             {
@@ -172,8 +179,11 @@ namespace SGTO.Negocio.Servicios.Exportacion
                     LimpiarCsv(item.Cobertura),
                     LimpiarCsv(item.Plan),
                     LimpiarCsv(item.Estado),
-                    item.PorcentajeCubierto.ToString("N0") + "%",
-                    item.TotalTurnos.ToString()
+                    item.PorcentajeCubierto.ToString("F2") + "%",
+                    item.TurnosRealizados.ToString(),
+                    item.TotalFacturado.ToString("F2"),
+                    item.A_Cargo_OS.ToString("F2"),
+                    item.A_Cargo_Paciente.ToString("F2")
                 );
                 sb.AppendLine(linea);
             }
