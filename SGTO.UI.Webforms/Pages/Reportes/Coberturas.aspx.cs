@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+
 namespace SGTO.UI.Webforms.Pages.Reportes
 {
     public partial class Coberturas : System.Web.UI.Page
@@ -49,7 +50,22 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 CargarFiltrosCobertura();
                 RestaurarSesion();
                 CargarDatos();
+                ActualizarKpis(); 
             }
+        }
+
+        private void ActualizarKpis()
+        {
+            try
+            {
+                var kpis = _servicioReportes.ObtenerKpisCoberturas();
+
+                lblTotalCoberturas.Text = kpis.TotalCoberturas.ToString();
+                lblTotalPlanes.Text = kpis.TotalPlanes.ToString();
+                lblTurnosOS.Text = kpis.TurnosPorObraSocial.ToString();
+                lblMasUsada.Text = kpis.CoberturaMasUsada;
+            }
+            catch { }
         }
 
         private void CargarFiltrosCobertura()
@@ -63,15 +79,12 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
                 foreach (var item in lista)
                 {
-                    ddlCoberturaFiltro.Items.Add(
-                        new ListItem(item.Nombre, item.IdCobertura.ToString()));
+                    ddlCoberturaFiltro.Items.Add(new ListItem(item.Nombre, item.IdCobertura.ToString()));
                 }
             }
             catch (Exception ex)
             {
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page, "Error",
-                    "Error cargando coberturas: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "Error cargando coberturas: " + ex.Message);
             }
         }
 
@@ -86,24 +99,23 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
                 string estado = ddlEstado.SelectedValue;
                 string orden = ddlOrden.SelectedValue;
-                int? idCob = string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue)
-                    ? (int?)null
-                    : Convert.ToInt32(ddlCoberturaFiltro.SelectedValue);
+                int? idCob = string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue) ? null : (int?)Convert.ToInt32(ddlCoberturaFiltro.SelectedValue);
 
                 if (mvReportes.ActiveViewIndex == 0)
                 {
-                    // TAB 1: COBERTURAS
                     var datos = _servicioReportes.ObtenerReporteCoberturas(estado);
 
                     if (idCob.HasValue)
                     {
                         string nombre = ddlCoberturaFiltro.SelectedItem.Text;
 
-                        var filtrados = new List<ReporteCoberturasDto>();
+                        List<ReporteCoberturasDto> filtrados = new List<ReporteCoberturasDto>();
                         foreach (var item in datos)
                         {
                             if (item.Cobertura == nombre)
+                            {
                                 filtrados.Add(item);
+                            }
                         }
 
                         gvCoberturas.DataSource = filtrados;
@@ -117,7 +129,6 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 }
                 else
                 {
-                    // TAB 2: PLANES
                     var datos = _servicioReportes.ObtenerReportePlanes(idCob, estado, orden);
                     gvPlanes.DataSource = datos;
                     gvPlanes.DataBind();
@@ -125,9 +136,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             }
             catch (Exception ex)
             {
-                MensajeUiHelper.SetearYMostrar(
-                    this.Page, "Error",
-                    "Error al generar reporte: " + ex.Message);
+                MensajeUiHelper.SetearYMostrar(this.Page, "Error", "Error al generar reporte: " + ex.Message);
             }
         }
 
@@ -143,8 +152,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
             if (Session[KEY_COB_ID] != null)
             {
-                var valor = Session[KEY_COB_ID].ToString();
-                var item = ddlCoberturaFiltro.Items.FindByValue(valor);
+                var item = ddlCoberturaFiltro.Items.FindByValue(Session[KEY_COB_ID].ToString());
                 if (item != null)
                     ddlCoberturaFiltro.SelectedValue = item.Value;
             }
@@ -160,6 +168,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         protected void btnEjecutar_Click(object sender, EventArgs e)
         {
             CargarDatos();
+            ActualizarKpis(); 
         }
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
@@ -173,6 +182,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
             Session.Remove(KEY_COB_ID);
 
             CargarDatos();
+            ActualizarKpis();
         }
 
         protected void tabCoberturas_Click(object sender, EventArgs e)
@@ -197,12 +207,113 @@ namespace SGTO.UI.Webforms.Pages.Reportes
 
         protected void btnExportarPdf_Click(object sender, EventArgs e)
         {
+            try
+            {
+                byte[] bytes = null;
+                string filename = "Reporte.pdf";
+                string estado = ddlEstado.SelectedValue;
 
+                if (mvReportes.ActiveViewIndex == 0)
+                {
+                    // Exportar Coberturas
+                    filename = "Reporte_Coberturas.pdf";
+                    var datos = _servicioReportes.ObtenerReporteCoberturas(estado);
+
+                    if (!string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue))
+                    {
+                        string nombreCob = ddlCoberturaFiltro.SelectedItem.Text;
+                        List<ReporteCoberturasDto> filtrados = new List<ReporteCoberturasDto>();
+                        foreach (var d in datos)
+                        {
+                            if (d.Cobertura == nombreCob) filtrados.Add(d);
+                        }
+                        bytes = GeneradorPdf.GenerarReporteCoberturasPdf(filtrados);
+                    }
+                    else
+                    {
+                        bytes = GeneradorPdf.GenerarReporteCoberturasPdf(datos);
+                    }
+                }
+                else
+                {
+                    filename = "Reporte_Planes.pdf";
+                    string orden = ddlOrden.SelectedValue;
+                    int? idCob = string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue) ? null : (int?)Convert.ToInt32(ddlCoberturaFiltro.SelectedValue);
+
+                    var datos = _servicioReportes.ObtenerReportePlanes(idCob, estado, orden);
+                    bytes = GeneradorPdf.GenerarReportePlanesPdf(datos);
+                }
+
+                if (bytes != null)
+                {
+                    Response.Clear();
+                    Response.ContentType = "application/pdf";
+                    Response.AddHeader("content-disposition", $"inline;filename={filename}");
+                    Response.OutputStream.Write(bytes, 0, bytes.Length);
+                    Response.Flush();
+                    Response.End();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException))
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error PDF", ex.Message);
+            }
         }
 
         protected void btnExportarExcel_Click(object sender, EventArgs e)
         {
-   
+            try
+            {
+                byte[] bytes = null;
+                string filename = "Reporte.csv";
+                string estado = ddlEstado.SelectedValue;
+
+                if (mvReportes.ActiveViewIndex == 0)
+                {
+                    filename = "Reporte_Coberturas.csv";
+                    var datos = _servicioReportes.ObtenerReporteCoberturas(estado);
+
+                    if (!string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue))
+                    {
+                        string nombreCob = ddlCoberturaFiltro.SelectedItem.Text;
+                        List<ReporteCoberturasDto> filtrados = new List<ReporteCoberturasDto>();
+                        foreach (var d in datos)
+                        {
+                            if (d.Cobertura == nombreCob) filtrados.Add(d);
+                        }
+                        bytes = GeneradorCsv.GenerarReporteCoberturasCsv(filtrados);
+                    }
+                    else
+                    {
+                        bytes = GeneradorCsv.GenerarReporteCoberturasCsv(datos);
+                    }
+                }
+                else
+                {
+                    filename = "Reporte_Planes.csv";
+                    string orden = ddlOrden.SelectedValue;
+                    int? idCob = string.IsNullOrEmpty(ddlCoberturaFiltro.SelectedValue) ? null : (int?)Convert.ToInt32(ddlCoberturaFiltro.SelectedValue);
+
+                    var datos = _servicioReportes.ObtenerReportePlanes(idCob, estado, orden);
+                    bytes = GeneradorCsv.GenerarReportePlanesCsv(datos);
+                }
+
+                if (bytes != null)
+                {
+                    Response.Clear();
+                    Response.ContentType = "text/csv";
+                    Response.AddHeader("content-disposition", $"attachment;filename={filename}");
+                    Response.BinaryWrite(bytes);
+                    Response.Flush();
+                    Response.End();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!(ex is System.Threading.ThreadAbortException))
+                    MensajeUiHelper.SetearYMostrar(this.Page, "Error CSV", ex.Message);
+            }
         }
     }
 }

@@ -199,6 +199,16 @@ namespace SGTO.Negocio.Servicios
             }
         }
 
-
+        public ReporteCoberturasKpiDto ObtenerKpisCoberturas()
+        {
+            try
+            {
+                return _repositorioReportes.ConsultarKpisCoberturas();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener KPIs de coberturas.", ex);
+            }
+        }
     }
 }

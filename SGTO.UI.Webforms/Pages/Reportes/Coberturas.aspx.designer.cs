@@ -60,6 +60,42 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
         /// <summary>
+        /// Control lblTotalCoberturas.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTotalCoberturas;
+
+        /// <summary>
+        /// Control lblTotalPlanes.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTotalPlanes;
+
+        /// <summary>
+        /// Control lblTurnosOS.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTurnosOS;
+
+        /// <summary>
+        /// Control lblMasUsada.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMasUsada;
+
+        /// <summary>
         /// Control tabCoberturas.
         /// </summary>
         /// <remarks>

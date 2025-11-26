@@ -45,6 +45,7 @@
     <Compile Include="DTOs\DashboardActividadSemanalDto.cs" />
     <Compile Include="DTOs\DashboardResumenDto.cs" />
     <Compile Include="DTOs\ReporteCoberturasDto.cs" />
+    <Compile Include="DTOs\ReporteCoberturasKpiDto.cs" />
     <Compile Include="DTOs\ReporteMedicoDto.cs" />
     <Compile Include="DTOs\ReporteMedicosKpiDto.cs" />
     <Compile Include="DTOs\ReportePacientesDto.cs" />

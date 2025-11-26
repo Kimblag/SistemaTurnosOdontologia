@@ -685,8 +685,46 @@ namespace SGTO.Datos.Repositorios
             }
             catch (Exception) { throw; }
         }
+        public ReporteCoberturasKpiDto ConsultarKpisCoberturas()
+        {
+            try
+            {
+                using (ConexionDBFactory datos = new ConexionDBFactory())
+                {
+                    string query = @"
+                SELECT
+                    (SELECT COUNT(*) FROM Cobertura WHERE Estado = 'A') AS TotalCoberturas,
+                    (SELECT COUNT(*) FROM [Plan] WHERE Estado = 'A') AS TotalPlanes,
+                    (SELECT COUNT(*) FROM Turno T INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura WHERE C.Nombre <> 'Particular') AS TurnosOS,
 
+                    (SELECT TOP 1 C.Nombre 
+                     FROM Turno T 
+                     INNER JOIN Cobertura C ON T.IdCobertura = C.IdCobertura
+                     WHERE C.Nombre <> 'Particular'
+                     GROUP BY C.Nombre 
+                     ORDER BY COUNT(*) DESC, C.Nombre ASC 
+                    ) AS MasUsada";
 
+                    datos.DefinirConsulta(query);
+
+                    using (var lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            return new ReporteCoberturasKpiDto
+                            {
+                                TotalCoberturas = lector.GetInt32(lector.GetOrdinal("TotalCoberturas")),
+                                TotalPlanes = lector.GetInt32(lector.GetOrdinal("TotalPlanes")),
+                                TurnosPorObraSocial = lector.GetInt32(lector.GetOrdinal("TurnosOS")),
+                                CoberturaMasUsada = lector.IsDBNull(lector.GetOrdinal("MasUsada")) ? "-" : lector.GetString(lector.GetOrdinal("MasUsada"))
+                            };
+                        }
+                    }
+                    return new ReporteCoberturasKpiDto();
+                }
+            }
+            catch (Exception) { throw; }
+        }
 
     }
 }

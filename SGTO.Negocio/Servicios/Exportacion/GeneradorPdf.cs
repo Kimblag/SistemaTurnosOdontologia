@@ -416,6 +416,127 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 return ms.ToArray();
             }
         }
+        public static byte[] GenerarReporteCoberturasPdf(List<ReporteCoberturasDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de coberturas para exportar.");
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+
+                var titulo = new Paragraph("Reporte de Obras Sociales", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                {
+                    Alignment = Element.ALIGN_CENTER
+                };
+                doc.Add(titulo);
+                doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
+                doc.Add(new Paragraph(" "));
+
+                PdfPTable table = new PdfPTable(5);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 4, 2, 2, 2, 2 });
+
+                string[] headers = { "Obra Social", "Estado", "Planes", "Turnos", "Pacientes" };
+                foreach (string h in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    {
+                        BackgroundColor = new BaseColor(240, 240, 240),
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        Padding = 5
+                    };
+                    table.AddCell(cell);
+                }
+
+                foreach (var item in lista)
+                {
+                    table.AddCell(new Phrase(item.Cobertura ?? "-", FuenteTexto));
+
+                    PdfPCell cellEstado = new PdfPCell(new Phrase(item.Estado, FuenteSmall));
+                    cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellEstado);
+
+                    PdfPCell cellPlanes = new PdfPCell(new Phrase(item.CantidadPlanes.ToString(), FuenteTexto));
+                    cellPlanes.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellPlanes);
+
+                    PdfPCell cellTurnos = new PdfPCell(new Phrase(item.TotalTurnos.ToString(), FuenteTexto));
+                    cellTurnos.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellTurnos);
+
+                    PdfPCell cellPacientes = new PdfPCell(new Phrase(item.PacientesAtendidos.ToString(), FuenteTexto));
+                    cellPacientes.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellPacientes);
+                }
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
+
+        public static byte[] GenerarReportePlanesPdf(List<ReportePlanesDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de planes para exportar.");
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Document doc = new Document(PageSize.A4, 40, 40, 40, 40);
+                PdfWriter.GetInstance(doc, ms);
+                doc.Open();
+
+                var titulo = new Paragraph("Reporte de Planes", new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD))
+                {
+                    Alignment = Element.ALIGN_CENTER
+                };
+                doc.Add(titulo);
+                doc.Add(new Paragraph($"Generado el {DateTime.Now:dd/MM/yyyy HH:mm}", new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC)));
+                doc.Add(new Paragraph(" "));
+
+                // Tabla 5 columnas
+                PdfPTable table = new PdfPTable(5);
+                table.WidthPercentage = 100;
+                table.SetWidths(new float[] { 3, 3, 2, 2, 2 });
+
+                string[] headers = { "Obra Social", "Plan", "Estado", "% Cobertura", "Turnos" };
+                foreach (string h in headers)
+                {
+                    PdfPCell cell = new PdfPCell(new Phrase(h, new Font(Font.FontFamily.HELVETICA, 9, Font.BOLD)))
+                    {
+                        BackgroundColor = new BaseColor(240, 240, 240),
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        Padding = 5
+                    };
+                    table.AddCell(cell);
+                }
+
+                foreach (var item in lista)
+                {
+                    table.AddCell(new Phrase(item.Cobertura ?? "-", FuenteTexto));
+                    table.AddCell(new Phrase(item.Plan ?? "-", FuenteTexto));
+
+                    PdfPCell cellEstado = new PdfPCell(new Phrase(item.Estado, FuenteSmall));
+                    cellEstado.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellEstado);
+
+                    PdfPCell cellPorc = new PdfPCell(new Phrase(item.PorcentajeCubierto.ToString("N0") + "%", FuenteTexto));
+                    cellPorc.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    table.AddCell(cellPorc);
+
+                    PdfPCell cellTurnos = new PdfPCell(new Phrase(item.TotalTurnos.ToString(), FuenteTexto));
+                    cellTurnos.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(cellTurnos);
+                }
+
+                doc.Add(table);
+                doc.Close();
+                return ms.ToArray();
+            }
+        }
 
     }
 }

@@ -136,5 +136,48 @@ namespace SGTO.Negocio.Servicios.Exportacion
                 .Concat(Encoding.UTF8.GetBytes(sb.ToString()))
                 .ToArray();
         }
+        public static byte[] GenerarReporteCoberturasCsv(List<ReporteCoberturasDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de coberturas para exportar.");
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Obra Social;Estado;Cantidad Planes;Total Turnos;Pacientes Atendidos");
+
+            foreach (var item in lista)
+            {
+                string linea = string.Join(";",
+                    LimpiarCsv(item.Cobertura),
+                    LimpiarCsv(item.Estado),
+                    item.CantidadPlanes.ToString(),
+                    item.TotalTurnos.ToString(),
+                    item.PacientesAtendidos.ToString()
+                );
+                sb.AppendLine(linea);
+            }
+            return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+        }
+
+        public static byte[] GenerarReportePlanesCsv(List<ReportePlanesDto> lista)
+        {
+            if (lista == null || lista.Count == 0)
+                throw new ArgumentException("No hay datos de planes para exportar.");
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Obra Social;Plan;Estado;Porcentaje Cobertura;Total Turnos");
+
+            foreach (var item in lista)
+            {
+                string linea = string.Join(";",
+                    LimpiarCsv(item.Cobertura),
+                    LimpiarCsv(item.Plan),
+                    LimpiarCsv(item.Estado),
+                    item.PorcentajeCubierto.ToString("N0") + "%",
+                    item.TotalTurnos.ToString()
+                );
+                sb.AppendLine(linea);
+            }
+            return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
+        }
     }
 }
