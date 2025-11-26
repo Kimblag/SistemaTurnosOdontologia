@@ -75,12 +75,12 @@ El sistema se organiza en 4 capas principales con una estricta separación de re
 
 ## Configuración de la Base De Datos
 El sistema requiere la creación de la base de datos `SistemaOdontologico` y la carga de datos iniciales.
-    1. **Ejecución del DDL**: Ejecutar el script de Definición de Estructura de Datos (DDL) que se encuentra en el archivo `Docs/Scripts/SQL Server/01_Script_DDL_SistemaOdontologico.sql`. Esto creará la base de datos, las tablas y las restricciones.
-    2. **Carga de Datos Iniciales**: Ejecutar el script de Datos de Prueba (DML) que se encuentra en el archivo `Docs/Scripts/SQL Server/02_Script_DML_Datos_Prueba_SistemaOdontologico.sql`. Esto insertará:
-        * Coberturas, Roles y permisos iniciales.
-        * Datos de configuración del sistema (`ParametroSistema`), incluyendo el nombre de la clínica y la configuración inicial SMTP.
-        * Usuarios, Médicos, Especialidades, Tratamientos y Paciente de prueba.
-        * Horarios semanales y Turnos de ejemplo.
+1. **Ejecución del DDL**: Ejecutar el script de Definición de Estructura de Datos (DDL) que se encuentra en el archivo `Docs/Scripts/SQL Server/01_Script_DDL_SistemaOdontologico.sql`. Esto creará la base de datos, las tablas y las restricciones.
+2. **Carga de Datos Iniciales**: Ejecutar el script de Datos de Prueba (DML) que se encuentra en el archivo `Docs/Scripts/SQL Server/02_Script_DML_Datos_Prueba_SistemaOdontologico.sql`. Esto insertará:
+  * Coberturas, Roles y permisos iniciales.
+  * Datos de configuración del sistema (`ParametroSistema`), incluyendo el nombre de la clínica y la configuración inicial SMTP.
+  * Usuarios, Médicos, Especialidades, Tratamientos y Paciente de prueba.
+  * Horarios semanales y Turnos de ejemplo.
 
 ## Ejecución del Proyecto
     1. Verificar que la base de datos esté correctamente creada y configurada con los datos de prueba.
