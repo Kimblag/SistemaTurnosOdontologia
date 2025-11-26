@@ -11,22 +11,23 @@ namespace SGTO.Datos.Repositorios
         public DashboardResumenDto ObtenerResumenDiario(int? idMedico)
         {
             string query = @"
-                SELECT 
-                    (SELECT COUNT(*) FROM Turno 
-                     WHERE CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
-                     AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS TurnosDelDia,
+                SELECT  
+                (SELECT COUNT(*) FROM Turno 
+                    WHERE CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
+                    AND Estado NOT IN ('C', 'X') 
+                    AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS TurnosDelDia,
 
-                    (SELECT COUNT(*) FROM HistoriaClinicaRegistro 
-                     WHERE CONVERT(date, FechaAtencion) = CONVERT(date, GETDATE())
-                     AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS PacientesAtendidos,
+                (SELECT COUNT(*) FROM HistoriaClinicaRegistro 
+                    WHERE CONVERT(date, FechaAtencion) = CONVERT(date, GETDATE())
+                    AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS PacientesAtendidos,
 
-                    (SELECT COUNT(*) FROM Turno 
-                     WHERE Estado = 'R' AND CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
-                     AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS Reprogramados,
+                (SELECT COUNT(*) FROM Turno 
+                    WHERE Estado = 'R' AND CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
+                    AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS Reprogramados,
 
-                    (SELECT COUNT(*) FROM Turno 
-                     WHERE Estado = 'C' AND CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
-                     AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS Cancelados
+                (SELECT COUNT(*) FROM Turno 
+                    WHERE Estado = 'C' AND CONVERT(date, FechaInicio) = CONVERT(date, GETDATE())
+                    AND (@IdMedico IS NULL OR IdMedico = @IdMedico)) AS Cancelados
             ";
 
             DashboardResumenDto resumen = new DashboardResumenDto();
@@ -64,14 +65,17 @@ namespace SGTO.Datos.Repositorios
             string query = @"
                         DECLARE @Hoy DATE = CAST(GETDATE() AS DATE);
                         DECLARE @InicioSemana DATE = DATEADD(week, DATEDIFF(week, 0, DATEADD(day, -1, @Hoy)), 0);
+        
                         IF (@Hoy = DATEADD(day, 6, @InicioSemana))
-                        BEGIN
                             SET @InicioSemana = DATEADD(day, 7, @InicioSemana);
-                        END
+
                         SELECT 
                             d.DiaNombre,
                             d.FechaDia,
-                            ISNULL(COUNT(t.IdTurno), 0) AS Cantidad
+                            SUM(CASE WHEN t.Estado = 'N' THEN 1 ELSE 0 END) as Nuevos,
+                            SUM(CASE WHEN t.Estado = 'R' THEN 1 ELSE 0 END) as Reprogramados,
+                            SUM(CASE WHEN t.Estado = 'Z' THEN 1 ELSE 0 END) as Cerrados,
+                            SUM(CASE WHEN t.Estado = 'C' THEN 1 ELSE 0 END) as Cancelados
                         FROM (
                             SELECT 1 AS Orden, @InicioSemana AS FechaDia, 'Lunes' AS DiaNombre
                             UNION ALL SELECT 2, DATEADD(day, 1, @InicioSemana), 'Martes'
@@ -83,7 +87,6 @@ namespace SGTO.Datos.Repositorios
                         ) AS d
                         LEFT JOIN Turno t ON 
                             CAST(t.FechaInicio AS DATE) = d.FechaDia
-                            AND t.Estado NOT IN ('C', 'X')
                             AND (@IdMedico IS NULL OR t.IdMedico = @IdMedico)
                         GROUP BY d.Orden, d.DiaNombre, d.FechaDia
                         ORDER BY d.Orden";
@@ -107,7 +110,10 @@ namespace SGTO.Datos.Repositorios
                             {
                                 Dia = lector.GetString(0),
                                 Fecha = lector.GetDateTime(1),
-                                Cantidad = lector.GetInt32(2)
+                                CantidadNuevos = lector.IsDBNull(2) ? 0 : lector.GetInt32(2),
+                                CantidadReprogramados = lector.IsDBNull(3) ? 0 : lector.GetInt32(3),
+                                CantidadCerrados = lector.IsDBNull(4) ? 0 : lector.GetInt32(4),
+                                CantidadCancelados = lector.IsDBNull(5) ? 0 : lector.GetInt32(5)
                             };
                             lista.Add(dto);
                         }

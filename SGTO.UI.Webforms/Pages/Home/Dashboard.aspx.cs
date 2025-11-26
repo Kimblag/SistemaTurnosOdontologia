@@ -24,7 +24,10 @@ namespace SGTO.UI.Webforms.Pages.Home
         protected int KpiReprogramados = 0;
         protected int KpiCancelados = 0;
         protected string CategoriasCsv = "";
-        protected string ValoresCsv = "";
+        protected string DataNuevos = "";
+        protected string DataReprogramados = "";
+        protected string DataCerrados = "";
+        protected string DataCancelados = "";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -64,26 +67,35 @@ namespace SGTO.UI.Webforms.Pages.Home
 
             List<DashboardActividadSemanalDto> actividad = _servicioDashboard.ObtenerActividadSemanal(usuarioActual);
 
-            var sbCategorias = new StringBuilder();
-            var sbValores = new StringBuilder();
+            var sbCat = new StringBuilder();
+            var sbNuevos = new StringBuilder();
+            var sbRepro = new StringBuilder();
+            var sbCerrados = new StringBuilder();
+            var sbCancel = new StringBuilder();
 
             for (int i = 0; i < actividad.Count; i++)
             {
                 if (i > 0)
                 {
-                    sbCategorias.Append(",");
-                    sbValores.Append(",");
+                    sbCat.Append(","); sbNuevos.Append(","); sbRepro.Append(",");
+                    sbCerrados.Append(","); sbCancel.Append(",");
                 }
 
                 string etiqueta = $"{actividad[i].Dia} {actividad[i].Fecha.ToString("dd/MM")}";
-                //  por ejemplo > Lunes, martes...
-                sbCategorias.Append("'").Append(etiqueta.Replace("'", "\\'")).Append("'");
-                sbValores.Append(actividad[i].Cantidad);
-            }
-            CategoriasCsv = sbCategorias.ToString();
-            ValoresCsv = sbValores.ToString();
-        }
+                sbCat.Append("'").Append(etiqueta).Append("'");
 
+                sbNuevos.Append(actividad[i].CantidadNuevos);
+                sbRepro.Append(actividad[i].CantidadReprogramados);
+                sbCerrados.Append(actividad[i].CantidadCerrados);
+                sbCancel.Append(actividad[i].CantidadCancelados);
+            }
+
+            CategoriasCsv = sbCat.ToString();
+            DataNuevos = sbNuevos.ToString();
+            DataReprogramados = sbRepro.ToString();
+            DataCerrados = sbCerrados.ToString();
+            DataCancelados = sbCancel.ToString();
+        }
 
     }
 }

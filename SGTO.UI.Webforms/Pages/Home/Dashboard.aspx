@@ -57,18 +57,39 @@
                 type: 'bar',
                 data: {
                     labels: [<%= CategoriasCsv %>],
-                    datasets: [{
-                        label: 'Turnos',
-                        data: [<%= ValoresCsv %>],
-                        backgroundColor: [
-                            '#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997'
-                        ]
-                    }]
+                    datasets: [
+                        {
+                            label: 'Nuevos',
+                            data: [<%= DataNuevos %>],
+                backgroundColor: '#0d6efd',
+            },
+            {
+                label: 'Reprogramados',
+                data: [<%= DataReprogramados %>],
+                backgroundColor: '#ffc107',
+            },
+            {
+                label: 'Atendidos/Cerrados',
+                data: [<%= DataCerrados %>],
+                backgroundColor: '#198754',
+            },
+            {
+                label: 'Cancelados',
+                data: [<%= DataCancelados %>],
+                            backgroundColor: '#dc3545',
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     scales: {
-                        y: { beginAtZero: true }
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true
+                        }
                     }
                 }
             });
