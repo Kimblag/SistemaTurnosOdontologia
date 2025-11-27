@@ -112,7 +112,10 @@ namespace SGTO.UI.Webforms.Pages.Turnos
                 }
 
                 bool esEditable = TurnoUiHelper.EsEditable(turno.Estado);
-                btnEditar.Visible = esEditable;
+
+                bool usuarioTienePermiso = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "TURNOS", "EDITAR");
+
+                btnEditar.Visible = esEditable && usuarioTienePermiso;
 
                 // guardar el id en view state por si el usuario hace clic en editar
                 ViewState["IdTurnoActual"] = idTurno;
