@@ -50,11 +50,11 @@ namespace SGTO.UI.Webforms.Pages.Especialidades
 
                 if (!puedeCrear)
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-6";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-12 col-xl-7";
                 }
                 else
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-5";
                 }
 
                 bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "ESPECIALIDADES", "EDITAR");

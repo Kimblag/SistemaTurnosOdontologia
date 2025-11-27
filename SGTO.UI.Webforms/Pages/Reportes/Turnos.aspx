@@ -51,57 +51,57 @@
             </div>
         </div>
 
-        <div class="row row-cols-2 row-cols-md-3 row-cols-xl-6 g-3 mb-4">
+        <div class="row g-3 mb-4">
 
-            <div class="col">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
-                    <h6 class="text-muted small mb-1">TOTAL</h6>
+                    <h6 class="text-muted small mb-1 text-uppercase">Total</h6>
                     <p class="text-dark fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTotal" runat="server" Text="0" />
                     </p>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="kpi-card text-center py-3 px-2 bg-success bg-opacity-10 border border-success rounded shadow-sm h-100">
-                    <h6 class="text-success small mb-1">ATENDIDOS</h6>
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-success rounded shadow-sm h-100">
+                    <h6 class="text-success small mb-1 text-uppercase">Atendidos</h6>
                     <p class="text-success fw-bold fs-4 mb-0">
                         <asp:Label ID="lblAtendidos" runat="server" Text="0" />
                     </p>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="kpi-card text-center py-3 px-2 bg-info bg-opacity-10 border border-info rounded shadow-sm h-100">
-                    <h6 class="text-info-emphasis small mb-1 text-truncate" title="REPROGRAMADOS">REPROGRAMADOS</h6>
-                    <p class="text-info-emphasis fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-warning rounded shadow-sm h-100">
+                    <h6 class="text-warning small mb-1 text-uppercase">Reprogramados</h6>
+                    <p class="text-warning fw-bold fs-4 mb-0">
                         <asp:Label ID="lblReprogramados" runat="server" Text="0" />
                     </p>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="kpi-card text-center py-3 px-2 bg-danger bg-opacity-10 border border-danger rounded shadow-sm h-100">
-                    <h6 class="text-danger small mb-1">CANCELADOS</h6>
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-danger rounded shadow-sm h-100">
+                    <h6 class="text-danger small mb-1 text-uppercase">Cancelados</h6>
                     <p class="text-danger fw-bold fs-4 mb-0">
                         <asp:Label ID="lblCancelados" runat="server" Text="0" />
                     </p>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="kpi-card text-center py-3 px-2 bg-warning bg-opacity-10 border border-warning rounded shadow-sm h-100">
-                    <h6 class="text-warning-emphasis small mb-1">AUSENTES</h6>
-                    <p class="text-warning-emphasis fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-secondary rounded shadow-sm h-100">
+                    <h6 class="text-secondary small mb-1 text-uppercase">Ausentes</h6>
+                    <p class="text-secondary fw-bold fs-4 mb-0">
                         <asp:Label ID="lblAusentes" runat="server" Text="0" />
                     </p>
                 </div>
             </div>
 
-            <div class="col">
-                <div class="kpi-card text-center py-3 px-2 bg-primary bg-opacity-10 border border-primary rounded shadow-sm h-100">
-                    <h6 class="text-primary-emphasis small mb-1">PENDIENTES</h6>
-                    <p class="text-primary-emphasis fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-primary rounded shadow-sm h-100">
+                    <h6 class="text-primary small mb-1 text-uppercase">Pendientes</h6>
+                    <p class="text-primary fw-bold fs-4 mb-0">
                         <asp:Label ID="lblPendientes" runat="server" Text="0" />
                     </p>
                 </div>

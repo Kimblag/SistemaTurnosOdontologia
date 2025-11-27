@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="filtro flex-grow-1">
-                        <label for="ddlCobertura"class="form-label small text-muted">Cobertura</label>
+                        <label for="ddlCobertura" class="form-label small text-muted">Cobertura</label>
                         <asp:DropDownList ID="ddlCobertura" runat="server" CssClass="form-select w-100"
                             AutoPostBack="true" OnSelectedIndexChanged="ddlCobertura_SelectedIndexChanged">
                         </asp:DropDownList>
@@ -52,46 +52,46 @@
         <%--KPIs--%>
         <div class="row g-3 mb-4">
 
-            <div class="col-6 col-md-4 col-lg">
-                <div class="kpi-card text-center py-3 px-2 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Total Pacientes</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
+                    <h6 class="text-muted small mb-1 text-uppercase">Total Pacientes</h6>
+                    <p class="text-dark fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTotalPacientes" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4 col-lg">
-                <div class="kpi-card text-center py-3 px-2 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Atendidos</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-success rounded shadow-sm h-100">
+                    <h6 class="text-success small mb-1 text-uppercase">Atendidos</h6>
+                    <p class="text-success fw-bold fs-4 mb-0">
                         <asp:Label ID="lblAtendidos" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4 col-lg">
-                <div class="kpi-card text-center py-3 px-2 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Nuevos en período</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-primary rounded shadow-sm h-100">
+                    <h6 class="text-primary small mb-1 text-uppercase">Nuevos (Período)</h6>
+                    <p class="text-primary fw-bold fs-4 mb-0">
                         <asp:Label ID="lblNuevos" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4 col-lg">
-                <div class="kpi-card text-center py-3 px-2 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Con Cobertura</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-info rounded shadow-sm h-100">
+                    <h6 class="text-info small mb-1 text-uppercase">Con Cobertura</h6>
+                    <p class="text-info fw-bold fs-4 mb-0">
                         <asp:Label ID="lblConCobertura" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4 col-lg">
-                <div class="kpi-card text-center py-3 px-2 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Particulares</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0">
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-warning rounded shadow-sm h-100">
+                    <h6 class="text-warning small mb-1 text-uppercase">Particulares</h6>
+                    <p class="text-warning fw-bold fs-4 mb-0">
                         <asp:Label ID="lblParticulares" runat="server" Text="-" />
                     </p>
                 </div>
@@ -143,7 +143,7 @@
 
     </div>
     <%-- modal resultado --%>
-       <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

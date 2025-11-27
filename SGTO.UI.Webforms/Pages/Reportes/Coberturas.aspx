@@ -43,8 +43,8 @@
         <!-- KPIs -->
         <div class="row g-3 mb-3">
             <div class="col-12 col-md-4">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1">Catálogo</h6>
+                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100">
+                    <h6 class="text-muted mb-1 small text-uppercase">Catálogo</h6>
                     <p class="text-dark fw-bold fs-5 mb-0">
                         <asp:Label ID="lblTotalCoberturas" runat="server" Text="-" />
                         O.S. / 
@@ -56,44 +56,44 @@
                 </div>
             </div>
             <div class="col-12 col-md-4">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1">Más Solicitada</h6>
-                    <p class="text-theme-primary fw-bold fs-5 mb-0 text-truncate px-2">
+                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100">
+                    <h6 class="text-muted mb-1 small text-uppercase">Más Solicitada</h6>
+                    <p class="text-primary fw-bold fs-5 mb-0 text-truncate px-2">
                         <asp:Label ID="lblMasUsada" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
             <div class="col-12 col-md-4">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1">Estado del Sistema</h6>
-                    <p class="text-muted fw-bold fs-5 mb-0">Activo</p>
+                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100">
+                    <h6 class="text-muted mb-1 small text-uppercase">Estado Sistema</h6>
+                    <p class="text-success fw-bold fs-5 mb-0">Activo</p>
                 </div>
             </div>
         </div>
 
         <div class="row g-3 mb-4">
             <div class="col-12 col-md-4">
-                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1 small">Facturación Total (Bruto)</h6>
+                <div class="kpi-card text-center py-3 bg-white border border-primary rounded shadow-sm h-100">
+                    <h6 class="text-primary small mb-1 text-uppercase">Facturación Total</h6>
                     <p class="text-primary fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTotalFacturado" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
-                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100 border-success">
-                    <h6 class="text-success mb-1 small">Crédito a Cobrar (O.S.)</h6>
+            <div class="col-12 col-md-4">
+                <div class="kpi-card text-center py-3 bg-white border border-success rounded shadow-sm h-100">
+                    <h6 class="text-success small mb-1 text-uppercase">Crédito a Cobrar (O.S.)</h6>
                     <p class="text-success fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTurnosOS" runat="server" Text="-" />
                     </p>
                 </div>
             </div>
 
-            <div class="col-6 col-md-4">
-                <div class="kpi-card text-center py-3 bg-white border rounded shadow-sm h-100 border-info">
-                    <h6 class="text-info mb-1 small">Copagos (Caja Chica)</h6>
-                    <p class="text-info fw-bold fs-4 mb-0" style="color: #0dcaf0;">
+            <div class="col-12 col-md-4">
+                <div class="kpi-card text-center py-3 bg-white border border-info rounded shadow-sm h-100">
+                    <h6 class="text-info small mb-1 text-uppercase">Copagos (Caja)</h6>
+                    <p class="text-info fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTotalCopagos" runat="server" Text="-" />
                     </p>
                 </div>
@@ -102,8 +102,8 @@
 
         <!-- Export buttons -->
         <div class="text-end">
-            <asp:Button ID="btnExportarPdf" runat="server" Text="Exportar PDF" CssClass="btn btn-danger btn-sm" OnClick="btnExportarPdf_Click" />
-            <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel" CssClass="btn btn-success btn-sm" OnClick="btnExportarExcel_Click" />
+            <asp:Button ID="btnExportarPdf" runat="server" Text="Exportar PDF" CssClass="btn btn-outline-danger btn-sm" OnClick="btnExportarPdf_Click" />
+            <asp:Button ID="btnExportarExcel" runat="server" Text="Exportar Excel" CssClass="btn btn-outline-success btn-sm" OnClick="btnExportarExcel_Click" />
         </div>
 
 

@@ -45,11 +45,11 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Planes
 
                 if (!puedeCrear)
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-5";
                 }
                 else
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-4";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-3";
                 }
 
                 bool puedeEditar = _servicioAutorizacion.TienePermiso(SessionManager.Usuario, "PLANES", "EDITAR");

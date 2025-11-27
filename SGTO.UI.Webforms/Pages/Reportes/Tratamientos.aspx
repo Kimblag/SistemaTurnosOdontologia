@@ -36,7 +36,7 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1 small">Realizados</h6>
+                   <h6 class="text-muted mb-1 small text-uppercase">Realizados</h6>
                     <p class="text-dark fw-bold fs-4 mb-0">
                         <asp:Label ID="lblTotalRealizados" runat="server" Text="-" />
                         <span class="fs-6 text-muted fw-normal">/
@@ -48,7 +48,7 @@
 
             <div class="col-6 col-md-3">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
-                    <h6 class="text-muted mb-1 small">Facturación Total</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">Facturación Total</h6>
                     <p class="text-primary fw-bold fs-5 mb-0">
                         <asp:Label ID="lblIngresosBrutos" runat="server" Text="-" />
                     </p>
@@ -57,7 +57,7 @@
 
             <div class="col-6 col-md-3">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100 border-success">
-                    <h6 class="text-success mb-1 small">Cobertura O.S.</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">Cobertura O.S.</h6>
                     <p class="text-success fw-bold fs-5 mb-0">
                         <asp:Label ID="lblIngresosOS" runat="server" Text="-" />
                     </p>
@@ -66,7 +66,7 @@
 
             <div class="col-6 col-md-3">
                 <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100 border-info">
-                    <h6 class="text-info mb-1 small">Pago Pacientes</h6>
+                    <h6 class="text-muted mb-1 small text-uppercase">Pago Pacientes</h6>
                     <p class="text-info fw-bold fs-5 mb-0" style="color: #0dcaf0;">
                         <asp:Label ID="lblIngresosPac" runat="server" Text="-" />
                     </p>

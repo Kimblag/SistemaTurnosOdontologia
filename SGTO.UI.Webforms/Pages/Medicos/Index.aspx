@@ -10,9 +10,9 @@
         <div class="container-fluid px-0 mb-4">
             <div class="bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="row g-2 align-items-end">
+                <div class="row g-3 align-items-end">
 
-                    <div class="col-md-4 col-lg-4">
+                    <div class="col-12 col-md-6 col-xl-4">
                         <label class="form-label small text-muted">Buscar Médico</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
@@ -21,14 +21,14 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 col-lg-3">
+                    <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted">Especialidad</label>
                         <asp:DropDownList ID="ddlEspecialidad" runat="server" CssClass="form-select" AppendDataBoundItems="true">
                             <asp:ListItem Text="Todas las especialidades" Value="" />
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-2 col-lg-2">
+                    <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
                             <asp:ListItem Text="Activos" Value="Activo" Selected="True" />
@@ -37,7 +37,7 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3 col-lg-3 d-flex gap-1">
+                    <div class="col-12 col-md-6 col-xl-2 d-flex gap-2">
                         <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
                     </div>

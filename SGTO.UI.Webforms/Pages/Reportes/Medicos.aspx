@@ -2,9 +2,9 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-generic reportes-page medicos-reporte">
-        
+
         <small class="text-muted">Métricas basadas en turnos asignados y realizados.</small>
-        
+
         <%-- Filtros --%>
         <div class="filters card shadow-sm p-4 mb-4 border-0">
             <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 w-100">
@@ -31,28 +31,32 @@
 
         <%-- KPIs --%>
         <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Total Médicos</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblTotalMedicos" runat="server" Text="-" /></p>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border rounded shadow-sm h-100">
+                    <h6 class="text-muted small mb-1 text-uppercase">Total Médicos</h6>
+                    <p class="text-dark fw-bold fs-4 mb-0">
+                        <asp:Label ID="lblTotalMedicos" runat="server" Text="-" /></p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Activos</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblActivos" runat="server" Text="-" /></p>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-success rounded shadow-sm h-100">
+                    <h6 class="text-success small mb-1 text-uppercase">Activos</h6>
+                    <p class="text-success fw-bold fs-4 mb-0">
+                        <asp:Label ID="lblActivos" runat="server" Text="-" /></p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Turnos en Período</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblTotalTurnos" runat="server" Text="-" /></p>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-primary rounded shadow-sm h-100">
+                    <h6 class="text-primary small mb-1 text-uppercase">Turnos Realizados</h6>
+                    <p class="text-primary fw-bold fs-4 mb-0">
+                        <asp:Label ID="lblTotalTurnos" runat="server" Text="-" /></p>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="kpi-card text-center py-3 bg-light border rounded shadow-sm">
-                    <h6 class="text-muted mb-1">Especialidades</h6>
-                    <p class="text-theme-primary fw-bold fs-4 mb-0"><asp:Label ID="lblEspecialidades" runat="server" Text="-" /></p>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-card text-center py-3 px-2 bg-white border border-info rounded shadow-sm h-100">
+                    <h6 class="text-info small mb-1 text-uppercase">Especialidades</h6>
+                    <p class="text-info fw-bold fs-4 mb-0">
+                        <asp:Label ID="lblEspecialidades" runat="server" Text="-" /></p>
                 </div>
             </div>
         </div>
@@ -65,7 +69,7 @@
 
         <%-- GridView --%>
         <div class="content-wrapper">
-            <asp:GridView ID="gvMedicos" runat="server" CssClass="table gridview mb-0" AutoGenerateColumns="false" 
+            <asp:GridView ID="gvMedicos" runat="server" CssClass="table gridview mb-0" AutoGenerateColumns="false"
                 EmptyDataText="No se encontraron resultados." AllowPaging="true" PageSize="10" OnPageIndexChanging="gvMedicos_PageIndexChanging">
                 <Columns>
                     <asp:BoundField DataField="Matricula" HeaderText="Matrícula" />
@@ -82,9 +86,9 @@
             </asp:GridView>
         </div>
     </div>
-    
+
     <%-- Modal Error --%>
-        <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalResultado" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
                 <div class="modal-header bg-white border-bottom-0">

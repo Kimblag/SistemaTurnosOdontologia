@@ -52,11 +52,11 @@ namespace SGTO.UI.Webforms.Pages.Pacientes
                 if (!puedeCrear)
                 {
 
-                    pnlBuscador.Attributes["class"] = "col-md-6 col-lg-5";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-5";
                 }
                 else
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-3";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-3";
                 }
 
                 CargarCombos();

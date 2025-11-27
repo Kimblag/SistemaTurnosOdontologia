@@ -8,41 +8,37 @@
         <div class="container-fluid px-0 mb-4">
             <div class="bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="row g-2 align-items-end">
+                <div class="row g-3 align-items-end">
 
-                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-5">
+                    <div id="pnlBuscador" runat="server">
                         <label for="txtBuscarCobertura" class="form-label small text-muted">Buscar Cobertura</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                             <asp:TextBox ID="txtBuscarCobertura" runat="server" CssClass="form-control border-start-0"
-                                placeholder="Buscar rápido por Nombre, DNI, Email..." />
+                                placeholder="Buscar por Nombre, descripción..." />
                         </div>
                     </div>
 
-
-                    <div class="col-md-3 col-lg-3">
+                    <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select"
-                            OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged">
+                            OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged" AutoPostBack="true">
                             <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
                             <asp:ListItem Text="Activo" Value="activo" />
                             <asp:ListItem Text="Inactivo" Value="inactivo" />
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3 col-lg-3 d-flex gap-1">
+                    <div class="col-12 col-md-6 col-xl-3 d-flex gap-2">
                         <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
                     </div>
 
-
-
-                    <div id="pnlNuevaCobertura" runat="server" class="col-md-12 col-lg-1 text-end border-start ps-3">
-                        <label class="form-label d-none d-lg-block">&nbsp;</label>
+                    <div id="pnlNuevaCobertura" runat="server" class="col-12 col-md-6 col-xl-2 d-flex justify-content-end">
                         <asp:Button ID="btnNuevaCobertura" runat="server"
-                            Text="+ Nueva"
+                            Text="+ Nueva Cobertura"
                             OnClick="btnNuevaCobertura_Click"
-                            CssClass="btn btn-success text-nowrap w-100" />
+                            CssClass="btn btn-success w-100" />
                     </div>
 
                 </div>

@@ -805,3 +805,50 @@ ul.cbl-especialidades {
         .user-profile-link:hover .text-dark {
             color: var(--bs-primary) !important;
         }
+
+/* =========================================================
+   estilos para cards de kpis en dashboard
+   ========================================================= */
+
+.kpi-number {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.kpi-title {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        cursor: pointer;
+    }
+
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 50vh;
+    width: 100%;
+}
+
+    .chart-container canvas {
+        display: block;
+    }
+
+@media (max-width: 576px) {
+    .chart-container {
+        height: 300px;
+    }
+}

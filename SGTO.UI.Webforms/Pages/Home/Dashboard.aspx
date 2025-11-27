@@ -4,48 +4,67 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <div class="container py-4">
+    <div class="container-fluid">
 
-        <div class="row text-center mb-4">
-            <div class="col-md-3">
-                <div class="card border-primary">
-                    <div class="card-body">
-                        <h5 class="card-title">Turnos del día</h5>
-                        <h2 class="text-primary"><%= KpiTurnosDia %></h2>
+        <div class="row g-3 text-center mb-4">
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card border-primary h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h5 class="card-title kpi-title">Turnos del día</h5>
+                        <div class="mt-2">
+                            <h2 class="kpi-number text-primary"><%= KpiTurnosDia %></h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-success">
-                    <div class="card-body">
-                        <h5 class="card-title">Pacientes atendidos</h5>
-                        <h2 class="text-success"><%= KpiPacientesAtendidos %></h2>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card border-success h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h5 class="card-title kpi-title">Pacientes atendidos</h5>
+                        <div class="mt-2">
+                            <h2 class="kpi-number text-success"><%= KpiPacientesAtendidos %></h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-warning">
-                    <div class="card-body">
-                        <h5 class="card-title">Reprogramados</h5>
-                        <h2 class="text-warning"><%= KpiReprogramados %></h2>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card border-warning h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h5 class="card-title kpi-title">Reprogramados</h5>
+                        <div class="mt-2">
+                            <h2 class="kpi-number text-warning"><%= KpiReprogramados %></h2>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card border-danger">
-                    <div class="card-body">
-                        <h5 class="card-title">Cancelados</h5>
-                        <h2 class="text-danger"><%= KpiCancelados %></h2>
+
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card border-danger h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h5 class="card-title kpi-title">Cancelados</h5>
+                        <div class="mt-2">
+                            <h2 class="kpi-number text-danger"><%= KpiCancelados %></h2>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4 text-muted fw-bold">Actividad Semanal</h5>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title mb-3">Actividad semanal</h5>
-                <canvas id="graficoActividad"></canvas>
+                        <div class="chart-container">
+                            <canvas id="graficoActividad"></canvas>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -61,27 +80,28 @@
                         {
                             label: 'Nuevos',
                             data: [<%= DataNuevos %>],
-                backgroundColor: '#0d6efd',
-            },
-            {
-                label: 'Reprogramados',
-                data: [<%= DataReprogramados %>],
-                backgroundColor: '#ffc107',
-            },
-            {
-                label: 'Atendidos/Cerrados',
-                data: [<%= DataCerrados %>],
-                backgroundColor: '#198754',
-            },
-            {
-                label: 'Cancelados',
-                data: [<%= DataCancelados %>],
+                            backgroundColor: '#0d6efd',
+                        },
+                        {
+                            label: 'Reprogramados',
+                            data: [<%= DataReprogramados %>],
+                            backgroundColor: '#ffc107',
+                        },
+                        {
+                            label: 'Atendidos/Cerrados',
+                            data: [<%= DataCerrados %>],
+                            backgroundColor: '#198754',
+                        },
+                        {
+                            label: 'Cancelados',
+                            data: [<%= DataCancelados %>],
                             backgroundColor: '#dc3545',
                         }
                     ]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         x: {
                             stacked: true

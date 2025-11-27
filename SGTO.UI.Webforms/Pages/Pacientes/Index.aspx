@@ -8,26 +8,25 @@
         <div class="container-fluid px-0 mb-4">
             <div class="bg-white p-3 rounded shadow-sm border w-100">
 
-                <div class="row g-2 align-items-end">
+                <div class="row g-3 align-items-end">
 
-
-                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-3">
+                    <div id="pnlBuscador" runat="server">
                         <label class="form-label small text-muted">Buscar Paciente</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                             <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control border-start-0"
-                                placeholder="Buscar rápido por Nombre, DNI, Email..." />
+                                placeholder="Nombre, DNI, Email..." />
                         </div>
                     </div>
 
-                    <div class="col-md-3 col-lg-3">
+                    <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted">Cobertura</label>
                         <asp:DropDownList ID="ddlCobertura" runat="server" CssClass="form-select" AppendDataBoundItems="true">
                             <asp:ListItem Text="Todas" Value="-1" />
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-2 col-lg-2">
+                    <div class="col-12 col-md-6 col-xl-2">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
                             <asp:ListItem Text="Activos" Value="Activo" Selected="True" />
@@ -36,17 +35,14 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3 col-lg-2 d-flex gap-1">
-                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
-                        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
+                    <div class="col-12 col-md-6 col-xl-2 d-flex gap-2">
+                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-100" OnClick="btnBuscar_Click" />
+                        <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-100" OnClick="btnLimpiar_Click" />
                     </div>
 
-
-                    <div id="pnlNuevoPaciente" runat="server" class="col-md-12 col-lg-2 text-end border-start ps-3">
-                        <label class="form-label d-none d-lg-block">&nbsp;</label>
+                    <div id="pnlNuevoPaciente" runat="server" class="col-12 col-md-12 col-xl-2 d-flex justify-content-end">
                         <asp:Button ID="btnNuevoPaciente" runat="server" Text="+ Nuevo" OnClick="btnNuevoPaciente_Click" CssClass="btn btn-success w-100" />
                     </div>
-
                 </div>
 
             </div>

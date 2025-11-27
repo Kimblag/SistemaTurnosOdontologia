@@ -12,7 +12,7 @@
 
                 <div class="row g-2 align-items-end">
 
-                    <div id="pnlBuscador" runat="server" class="col-md-4 col-lg-5">
+                   <div id="pnlBuscador" runat="server">
                         <label class="form-label small text-muted">Buscar Especialidad</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted">
@@ -20,11 +20,11 @@
                             </span>
                             <asp:TextBox ID="txtBuscar" runat="server"
                                 CssClass="form-control border-start-0"
-                                placeholder="Buscar especialidades..." />
+                                placeholder="Buscar especialidades por Nombre o Descripción..." />
                         </div>
                     </div>
 
-                    <div class="col-md-3 col-lg-3">
+                   <div class="col-12 col-md-6 col-xl-3">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
                             <asp:ListItem Selected="True" Text="Todos los estados" Value="todos" />
@@ -33,12 +33,12 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3 col-lg-3 d-flex gap-1">
+                   <div class="col-12 col-md-6 col-xl-2 d-flex gap-2">
                         <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-50" OnClick="btnBuscar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary w-50" OnClick="btnLimpiar_Click" />
                     </div>
 
-                    <div id="pnlNuevaEspecialidad" runat="server" class="col-md-12 col-lg-1 text-end border-start ps-3">
+                   <div id="pnlNuevaEspecialidad" runat="server" class="col-12 col-md-6 col-xl-2 d-flex justify-content-end">
                         <label class="form-label d-none d-lg-block">&nbsp;</label>
                         <asp:Button ID="btnNuevaEspecialidad" runat="server"
                             Text="+ Nueva"

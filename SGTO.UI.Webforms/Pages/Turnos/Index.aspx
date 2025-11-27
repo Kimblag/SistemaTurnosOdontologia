@@ -11,34 +11,34 @@
         <div class="container-fluid px-0 mb-4">
             <div class="bg-white p-3 rounded shadow-sm border w-100">
                 <div class="row g-3">
-                    <div class="col-md-12">
+                    <div class="col-12">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                             <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control border-start-0"
-                                placeholder="Buscar rápido por Paciente (Nombre, DNI) o Médico (Nombre, Matrícula)..." />
+                                placeholder="Buscar por Paciente (Nombre, DNI) o Médico..." />
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <label class="form-label small text-muted">Fecha Turno</label>
                         <asp:TextBox ID="txtFecha" runat="server" TextMode="Date" CssClass="form-control" />
                     </div>
 
-                    <div id="pnlFiltroMedico" runat="server" class="col-md-3">
+                    <div id="pnlFiltroMedico" runat="server" class="col-12 col-sm-6 col-lg-3">
                         <label class="form-label small text-muted">Médico</label>
                         <asp:DropDownList ID="ddlMedico" runat="server" CssClass="form-select" AppendDataBoundItems="true">
-                            <asp:ListItem Text="Todos" Value="-1" />
+                            <asp:ListItem Text="Todos los médicos" Value="-1" />
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <label class="form-label small text-muted">Cobertura</label>
                         <asp:DropDownList ID="ddlCobertura" runat="server" CssClass="form-select" AppendDataBoundItems="true">
                             <asp:ListItem Text="Todas" Value="-1" />
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <label class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
                             <asp:ListItem Text="Todos" Value="" />
@@ -50,8 +50,8 @@
                         </asp:DropDownList>
                     </div>
 
-                    <div class="col-md-2 d-flex align-items-end gap-2">
-                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary w-100" OnClick="btnBuscar_Click" />
+                    <div class="col-12 d-flex justify-content-end gap-2 mt-4">
+                        <asp:Button ID="btnBuscar" runat="server" Text="Filtrar" CssClass="btn btn-primary px-4" OnClick="btnBuscar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-outline-secondary" OnClick="btnLimpiar_Click" />
                     </div>
                 </div>

@@ -48,12 +48,15 @@ namespace SGTO.UI.Webforms.Pages.CoberturasPlanes.Coberturas
                 if (!puedeCrear)
                 {
                     // Si ocultamos el botón nuevo (col-lg-1), se lo sumamos al buscador
-                    // Original: col-lg-5. Nuevo: col-lg-6.
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-6";
+                    // Original: col-xl-3. Nuevo: col-xl-5.
+                    // Se agrega: col-12 para indicarle a bootstrap loq ue debe hacer en cada
+                    // breakpoint de pantalla. Sin col-12 tiene efectos no deseados (no hace wrap la línea
+                    // y se queda visualmente atropellando al otro elemento, haciendo que se vea horrible)
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-12 col-xl-6";
                 }
                 else
                 {
-                    pnlBuscador.Attributes["class"] = "col-md-4 col-lg-5";
+                    pnlBuscador.Attributes["class"] = "col-12 col-md-6 col-xl-4";
                 }
 
                 string estadoFiltroGuardado = Session[KEY_ESTADO_COBERTURAS] as string;
