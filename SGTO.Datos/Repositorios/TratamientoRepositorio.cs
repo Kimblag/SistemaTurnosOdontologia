@@ -247,5 +247,33 @@ namespace SGTO.Datos.Repositorios
             datos.EjecutarAccion();
         }
 
+        public bool TieneHistoriaClinicaAsociada(int idTratamiento)
+        {
+            bool resultado = false;
+            string query = "SELECT COUNT(*) FROM HistoriaClinicaRegistro WHERE IdTratamiento = @IdTratamiento";
+
+            using (ConexionDBFactory datos = new ConexionDBFactory())
+            {
+                try
+                {
+                    datos.DefinirConsulta(query);
+                    datos.EstablecerParametros("@IdTratamiento", idTratamiento);
+
+                    using (SqlDataReader lector = datos.EjecutarConsulta())
+                    {
+                        if (lector.Read())
+                        {
+                            resultado = lector.GetInt32(0) > 0;
+                        }
+                    }
+                    return resultado;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

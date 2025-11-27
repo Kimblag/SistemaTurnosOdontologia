@@ -14,8 +14,8 @@
                     <div class="filtro">
                         <label for="ddlEstado" class="form-label small text-muted">Estado</label>
                         <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select" Width="200">
-                            <asp:ListItem Text="Todos" Value="" />
-                            <asp:ListItem Text="Activos" Value="A" Selected="True" />
+                            <asp:ListItem Text="Todos" Value="" Selected="True" />
+                            <asp:ListItem Text="Activos" Value="A" />
                             <asp:ListItem Text="Inactivos" Value="I" />
                         </asp:DropDownList>
                     </div>

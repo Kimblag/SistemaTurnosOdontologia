@@ -58,8 +58,30 @@ namespace SGTO.Negocio.Servicios
         public void ModificarTratamiento(TratamientoDto dto)
         {
             ValidarEspecialidadActiva(dto.IdEspecialidad);
-            Tratamiento tratamiento = TratamientoMapper.MapearAEntidad(dto);
-            _repositorio.Modificar(tratamiento);
+
+            Tratamiento tratamientoActual = _repositorio.ObtenerPorId(dto.IdTratamiento);
+
+            if (tratamientoActual == null)
+            {
+                throw new ExcepcionReglaNegocio("El tratamiento que intenta modificar no existe.");
+            }
+
+            bool tieneUso = _repositorio.TieneHistoriaClinicaAsociada(dto.IdTratamiento);
+
+            if (tieneUso)
+            {
+                if (tratamientoActual.Especialidad.IdEspecialidad != dto.IdEspecialidad)
+                {
+                    throw new ExcepcionReglaNegocio("No se puede cambiar la Especialidad porque el tratamiento tiene historial.");
+                }
+
+                if (tratamientoActual.CostoBase != dto.CostoBase)
+                {
+                    throw new ExcepcionReglaNegocio("Por integridad histórica, no se puede modificar el precio de un tratamiento ya facturado. Por favor, dé de baja este tratamiento y cree uno nuevo con el precio actualizado.");
+                }
+            }
+            Tratamiento tratamientoModificado = TratamientoMapper.MapearAEntidad(dto);
+            _repositorio.Modificar(tratamientoModificado);
         }
 
         public void GuardarNuevoTratamiento(TratamientoDto nuevoDto)
@@ -97,7 +119,7 @@ namespace SGTO.Negocio.Servicios
                 catch (ExcepcionReglaNegocio)
                 {
                     datos.RollbackTransaccion();
-                    throw; 
+                    throw;
                 }
                 catch (Exception)
                 {

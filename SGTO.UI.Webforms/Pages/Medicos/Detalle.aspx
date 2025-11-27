@@ -169,13 +169,14 @@
             <div class="col-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-light py-3">
-                        <h5 class="mb-0">Historial de Turnos Atendidos</h5>
+                        <h5 class="mb-0">Historial de Turnos</h5>
                     </div>
                     <div class="card-body p-0">
                         <asp:GridView ID="gvHistorial" runat="server"
                             AutoGenerateColumns="false"
                             CssClass="table table-hover table-striped mb-0"
                             GridLines="None"
+                            OnRowDataBound="gvHistorial_RowDataBound"
                             EmptyDataText="Este médico aún no ha atendido turnos.">
                             <Columns>
                                 <asp:BoundField DataField="Fecha" HeaderText="Fecha" />
@@ -185,7 +186,7 @@
                                 <asp:BoundField DataField="Cobertura" HeaderText="Cobertura" />
                                 <asp:TemplateField HeaderText="Estado">
                                     <ItemTemplate>
-                                        <span class="badge bg-secondary"><%# Eval("Estado") %></span>
+                                        <div id="lblEstado" runat="server" class="badge"><%# Eval("Estado") %></div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>

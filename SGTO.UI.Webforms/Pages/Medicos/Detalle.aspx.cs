@@ -1,9 +1,13 @@
-﻿using SGTO.Negocio.Seguridad;
+﻿using SGTO.Comun.DTOs;
+using SGTO.Negocio.Seguridad;
 using SGTO.Negocio.Servicios;
 using SGTO.UI.Webforms.MasterPages;
 using SGTO.UI.Webforms.Seguridad;
+using SGTO.UI.Webforms.Utils;
 using System;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace SGTO.UI.Webforms.Pages.Medicos
 {
@@ -108,6 +112,22 @@ namespace SGTO.UI.Webforms.Pages.Medicos
             else
             {
                 Response.Redirect("~/Pages/Medicos/Index.aspx");
+            }
+        }
+
+        protected void gvHistorial_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                TurnoHistorialDto turnoDto = (TurnoHistorialDto)e.Row.DataItem;
+                var lblEstado = (HtmlGenericControl)e.Row.FindControl("lblEstado");
+
+                if (lblEstado != null && turnoDto != null)
+                {
+                    string estadoTurno = turnoDto.Estado != null ? turnoDto.Estado.ToLower() : "";
+                    lblEstado.Attributes["class"] = TurnoUiHelper.ObtenerCssEstadoTurnoBadge(estadoTurno);
+                    lblEstado.InnerText = TurnoUiHelper.ObtenerTextoEstado(estadoTurno);
+                }
             }
         }
     }

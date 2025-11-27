@@ -57,7 +57,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
                 }
                 else
                 {
-                    ddlEstado.SelectedValue = "A"; 
+                    ddlEstado.SelectedValue = ""; 
                 }
 
                 AplicarFiltros();
@@ -125,7 +125,7 @@ namespace SGTO.UI.Webforms.Pages.Reportes
         protected void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
             ddlEspecialidad.SelectedIndex = 0;
-            ddlEstado.SelectedValue = "A"; 
+            ddlEstado.SelectedValue = ""; 
 
             Session[KEY_REP_TRAT_ESP] = null;
             Session[KEY_REP_TRAT_ESTADO] = null;
