@@ -1,5 +1,4 @@
-﻿using SGTO.Dominio.Entidades;
-using SGTO.Negocio.DTOs;
+﻿using SGTO.Negocio.DTOs;
 using SGTO.Negocio.DTOs.HistoriaClinica;
 using SGTO.Negocio.DTOs.Turnos;
 using SGTO.Negocio.Excepciones;
@@ -60,10 +59,44 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 {
                     TurnoDetalleDto turno = _servicioTurno.ObtenerDetallePorId(idTurno);
 
+                    int? idMedicoLogueado = SessionManager.Usuario.IdMedico;
+                    if (!idMedicoLogueado.HasValue || turno.IdMedico != idMedicoLogueado.Value)
+                    {
+                        Response.Redirect("~/Pages/Errores/AccesoDenegado.aspx", true);
+                        return;
+                    }
+
                     if (turno.Estado == "Cerrado" || turno.Estado == "Cancelado")
                     {
-                        MensajeUiHelper.SetearYMostrar(this, "Error", "Este turno ya no se puede atender.", "Volver", "~/Pages/Turnos/Index", "abrirModalResultado");
+                        MensajeUiHelper.SetearYMostrar(this, "Error", "Este turno ya no se puede atender.", "Volver",
+                            VirtualPathUtility.ToAbsolute("~/Pages/Turnos/Index.aspx"), "abrirModalResultado");
                         btnGuardar.Enabled = false;
+                        return;
+                    }
+
+                    if (turno.FechaInicio.Date != DateTime.Today)
+                    {
+                        string mensajeError = "";
+
+                        if (turno.FechaInicio.Date > DateTime.Today)
+                        {
+                            mensajeError = $"No se puede iniciar la atención de un turno futuro. La fecha del turno es {turno.FechaInicio:dd/MM/yyyy}.";
+                        }
+                        else
+                        {
+                            mensajeError = $"No se puede atender un turno vencido. La fecha del turno era {turno.FechaInicio:dd/MM/yyyy}.";
+                        }
+
+                        MensajeUiHelper.SetearYMostrar(
+                            this,
+                            "Fecha Inválida",
+                            mensajeError,
+                            "Volver a la Agenda",
+                             VirtualPathUtility.ToAbsolute("~/Pages/Turnos/Index.aspx"),
+                             "abrirModalResultado"
+                        );
+
+                        BloquearFormulario();
                         return;
                     }
 
@@ -198,6 +231,18 @@ namespace SGTO.UI.Webforms.Pages.Medicos
                 return SessionManager.Usuario.IdUsuario;
             }
             return 0;
+        }
+
+        private void BloquearFormulario()
+        {
+            btnGuardar.Enabled = false;
+            btnGuardar.CssClass = "btn btn-secondary px-4";
+
+            txtDiagnostico.Enabled = false;
+            txtObservaciones.Enabled = false;
+
+            pnlTratamientoSeleccion.Visible = false;
+            pnlTratamientoManual.Visible = false;
         }
 
     }
